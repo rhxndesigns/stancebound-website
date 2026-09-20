@@ -1,409 +1,1060 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>STANCEBOUND | Automotive Detailing & Photography</title>
 
 <style>
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    background-color: #080808;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
+html{
+    scroll-behavior:smooth;
 }
 
+body{
+    background:#050505;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    overflow-x:hidden;
+}
+
+/* NAVIGATION */
+
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 6%;
+    background:rgba(5,5,5,.88);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    z-index:1000;
+}
+
+.brand{
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:5px;
+}
+
+.nav-links{
+    display:flex;
+    gap:30px;
+}
+
+.nav-links a{
+    color:#aaa;
+    text-decoration:none;
+    font-size:11px;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+.menu{
+    display:none;
+    font-size:25px;
+    cursor:pointer;
+}
 
 /* HERO */
 
-.hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 30px 20px;
+.hero{
+    min-height:100vh;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:100px 25px 60px;
+    overflow:hidden;
 }
 
-.hero-inner {
-    width: 100%;
-    max-width: 900px;
+.hero-bg{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(to bottom,
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.72) 60%,
+        #050505),
+        url("images/STANCEBOUND3.jpeg") center/cover no-repeat;
+
+    transform:scale(1.04);
 }
 
-.crown {
-    font-size: 45px;
-    margin-bottom: 15px;
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:900px;
 }
 
-.logo {
-    font-size: clamp(38px, 10vw, 90px);
-    font-weight: 900;
-    letter-spacing: 3px;
-    line-height: 1;
+.crown{
+    font-size:45px;
+    margin-bottom:12px;
+    opacity:.95;
 }
 
-.detailing {
-    margin-top: 12px;
-    font-size: 14px;
-    letter-spacing: 8px;
-    color: #cccccc;
+.hero h1{
+    font-size:clamp(48px,10vw,105px);
+    line-height:.9;
+    letter-spacing:4px;
+    font-weight:900;
+    text-shadow:0 4px 30px #000;
 }
 
-.tagline {
-    margin-top: 35px;
-    font-size: 12px;
-    letter-spacing: 4px;
-    color: #777777;
+.hero-sub{
+    margin-top:18px;
+    letter-spacing:10px;
+    font-size:13px;
+    color:#ddd;
 }
 
-.description {
-    max-width: 600px;
-    margin: 30px auto;
-    color: #999999;
-    font-size: 15px;
-    line-height: 1.8;
+.tagline{
+    margin-top:38px;
+    font-size:11px;
+    letter-spacing:7px;
+    color:#aaa;
 }
 
-.button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 16px 25px;
-
-    border: 1px solid #ffffff;
-
-    color: #ffffff;
-    text-decoration: none;
-
-    font-size: 12px;
-    letter-spacing: 2px;
+.hero p{
+    max-width:650px;
+    margin:25px auto 0;
+    color:#bbb;
+    line-height:1.8;
+    font-size:15px;
 }
 
+.button{
+    display:inline-block;
+    margin-top:35px;
+    padding:16px 30px;
+    border:1px solid #aaa;
+    color:#fff;
+    text-decoration:none;
+    letter-spacing:3px;
+    font-size:11px;
+    transition:.3s;
+}
+
+.button:hover{
+    background:white;
+    color:black;
+}
+
+/* GENERAL */
+
+section{
+    padding:100px 7%;
+}
+
+.section-title{
+    margin-bottom:55px;
+}
+
+.section-title span{
+    display:block;
+    color:#777;
+    font-size:10px;
+    letter-spacing:5px;
+    margin-bottom:12px;
+}
+
+.section-title h2{
+    font-size:clamp(30px,6vw,58px);
+    letter-spacing:3px;
+}
+
+.line{
+    height:1px;
+    width:80px;
+    background:#777;
+    margin-top:20px;
+}
+
+/* INTRO */
+
+.intro{
+    max-width:900px;
+    margin:auto;
+    text-align:center;
+}
+
+.intro h2{
+    font-size:clamp(27px,5vw,50px);
+    letter-spacing:3px;
+    line-height:1.2;
+}
+
+.intro p{
+    color:#999;
+    max-width:700px;
+    margin:25px auto;
+    line-height:1.9;
+}
 
 /* SERVICES */
 
-.services-section {
-    padding: 80px 20px;
-    border-top: 1px solid #222222;
+.services{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border-top:1px solid #222;
+    border-left:1px solid #222;
 }
 
-.section-inner {
-    max-width: 1000px;
-    margin: auto;
+.service{
+    padding:50px 35px;
+    border-right:1px solid #222;
+    border-bottom:1px solid #222;
+    transition:.3s;
 }
 
-.section-label {
-    color: #666666;
-    font-size: 11px;
-    letter-spacing: 4px;
-    margin-bottom: 10px;
+.service:hover{
+    background:#0d0d0d;
 }
 
-.section-title {
-    font-size: 32px;
-    letter-spacing: 3px;
-    margin-bottom: 40px;
+.service-number{
+    color:#555;
+    font-size:11px;
+    letter-spacing:3px;
 }
 
-.services {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
+.service h3{
+    margin:25px 0 15px;
+    letter-spacing:2px;
+    font-size:18px;
 }
 
-.service {
-    background-color: #101010;
-    border: 1px solid #222222;
-    padding: 30px;
+.service p{
+    color:#888;
+    font-size:13px;
+    line-height:1.8;
 }
 
-.number {
-    color: #555555;
-    font-size: 11px;
-    letter-spacing: 3px;
+/* FEATURE IMAGES */
+
+.feature{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:650px;
 }
 
-.service h3 {
-    margin-top: 15px;
-    margin-bottom: 10px;
-
-    font-size: 19px;
-    letter-spacing: 2px;
+.feature-img{
+    min-height:500px;
+    background:center/cover no-repeat;
 }
 
-.service p {
-    color: #888888;
-    line-height: 1.7;
-    font-size: 14px;
+.feature-text{
+    padding:10%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:#090909;
 }
 
-
-/* ABOUT */
-
-.about {
-    padding: 80px 20px;
-    background-color: #101010;
+.feature-text small{
+    color:#666;
+    letter-spacing:5px;
 }
 
-.about p {
-    color: #999999;
-    line-height: 1.8;
-    max-width: 650px;
+.feature-text h2{
+    font-size:clamp(30px,5vw,55px);
+    margin:20px 0;
 }
 
+.feature-text p{
+    color:#999;
+    line-height:1.9;
+    max-width:500px;
+}
+
+/* GALLERY */
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.gallery-item{
+    height:430px;
+    overflow:hidden;
+    cursor:pointer;
+    position:relative;
+    background:#111;
+}
+
+.gallery-item img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.6s;
+}
+
+.gallery-item:hover img{
+    transform:scale(1.05);
+    filter:brightness(.7);
+}
+
+.gallery-item::after{
+    content:"VIEW";
+    position:absolute;
+    left:25px;
+    bottom:25px;
+    font-size:9px;
+    letter-spacing:4px;
+    opacity:0;
+    transition:.3s;
+}
+
+.gallery-item:hover::after{
+    opacity:1;
+}
+
+/* PROCESS */
+
+.process{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.process-item{
+    border-top:1px solid #555;
+    padding-top:25px;
+}
+
+.process-item span{
+    color:#555;
+    font-size:12px;
+}
+
+.process-item h3{
+    margin:15px 0;
+    font-size:15px;
+    letter-spacing:2px;
+}
+
+.process-item p{
+    color:#888;
+    line-height:1.7;
+    font-size:13px;
+}
+
+/* CTA */
+
+.cta{
+    min-height:600px;
+    background:
+        linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.88)),
+        url("images/STANCEBOUND9.jpeg") center/cover no-repeat;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.cta h2{
+    font-size:clamp(38px,8vw,85px);
+    letter-spacing:4px;
+}
+
+.cta p{
+    color:#aaa;
+    margin-top:20px;
+    letter-spacing:3px;
+}
 
 /* CONTACT */
 
-.contact {
-    padding: 100px 20px;
-    text-align: center;
+.contact{
+    text-align:center;
 }
 
-.contact-title {
-    font-size: clamp(30px, 8vw, 55px);
-    letter-spacing: 2px;
+.contact h2{
+    font-size:clamp(35px,7vw,70px);
+    letter-spacing:4px;
 }
 
-.contact-sub {
-    color: #777777;
-    margin-top: 20px;
-    margin-bottom: 30px;
+.contact p{
+    color:#888;
+    margin:25px auto;
+    max-width:600px;
+    line-height:1.8;
 }
 
-.social {
-    display: inline-block;
-    margin: 8px;
-
-    color: #ffffff;
-    text-decoration: none;
-
-    font-size: 12px;
-    letter-spacing: 2px;
-
-    border-bottom: 1px solid #555555;
-    padding-bottom: 5px;
+.socials{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:35px;
+    flex-wrap:wrap;
 }
 
+.socials a{
+    color:#fff;
+    text-decoration:none;
+    letter-spacing:3px;
+    font-size:12px;
+    border-bottom:1px solid #555;
+    padding-bottom:8px;
+}
 
 /* FOOTER */
 
-footer {
-    padding: 30px 20px;
-    border-top: 1px solid #222222;
-
-    color: #555555;
-    text-align: center;
-
-    font-size: 10px;
-    letter-spacing: 2px;
+footer{
+    padding:45px 7%;
+    border-top:1px solid #222;
+    color:#555;
+    font-size:10px;
+    letter-spacing:3px;
+    text-align:center;
 }
 
+/* LIGHTBOX */
 
-/* DESKTOP */
+.lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.96);
+    z-index:3000;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+}
 
-@media (min-width: 700px) {
+.lightbox.active{
+    display:flex;
+}
 
-    .services {
-        grid-template-columns: repeat(3, 1fr);
+.lightbox img{
+    max-width:95%;
+    max-height:90vh;
+    object-fit:contain;
+}
+
+.close{
+    position:absolute;
+    top:25px;
+    right:30px;
+    font-size:35px;
+    cursor:pointer;
+}
+
+/* SCROLL ANIMATION */
+
+.reveal{
+    opacity:0;
+    transform:translateY(35px);
+    transition:1s;
+}
+
+.reveal.visible{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    nav{
+        height:62px;
+        padding:0 20px;
+    }
+
+    .brand{
+        font-size:14px;
+        letter-spacing:3px;
+    }
+
+    .menu{
+        display:block;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:62px;
+        left:0;
+        width:100%;
+        background:#080808;
+        flex-direction:column;
+        gap:0;
+        max-height:0;
+        overflow:hidden;
+        transition:.4s;
+    }
+
+    .nav-links.open{
+        max-height:350px;
+        border-bottom:1px solid #222;
+    }
+
+    .nav-links a{
+        padding:20px;
+        border-top:1px solid #161616;
+    }
+
+    section{
+        padding:75px 22px;
+    }
+
+    .hero{
+        min-height:100svh;
+    }
+
+    .hero h1{
+        font-size:13vw;
+        letter-spacing:1px;
+    }
+
+    .hero-sub{
+        letter-spacing:6px;
+        font-size:10px;
+    }
+
+    .tagline{
+        letter-spacing:4px;
+        line-height:2;
+    }
+
+    .services{
+        grid-template-columns:1fr;
+    }
+
+    .feature{
+        grid-template-columns:1fr;
+    }
+
+    .feature-img{
+        min-height:500px;
+    }
+
+    .feature-text{
+        padding:70px 25px;
+    }
+
+    .gallery{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .gallery-item{
+        height:300px;
+    }
+
+    .gallery-item:nth-child(3n){
+        grid-column:span 2;
+        height:420px;
+    }
+
+    .process{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .gallery{
+        grid-template-columns:1fr;
+    }
+
+    .gallery-item,
+    .gallery-item:nth-child(3n){
+        grid-column:auto;
+        height:430px;
+    }
+
+    .process{
+        grid-template-columns:1fr;
     }
 
 }
 
 </style>
-
 </head>
-
 
 <body>
 
+<nav>
 
-<header class="hero">
+<div class="brand">STANCEBOUND</div>
 
-<div class="hero-inner">
-
-    <div class="crown">
-        ♔
-    </div>
-
-    <div class="logo">
-        STANCEBOUND
-    </div>
-
-    <div class="detailing">
-        DETAILING
-    </div>
-
-    <div class="tagline">
-        DETAILED • CAPTURED • DRIVEN
-    </div>
-
-    <p class="description">
-        Automotive detailing and photography based in South Wales.
-        Built around vehicle care, modified cars and automotive culture.
-    </p>
-
-    <a href="#services" class="button">
-        EXPLORE STANCEBOUND
-    </a>
-
+<div class="nav-links" id="navLinks">
+<a href="#home">HOME</a>
+<a href="#detailing">DETAILING</a>
+<a href="#photography">PHOTOGRAPHY</a>
+<a href="#work">WORK</a>
+<a href="#contact">CONTACT</a>
 </div>
 
-</header>
+<div class="menu" id="menu">☰</div>
+
+</nav>
 
 
+<!-- HERO -->
 
-<section
-class="services-section"
-id="services">
+<section class="hero" id="home">
 
-<div class="section-inner">
+<div class="hero-bg"></div>
 
-    <div class="section-label">
-        STANCEBOUND
-    </div>
+<div class="hero-content reveal">
 
-    <h2 class="section-title">
-        WHAT WE DO
-    </h2>
+<div class="crown">♔</div>
 
+<h1>STANCEBOUND</h1>
 
-    <div class="services">
+<div class="hero-sub">DETAILING</div>
 
+<div class="tagline">
+DETAILED · CAPTURED · DRIVEN
+</div>
 
-        <div class="service">
+<p>
+Automotive detailing and photography based in South Wales.
+Built around vehicle care, modified cars and automotive culture.
+</p>
 
-            <div class="number">
-                01
-            </div>
-
-            <h3>
-                DETAILING
-            </h3>
-
-            <p>
-                Interior and exterior vehicle detailing
-                with attention given to the areas that
-                make the difference.
-            </p>
-
-        </div>
-
-
-        <div class="service">
-
-            <div class="number">
-                02
-            </div>
-
-            <h3>
-                INTERIOR
-            </h3>
-
-            <p>
-                Thorough cleaning of carpets,
-                upholstery, plastics, glass
-                and interior surfaces.
-            </p>
-
-        </div>
-
-
-        <div class="service">
-
-            <div class="number">
-                03
-            </div>
-
-            <h3>
-                PHOTOGRAPHY
-            </h3>
-
-            <p>
-                Automotive photography for
-                modified cars, owners,
-                events and social media.
-            </p>
-
-        </div>
-
-
-    </div>
+<a class="button" href="#work">EXPLORE STANCEBOUND</a>
 
 </div>
 
 </section>
 
 
+<!-- INTRO -->
 
-<section class="about">
+<section>
 
-<div class="section-inner">
+<div class="intro reveal">
 
-    <div class="section-label">
-        THE BRAND
-    </div>
+<h2>
+MORE THAN JUST<br>
+A CLEAN CAR.
+</h2>
 
-    <h2 class="section-title">
-        STANCEBOUND
-    </h2>
-
-    <p>
-        Detailing and automotive photography brought
-        together under one brand. Based in South Wales
-        and built around a genuine interest in cars
-        and automotive culture.
-    </p>
+<p>
+STANCEBOUND combines automotive detailing with photography,
+bringing together proper vehicle care and the culture surrounding
+the cars we actually care about.
+</p>
 
 </div>
 
 </section>
 
 
+<!-- SERVICES -->
 
-<section class="contact">
+<section id="detailing">
 
-    <div class="section-label">
-        GET IN TOUCH
-    </div>
+<div class="section-title reveal">
 
-    <h2 class="contact-title">
-        YOUR CAR.<br>
-        DONE PROPERLY.
-    </h2>
+<span>01 / WHAT WE DO</span>
 
-    <p class="contact-sub">
-        Carmarthenshire & surrounding areas
-    </p>
+<h2>DETAILING</h2>
 
-    <a href="#" class="social">
-        INSTAGRAM
-    </a>
+<div class="line"></div>
 
-    <a href="#" class="social">
-        TIKTOK
-    </a>
+</div>
+
+
+<div class="services reveal">
+
+<div class="service">
+<div class="service-number">01</div>
+<h3>EXTERIOR</h3>
+<p>
+Wheels, pre-wash, snow foam, contact wash,
+safe drying and finishing touches.
+</p>
+</div>
+
+<div class="service">
+<div class="service-number">02</div>
+<h3>INTERIOR</h3>
+<p>
+Vacuuming, plastics, carpets, upholstery,
+glass and detailed interior cleaning.
+</p>
+</div>
+
+<div class="service">
+<div class="service-number">03</div>
+<h3>FULL VALET</h3>
+<p>
+Interior and exterior treatment combined
+for a complete vehicle refresh.
+</p>
+</div>
+
+</div>
 
 </section>
 
+
+<!-- DETAILING FEATURE -->
+
+<div class="feature">
+
+<div
+class="feature-img"
+style="background-image:url('images/STANCEBOUND5.jpeg')">
+</div>
+
+<div class="feature-text reveal">
+
+<small>VEHICLE CARE</small>
+
+<h2>THE DETAILS<br>MATTER.</h2>
+
+<p>
+From wheels and bodywork to carpets and interior trim,
+the aim is simple: take the time to do the job properly
+rather than rushing a car through.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- PROCESS -->
+
+<section>
+
+<div class="section-title reveal">
+
+<span>02 / THE PROCESS</span>
+
+<h2>CLEANER. HIGHER. FURTHER.</h2>
+
+<div class="line"></div>
+
+</div>
+
+<div class="process reveal">
+
+<div class="process-item">
+<span>01</span>
+<h3>ASSESS</h3>
+<p>
+The vehicle is checked before work begins,
+including condition and areas needing attention.
+</p>
+</div>
+
+<div class="process-item">
+<span>02</span>
+<h3>CLEAN</h3>
+<p>
+A methodical interior and exterior cleaning process
+designed around the vehicle.
+</p>
+</div>
+
+<div class="process-item">
+<span>03</span>
+<h3>DETAIL</h3>
+<p>
+Smaller areas and finishing touches receive the attention
+that separates detailing from a quick wash.
+</p>
+</div>
+
+<div class="process-item">
+<span>04</span>
+<h3>CAPTURE</h3>
+<p>
+Selected vehicles can also be professionally photographed
+as part of the STANCEBOUND automotive side.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PHOTOGRAPHY -->
+
+<section id="photography">
+
+<div class="section-title reveal">
+
+<span>03 / AUTOMOTIVE CULTURE</span>
+
+<h2>PHOTOGRAPHY</h2>
+
+<div class="line"></div>
+
+</div>
+
+<div class="feature">
+
+<div
+class="feature-img"
+style="background-image:url('images/STANCEBOUND3.jpeg')">
+</div>
+
+<div class="feature-text reveal">
+
+<small>STANCEBOUND MEDIA</small>
+
+<h2>BUILT TO<br>BE SEEN.</h2>
+
+<p>
+Automotive photography focused on modified cars,
+shows, details and the personality behind each build.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- GALLERY -->
+
+<section id="work">
+
+<div class="section-title reveal">
+
+<span>04 / SELECTED WORK</span>
+
+<h2>THE GARAGE</h2>
+
+<div class="line"></div>
+
+</div>
+
+<div class="gallery reveal">
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND1.jpeg" alt="STANCEBOUND automotive work">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND2.jpeg" alt="STANCEBOUND automotive work">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND3.jpeg" alt="STANCEBOUND automotive photography">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND4.jpeg" alt="STANCEBOUND detailing">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND5.jpeg" alt="STANCEBOUND detailing">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND6.jpeg" alt="STANCEBOUND detailing">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND7.jpeg" alt="STANCEBOUND interior detailing">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND8.jpeg" alt="STANCEBOUND automotive photography">
+</div>
+
+<div class="gallery-item">
+<img src="images/STANCEBOUND9.jpeg" alt="STANCEBOUND automotive photography">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CTA -->
+
+<section class="cta">
+
+<div class="reveal">
+
+<h2>STANCEBOUND.</h2>
+
+<p>DETAILED · CAPTURED · DRIVEN</p>
+
+<a href="#contact" class="button">GET IN TOUCH</a>
+
+</div>
+
+</section>
+
+
+<!-- CONTACT -->
+
+<section class="contact" id="contact">
+
+<div class="reveal">
+
+<h2>GET IN TOUCH.</h2>
+
+<p>
+Based in South Wales and covering Carmarthenshire,
+Llanelli, Swansea and surrounding areas.
+</p>
+
+<div class="socials">
+
+<a href="https://www.instagram.com/stancebound/" target="_blank">
+INSTAGRAM
+</a>
+
+<a href="https://www.tiktok.com/@stancebound" target="_blank">
+TIKTOK
+</a>
+
+</div>
+
+</div>
+
+</section>
 
 
 <footer>
 
-© 2026 STANCEBOUND
+STANCEBOUND · AUTOMOTIVE DETAILING & PHOTOGRAPHY · SOUTH WALES
 
 </footer>
 
 
-</body>
+<!-- LIGHTBOX -->
 
+<div class="lightbox" id="lightbox">
+
+<div class="close" id="close">×</div>
+
+<img id="lightboxImage" src="" alt="STANCEBOUND gallery">
+
+</div>
+
+
+<script>
+
+/* MOBILE MENU */
+
+const menu = document.getElementById("menu");
+const navLinks = document.getElementById("navLinks");
+
+menu.addEventListener("click", () => {
+
+    navLinks.classList.toggle("open");
+
+    menu.textContent =
+    navLinks.classList.contains("open") ? "×" : "☰";
+
+});
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+        navLinks.classList.remove("open");
+        menu.textContent = "☰";
+
+    });
+
+});
+
+
+/* SCROLL REVEAL */
+
+const observer = new IntersectionObserver(entries => {
+
+    entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+            entry.target.classList.add("visible");
+        }
+
+    });
+
+},{
+    threshold:.12
+});
+
+document.querySelectorAll(".reveal").forEach(element => {
+    observer.observe(element);
+});
+
+
+/* IMAGE LIGHTBOX */
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightboxImage");
+const close = document.getElementById("close");
+
+document.querySelectorAll(".gallery-item img").forEach(image => {
+
+    image.addEventListener("click", () => {
+
+        lightboxImage.src = image.src;
+        lightbox.classList.add("active");
+        document.body.style.overflow = "hidden";
+
+    });
+
+});
+
+function closeLightbox(){
+
+    lightbox.classList.remove("active");
+    document.body.style.overflow = "";
+
+}
+
+close.addEventListener("click", closeLightbox);
+
+lightbox.addEventListener("click", event => {
+
+    if(event.target === lightbox){
+        closeLightbox();
+    }
+
+});
+
+
+/* NAV BACKGROUND ON SCROLL */
+
+window.addEventListener("scroll", () => {
+
+    const nav = document.querySelector("nav");
+
+    if(window.scrollY > 50){
+        nav.style.background = "rgba(5,5,5,.97)";
+    }else{
+        nav.style.background = "rgba(5,5,5,.88)";
+    }
+
+});
+
+</script>
+
+</body>
 </html>
