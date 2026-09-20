@@ -1,14 +1,409 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>STANCEBOUND TEST</title>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>STANCEBOUND | Automotive Detailing & Photography</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #080808;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.hero-inner {
+    width: 100%;
+    max-width: 900px;
+}
+
+.crown {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.logo {
+    font-size: clamp(38px, 10vw, 90px);
+    font-weight: 900;
+    letter-spacing: 3px;
+    line-height: 1;
+}
+
+.detailing {
+    margin-top: 12px;
+    font-size: 14px;
+    letter-spacing: 8px;
+    color: #cccccc;
+}
+
+.tagline {
+    margin-top: 35px;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #777777;
+}
+
+.description {
+    max-width: 600px;
+    margin: 30px auto;
+    color: #999999;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 16px 25px;
+
+    border: 1px solid #ffffff;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+
+/* SERVICES */
+
+.services-section {
+    padding: 80px 20px;
+    border-top: 1px solid #222222;
+}
+
+.section-inner {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.section-label {
+    color: #666666;
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+}
+
+.services {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.service {
+    background-color: #101010;
+    border: 1px solid #222222;
+    padding: 30px;
+}
+
+.number {
+    color: #555555;
+    font-size: 11px;
+    letter-spacing: 3px;
+}
+
+.service h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+
+    font-size: 19px;
+    letter-spacing: 2px;
+}
+
+.service p {
+    color: #888888;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+
+/* ABOUT */
+
+.about {
+    padding: 80px 20px;
+    background-color: #101010;
+}
+
+.about p {
+    color: #999999;
+    line-height: 1.8;
+    max-width: 650px;
+}
+
+
+/* CONTACT */
+
+.contact {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.contact-title {
+    font-size: clamp(30px, 8vw, 55px);
+    letter-spacing: 2px;
+}
+
+.contact-sub {
+    color: #777777;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.social {
+    display: inline-block;
+    margin: 8px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+
+    border-bottom: 1px solid #555555;
+    padding-bottom: 5px;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding: 30px 20px;
+    border-top: 1px solid #222222;
+
+    color: #555555;
+    text-align: center;
+
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+
+/* DESKTOP */
+
+@media (min-width: 700px) {
+
+    .services {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+</style>
+
 </head>
 
-<body style="background:white; color:black;">
 
-<h1>STANCEBOUND IS WORKING</h1>
+<body>
 
-<p>If you can see this, GitHub Pages is working properly.</p>
+
+<header class="hero">
+
+<div class="hero-inner">
+
+    <div class="crown">
+        ♔
+    </div>
+
+    <div class="logo">
+        STANCEBOUND
+    </div>
+
+    <div class="detailing">
+        DETAILING
+    </div>
+
+    <div class="tagline">
+        DETAILED • CAPTURED • DRIVEN
+    </div>
+
+    <p class="description">
+        Automotive detailing and photography based in South Wales.
+        Built around vehicle care, modified cars and automotive culture.
+    </p>
+
+    <a href="#services" class="button">
+        EXPLORE STANCEBOUND
+    </a>
+
+</div>
+
+</header>
+
+
+
+<section
+class="services-section"
+id="services">
+
+<div class="section-inner">
+
+    <div class="section-label">
+        STANCEBOUND
+    </div>
+
+    <h2 class="section-title">
+        WHAT WE DO
+    </h2>
+
+
+    <div class="services">
+
+
+        <div class="service">
+
+            <div class="number">
+                01
+            </div>
+
+            <h3>
+                DETAILING
+            </h3>
+
+            <p>
+                Interior and exterior vehicle detailing
+                with attention given to the areas that
+                make the difference.
+            </p>
+
+        </div>
+
+
+        <div class="service">
+
+            <div class="number">
+                02
+            </div>
+
+            <h3>
+                INTERIOR
+            </h3>
+
+            <p>
+                Thorough cleaning of carpets,
+                upholstery, plastics, glass
+                and interior surfaces.
+            </p>
+
+        </div>
+
+
+        <div class="service">
+
+            <div class="number">
+                03
+            </div>
+
+            <h3>
+                PHOTOGRAPHY
+            </h3>
+
+            <p>
+                Automotive photography for
+                modified cars, owners,
+                events and social media.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<section class="about">
+
+<div class="section-inner">
+
+    <div class="section-label">
+        THE BRAND
+    </div>
+
+    <h2 class="section-title">
+        STANCEBOUND
+    </h2>
+
+    <p>
+        Detailing and automotive photography brought
+        together under one brand. Based in South Wales
+        and built around a genuine interest in cars
+        and automotive culture.
+    </p>
+
+</div>
+
+</section>
+
+
+
+<section class="contact">
+
+    <div class="section-label">
+        GET IN TOUCH
+    </div>
+
+    <h2 class="contact-title">
+        YOUR CAR.<br>
+        DONE PROPERLY.
+    </h2>
+
+    <p class="contact-sub">
+        Carmarthenshire & surrounding areas
+    </p>
+
+    <a href="#" class="social">
+        INSTAGRAM
+    </a>
+
+    <a href="#" class="social">
+        TIKTOK
+    </a>
+
+</section>
+
+
+
+<footer>
+
+© 2026 STANCEBOUND
+
+</footer>
+
 
 </body>
+
 </html>
