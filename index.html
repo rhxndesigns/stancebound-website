@@ -1,20 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>STANCEBOUND | Automotive Detailing & Photography</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#050505"
+  >
 
   <meta
     name="description"
-    content="STANCEBOUND automotive detailing and photography. Based in South Wales."
+    content="STANCEBOUND automotive detailing and photography in South Wales."
   >
 
+  <title>
+    STANCEBOUND | Automotive Detailing & Photography
+  </title>
+
+
   <style>
-    /* =========================
+
+    /* ========================================
        STANCEBOUND
-       ========================= */
+       ======================================== */
+
+    :root {
+      --black: #050505;
+      --panel: rgba(8, 8, 8, 0.82);
+      --white: #ffffff;
+      --silver: #c8c8c8;
+      --grey: #8c8c8c;
+      --dark-grey: #555555;
+      --line: rgba(255, 255, 255, 0.12);
+    }
+
 
     * {
       margin: 0;
@@ -22,760 +47,1311 @@
       box-sizing: border-box;
     }
 
+
     html {
       scroll-behavior: smooth;
     }
 
+
     body {
       min-height: 100vh;
-      background-color: #050505;
+
+      color: var(--white);
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background-color: var(--black);
+
       background-image:
-        linear-gradient(rgba(0,0,0,.20), rgba(0,0,0,.20)),
+        linear-gradient(
+          rgba(0, 0, 0, 0.28),
+          rgba(0, 0, 0, 0.28)
+        ),
         url("images/texture.png");
+
       background-repeat: repeat;
       background-size: 700px auto;
       background-position: top center;
 
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
       overflow-x: hidden;
     }
+
 
     button,
     a {
       -webkit-tap-highlight-color: transparent;
     }
 
+
+    button {
+      font-family: inherit;
+    }
+
+
     a {
       color: inherit;
       text-decoration: none;
     }
+
 
     img {
       display: block;
       max-width: 100%;
     }
 
-    /* =========================
+
+
+    /* ========================================
        HEADER
-       ========================= */
+       ======================================== */
 
     header {
       position: sticky;
       top: 0;
       z-index: 1000;
 
+      min-height: 72px;
+
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
 
-      min-height: 74px;
-      padding: 12px 5%;
+      padding: 10px 5%;
 
-      background: rgba(4, 4, 4, .92);
-      border-bottom: 1px solid rgba(255,255,255,.12);
+      background:
+        rgba(3, 3, 3, 0.92);
+
+      border-bottom:
+        1px solid var(--line);
+
       backdrop-filter: blur(12px);
     }
 
-    .brand {
+
+    .header-logo {
+      width: 175px;
+      height: 52px;
+
       display: flex;
       align-items: center;
+
       cursor: pointer;
     }
 
-    .brand img {
-      width: 185px;
-      max-height: 52px;
+
+    .header-logo img {
+      width: 100%;
+      height: 100%;
+
       object-fit: contain;
+      object-position: left center;
     }
+
 
     nav {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
     }
 
+
     nav button {
+      padding: 12px 14px;
+
       border: 0;
+      border-bottom:
+        1px solid transparent;
+
       background: transparent;
-      color: #aaa;
 
-      padding: 12px 15px;
+      color: #999;
 
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 2px;
+
+      letter-spacing: 2.2px;
+
       text-transform: uppercase;
 
       cursor: pointer;
-      transition: .25s ease;
+
+      transition: 0.25s ease;
     }
 
-    nav button:hover,
-    nav button.active {
-      color: #fff;
+
+    nav button:hover {
+      color: white;
     }
 
+
     nav button.active {
-      border-bottom: 1px solid #fff;
+      color: white;
+
+      border-bottom-color:
+        rgba(255,255,255,0.8);
     }
+
 
     .menu-button {
       display: none;
-      background: transparent;
+
       border: 0;
+
+      background: transparent;
+
       color: white;
-      font-size: 27px;
+
+      font-size: 28px;
+
       cursor: pointer;
     }
 
-    /* =========================
+
+
+    /* ========================================
        PAGE SYSTEM
-       ========================= */
+       ======================================== */
 
     .page {
       display: none;
-      min-height: calc(100vh - 74px);
-      animation: pageIn .45s ease;
+
+      min-height:
+        calc(100vh - 72px);
+
+      animation:
+        pageFade 0.4s ease;
     }
+
 
     .page.active {
       display: block;
     }
 
-    @keyframes pageIn {
+
+    @keyframes pageFade {
+
       from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(6px);
       }
 
       to {
         opacity: 1;
         transform: translateY(0);
       }
+
     }
 
-    /* =========================
+
+
+    /* ========================================
        HOME
-       ========================= */
+       ======================================== */
 
     .hero {
-      min-height: calc(100vh - 74px);
+      position: relative;
+
+      min-height:
+        calc(100vh - 72px);
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      position: relative;
-      overflow: hidden;
+      padding:
+        45px 20px 60px;
 
-      padding: 50px 20px;
       text-align: center;
+
+      overflow: hidden;
     }
+
 
     .hero::before {
       content: "";
+
       position: absolute;
       inset: 0;
 
       background:
+
         radial-gradient(
-          circle at center,
-          rgba(255,255,255,.035),
-          transparent 50%
+          circle at 50% 38%,
+          rgba(255,255,255,0.055),
+          transparent 43%
         ),
+
         linear-gradient(
           to bottom,
-          rgba(0,0,0,.10),
-          rgba(0,0,0,.55)
+          rgba(0,0,0,0.02),
+          rgba(0,0,0,0.65)
         );
 
       pointer-events: none;
     }
 
+
     .hero-content {
-      width: min(950px, 94%);
       position: relative;
       z-index: 2;
+
+      width: min(1000px, 96%);
+
+      margin: auto;
     }
+
 
     .hero-logo {
-      width: min(850px, 100%);
-      margin: 0 auto 25px;
+      width: min(900px, 100%);
+
+      margin:
+        0 auto 25px;
+
       object-fit: contain;
 
-      filter: drop-shadow(0 15px 30px rgba(0,0,0,.8));
+      filter:
+        drop-shadow(
+          0 18px 25px
+          rgba(0,0,0,0.75)
+        );
     }
 
-    .tagline {
-      margin-top: 12px;
 
-      color: #bdbdbd;
-      font-size: clamp(10px, 2.2vw, 15px);
-      letter-spacing: clamp(4px, 1.4vw, 10px);
+    .tagline {
+      color: #d0d0d0;
+
+      font-size:
+        clamp(10px, 2vw, 14px);
+
+      font-weight: 600;
+
+      letter-spacing:
+        clamp(4px, 1.3vw, 9px);
+
       text-transform: uppercase;
     }
 
-    .hero-description {
-      width: min(660px, 95%);
-      margin: 28px auto 0;
 
-      color: #aaa;
-      line-height: 1.8;
-      font-size: 14px;
+    .hero-subtitle {
+      margin-top: 18px;
+
+      color: #777;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      letter-spacing: 4px;
+
+      text-transform: uppercase;
     }
+
+
+    .hero-description {
+      width: min(620px, 95%);
+
+      margin:
+        25px auto 0;
+
+      color: #a5a5a5;
+
+      font-size: 14px;
+
+      line-height: 1.8;
+    }
+
 
     .hero-buttons {
       display: flex;
       justify-content: center;
-      gap: 14px;
+
+      gap: 12px;
+
       flex-wrap: wrap;
 
-      margin-top: 36px;
+      margin-top: 34px;
     }
 
+
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+
     .btn {
-      min-width: 170px;
+      min-width: 180px;
 
-      padding: 15px 23px;
+      padding:
+        15px 24px;
 
-      border: 1px solid rgba(255,255,255,.8);
-      background: transparent;
-      color: #fff;
+      border:
+        1px solid
+        rgba(255,255,255,0.8);
 
-      font-size: 11px;
+      background:
+        rgba(0,0,0,0.25);
+
+      color: white;
+
+      font-size: 10px;
       font-weight: 700;
+
       letter-spacing: 2.5px;
+
       text-transform: uppercase;
 
       cursor: pointer;
-      transition: .25s ease;
+
+      transition:
+        0.25s ease;
     }
+
 
     .btn:hover {
       background: white;
       color: black;
     }
 
+
     .btn.secondary {
-      border-color: rgba(255,255,255,.22);
+      border-color:
+        rgba(255,255,255,0.25);
+
       color: #bbb;
     }
+
 
     .btn.secondary:hover {
       border-color: white;
-      background: rgba(255,255,255,.07);
+
+      background:
+        rgba(255,255,255,0.08);
+
       color: white;
     }
 
-    /* =========================
-       GENERAL PAGE
-       ========================= */
+
+
+    /* ========================================
+       PAGE CONTENT
+       ======================================== */
 
     .content {
-      width: min(1200px, 92%);
+      width:
+        min(1200px, 92%);
+
       margin: auto;
-      padding: 70px 0 90px;
+
+      padding:
+        65px 0 90px;
     }
 
-    .page-title {
-      margin-bottom: 55px;
+
+    .page-heading {
+      margin-bottom: 48px;
+
       text-align: center;
     }
 
-    .page-title .eyebrow {
-      margin-bottom: 14px;
 
-      color: #777;
-      font-size: 10px;
+    .eyebrow {
+      margin-bottom: 12px;
+
+      color: #666;
+
+      font-size: 9px;
+
       font-weight: 700;
+
       letter-spacing: 5px;
+
       text-transform: uppercase;
     }
 
-    .page-title h1 {
-      font-size: clamp(32px, 6vw, 60px);
+
+    .page-heading h1 {
+      color: white;
+
+      font-size:
+        clamp(32px, 6vw, 58px);
+
       font-weight: 800;
+
       letter-spacing: 5px;
+
       text-transform: uppercase;
     }
 
-    .page-title p {
-      width: min(650px, 95%);
-      margin: 18px auto 0;
 
-      color: #999;
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .line {
-      width: 70px;
+    .heading-line {
+      width: 65px;
       height: 1px;
-      margin: 25px auto 0;
+
+      margin:
+        23px auto 0;
+
       background: #777;
     }
 
-    /* =========================
-       DETAILING
-       ========================= */
 
-    .service-grid {
+    .page-heading p {
+      width:
+        min(620px, 95%);
+
+      margin:
+        18px auto 0;
+
+      color: #999;
+
+      font-size: 14px;
+
+      line-height: 1.75;
+    }
+
+
+
+    /* ========================================
+       SERVICES
+       ======================================== */
+
+    .services {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 14px;
 
       margin-bottom: 55px;
     }
 
-    .service-card {
-      padding: 32px 27px;
 
-      background: rgba(10,10,10,.74);
-      border: 1px solid rgba(255,255,255,.10);
+    .service {
+      position: relative;
 
-      backdrop-filter: blur(5px);
-      transition: .25s ease;
+      padding:
+        32px 26px;
+
+      background:
+        rgba(8,8,8,0.76);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.09);
+
+      backdrop-filter:
+        blur(5px);
+
+      transition:
+        0.25s ease;
     }
 
-    .service-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,.32);
+
+    .service:hover {
+      transform:
+        translateY(-3px);
+
+      border-color:
+        rgba(255,255,255,0.3);
     }
+
 
     .service-number {
-      margin-bottom: 18px;
+      margin-bottom: 17px;
 
       color: #555;
-      font-size: 11px;
+
+      font-size: 10px;
+
       letter-spacing: 3px;
     }
 
-    .service-card h3 {
-      margin-bottom: 14px;
 
-      font-size: 18px;
+    .service h3 {
+      margin-bottom: 13px;
+
+      font-size: 17px;
+
       letter-spacing: 2px;
+
       text-transform: uppercase;
     }
 
-    .service-card p {
+
+    .service p {
       color: #999;
+
       font-size: 13px;
+
       line-height: 1.7;
     }
 
-    /* =========================
-       GALLERY
-       ========================= */
 
-    .gallery-heading {
-      margin: 65px 0 25px;
 
-      color: #bbb;
-      font-size: 13px;
+    /* ========================================
+       SECTION LABEL
+       ======================================== */
+
+    .section-label {
+      display: flex;
+      align-items: center;
+
+      gap: 14px;
+
+      margin:
+        60px 0 22px;
+
+      color: #aaa;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
       letter-spacing: 4px;
+
       text-transform: uppercase;
     }
 
+
+    .section-label::after {
+      content: "";
+
+      flex: 1;
+
+      height: 1px;
+
+      background:
+        rgba(255,255,255,0.1);
+    }
+
+
+
+    /* ========================================
+       GALLERY
+       ======================================== */
+
     .gallery {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 9px;
     }
+
 
     .photo {
       position: relative;
-      overflow: hidden;
 
       min-height: 310px;
 
-      background: #111;
-      border: 1px solid rgba(255,255,255,.07);
+      overflow: hidden;
+
+      background: #0a0a0a;
+
+      border:
+        1px solid
+        rgba(255,255,255,0.06);
 
       cursor: pointer;
     }
+
 
     .photo.large {
       grid-column: span 2;
     }
 
+
     .photo img {
       width: 100%;
       height: 100%;
+
       min-height: 310px;
 
       object-fit: cover;
 
       transition:
-        transform .45s ease,
-        filter .45s ease;
+        transform 0.45s ease,
+        filter 0.45s ease;
     }
 
+
     .photo:hover img {
-      transform: scale(1.025);
-      filter: brightness(.85);
+      transform:
+        scale(1.025);
+
+      filter:
+        brightness(0.82);
     }
+
 
     .photo::after {
       content: "VIEW";
 
       position: absolute;
-      left: 18px;
-      bottom: 17px;
+
+      left: 17px;
+      bottom: 16px;
 
       color: white;
-      font-size: 9px;
-      font-weight: bold;
+
+      font-size: 8px;
+
+      font-weight: 700;
+
       letter-spacing: 3px;
 
       opacity: 0;
-      transform: translateY(5px);
 
-      transition: .25s ease;
+      transform:
+        translateY(5px);
+
+      transition:
+        0.25s ease;
     }
+
 
     .photo:hover::after {
       opacity: 1;
-      transform: translateY(0);
+
+      transform:
+        translateY(0);
     }
 
-    /* =========================
-       DETAILING BEFORE / AFTER
-       ========================= */
+
+
+    /* ========================================
+       BEFORE / AFTER
+       ======================================== */
 
     .before-after {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 25px;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 10px;
     }
+
 
     .ba-card {
       position: relative;
-      overflow: hidden;
+
       min-height: 400px;
 
-      border: 1px solid rgba(255,255,255,.08);
-      background: #111;
+      overflow: hidden;
+
+      background: #0a0a0a;
+
+      border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+      cursor: pointer;
     }
+
 
     .ba-card img {
       width: 100%;
       height: 100%;
+
       min-height: 400px;
+
       object-fit: cover;
     }
 
+
     .ba-label {
       position: absolute;
-      top: 15px;
-      left: 15px;
 
-      padding: 8px 12px;
+      top: 14px;
+      left: 14px;
 
-      background: rgba(0,0,0,.8);
-      border: 1px solid rgba(255,255,255,.25);
+      padding:
+        8px 12px;
 
-      font-size: 9px;
-      font-weight: bold;
+      background:
+        rgba(0,0,0,0.82);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.22);
+
+      color: white;
+
+      font-size: 8px;
+
+      font-weight: 700;
+
       letter-spacing: 3px;
     }
 
-    /* =========================
-       CONTACT
-       ========================= */
 
-    .contact-box {
-      width: min(720px, 100%);
-      margin: auto;
 
-      padding: 50px;
+    /* ========================================
+       CTA
+       ======================================== */
 
-      background: rgba(8,8,8,.78);
-      border: 1px solid rgba(255,255,255,.11);
+    .cta {
+      margin-top: 55px;
+
+      padding:
+        45px 25px;
+
+      background:
+        rgba(5,5,5,0.68);
+
+      border-top:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.08);
 
       text-align: center;
-      backdrop-filter: blur(6px);
     }
 
-    .contact-box h2 {
-      margin-bottom: 18px;
 
-      font-size: clamp(24px, 5vw, 40px);
-      letter-spacing: 4px;
+    .cta h2 {
+      margin-bottom: 12px;
+
+      font-size:
+        clamp(21px, 4vw, 32px);
+
+      letter-spacing: 3px;
+
       text-transform: uppercase;
     }
 
-    .contact-box > p {
-      margin-bottom: 35px;
 
-      color: #999;
+    .cta p {
+      width:
+        min(560px, 95%);
+
+      margin:
+        0 auto 25px;
+
+      color: #888;
+
+      font-size: 13px;
+
       line-height: 1.7;
-      font-size: 14px;
     }
 
-    .contact-links {
+
+
+    /* ========================================
+       CONTACT
+       ======================================== */
+
+    .contact-card {
+      width:
+        min(720px, 100%);
+
+      margin: auto;
+
+      padding:
+        50px 40px;
+
+      background:
+        rgba(7,7,7,0.80);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.1);
+
+      text-align: center;
+
+      backdrop-filter:
+        blur(7px);
+    }
+
+
+    .contact-logo {
+      width:
+        min(480px, 90%);
+
+      margin:
+        0 auto 35px;
+    }
+
+
+    .contact-card h2 {
+      margin-bottom: 15px;
+
+      font-size:
+        clamp(23px, 5vw, 37px);
+
+      letter-spacing: 4px;
+
+      text-transform: uppercase;
+    }
+
+
+    .contact-card > p {
+      width:
+        min(530px, 100%);
+
+      margin:
+        0 auto 32px;
+
+      color: #999;
+
+      font-size: 13px;
+
+      line-height: 1.8;
+    }
+
+
+    .social-links {
       display: grid;
+
       gap: 10px;
     }
 
-    .contact-link {
-      display: block;
 
-      padding: 17px;
+    .social-link {
+      display: flex;
 
-      border: 1px solid rgba(255,255,255,.12);
+      align-items: center;
+      justify-content: space-between;
 
-      color: #ccc;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      padding:
+        18px 20px;
 
-      transition: .25s ease;
+      border:
+        1px solid
+        rgba(255,255,255,0.13);
+
+      background:
+        rgba(0,0,0,0.2);
+
+      transition:
+        0.25s ease;
     }
 
-    .contact-link:hover {
-      border-color: white;
+
+    .social-link:hover {
+      border-color:
+        rgba(255,255,255,0.7);
+
+      background:
+        rgba(255,255,255,0.05);
+    }
+
+
+    .social-name {
       color: white;
-      background: rgba(255,255,255,.05);
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      letter-spacing: 2px;
+
+      text-transform: uppercase;
     }
 
-    /* =========================
+
+    .social-handle {
+      color: #777;
+
+      font-size: 10px;
+
+      letter-spacing: 1px;
+    }
+
+
+    .location {
+      margin-top: 30px;
+
+      padding-top: 25px;
+
+      border-top:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      color: #777;
+
+      font-size: 9px;
+
+      font-weight: 700;
+
+      letter-spacing: 3px;
+
+      line-height: 2;
+
+      text-transform: uppercase;
+    }
+
+
+
+    /* ========================================
        LIGHTBOX
-       ========================= */
+       ======================================== */
 
     .lightbox {
       display: none;
 
       position: fixed;
+
       inset: 0;
+
       z-index: 5000;
 
       align-items: center;
       justify-content: center;
 
-      padding: 25px;
+      padding: 22px;
 
-      background: rgba(0,0,0,.94);
+      background:
+        rgba(0,0,0,0.96);
     }
+
 
     .lightbox.open {
       display: flex;
     }
+
 
     .lightbox img {
       max-width: 95vw;
       max-height: 90vh;
 
       object-fit: contain;
-      box-shadow: 0 0 60px rgba(0,0,0,.8);
     }
 
-    .close-lightbox {
+
+    .lightbox-close {
       position: fixed;
-      top: 20px;
-      right: 25px;
+
+      top: 18px;
+      right: 22px;
+
+      z-index: 5001;
 
       border: 0;
+
       background: transparent;
+
       color: white;
 
-      font-size: 34px;
+      font-size: 36px;
+
       font-weight: 200;
 
       cursor: pointer;
     }
 
-    /* =========================
+
+
+    /* ========================================
        FOOTER
-       ========================= */
+       ======================================== */
 
     footer {
-      padding: 25px 20px;
+      padding:
+        25px 15px;
 
-      background: rgba(0,0,0,.8);
-      border-top: 1px solid rgba(255,255,255,.08);
+      background:
+        rgba(0,0,0,0.88);
+
+      border-top:
+        1px solid
+        rgba(255,255,255,0.07);
 
       color: #555;
+
       text-align: center;
-      font-size: 9px;
+
+      font-size: 8px;
+
+      font-weight: 700;
+
       letter-spacing: 3px;
+
       text-transform: uppercase;
     }
 
-    /* =========================
-       MOBILE
-       ========================= */
+
+
+    /* ========================================
+       TABLET / MOBILE
+       ======================================== */
 
     @media (max-width: 850px) {
 
       header {
-        min-height: 67px;
-        padding: 9px 18px;
+        min-height: 66px;
+
+        padding:
+          8px 17px;
       }
 
-      .brand img {
+
+      .header-logo {
         width: 145px;
-        max-height: 46px;
+        height: 48px;
       }
+
 
       .menu-button {
         display: block;
       }
 
+
       nav {
         display: none;
 
         position: absolute;
-        top: 67px;
+
+        top: 66px;
         left: 0;
         right: 0;
 
         flex-direction: column;
+
         align-items: stretch;
+
         gap: 0;
 
-        padding: 8px 18px 18px;
+        padding:
+          8px 17px 18px;
 
-        background: rgba(3,3,3,.98);
-        border-bottom: 1px solid rgba(255,255,255,.12);
+        background:
+          rgba(3,3,3,0.98);
+
+        border-bottom:
+          1px solid
+          rgba(255,255,255,0.12);
       }
+
 
       nav.open {
         display: flex;
       }
 
+
       nav button {
         width: 100%;
-        padding: 17px 8px;
 
-        border-bottom: 1px solid rgba(255,255,255,.06);
+        padding:
+          17px 8px;
 
         text-align: left;
+
+        border-bottom:
+          1px solid
+          rgba(255,255,255,0.06);
       }
+
 
       nav button.active {
-        border-bottom-color: rgba(255,255,255,.3);
+        border-bottom-color:
+          rgba(255,255,255,0.3);
       }
 
+
       .hero {
-        min-height: calc(100vh - 67px);
-        padding: 30px 18px;
+        min-height:
+          calc(100vh - 66px);
+
+        padding:
+          30px 17px 45px;
       }
+
 
       .hero-logo {
         width: 100%;
       }
 
+
       .hero-description {
         font-size: 13px;
       }
 
+
       .content {
-        width: 91%;
-        padding: 50px 0 70px;
+        width: 92%;
+
+        padding:
+          50px 0 70px;
       }
 
-      .page-title {
-        margin-bottom: 35px;
+
+      .services {
+        grid-template-columns:
+          1fr;
       }
 
-      .service-grid {
-        grid-template-columns: 1fr;
-      }
 
       .gallery {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+          1fr 1fr;
+
         gap: 7px;
       }
+
 
       .photo,
       .photo img {
         min-height: 230px;
       }
 
+
       .photo.large {
         grid-column: span 2;
+
         min-height: 310px;
       }
+
 
       .photo.large img {
         min-height: 310px;
       }
 
+
       .before-after {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
+
 
       .ba-card,
       .ba-card img {
-        min-height: 320px;
+        min-height: 330px;
       }
 
-      .contact-box {
-        padding: 35px 20px;
+
+      .contact-card {
+        padding:
+          38px 20px;
       }
+
     }
+
+
+
+    /* ========================================
+       SMALL PHONES
+       ======================================== */
 
     @media (max-width: 480px) {
 
       body {
-        background-size: 520px auto;
+        background-size:
+          520px auto;
       }
 
-      .gallery {
-        grid-template-columns: 1fr 1fr;
+
+      .header-logo {
+        width: 135px;
       }
 
-      .photo,
-      .photo img {
-        min-height: 200px;
+
+      .hero-logo {
+        margin-bottom: 20px;
       }
 
-      .photo.large,
-      .photo.large img {
-        min-height: 285px;
+
+      .tagline {
+        line-height: 1.8;
       }
+
 
       .hero-buttons {
         display: grid;
+
         grid-template-columns: 1fr;
-        width: min(300px, 100%);
+
+        width:
+          min(300px, 100%);
+
         margin-left: auto;
         margin-right: auto;
       }
 
+
       .btn {
         width: 100%;
       }
+
+
+      .gallery {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+
+      .photo,
+      .photo img {
+        min-height: 190px;
+      }
+
+
+      .photo.large,
+      .photo.large img {
+        min-height: 280px;
+      }
+
+
+      .page-heading h1 {
+        letter-spacing: 3px;
+      }
+
+
+      .social-link {
+        flex-direction: column;
+
+        gap: 6px;
+
+        align-items: flex-start;
+      }
+
     }
+
   </style>
+
 </head>
+
 
 
 <body>
 
-  <!-- =========================
+
+  <!-- ========================================
        HEADER
-       ========================= -->
+       ======================================== -->
 
   <header>
 
-    <div class="brand" onclick="showPage('home')">
-      <img src="images/logo.png" alt="STANCEBOUND">
+    <div
+      class="header-logo"
+      onclick="showPage('home')"
+    >
+
+      <img
+        src="images/logo.png"
+        alt="STANCEBOUND"
+      >
+
     </div>
+
 
     <button
       class="menu-button"
       onclick="toggleMenu()"
-      aria-label="Open menu"
+      aria-label="Open navigation"
     >
       ☰
     </button>
 
-    <nav id="nav">
+
+    <nav id="navigation">
 
       <button
         class="nav-link active"
@@ -785,6 +1361,7 @@
         Home
       </button>
 
+
       <button
         class="nav-link"
         data-page="detailing"
@@ -793,6 +1370,7 @@
         Detailing
       </button>
 
+
       <button
         class="nav-link"
         data-page="photography"
@@ -800,6 +1378,7 @@
       >
         Photography
       </button>
+
 
       <button
         class="nav-link"
@@ -814,17 +1393,23 @@
   </header>
 
 
+
   <main>
 
-    <!-- =========================
-         HOME PAGE
-         ========================= -->
 
-    <section id="home" class="page active">
+    <!-- ========================================
+         HOME
+         ======================================== -->
+
+    <section
+      id="home"
+      class="page active"
+    >
 
       <div class="hero">
 
         <div class="hero-content">
+
 
           <img
             class="hero-logo"
@@ -832,31 +1417,45 @@
             alt="STANCEBOUND Detailing"
           >
 
+
           <div class="tagline">
             Cleaner · Higher · Further
           </div>
 
+
+          <div class="hero-subtitle">
+            Automotive Detailing & Photography
+          </div>
+
+
           <p class="hero-description">
-            Automotive detailing and photography based in South Wales.
-            Built around clean cars, modified culture and proper attention
-            to detail.
+
+            Automotive detailing and photography
+            built around modified cars, clean
+            presentation and attention to the
+            details that actually matter.
+
           </p>
 
+
           <div class="hero-buttons">
+
 
             <button
               class="btn"
               onclick="showPage('detailing')"
             >
-              Detailing
+              Explore Detailing
             </button>
+
 
             <button
               class="btn secondary"
               onclick="showPage('photography')"
             >
-              Photography
+              View Photography
             </button>
+
 
           </div>
 
@@ -867,130 +1466,208 @@
     </section>
 
 
-    <!-- =========================
-         DETAILING PAGE
-         ========================= -->
 
-    <section id="detailing" class="page">
+    <!-- ========================================
+         DETAILING
+         ======================================== -->
+
+    <section
+      id="detailing"
+      class="page"
+    >
 
       <div class="content">
 
-        <div class="page-title">
+
+        <div class="page-heading">
 
           <div class="eyebrow">
             STANCEBOUND
           </div>
 
-          <h1>Detailing</h1>
 
-          <div class="line"></div>
+          <h1>
+            Detailing
+          </h1>
+
+
+          <div class="heading-line"></div>
+
 
           <p>
-            Interior and exterior automotive care with the time and
-            attention needed to get the details right.
+
+            Interior and exterior automotive
+            care with proper attention given
+            to every stage of the process.
+
           </p>
 
         </div>
 
 
-        <div class="service-grid">
 
-          <div class="service-card">
+        <div class="services">
 
-            <div class="service-number">01</div>
 
-            <h3>Exterior</h3>
+          <div class="service">
+
+            <div class="service-number">
+              01
+            </div>
+
+            <h3>
+              Exterior
+            </h3>
 
             <p>
-              Wheels, tyres, pre-wash, contact wash, safe drying,
-              exterior glass and finishing touches.
+
+              Wheels and tyres, pre-wash,
+              snow foam, safe contact wash,
+              drying, exterior glass and
+              finishing touches.
+
             </p>
 
           </div>
 
 
-          <div class="service-card">
 
-            <div class="service-number">02</div>
+          <div class="service">
 
-            <h3>Interior</h3>
+            <div class="service-number">
+              02
+            </div>
+
+            <h3>
+              Interior
+            </h3>
 
             <p>
-              Thorough vacuuming, plastics, mats, fabrics, interior
-              glass and detailed cleaning throughout the cabin.
+
+              Thorough vacuuming, mats,
+              plastics, fabrics, interior
+              glass and detailed cleaning
+              throughout the cabin.
+
             </p>
 
           </div>
 
 
-          <div class="service-card">
 
-            <div class="service-number">03</div>
+          <div class="service">
 
-            <h3>Full Valet</h3>
+            <div class="service-number">
+              03
+            </div>
+
+            <h3>
+              Full Valet
+            </h3>
 
             <p>
-              Interior and exterior combined for vehicles needing
-              a complete clean rather than a quick once-over.
+
+              Interior and exterior combined
+              for vehicles needing a complete
+              clean rather than a rushed
+              once-over.
+
             </p>
 
           </div>
+
 
         </div>
 
 
-        <div class="gallery-heading">
+
+        <div class="section-label">
           The Process
         </div>
 
+
+
         <div class="gallery">
+
 
           <div
             class="photo large"
-            onclick="openLightbox('images/STANCEBOUND4.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND4.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND4.png"
-              alt="Wheel detailing"
+              src="images/STANCEBOUND4.jpg"
+              alt="STANCEBOUND detailing"
             >
+
           </div>
+
+
 
           <div
             class="photo"
-            onclick="openLightbox('images/STANCEBOUND5.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND5.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND5.png"
-              alt="Vehicle snow foam"
+              src="images/STANCEBOUND5.jpg"
+              alt="Vehicle detailing process"
             >
+
           </div>
+
+
 
           <div
             class="photo"
-            onclick="openLightbox('images/STANCEBOUND6.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND6.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND6.png"
-              alt="Exterior detailing"
+              src="images/STANCEBOUND6.jpg"
+              alt="Wheel and exterior detailing"
             >
+
           </div>
+
 
         </div>
 
 
-        <div class="gallery-heading">
-          Interior Transformation
+
+        <div class="section-label">
+          Interior
         </div>
+
+
 
         <div class="before-after">
 
+
           <div
             class="ba-card"
-            onclick="openLightbox('images/STANCEBOUND7.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND2.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND7.png"
-              alt="Vehicle interior before detailing"
+              src="images/STANCEBOUND2.jpg"
+              alt="Interior before detailing"
             >
 
             <div class="ba-label">
@@ -1000,13 +1677,19 @@
           </div>
 
 
+
           <div
             class="ba-card"
-            onclick="openLightbox('images/STANCEBOUND8.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND1.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND8.png"
-              alt="Vehicle interior after detailing"
+              src="images/STANCEBOUND1.jpg"
+              alt="Interior after detailing"
             >
 
             <div class="ba-label">
@@ -1015,100 +1698,186 @@
 
           </div>
 
+
         </div>
 
 
-        <div style="text-align:center; margin-top:50px;">
+
+        <div class="section-label">
+          Interior Details
+        </div>
+
+
+
+        <div class="gallery">
+
+
+          <div
+            class="photo large"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND7.jpg'
+              )
+            "
+          >
+
+            <img
+              src="images/STANCEBOUND7.jpg"
+              alt="STANCEBOUND interior detailing"
+            >
+
+          </div>
+
+
+        </div>
+
+
+
+        <div class="cta">
+
+          <h2>
+            Need Your Car Cleaned?
+          </h2>
+
+          <p>
+
+            Get in touch through STANCEBOUND
+            social media for availability,
+            pricing and booking enquiries.
+
+          </p>
+
 
           <button
             class="btn"
             onclick="showPage('contact')"
           >
-            Get In Touch
+            Contact STANCEBOUND
           </button>
 
         </div>
+
 
       </div>
 
     </section>
 
 
-    <!-- =========================
-         PHOTOGRAPHY PAGE
-         ========================= -->
 
-    <section id="photography" class="page">
+    <!-- ========================================
+         PHOTOGRAPHY
+         ======================================== -->
+
+    <section
+      id="photography"
+      class="page"
+    >
 
       <div class="content">
 
-        <div class="page-title">
+
+        <div class="page-heading">
 
           <div class="eyebrow">
             STANCEBOUND
           </div>
 
-          <h1>Photography</h1>
 
-          <div class="line"></div>
+          <h1>
+            Photography
+          </h1>
+
+
+          <div class="heading-line"></div>
+
 
           <p>
-            Automotive photography focused on modified cars,
-            details, atmosphere and car culture.
+
+            Automotive photography focused on
+            modified cars, details, atmosphere
+            and the culture surrounding them.
+
           </p>
 
         </div>
 
 
+
         <div class="gallery">
 
-          <div
-            class="photo large"
-            onclick="openLightbox('images/STANCEBOUND1.png')"
-          >
-            <img
-              src="images/STANCEBOUND1.png"
-              alt="Modified car photography"
-            >
-          </div>
-
-
-          <div
-            class="photo"
-            onclick="openLightbox('images/STANCEBOUND2.png')"
-          >
-            <img
-              src="images/STANCEBOUND2.png"
-              alt="Automotive show photography"
-            >
-          </div>
-
-
-          <div
-            class="photo"
-            onclick="openLightbox('images/STANCEBOUND3.png')"
-          >
-            <img
-              src="images/STANCEBOUND3.png"
-              alt="Automotive detail photography"
-            >
-          </div>
-
 
           <div
             class="photo large"
-            onclick="openLightbox('images/STANCEBOUND9.png')"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND3.jpg'
+              )
+            "
           >
+
             <img
-              src="images/STANCEBOUND9.png"
+              src="images/STANCEBOUND3.jpg"
               alt="STANCEBOUND automotive photography"
             >
+
           </div>
+
+
+
+          <div
+            class="photo"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND8.jpg'
+              )
+            "
+          >
+
+            <img
+              src="images/STANCEBOUND8.jpg"
+              alt="Car show photography"
+            >
+
+          </div>
+
+
+
+          <div
+            class="photo"
+            onclick="
+              openLightbox(
+                'images/STANCEBOUND9.jpg'
+              )
+            "
+          >
+
+            <img
+              src="images/STANCEBOUND9.jpg"
+              alt="Modified car photography"
+            >
+
+          </div>
+
 
         </div>
 
 
-        <div style="text-align:center; margin-top:50px;">
+
+        <div class="cta">
+
+          <h2>
+            Your Car. Properly Captured.
+          </h2>
+
+          <p>
+
+            For individual shoots, modified
+            cars, shows and automotive content,
+            contact STANCEBOUND through social
+            media.
+
+          </p>
+
 
           <button
             class="btn"
@@ -1119,108 +1888,166 @@
 
         </div>
 
+
       </div>
 
     </section>
 
 
-    <!-- =========================
-         CONTACT PAGE
-         ========================= -->
 
-    <section id="contact" class="page">
+    <!-- ========================================
+         CONTACT
+         ======================================== -->
+
+    <section
+      id="contact"
+      class="page"
+    >
 
       <div class="content">
 
-        <div class="page-title">
+
+        <div class="page-heading">
 
           <div class="eyebrow">
             STANCEBOUND
           </div>
 
-          <h1>Contact</h1>
 
-          <div class="line"></div>
+          <h1>
+            Contact
+          </h1>
+
+
+          <div class="heading-line"></div>
+
 
           <p>
-            Detailing and automotive photography enquiries across
-            Carmarthenshire, Swansea and surrounding South Wales.
+
+            Detailing, automotive photography
+            and collaboration enquiries across
+            South Wales.
+
           </p>
 
         </div>
 
 
-        <div class="contact-box">
 
-          <h2>Get In Touch</h2>
+        <div class="contact-card">
+
+
+          <img
+            class="contact-logo"
+            src="images/logo.png"
+            alt="STANCEBOUND"
+          >
+
+
+          <h2>
+            Get In Touch
+          </h2>
+
 
           <p>
-            For detailing bookings, automotive photography,
-            collaborations or general enquiries, contact
-            STANCEBOUND below.
+
+            For detailing bookings,
+            photography enquiries or
+            collaborations, message
+            STANCEBOUND directly through
+            social media.
+
           </p>
 
-          <div class="contact-links">
 
-            <!-- CHANGE EMAIL IF NEEDED -->
+
+          <div class="social-links">
+
 
             <a
-              class="contact-link"
-              href="mailto:stancebound@outlook.com"
-            >
-              Email · stancebound@outlook.com
-            </a>
-
-
-            <!-- CHANGE THESE LINKS TO YOUR REAL PROFILES -->
-
-            <a
-              class="contact-link"
+              class="social-link"
               href="https://www.instagram.com/stancebound/"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
-              Instagram · @STANCEBOUND
+
+              <span class="social-name">
+                Instagram
+              </span>
+
+              <span class="social-handle">
+                @stancebound
+              </span>
+
             </a>
+
 
 
             <a
-              class="contact-link"
+              class="social-link"
               href="https://www.tiktok.com/@stancebound"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
-              TikTok · @STANCEBOUND
+
+              <span class="social-name">
+                TikTok
+              </span>
+
+              <span class="social-handle">
+                @stancebound
+              </span>
+
             </a>
+
 
           </div>
 
+
+
+          <div class="location">
+
+            South Wales
+
+            <br>
+
+            Carmarthenshire · Swansea
+            & Surrounding Areas
+
+          </div>
+
+
         </div>
+
 
       </div>
 
     </section>
 
+
   </main>
 
 
-  <!-- =========================
-       LIGHTBOX
-       ========================= -->
+
+  <!-- ========================================
+       IMAGE LIGHTBOX
+       ======================================== -->
 
   <div
     id="lightbox"
     class="lightbox"
-    onclick="closeLightbox(event)"
+    onclick="backgroundClose(event)"
   >
 
+
     <button
-      class="close-lightbox"
-      onclick="forceCloseLightbox()"
+      class="lightbox-close"
+      onclick="closeLightbox()"
       aria-label="Close image"
     >
       ×
     </button>
+
 
     <img
       id="lightbox-image"
@@ -1228,146 +2055,258 @@
       alt="STANCEBOUND gallery image"
     >
 
+
   </div>
 
 
-  <!-- =========================
+
+  <!-- ========================================
        FOOTER
-       ========================= -->
+       ======================================== -->
 
   <footer>
-    © <span id="year"></span> STANCEBOUND · South Wales
+
+    ©
+    <span id="year"></span>
+    STANCEBOUND
+
+    ·
+
+    Automotive Detailing & Photography
+
+    ·
+
+    South Wales
+
   </footer>
+
 
 
   <script>
 
-    /* =========================
+    /* ========================================
        PAGE NAVIGATION
-       ========================= */
+       ======================================== */
 
     function showPage(pageName) {
 
-      const pages = document.querySelectorAll(".page");
-      const buttons = document.querySelectorAll(".nav-link");
-      const nav = document.getElementById("nav");
+      const pages =
+        document.querySelectorAll(".page");
 
-      pages.forEach(page => {
-        page.classList.remove("active");
-      });
-
-      buttons.forEach(button => {
-        button.classList.remove("active");
-      });
-
-      const targetPage = document.getElementById(pageName);
-
-      if (targetPage) {
-        targetPage.classList.add("active");
-      }
-
-      const targetButton =
-        document.querySelector(
-          '.nav-link[data-page="' + pageName + '"]'
+      const links =
+        document.querySelectorAll(
+          ".nav-link"
         );
 
-      if (targetButton) {
-        targetButton.classList.add("active");
+      const navigation =
+        document.getElementById(
+          "navigation"
+        );
+
+
+      pages.forEach(page => {
+
+        page.classList.remove(
+          "active"
+        );
+
+      });
+
+
+      links.forEach(link => {
+
+        link.classList.remove(
+          "active"
+        );
+
+      });
+
+
+      const selectedPage =
+        document.getElementById(
+          pageName
+        );
+
+
+      if (selectedPage) {
+
+        selectedPage.classList.add(
+          "active"
+        );
+
       }
 
-      nav.classList.remove("open");
+
+      const selectedLink =
+        document.querySelector(
+          '.nav-link[data-page="' +
+          pageName +
+          '"]'
+        );
+
+
+      if (selectedLink) {
+
+        selectedLink.classList.add(
+          "active"
+        );
+
+      }
+
+
+      navigation.classList.remove(
+        "open"
+      );
+
 
       window.scrollTo({
         top: 0,
         behavior: "smooth"
       });
 
+
       history.replaceState(
         null,
         "",
         "#" + pageName
       );
+
     }
 
 
-    /* =========================
-       MOBILE MENU
-       ========================= */
+
+    /* ========================================
+       MOBILE NAVIGATION
+       ======================================== */
 
     function toggleMenu() {
 
-      const nav = document.getElementById("nav");
+      const navigation =
+        document.getElementById(
+          "navigation"
+        );
 
-      nav.classList.toggle("open");
+
+      navigation.classList.toggle(
+        "open"
+      );
+
     }
 
 
-    /* =========================
-       IMAGE LIGHTBOX
-       ========================= */
 
-    function openLightbox(imageSource) {
+    /* ========================================
+       LIGHTBOX
+       ======================================== */
+
+    function openLightbox(imagePath) {
 
       const lightbox =
-        document.getElementById("lightbox");
+        document.getElementById(
+          "lightbox"
+        );
 
-      const image =
-        document.getElementById("lightbox-image");
+      const lightboxImage =
+        document.getElementById(
+          "lightbox-image"
+        );
 
-      image.src = imageSource;
 
-      lightbox.classList.add("open");
+      lightboxImage.src =
+        imagePath;
 
-      document.body.style.overflow = "hidden";
+
+      lightbox.classList.add(
+        "open"
+      );
+
+
+      document.body.style.overflow =
+        "hidden";
+
     }
 
 
-    function forceCloseLightbox() {
+
+    function closeLightbox() {
 
       const lightbox =
-        document.getElementById("lightbox");
+        document.getElementById(
+          "lightbox"
+        );
 
-      lightbox.classList.remove("open");
 
-      document.body.style.overflow = "";
+      lightbox.classList.remove(
+        "open"
+      );
+
+
+      document.body.style.overflow =
+        "";
+
     }
 
 
-    function closeLightbox(event) {
 
-      if (event.target.id === "lightbox") {
-        forceCloseLightbox();
+    function backgroundClose(event) {
+
+      if (
+        event.target.id ===
+        "lightbox"
+      ) {
+
+        closeLightbox();
+
       }
+
     }
 
 
-    /* =========================
-       INITIAL PAGE
-       ========================= */
+
+    /* ========================================
+       LOAD CORRECT PAGE FROM URL
+       ======================================== */
 
     const requestedPage =
-      window.location.hash.replace("#", "");
+      window.location.hash
+        .replace("#", "");
 
-    const validPages = [
+
+    const allowedPages = [
       "home",
       "detailing",
       "photography",
       "contact"
     ];
 
-    if (validPages.includes(requestedPage)) {
-      showPage(requestedPage);
+
+    if (
+      allowedPages.includes(
+        requestedPage
+      )
+    ) {
+
+      showPage(
+        requestedPage
+      );
+
     }
 
 
-    /* =========================
-       FOOTER YEAR
-       ========================= */
 
-    document.getElementById("year").textContent =
+    /* ========================================
+       FOOTER YEAR
+       ======================================== */
+
+    document.getElementById(
+      "year"
+    ).textContent =
       new Date().getFullYear();
+
 
   </script>
 
+
 </body>
+
 </html>
