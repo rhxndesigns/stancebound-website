@@ -1355,6 +1355,104 @@
     @media(max-width:850px){.header-logo{width:54px;height:48px}}
     @media(max-width:600px){.swipe-gallery{grid-auto-columns:82%}.swipe-gallery .photo,.swipe-gallery .photo.large,.swipe-gallery .photo img,.swipe-gallery .photo.large img{min-height:280px}.lightbox-nav{width:40px;height:50px;font-size:31px}}
 
+  
+    /* ===== FEATURED DETAIL ===== */
+    .feature-detail{
+      position:relative;
+      margin:72px 0 28px;
+      padding:clamp(18px,4vw,42px);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:26px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 85% 8%,rgba(255,255,255,.075),transparent 30%),
+        linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+      box-shadow:0 28px 80px rgba(0,0,0,.28);
+    }
+    .feature-detail::before{
+      content:"";
+      position:absolute;inset:0 auto 0 0;width:2px;
+      background:linear-gradient(transparent,#fff,transparent);
+      opacity:.32;
+    }
+    .feature-kicker{
+      display:flex;align-items:center;gap:10px;
+      margin-bottom:14px;
+      font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;
+      color:#aaa;
+    }
+    .feature-kicker::before{content:"";width:28px;height:1px;background:#aaa}
+    .feature-head{
+      display:grid;grid-template-columns:minmax(0,1fr) auto;
+      gap:20px;align-items:end;margin-bottom:28px;
+    }
+    .feature-head h2{
+      margin:0;font-size:clamp(30px,6vw,64px);line-height:.94;
+      letter-spacing:-.045em;text-transform:uppercase;
+    }
+    .feature-head p{
+      margin:10px 0 0;max-width:620px;color:#aaa;line-height:1.7;
+    }
+    .feature-badge{
+      border:1px solid rgba(255,255,255,.16);border-radius:999px;
+      padding:9px 12px;font-size:9px;font-weight:800;letter-spacing:.2em;
+      text-transform:uppercase;white-space:nowrap;color:#d4d4d4;
+      background:rgba(255,255,255,.035);
+    }
+    .feature-video-wrap{
+      position:relative;margin:0 auto 28px;
+      width:min(430px,100%);aspect-ratio:9/16;
+      border-radius:22px;overflow:hidden;background:#050505;
+      box-shadow:0 24px 60px rgba(0,0,0,.5);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .feature-video-wrap video{width:100%;height:100%;display:block;object-fit:cover}
+    .feature-video-wrap::after{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .video-mark{
+      position:absolute;left:14px;bottom:14px;z-index:2;
+      padding:8px 10px;border-radius:999px;
+      background:rgba(0,0,0,.58);backdrop-filter:blur(9px);
+      font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    }
+    .feature-copy{
+      display:grid;grid-template-columns:.75fr 1.25fr;gap:26px;
+      padding:4px 0 18px;
+    }
+    .feature-copy h3{
+      margin:0;font-size:clamp(20px,3vw,30px);line-height:1.05;text-transform:uppercase;
+    }
+    .feature-copy p{margin:0;color:#aaa;line-height:1.75}
+    .feature-stats{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:8px;margin:10px 0 34px;
+    }
+    .feature-stat{
+      padding:14px;border:1px solid rgba(255,255,255,.09);
+      border-radius:14px;background:rgba(255,255,255,.025);
+    }
+    .feature-stat strong{display:block;font-size:12px;text-transform:uppercase;margin-bottom:5px}
+    .feature-stat span{font-size:10px;color:#888;letter-spacing:.08em;text-transform:uppercase}
+    .merc-subhead{
+      display:flex;justify-content:space-between;align-items:end;gap:15px;
+      margin:34px 0 14px;
+    }
+    .merc-subhead h3{margin:0;text-transform:uppercase;font-size:18px}
+    .merc-subhead span{font-size:9px;color:#777;letter-spacing:.14em;text-transform:uppercase}
+    .before-after-note{
+      margin:-4px 0 14px;color:#777;font-size:11px;line-height:1.5;
+    }
+    @media(max-width:700px){
+      .feature-detail{margin-top:48px;padding:18px;border-radius:20px}
+      .feature-head{grid-template-columns:1fr}
+      .feature-badge{justify-self:start}
+      .feature-copy{grid-template-columns:1fr;gap:10px}
+      .feature-stats{grid-template-columns:1fr}
+      .feature-video-wrap{width:min(360px,100%)}
+    }
+
   </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -1630,156 +1728,88 @@
 
 
 
-        <div class="section-label">
-          The Process
-        </div>
+        <div class="feature-detail">
 
+          <div class="feature-kicker">Featured Detail</div>
 
-
-        <div class="gallery swipe-gallery" id="detailing-process-gallery">
-
-
-          <div
-            class="photo large"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND4.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND4.jpg"
-              alt="STANCEBOUND detailing"
-            >
-
-          </div>
-
-
-
-          <div
-            class="photo"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND5.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND5.jpg"
-              alt="Vehicle detailing process"
-            >
-
-          </div>
-
-
-
-          <div
-            class="photo"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND6.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND6.jpg"
-              alt="Wheel and exterior detailing"
-            >
-
-          </div>
-
-
-        </div>
-
-
-
-        <div class="section-label">
-          Interior
-        </div>
-
-
-
-        <div class="before-after swipe-gallery" id="before-after-gallery">
-
-
-          <div
-            class="ba-card"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND2.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND2.jpg"
-              alt="Interior before detailing"
-            >
-
-            <div class="ba-label">
-              BEFORE
+          <div class="feature-head">
+            <div>
+              <h2>Mercedes-AMG CLA</h2>
+              <p>
+                A full interior and exterior clean, bringing the whole car together
+                rather than treating the outside and cabin as two separate jobs.
+              </p>
             </div>
-
+            <div class="feature-badge">STANCEBOUND • South Wales</div>
           </div>
 
+          <div class="feature-video-wrap">
+            <video autoplay muted loop playsinline preload="metadata"
+                   aria-label="Mercedes-AMG CLA detailing feature video">
+              <source src="videos/merccla.mp4" type="video/mp4">
+            </video>
+            <div class="video-mark">Full Detail • Exterior + Interior</div>
+          </div>
 
+          <div class="feature-copy">
+            <h3>Cleaned properly.<br>Inside &amp; out.</h3>
+            <p>
+              This Mercedes received a complete STANCEBOUND clean with attention
+              given to the areas that make the biggest difference to the finished car.
+              The exterior was worked from the wheels upwards with pre-wash, snow foam,
+              a safe contact wash, drying and finishing touches. Inside, the cabin was
+              vacuumed and thoroughly cleaned across plastics, fabrics, glass and the
+              smaller detailed areas throughout.
+            </p>
+          </div>
 
-          <div
-            class="ba-card"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND1.jpg'
-              )
-            "
-          >
+          <div class="feature-stats">
+            <div class="feature-stat"><strong>Exterior</strong><span>Wheels • Wash • Finish</span></div>
+            <div class="feature-stat"><strong>Interior</strong><span>Vacuum • Surfaces • Glass</span></div>
+            <div class="feature-stat"><strong>Result</strong><span>Cleaner • Sharper • Complete</span></div>
+          </div>
 
-            <img
-              src="images/STANCEBOUND1.jpg"
-              alt="Interior after detailing"
-            >
+          <div class="merc-subhead">
+            <h3>The Mercedes Detail</h3>
+            <span>Swipe to explore</span>
+          </div>
 
-            <div class="ba-label">
-              AFTER
+          <div class="gallery swipe-gallery" id="detailing-process-gallery">
+            <div class="photo large" onclick="openLightbox('images/STANCEBOUND4.jpg')">
+              <img src="images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
             </div>
-
+            <div class="photo" onclick="openLightbox('images/STANCEBOUND5.jpg')">
+              <img src="images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
+            </div>
+            <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')">
+              <img src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
+            </div>
+            <div class="photo" onclick="openLightbox('images/STANCEBOUND7.jpg')">
+              <img src="images/STANCEBOUND7.jpg" alt="Mercedes interior detailing">
+            </div>
           </div>
 
+          <div class="merc-subhead">
+            <h3>Before &amp; After</h3>
+            <span>The difference is in the details</span>
+          </div>
+          <p class="before-after-note">
+            The first transformation in the STANCEBOUND portfolio. More before-and-after
+            sets will be added here as future details are completed.
+          </p>
 
-        </div>
-
-
-
-        <div class="section-label">
-          Interior Details
-        </div>
-
-
-
-        <div class="gallery swipe-gallery" id="interior-details-gallery">
-
-
-          <div
-            class="photo large"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND7.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND7.jpg"
-              alt="STANCEBOUND interior detailing"
-            >
-
+          <div class="before-after swipe-gallery" id="before-after-gallery">
+            <div class="ba-card" onclick="openLightbox('images/STANCEBOUND2.jpg')">
+              <img src="images/STANCEBOUND2.jpg" alt="Mercedes interior before detailing">
+              <div class="ba-label">BEFORE</div>
+            </div>
+            <div class="ba-card" onclick="openLightbox('images/STANCEBOUND1.jpg')">
+              <img src="images/STANCEBOUND1.jpg" alt="Mercedes interior after detailing">
+              <div class="ba-label">AFTER</div>
+            </div>
           </div>
 
-
         </div>
-
 
 
         <div class="cta">
@@ -2159,7 +2189,7 @@
         for(const row of data){const key=String(row.section||"").trim().toLowerCase().replace(/\s+/g,"_");(groups[key]||=[]).push(row);}
         const mappings=[
           ["detailing-process-gallery",groups.detailing_process||groups.detailing],
-          ["interior-details-gallery",groups.interior_details||groups.interior],
+          
           ["photography-gallery",groups.photography||groups.photos]
         ];
         for(const [id,rows] of mappings){if(!rows?.length)continue;const g=document.getElementById(id);g.innerHTML="";rows.forEach(r=>g.appendChild(photoCard(r)));}
