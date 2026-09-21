@@ -1602,7 +1602,7 @@
 
 
 
-        <div class="gallery">
+        <div class="gallery" id="detailing-process-gallery">
 
 
           <div
@@ -1668,7 +1668,7 @@
 
 
 
-        <div class="before-after">
+        <div class="before-after" id="before-after-gallery">
 
 
           <div
@@ -1724,7 +1724,7 @@
 
 
 
-        <div class="gallery">
+        <div class="gallery" id="interior-details-gallery">
 
 
           <div
@@ -1818,7 +1818,7 @@
 
 
 
-        <div class="gallery">
+        <div class="gallery" id="photography-gallery">
 
 
           <div
@@ -2127,6 +2127,93 @@
     }
 
     loadSiteContent();
+
+    const IMAGE_BUCKET = "website-images";
+
+    function publicImageUrl(storagePath) {
+      return supabase.storage.from(IMAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl;
+    }
+
+    function makePhotoCard(row, large = false) {
+      const url = publicImageUrl(row.storage_path);
+      const card = document.createElement("div");
+      card.className = large ? "photo large" : "photo";
+      card.onclick = () => openLightbox(url);
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = row.caption || "STANCEBOUND gallery image";
+      img.loading = "lazy";
+      card.appendChild(img);
+      return card;
+    }
+
+    function makeBeforeAfterCard(row, label) {
+      const url = publicImageUrl(row.storage_path);
+      const card = document.createElement("div");
+      card.className = "ba-card";
+      card.onclick = () => openLightbox(url);
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = row.caption || `Interior ${label.toLowerCase()} detailing`;
+      img.loading = "lazy";
+
+      const badge = document.createElement("div");
+      badge.className = "ba-label";
+      badge.textContent = label;
+      card.append(img, badge);
+      return card;
+    }
+
+    async function loadSiteImages() {
+      const { data, error } = await supabase
+        .from("site_images")
+        .select("id,storage_path,section,caption,sort_order")
+        .order("sort_order", { ascending: true })
+        .order("id", { ascending: true });
+
+      if (error || !data || !data.length) return;
+
+      const groups = {};
+      for (const row of data) {
+        const section = String(row.section || "").trim().toLowerCase();
+        (groups[section] ||= []).push(row);
+      }
+
+      const detailingRows = groups.detailing_process || groups.detailing || groups["detailing process"];
+      const interiorRows = groups.interior_details || groups.interior || groups["interior details"];
+      const photographyRows = groups.photography || groups.photos;
+      const beforeRows = groups.before || [];
+      const afterRows = groups.after || [];
+
+      if (detailingRows?.length) {
+        const gallery = document.querySelector("#detailing-process-gallery");
+        gallery.innerHTML = "";
+        detailingRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
+      }
+
+      if (interiorRows?.length) {
+        const gallery = document.querySelector("#interior-details-gallery");
+        gallery.innerHTML = "";
+        interiorRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
+      }
+
+      if (photographyRows?.length) {
+        const gallery = document.querySelector("#photography-gallery");
+        gallery.innerHTML = "";
+        photographyRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
+      }
+
+      if (beforeRows.length || afterRows.length) {
+        const gallery = document.querySelector("#before-after-gallery");
+        gallery.innerHTML = "";
+        beforeRows.forEach(row => gallery.appendChild(makeBeforeAfterCard(row, "BEFORE")));
+        afterRows.forEach(row => gallery.appendChild(makeBeforeAfterCard(row, "AFTER")));
+      }
+    }
+
+    loadSiteImages();
   </script>
 
   <script>
