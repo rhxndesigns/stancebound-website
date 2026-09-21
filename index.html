@@ -1249,7 +1249,7 @@
 
 
       .header-logo {
-        width: 135px;
+        width: 54px;
       }
 
 
@@ -1329,6 +1329,26 @@
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
 
+
+    /* INTRO + PHOTOGRAPHY SLIDER */
+    .site-intro { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #000; animation: introAway .55s ease 1.85s forwards; }
+    .intro-mark { width: min(300px, 55vw); opacity: 0; transform: scale(.78); animation: introMark 1.25s cubic-bezier(.2,.8,.2,1) .15s forwards; }
+    @keyframes introMark { 0% { opacity:0; transform:scale(.78); filter:blur(8px); } 55% { opacity:1; transform:scale(1.04); filter:blur(0); } 100% { opacity:1; transform:scale(1); } }
+    @keyframes introAway { to { opacity:0; visibility:hidden; pointer-events:none; } }
+    .photo-slider { position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.08); background:#080808; touch-action:pan-y; }
+    .slider-track { display:flex; transition:transform .48s cubic-bezier(.2,.75,.25,1); will-change:transform; }
+    .slider-slide { min-width:100%; height:min(68vh,680px); position:relative; cursor:pointer; overflow:hidden; }
+    .slider-slide img { width:100%; height:100%; object-fit:cover; }
+    .slider-controls { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; }
+    .slider-arrow { width:48px; height:44px; margin:0; padding:0; border:1px solid rgba(255,255,255,.22); background:#080808; color:#fff; font-size:22px; }
+    .slider-dots { flex:1; display:flex; justify-content:center; gap:8px; }
+    .slider-dot { width:7px; height:7px; border-radius:50%; border:0; padding:0; margin:0; min-width:0; background:#444; }
+    .slider-dot.active { background:#fff; transform:scale(1.25); }
+    .reveal { opacity:0; transform:translateY(16px); transition:opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    @media (max-width:850px) { .slider-slide { height:58vh; min-height:360px; } }
+    @media (prefers-reduced-motion:reduce) { .site-intro { display:none; } .reveal { opacity:1; transform:none; } }
+
   </style>
 
 </head>
@@ -1336,6 +1356,10 @@
 
 
 <body>
+
+  <div class="site-intro" id="site-intro" aria-hidden="true">
+    <img class="intro-mark" src="images/sb-logo.png" alt="">
+  </div>
 
 
   <!-- ========================================
@@ -1602,7 +1626,7 @@
 
 
 
-        <div class="gallery" id="detailing-process-gallery">
+        <div class="gallery">
 
 
           <div
@@ -1668,7 +1692,7 @@
 
 
 
-        <div class="before-after" id="before-after-gallery">
+        <div class="before-after">
 
 
           <div
@@ -1724,7 +1748,7 @@
 
 
 
-        <div class="gallery" id="interior-details-gallery">
+        <div class="gallery">
 
 
           <div
@@ -1818,65 +1842,18 @@
 
 
 
-        <div class="gallery" id="photography-gallery">
-
-
-          <div
-            class="photo large"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND3.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND3.jpg"
-              alt="STANCEBOUND automotive photography"
-            >
-
+        <div class="photo-slider" id="photography-slider">
+          <div class="slider-track" id="photography-track">
+            <div class="slider-slide" onclick="openLightbox('images/STANCEBOUND3.jpg')"><img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography"></div>
+            <div class="slider-slide" onclick="openLightbox('images/STANCEBOUND8.jpg')"><img src="images/STANCEBOUND8.jpg" alt="Car show photography"></div>
+            <div class="slider-slide" onclick="openLightbox('images/STANCEBOUND9.jpg')"><img src="images/STANCEBOUND9.jpg" alt="Modified car photography"></div>
           </div>
-
-
-
-          <div
-            class="photo"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND8.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND8.jpg"
-              alt="Car show photography"
-            >
-
-          </div>
-
-
-
-          <div
-            class="photo"
-            onclick="
-              openLightbox(
-                'images/STANCEBOUND9.jpg'
-              )
-            "
-          >
-
-            <img
-              src="images/STANCEBOUND9.jpg"
-              alt="Modified car photography"
-            >
-
-          </div>
-
-
         </div>
-
-
+        <div class="slider-controls">
+          <button class="slider-arrow" id="slider-prev" aria-label="Previous photo">‹</button>
+          <div class="slider-dots" id="slider-dots"></div>
+          <button class="slider-arrow" id="slider-next" aria-label="Next photo">›</button>
+        </div>
 
         <div class="cta">
 
@@ -2100,120 +2077,32 @@
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    const supabase = createClient(
-      "https://fxlekwzcxedkiyqfswvq.supabase.co",
-      "sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld"
-    );
+    const supabase = createClient("https://fxlekwzcxedkiyqfswvq.supabase.co", "sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld");
 
     const contentMap = {
-      home_tagline: "#home-tagline",
-      home_subtitle: "#home-subtitle",
-      home_description: "#home-description",
-      detailing_title: "#detailing-title",
-      photography_title: "#photography-title",
-      contact_title: "#contact-title"
+      home_tagline: "#home-tagline", home_subtitle: "#home-subtitle", home_description: "#home-description",
+      detailing_title: "#detailing-title", photography_title: "#photography-title", contact_title: "#contact-title"
     };
-
-    async function loadSiteContent() {
-      const { data, error } = await supabase.from("site_content").select("content_key,content_value");
-      if (error || !data) return;
-      for (const row of data) {
-        const selector = contentMap[row.content_key];
-        if (!selector) continue;
-        const el = document.querySelector(selector);
-        if (el) el.textContent = row.content_value;
-      }
+    async function loadSiteContent(){
+      const {data,error}=await supabase.from("site_content").select("content_key,content_value");
+      if(error||!data)return;
+      for(const row of data){const el=document.querySelector(contentMap[row.content_key]); if(el)el.textContent=row.content_value;}
     }
 
-    loadSiteContent();
-
-    const IMAGE_BUCKET = "website-images";
-
-    function publicImageUrl(storagePath) {
-      return supabase.storage.from(IMAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl;
+    function imageUrl(path){ return supabase.storage.from("website-images").getPublicUrl(path).data.publicUrl; }
+    async function loadPhotography(){
+      const {data,error}=await supabase.from("site_images").select("id,storage_path,section,caption,sort_order").eq("section","photography").order("sort_order",{ascending:true}).order("id",{ascending:true});
+      if(error||!data||!data.length){ window.initPhotoSlider(); return; }
+      const track=document.querySelector("#photography-track"); track.innerHTML="";
+      for(const row of data){
+        const url=imageUrl(row.storage_path);
+        const slide=document.createElement("div"); slide.className="slider-slide"; slide.onclick=()=>openLightbox(url);
+        const img=document.createElement("img"); img.src=url; img.alt=row.caption||"STANCEBOUND automotive photography"; img.loading="lazy";
+        slide.appendChild(img); track.appendChild(slide);
+      }
+      window.initPhotoSlider();
     }
-
-    function makePhotoCard(row, large = false) {
-      const url = publicImageUrl(row.storage_path);
-      const card = document.createElement("div");
-      card.className = large ? "photo large" : "photo";
-      card.onclick = () => openLightbox(url);
-
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = row.caption || "STANCEBOUND gallery image";
-      img.loading = "lazy";
-      card.appendChild(img);
-      return card;
-    }
-
-    function makeBeforeAfterCard(row, label) {
-      const url = publicImageUrl(row.storage_path);
-      const card = document.createElement("div");
-      card.className = "ba-card";
-      card.onclick = () => openLightbox(url);
-
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = row.caption || `Interior ${label.toLowerCase()} detailing`;
-      img.loading = "lazy";
-
-      const badge = document.createElement("div");
-      badge.className = "ba-label";
-      badge.textContent = label;
-      card.append(img, badge);
-      return card;
-    }
-
-    async function loadSiteImages() {
-      const { data, error } = await supabase
-        .from("site_images")
-        .select("id,storage_path,section,caption,sort_order")
-        .order("sort_order", { ascending: true })
-        .order("id", { ascending: true });
-
-      if (error || !data || !data.length) return;
-
-      const groups = {};
-      for (const row of data) {
-        const section = String(row.section || "").trim().toLowerCase();
-        (groups[section] ||= []).push(row);
-      }
-
-      const detailingRows = groups.detailing_process || groups.detailing || groups["detailing process"];
-      const interiorRows = groups.interior_details || groups.interior || groups["interior details"];
-      const photographyRows = groups.photography || groups.photos;
-      const beforeRows = groups.before || [];
-      const afterRows = groups.after || [];
-
-      if (detailingRows?.length) {
-        const gallery = document.querySelector("#detailing-process-gallery");
-        gallery.innerHTML = "";
-        detailingRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
-      }
-
-      if (interiorRows?.length) {
-        const gallery = document.querySelector("#interior-details-gallery");
-        gallery.innerHTML = "";
-        interiorRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
-      }
-
-      if (photographyRows?.length) {
-        const gallery = document.querySelector("#photography-gallery");
-        gallery.innerHTML = "";
-        photographyRows.forEach((row, i) => gallery.appendChild(makePhotoCard(row, i === 0)));
-      }
-
-      if (beforeRows.length || afterRows.length) {
-        const gallery = document.querySelector("#before-after-gallery");
-        gallery.innerHTML = "";
-        beforeRows.forEach(row => gallery.appendChild(makeBeforeAfterCard(row, "BEFORE")));
-        afterRows.forEach(row => gallery.appendChild(makeBeforeAfterCard(row, "AFTER")));
-      }
-    }
-
-    loadSiteImages();
+    loadSiteContent(); loadPhotography();
   </script>
 
   <script>
@@ -2438,6 +2327,27 @@
       new Date().getFullYear();
 
 
+
+
+    window.initPhotoSlider = function() {
+      const track=document.getElementById('photography-track');
+      const dots=document.getElementById('slider-dots');
+      const prev=document.getElementById('slider-prev');
+      const next=document.getElementById('slider-next');
+      if(!track||!dots||!prev||!next)return;
+      const slides=[...track.children]; if(!slides.length)return;
+      let current=0, startX=0; dots.innerHTML='';
+      slides.forEach((_,i)=>{ const d=document.createElement('button'); d.className='slider-dot'; d.setAttribute('aria-label','Go to photo '+(i+1)); d.onclick=()=>go(i); dots.appendChild(d); });
+      function go(i){ current=(i+slides.length)%slides.length; track.style.transform=`translateX(-${current*100}%)`; [...dots.children].forEach((d,n)=>d.classList.toggle('active',n===current)); }
+      prev.onclick=()=>go(current-1); next.onclick=()=>go(current+1);
+      track.ontouchstart=e=>{startX=e.touches[0].clientX};
+      track.ontouchend=e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>45) go(current+(dx<0?1:-1));};
+      go(0);
+    };
+    window.initPhotoSlider();
+
+    const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')}),{threshold:.12});
+    document.querySelectorAll('.page-heading,.service,.section-label,.cta,.contact-card').forEach(el=>{el.classList.add('reveal'); revealObserver.observe(el);});
   </script>
 
 
