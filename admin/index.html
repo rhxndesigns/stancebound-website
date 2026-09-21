@@ -1,1 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
 
+<title>STANCEBOUND Admin</title>
+
+<style>
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #050505;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+main {
+  width: min(760px, 92%);
+  margin: auto;
+  padding: 50px 0;
+}
+
+.brand {
+  text-align: center;
+  letter-spacing: 5px;
+  font-weight: 800;
+  font-size: clamp(28px, 7vw, 46px);
+  margin-bottom: 8px;
+}
+
+.sub {
+  text-align: center;
+  color: #777;
+  letter-spacing: 3px;
+  font-size: 10px;
+  margin-bottom: 35px;
+}
+
+.panel {
+  border: 1px solid #222;
+  background: #090909;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  color: #999;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 15px 0 7px;
+}
+
+input,
+textarea {
+  width: 100%;
+  background: #050505;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 14px;
+  font: inherit;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 16px;
+  background: #fff;
+  color: #050505;
+  border: 0;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .16s ease;
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+button.secondary {
+  background: transparent;
+  color: #bbb;
+  border: 1px solid #333;
+}
+
+.status {
+  min-height: 22px;
+  margin-top: 14px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="brand">
+STANCEBOUND
+</div>
+
+<div class="sub">
+ADMIN CONTROL
+</div>
+
+
+<section id="login" class="panel">
+
+<h2>Admin Login</h2>
+
+<label>Email</label>
+
+<input
+  id="email"
+  type="email"
+  value="ryan@stancebound.com"
+  autocomplete="username"
+>
+
+<label>Password</label>
+
+<input
+  id="password"
+  type="password"
+  autocomplete="current-password"
+>
+
+<button id="loginBtn">
+Log In
+</button>
+
+<div
+  id="loginStatus"
+  class="status">
+</div>
+
+</section>
+
+
+<section
+  id="editor"
+  class="hidden">
+
+<div class="panel">
+
+<h2>Website Content</h2>
+
+<div id="fields"></div>
+
+<button id="saveBtn">
+Save Changes
+</button>
+
+<button
+  id="logoutBtn"
+  class="secondary">
+Log Out
+</button>
+
+<div
+  id="saveStatus"
+  class="status">
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<script type="module">
+
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+
+const supabase = createClient(
+  'https://fxlekwzcxedkiyqfswvq.supabase.co',
+  'sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld'
+);
+
+
+const login =
+  document.querySelector('#login');
+
+const editor =
+  document.querySelector('#editor');
+
+const fields =
+  document.querySelector('#fields');
+
+
+const labels = {
+
+  home_tagline:
+    'Home tagline',
+
+  home_subtitle:
+    'Home subtitle',
+
+  home_description:
+    'Home description',
+
+  detailing_title:
+    'Detailing title',
+
+  detailing_description:
+    'Detailing description',
+
+  service_exterior_title:
+    'Exterior title',
+
+  service_exterior_description:
+    'Exterior description',
+
+  service_interior_title:
+    'Interior title',
+
+  service_interior_description:
+    'Interior description',
+
+  service_valet_title:
+    'Full valet title',
+
+  service_valet_description:
+    'Full valet description',
+
+  detailing_cta_title:
+    'Detailing CTA title',
+
+  detailing_cta_description:
+    'Detailing CTA description',
+
+  photography_title:
+    'Photography title',
+
+  photography_description:
+    'Photography description',
+
+  photography_cta_title:
+    'Photography CTA title',
+
+  photography_cta_description:
+    'Photography CTA description',
+
+  contact_title:
+    'Contact title',
+
+  contact_description:
+    'Contact description',
+
+  contact_card_title:
+    'Contact card title',
+
+  contact_card_description:
+    'Contact card description',
+
+  business_email:
+    'Business email',
+
+  instagram_handle:
+    'Instagram handle',
+
+  instagram_url:
+    'Instagram URL',
+
+  tiktok_handle:
+    'TikTok handle',
+
+  tiktok_url:
+    'TikTok URL',
+
+  location_primary:
+    'Primary location',
+
+  location_secondary:
+    'Secondary location'
+};
+
+
+async function loadContent() {
+
+  const {
+    data,
+    error
+  } = await supabase
+    .from('site_content')
+    .select(
+      'content_key,content_value'
+    )
+    .order('id');
+
+
+  if (error) {
+
+    document
+      .querySelector('#saveStatus')
+      .textContent =
+      error.message;
+
+    return;
+  }
+
+
+  fields.innerHTML = '';
+
+
+  for (const row of data) {
+
+    const wrapper =
+      document.createElement('div');
+
+
+    const label =
+      document.createElement('label');
+
+
+    label.textContent =
+      labels[row.content_key]
+      || row.content_key;
+
+
+    const isLong =
+      row.content_value.length > 55;
+
+
+    const input =
+      document.createElement(
+        isLong
+          ? 'textarea'
+          : 'input'
+      );
+
+
+    input.value =
+      row.content_value;
+
+
+    input.dataset.key =
+      row.content_key;
+
+
+    wrapper.append(
+      label,
+      input
+    );
+
+
+    fields.append(wrapper);
+
+  }
+
+}
+
+
+async function showCorrectScreen() {
+
+  const {
+    data: {
+      session
+    }
+  } =
+    await supabase
+      .auth
+      .getSession();
+
+
+  login.classList.toggle(
+    'hidden',
+    !!session
+  );
+
+
+  editor.classList.toggle(
+    'hidden',
+    !session
+  );
+
+
+  if (session) {
+    loadContent();
+  }
+
+}
+
+
+document
+  .querySelector('#loginBtn')
+  .onclick =
+  async () => {
+
+    const status =
+      document
+        .querySelector(
+          '#loginStatus'
+        );
+
+
+    status.textContent =
+      'Logging in...';
+
+
+    const {
+      error
+    } =
+      await supabase
+        .auth
+        .signInWithPassword({
+
+          email:
+            document
+              .querySelector(
+                '#email'
+              )
+              .value
+              .trim(),
+
+          password:
+            document
+              .querySelector(
+                '#password'
+              )
+              .value
+
+        });
+
+
+    if (error) {
+
+      status.textContent =
+        error.message;
+
+      return;
+
+    }
+
+
+    status.textContent = '';
+
+    showCorrectScreen();
+
+  };
+
+
+document
+  .querySelector('#saveBtn')
+  .onclick =
+  async () => {
+
+    const status =
+      document
+        .querySelector(
+          '#saveStatus'
+        );
+
+
+    status.textContent =
+      'Saving...';
+
+
+    const items =
+      [
+        ...fields.querySelectorAll(
+          '[data-key]'
+        )
+      ];
+
+
+    for (const item of items) {
+
+      const {
+        error
+      } =
+        await supabase
+          .from(
+            'site_content'
+          )
+          .update({
+
+            content_value:
+              item.value,
+
+            updated_at:
+              new Date()
+                .toISOString()
+
+          })
+          .eq(
+            'content_key',
+            item.dataset.key
+          );
+
+
+      if (error) {
+
+        status.textContent =
+          error.message;
+
+        return;
+
+      }
+
+    }
+
+
+    status.textContent =
+      'Saved. Your website content is updated.';
+
+  };
+
+
+document
+  .querySelector('#logoutBtn')
+  .onclick =
+  async () => {
+
+    await supabase
+      .auth
+      .signOut();
+
+    showCorrectScreen();
+
+  };
+
+
+showCorrectScreen();
+
+</script>
+
+</body>
+</html>
