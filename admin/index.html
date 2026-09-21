@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
 
-<title>STANCEBOUND ADMIN</title>
+<title>STANCEBOUND Admin</title>
 
 <style>
 
@@ -209,10 +209,11 @@ Log Out
 <div class="panel">
   <h2>Photo Manager</h2>
   <p class="help">Upload website photos from your phone. Images are resized in your browser before upload to keep the site quick.</p>
+  <p class="help"><strong style="color:#ddd">Mercedes Feature</strong> uploads appear in the swipeable photo gallery underneath the Mercedes video on the Detailing page. Use Display Order 1, 2, 3… to control their order.</p>
 
   <label>Website Section</label>
   <select id="photoSection">
-    <option value="detailing_process">Detailing - The Process</option>
+    <option value="detailing_process">Mercedes Feature - Photos Under Video</option>
     <option value="before">Interior - Before</option>
     <option value="after">Interior - After</option>
     <option value="interior_details">Interior Details</option>
@@ -587,6 +588,14 @@ const photoPreview = document.querySelector('#photoPreview');
 const photoGrid = document.querySelector('#photoGrid');
 const photoStatus = document.querySelector('#photoStatus');
 
+const photoSectionLabels = {
+  detailing_process: 'Mercedes Feature',
+  before: 'Mercedes Before',
+  after: 'Mercedes After',
+  interior_details: 'Interior Details',
+  photography: 'Photography'
+};
+
 photoFile.addEventListener('change', () => {
   const file = photoFile.files?.[0];
   if (!file) {
@@ -652,7 +661,7 @@ async function loadPhotos() {
 
     const meta = document.createElement('div');
     meta.className = 'photo-meta';
-    meta.textContent = `${row.section.replaceAll('_',' ')} · order ${row.sort_order}${row.caption ? ' · ' + row.caption : ''}`;
+    meta.textContent = `${photoSectionLabels[row.section] || row.section.replaceAll('_',' ')} · order ${row.sort_order}${row.caption ? ' · ' + row.caption : ''}`;
 
     const del = document.createElement('button');
     del.className = 'danger';
@@ -728,7 +737,9 @@ document.querySelector('#uploadPhotoBtn').onclick = async () => {
       throw insertError;
     }
 
-    photoStatus.textContent = 'Photo uploaded successfully.';
+    photoStatus.textContent = section === 'detailing_process'
+      ? 'Uploaded. This photo will appear under the Mercedes video.'
+      : 'Photo uploaded successfully.';
     photoFile.value = '';
     document.querySelector('#photoCaption').value = '';
     photoPreview.style.display = 'none';
