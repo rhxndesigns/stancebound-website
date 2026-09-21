@@ -1314,6 +1314,21 @@
 
     }
 
+
+    /* ========================================
+       TOUCH / INTERACTION POLISH
+       ======================================== */
+    *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
+    button, a, .photo, .ba-card, .header-logo { touch-action: manipulation; }
+    .btn, nav button, .social-link, .photo, .ba-card, .header-logo {
+      transition: transform .16s ease, opacity .16s ease, background .25s ease, border-color .25s ease, filter .25s ease;
+    }
+    .btn:active, nav button:active, .social-link:active, .header-logo:active { transform: scale(.96); }
+    .photo:active, .ba-card:active { transform: scale(.985); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
   </style>
 
 </head>
@@ -1418,17 +1433,17 @@
           >
 
 
-          <div class="tagline">
+          <div class="tagline" id="home-tagline">
             Cleaner · Higher · Further
           </div>
 
 
-          <div class="hero-subtitle">
+          <div class="hero-subtitle" id="home-subtitle">
             Automotive Detailing & Photography
           </div>
 
 
-          <p class="hero-description">
+          <p class="hero-description" id="home-description">
 
             Automotive detailing and photography
             built around modified cars, clean
@@ -2081,6 +2096,38 @@
   </footer>
 
 
+
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const supabase = createClient(
+      "https://fxlekwzcxedkiyqfswvq.supabase.co",
+      "sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld"
+    );
+
+    const contentMap = {
+      home_tagline: "#home-tagline",
+      home_subtitle: "#home-subtitle",
+      home_description: "#home-description",
+      detailing_title: "#detailing-title",
+      photography_title: "#photography-title",
+      contact_title: "#contact-title"
+    };
+
+    async function loadSiteContent() {
+      const { data, error } = await supabase.from("site_content").select("content_key,content_value");
+      if (error || !data) return;
+      for (const row of data) {
+        const selector = contentMap[row.content_key];
+        if (!selector) continue;
+        const el = document.querySelector(selector);
+        if (el) el.textContent = row.content_value;
+      }
+    }
+
+    loadSiteContent();
+  </script>
 
   <script>
 
