@@ -2058,10 +2058,12 @@
             <img src="images/profilepicture.png" alt="Ryan Thomas, founder of STANCEBOUND" loading="lazy" decoding="async">
           </div>
           <div class="profile-copy">
-            <div class="eyebrow">FOUNDER · PHOTOGRAPHER · DETAILER</div>
+            <div class="eyebrow">FOUNDER · AUTOMOTIVE PHOTOGRAPHER · DETAILER</div>
             <h2>Ryan Thomas</h2>
-            <p>STANCEBOUND grew from my interest in cars, photography and making vehicles look their best. Based in South Wales, I handle the detailing and photography personally, with a focus on taking the time to get things right rather than rushing cars through.</p>
-            <p>Whether I'm behind the camera or working on the car itself, the aim is the same: create a cleaner, sharper result that makes the car stand out.</p>
+            <p>STANCEBOUND brings together three things I've always been drawn to: cars, creativity and attention to detail. My creative background started with Creative iMedia and Art &amp; Design at college before I went on to study Photography at university. I've always been the sort of person who can spend hours on a project, working on the smallest details until I'm genuinely happy with the result.</p>
+            <p>Cars have been part of my life for as long as I can remember. I grew up loving heavily modified car culture, from wild body kits and Corsa Lambo doors to the cars my dad was passionate about, including several Subaru Imprezas and a classic Ford RS. After losing my dad, that connection with cars became even more meaningful to me.</p>
+            <p>Detailing became another creative outlet. I enjoy slowing down, focusing on the tiny details and watching a car gradually come together. I'm BICSc qualified in cleaning, and I'm now developing those skills further within automotive detailing while combining them with my background in photography.</p>
+            <p>STANCEBOUND is still in its early days, and that's part of what excites me. As it grows, I'll be developing my skills in areas such as headlight restoration, scratch removal, machine polishing and paint correction. The aim is simple: keep learning, improve with every car, and build something I'm genuinely proud to put my name behind.</p>
             <button class="btn" onclick="showPage('contact')">Contact STANCEBOUND</button>
           </div>
         </div>
@@ -2336,6 +2338,7 @@
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     const supabase = createClient("https://fxlekwzcxedkiyqfswvq.supabase.co","sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld");
+    window.stanceboundSupabase = supabase;
 
     const contentMap={home_tagline:"#home-tagline",home_subtitle:"#home-subtitle",home_description:"#home-description",detailing_title:"#detailing-title",photography_title:"#photography-title",contact_title:"#contact-title"};
     async function loadSiteContent(){
@@ -2426,7 +2429,7 @@
         };
 
         try{
-          const {data,error}=await supabase.functions.invoke("start-enquiry",{body:payload});
+          const {data,error}=await window.stanceboundSupabase.functions.invoke("start-enquiry",{body:payload});
           if(error)throw error;
           if(!data?.enquiry_id)throw new Error(data?.error||"Could not start verification.");
           pendingEnquiryId=data.enquiry_id;
@@ -2452,7 +2455,7 @@
         btn.disabled=true;
         enquiryStatus.textContent="Verifying...";
         try{
-          const {data,error}=await supabase.functions.invoke("verify-enquiry",{body:{enquiry_id:pendingEnquiryId,code}});
+          const {data,error}=await window.stanceboundSupabase.functions.invoke("verify-enquiry",{body:{enquiry_id:pendingEnquiryId,code}});
           if(error)throw error;
           if(!data?.ok)throw new Error(data?.error||"Verification failed.");
           enquiryStatus.textContent="Verified ✓ Your enquiry has been sent to STANCEBOUND.";
