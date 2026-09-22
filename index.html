@@ -1120,6 +1120,17 @@
 
 
     /* ========================================
+       PROFILE
+       ======================================== */
+    .profile-card{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:42px;align-items:center;padding:26px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));}
+    .profile-image-wrap{overflow:hidden;min-height:520px;background:#090909;}
+    .profile-image-wrap img{width:100%;height:100%;min-height:520px;display:block;object-fit:cover;object-position:center;filter:contrast(1.04);}
+    .profile-copy h2{font-size:clamp(32px,5vw,64px);line-height:.95;margin:12px 0 22px;text-transform:uppercase;letter-spacing:-2px;}
+    .profile-copy p{color:#aaa;line-height:1.85;font-size:13px;margin:0 0 18px;max-width:620px;}
+    .profile-copy .btn{margin-top:10px;}
+    @media(max-width:850px){.profile-card{grid-template-columns:1fr;gap:24px;padding:14px}.profile-image-wrap,.profile-image-wrap img{min-height:420px}.profile-copy{padding:8px 8px 16px}.profile-copy h2{letter-spacing:-1px}}
+
+    /* ========================================
        TABLET / MOBILE
        ======================================== */
 
@@ -1575,6 +1586,15 @@
 
       <button
         class="nav-link"
+        data-page="about"
+        onclick="showPage('about')"
+      >
+        About
+      </button>
+
+
+      <button
+        class="nav-link"
         data-page="contact"
         onclick="showPage('contact')"
       >
@@ -1790,9 +1810,9 @@
           </div>
 
           <div class="feature-video-wrap">
-            <video autoplay muted loop playsinline preload="metadata"
+            <video id="mercFeatureVideo" muted loop playsinline preload="none"
                    aria-label="Mercedes-AMG CLA detailing feature video">
-              <source src="Videos/merccla.mp4" type="video/mp4">
+              <source data-src="Videos/merccla.mp4" type="video/mp4">
             </video>
             <div class="video-mark">Full Detail • Exterior + Interior</div>
           </div>
@@ -1822,13 +1842,13 @@
 
           <div class="gallery swipe-gallery" id="detailing-process-gallery">
             <div class="photo large" onclick="openLightbox('images/STANCEBOUND4.jpg')">
-              <img src="images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
+              <img loading="lazy" decoding="async" src="images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
             </div>
             <div class="photo" onclick="openLightbox('images/STANCEBOUND5.jpg')">
-              <img src="images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
+              <img loading="lazy" decoding="async" src="images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
             </div>
             <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')">
-              <img src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
+              <img loading="lazy" decoding="async" src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
             </div>
           </div>
 
@@ -1843,11 +1863,11 @@
 
           <div class="before-after swipe-gallery" id="before-after-gallery">
             <div class="ba-card" onclick="openLightbox('images/STANCEBOUND2.jpg')">
-              <img src="images/STANCEBOUND2.jpg" alt="Mercedes interior before detailing">
+              <img loading="lazy" decoding="async" src="images/STANCEBOUND2.jpg" alt="Mercedes interior before detailing">
               <div class="ba-label">BEFORE</div>
             </div>
             <div class="ba-card" onclick="openLightbox('images/STANCEBOUND1.jpg')">
-              <img src="images/STANCEBOUND1.jpg" alt="Mercedes interior after detailing">
+              <img loading="lazy" decoding="async" src="images/STANCEBOUND1.jpg" alt="Mercedes interior after detailing">
               <div class="ba-label">AFTER</div>
             </div>
           </div>
@@ -1938,6 +1958,7 @@
           >
 
             <img
+              loading="lazy" decoding="async"
               src="images/STANCEBOUND3.jpg"
               alt="STANCEBOUND automotive photography"
             >
@@ -1956,6 +1977,7 @@
           >
 
             <img
+              loading="lazy" decoding="async"
               src="images/STANCEBOUND8.jpg"
               alt="Car show photography"
             >
@@ -1974,6 +1996,7 @@
           >
 
             <img
+              loading="lazy" decoding="async"
               src="images/STANCEBOUND9.jpg"
               alt="Modified car photography"
             >
@@ -2015,6 +2038,35 @@
 
     </section>
 
+
+
+    <!-- ========================================
+         ABOUT
+         ======================================== -->
+
+    <section id="about" class="page">
+      <div class="content">
+        <div class="page-heading">
+          <div class="eyebrow">BEHIND STANCEBOUND</div>
+          <h1>Meet Ryan</h1>
+          <div class="heading-line"></div>
+          <p>Automotive photography and detailing, built from a genuine interest in cars and the culture around them.</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-image-wrap">
+            <img src="images/profilepicture.png" alt="Ryan Thomas, founder of STANCEBOUND" loading="lazy" decoding="async">
+          </div>
+          <div class="profile-copy">
+            <div class="eyebrow">FOUNDER · PHOTOGRAPHER · DETAILER</div>
+            <h2>Ryan Thomas</h2>
+            <p>STANCEBOUND grew from my interest in cars, photography and making vehicles look their best. Based in South Wales, I handle the detailing and photography personally, with a focus on taking the time to get things right rather than rushing cars through.</p>
+            <p>Whether I'm behind the camera or working on the car itself, the aim is the same: create a cleaner, sharper result that makes the car stand out.</p>
+            <button class="btn" onclick="showPage('contact')">Contact STANCEBOUND</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
 
     <!-- ========================================
@@ -2291,10 +2343,11 @@
       if(error||!data)return;
       for(const row of data){
         if(row.content_key==="business_email"){
+          const publicEmail="enquiries@stancebound.com";
           const emailText=document.getElementById("businessEmailText");
           const emailLink=document.getElementById("businessEmailLink");
-          if(emailText)emailText.textContent=row.content_value;
-          if(emailLink)emailLink.href="mailto:"+row.content_value;
+          if(emailText)emailText.textContent=publicEmail;
+          if(emailLink)emailLink.href="mailto:"+publicEmail;
         }
         const selector=contentMap[row.content_key];
         if(!selector)continue;
@@ -2593,6 +2646,7 @@
       "home",
       "detailing",
       "photography",
+      "about",
       "contact"
     ];
 
@@ -2633,6 +2687,19 @@
     ).textContent =
       new Date().getFullYear();
 
+    const mercVideo=document.getElementById("mercFeatureVideo");
+    if(mercVideo){
+      const loadMercVideo=()=>{
+        const source=mercVideo.querySelector("source[data-src]");
+        if(source){source.src=source.dataset.src;source.removeAttribute("data-src");mercVideo.load();}
+        mercVideo.play().catch(()=>{});
+      };
+      const videoObserver=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{if(entry.isIntersecting){loadMercVideo();videoObserver.disconnect();}});
+      },{rootMargin:"250px 0px"});
+      videoObserver.observe(mercVideo);
+    }
+
     const siteIntro=document.getElementById("site-intro");
     const introLogo=siteIntro?.querySelector(".intro-logo");
     const headerLogo=document.querySelector(".header-logo");
@@ -2657,11 +2724,8 @@
       setTimeout(()=>{headerLogo.style.opacity="1";document.body.classList.remove("intro-running");siteIntro.classList.add("finished");},1680);
       setTimeout(()=>siteIntro.remove(),1920);
     }
-    if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", runStanceboundIntro, { once: true });
-} else {
-  runStanceboundIntro();
-}
+    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",runStanceboundIntro,{once:true});
+    else runStanceboundIntro();
 
 
   </script>
