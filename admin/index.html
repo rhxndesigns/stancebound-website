@@ -133,7 +133,7 @@ select, input[type="file"] {
 
 /* ADMIN APP NAVIGATION */
 .admin-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
-.admin-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;position:sticky;top:8px;z-index:20;padding:7px;background:rgba(5,5,5,.92);backdrop-filter:blur(14px);border:1px solid #222;margin:18px 0 22px}
+.admin-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;position:sticky;top:8px;z-index:20;padding:7px;background:rgba(5,5,5,.92);backdrop-filter:blur(14px);border:1px solid #222;margin:18px 0 22px}
 .admin-tab{margin:0;padding:12px 7px;background:transparent;color:#777;border:1px solid transparent;font-size:9px;letter-spacing:1.2px}
 .admin-tab.active{background:#fff;color:#050505;border-color:#fff}
 .admin-page{display:none}
@@ -150,7 +150,24 @@ select, input[type="file"] {
 .tool-link{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;border:1px solid #292929;padding:15px;margin-top:10px;font-size:12px}
 .tool-link span{color:#777}
 .future-card{border:1px dashed #333;padding:15px;margin-top:10px;color:#777;font-size:11px;line-height:1.6}
-@media(max-width:560px){.admin-tabs{grid-template-columns:repeat(4,1fr)}.admin-tab{padding:11px 3px;font-size:8px}.dashboard-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.admin-tabs{grid-template-columns:repeat(5,1fr)}.admin-tab{padding:11px 3px;font-size:8px}.dashboard-grid{grid-template-columns:1fr 1fr}}
+
+
+.enquiry-list{display:grid;gap:10px}
+.enquiry-card{border:1px solid #252525;background:#070707;padding:16px}
+.enquiry-card.new{border-left:3px solid #fff}
+.enquiry-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.enquiry-card h3{margin:0 0 5px;font-size:14px;letter-spacing:1px}
+.enquiry-meta{color:#777;font-size:10px;line-height:1.7}
+.enquiry-message{margin:14px 0;padding:13px;background:#0c0c0c;border:1px solid #202020;color:#bbb;font-size:12px;line-height:1.65;white-space:pre-wrap}
+.enquiry-actions-admin{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.enquiry-actions-admin button{margin:0;padding:11px;font-size:9px}
+.enquiry-reply{display:none;margin-top:12px}
+.enquiry-reply.show{display:block}
+.enquiry-reply textarea{width:100%;box-sizing:border-box;min-height:120px;background:#050505;border:1px solid #333;color:#fff;padding:12px;font:inherit}
+.status-pill{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid #333;padding:5px 7px;color:#aaa}
+#enquiryBadge:not(:empty){display:inline-block;margin-left:3px;min-width:15px;padding:2px 4px;background:#fff;color:#000;font-size:8px}
+.empty-state{padding:25px;border:1px dashed #333;color:#777;text-align:center;font-size:11px;line-height:1.7}
 
 </style>
 </head>
@@ -212,6 +229,7 @@ Log In
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
+    <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
     <button type="button" class="admin-tab" data-admin-target="text">Text</button>
     <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
@@ -223,6 +241,9 @@ Log In
       <h2>Dashboard</h2>
       <p class="help">Everything that changes the live website, separated properly instead of one enormous admin scroll.</p>
       <div class="dashboard-grid">
+        <div class="dash-card" data-open-admin="enquiries">
+          <div class="dash-icon">✉</div><h3>Enquiries</h3><p>Read, reply to and manage customer requests.</p>
+        </div>
         <div class="dash-card" data-open-admin="photos">
           <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
         </div>
@@ -236,6 +257,17 @@ Log In
           <div class="dash-icon">↗</div><h3>Live Site</h3><p>Open STANCEBOUND exactly as customers see it.</p>
         </a>
       </div>
+    </div>
+  </div>
+
+
+  <div class="admin-page" data-admin-page="enquiries">
+    <div class="panel">
+      <div class="admin-kicker">Customer Messages</div>
+      <h2>Enquiries</h2>
+      <p class="help">Only email-verified enquiries appear here. Reply from this page and the customer receives the response by email.</p>
+      <div id="enquiryAdminStatus" class="status"></div>
+      <div id="enquiryList" class="enquiry-list"></div>
     </div>
   </div>
 
@@ -517,10 +549,93 @@ async function loadContent() {
 
 
 
+
+function escapeHtml(value=""){
+  return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+}
+
+async function loadEnquiries(){
+  const list=document.querySelector('#enquiryList');
+  const status=document.querySelector('#enquiryAdminStatus');
+  if(!list)return;
+  status.textContent='Loading enquiries...';
+
+  const {data,error}=await supabase
+    .from('enquiries')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at')
+    .eq('email_verified',true)
+    .order('created_at',{ascending:false});
+
+  if(error){
+    status.textContent=error.message;
+    return;
+  }
+
+  const rows=data||[];
+  document.querySelector('#enquiryBadge').textContent=rows.filter(r=>r.status==='new').length||'';
+  status.textContent='';
+
+  if(!rows.length){
+    list.innerHTML='<div class="empty-state">No verified enquiries yet.<br>Peace and quiet. Suspicious, but pleasant.</div>';
+    return;
+  }
+
+  list.innerHTML=rows.map(r=>{
+    const date=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
+    const phone=r.phone?` · ${escapeHtml(r.phone)}`:'';
+    return `<article class="enquiry-card ${r.status==='new'?'new':''}" data-enquiry-id="${r.id}">
+      <div class="enquiry-card-head">
+        <div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.email)}${phone}<br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)} · ${date}</div></div>
+        <span class="status-pill">${escapeHtml(r.status||'new')}</span>
+      </div>
+      <div class="enquiry-message">${escapeHtml(r.message)}</div>
+      <div class="enquiry-actions-admin">
+        <button type="button" data-reply-toggle="${r.id}">Reply</button>
+        <button type="button" class="secondary" data-status-id="${r.id}" data-next-status="${r.status==='booked'?'closed':'booked'}">${r.status==='booked'?'Close':'Mark Booked'}</button>
+      </div>
+      <div class="enquiry-reply" id="reply-${r.id}">
+        <label>Your reply</label>
+        <textarea maxlength="4000" placeholder="Write your reply to ${escapeHtml(r.name)}..."></textarea>
+        <button type="button" data-send-reply="${r.id}">Send Reply</button>
+        <div class="status"></div>
+      </div>
+    </article>`;
+  }).join('');
+
+  list.querySelectorAll('[data-reply-toggle]').forEach(btn=>btn.onclick=()=>{
+    document.querySelector('#reply-'+btn.dataset.replyToggle)?.classList.toggle('show');
+  });
+
+  list.querySelectorAll('[data-status-id]').forEach(btn=>btn.onclick=async()=>{
+    btn.disabled=true;
+    const {error}=await supabase.from('enquiries').update({status:btn.dataset.nextStatus}).eq('id',btn.dataset.statusId);
+    if(error)status.textContent=error.message;
+    await loadEnquiries();
+  });
+
+  list.querySelectorAll('[data-send-reply]').forEach(btn=>btn.onclick=async()=>{
+    const box=btn.closest('.enquiry-reply');
+    const reply=box.querySelector('textarea').value.trim();
+    const st=box.querySelector('.status');
+    if(!reply){st.textContent='Write a reply first.';return;}
+    btn.disabled=true; st.textContent='Sending...';
+    try{
+      const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.sendReply,reply}});
+      if(error)throw error;
+      if(!data?.ok)throw new Error(data?.error||'Reply failed.');
+      st.textContent='Reply sent ✓';
+      box.querySelector('textarea').value='';
+      setTimeout(loadEnquiries,700);
+    }catch(error){
+      st.textContent=error?.message||'Could not send reply.';
+    }finally{btn.disabled=false;}
+  });
+}
+
 document.querySelector('#refreshAdminBtn').onclick = async () => {
   const status = document.querySelector('#toolStatus');
   status.textContent = 'Refreshing...';
-  await Promise.all([loadContent(), loadPhotos()]);
+  await Promise.all([loadContent(), loadPhotos(), loadEnquiries()]);
   status.textContent = 'Website data refreshed.';
   setTimeout(() => status.textContent = '', 1800);
 };
@@ -552,6 +667,7 @@ async function showCorrectScreen() {
   if (session) {
     loadContent();
     loadPhotos();
+    loadEnquiries();
   }
 
 }
