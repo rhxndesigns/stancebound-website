@@ -1331,12 +1331,17 @@
 
 
     /* STANCEBOUND intro */
-    .site-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#000;transition:opacity .55s ease,visibility .55s ease}
-    .site-intro.hide{opacity:0;visibility:hidden;pointer-events:none}
-    .intro-inner{text-align:center}
-    .intro-logo{width:min(230px,48vw);max-height:38vh;object-fit:contain;opacity:0;transform:scale(.88);animation:introLogo .75s cubic-bezier(.2,.8,.2,1) .12s forwards}
-    .intro-name{margin-top:18px;font-size:clamp(17px,4vw,27px);font-weight:800;letter-spacing:clamp(7px,2vw,13px);text-indent:clamp(7px,2vw,13px);opacity:0;transform:translateY(8px);animation:introName .55s ease .72s forwards}
-    @keyframes introLogo{to{opacity:1;transform:scale(1)}} @keyframes introName{to{opacity:1;transform:translateY(0)}}
+    .site-intro{position:fixed;inset:0;z-index:99999;background:#000;overflow:hidden;pointer-events:auto;transition:background-color .5s ease,opacity .2s ease,visibility .2s ease}
+    .site-intro.reveal-site{background:rgba(0,0,0,0)}
+    .site-intro.finished{opacity:0;visibility:hidden;pointer-events:none}
+    .intro-inner{position:absolute;inset:0}
+    .intro-logo{position:fixed;left:50%;top:50%;width:min(230px,48vw);height:auto;max-height:38vh;object-fit:contain;opacity:0;transform:translate(-50%,-50%) scale(.88);will-change:left,top,width,transform,opacity}
+    .intro-logo.appear{opacity:1;transform:translate(-50%,-50%) scale(1);transition:opacity .42s ease,transform .58s cubic-bezier(.2,.8,.2,1)}
+    .intro-logo.fly{transition:left .78s cubic-bezier(.22,.9,.28,1),top .78s cubic-bezier(.22,.9,.28,1),width .78s cubic-bezier(.22,.9,.28,1),transform .78s cubic-bezier(.22,.9,.28,1)}
+    body.intro-running header .header-logo{opacity:0}
+    body.intro-running main,body.intro-running footer{opacity:.04;transition:opacity .52s ease}
+    body.intro-revealing main,body.intro-revealing footer{opacity:1}
+    @media(prefers-reduced-motion:reduce){.site-intro{display:none!important}body.intro-running header .header-logo{opacity:1}body.intro-running main,body.intro-running footer{opacity:1}}
 
     .header-logo{width:62px;height:52px}.header-logo img{object-fit:contain;object-position:center}
 
@@ -1462,7 +1467,7 @@
 
 
 
-<body>
+<body class="intro-running">
   <div id="site-intro" class="site-intro" aria-hidden="true">
     <div class="intro-inner">
       <img src="images/stanceboundlogo.png?v=30" alt="STANCEBOUND Detailing" class="intro-logo">
@@ -1784,7 +1789,6 @@
             <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')">
               <img src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
             </div>
-
           </div>
 
           <div class="merc-subhead">
@@ -2403,10 +2407,30 @@
       new Date().getFullYear();
 
     const siteIntro=document.getElementById("site-intro");
-    window.addEventListener("load",()=>{
-      setTimeout(()=>siteIntro.classList.add("hide"),1750);
-      setTimeout(()=>siteIntro.remove(),2400);
-    });
+    const introLogo=siteIntro?.querySelector(".intro-logo");
+    const headerLogo=document.querySelector(".header-logo");
+    function finishIntroImmediately(){document.body.classList.remove("intro-running");document.body.classList.add("intro-revealing");if(siteIntro)siteIntro.remove();}
+    function runStanceboundIntro(){
+      if(!siteIntro||!introLogo||!headerLogo)return finishIntroImmediately();
+      if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return finishIntroImmediately();
+      requestAnimationFrame(()=>requestAnimationFrame(()=>introLogo.classList.add("appear")));
+      setTimeout(()=>{
+        const target=headerLogo.getBoundingClientRect();
+        const targetImg=headerLogo.querySelector("img");
+        const r=targetImg?targetImg.getBoundingClientRect():target;
+        document.body.classList.add("intro-revealing");
+        siteIntro.classList.add("reveal-site");
+        const w=Math.max(1,r.width||target.width);
+        introLogo.classList.add("fly");
+        introLogo.style.left=(r.left+w/2)+"px";
+        introLogo.style.top=(r.top+(r.height||target.height)/2)+"px";
+        introLogo.style.width=w+"px";
+        introLogo.style.transform="translate(-50%,-50%) scale(1)";
+      },900);
+      setTimeout(()=>{headerLogo.style.opacity="1";document.body.classList.remove("intro-running");siteIntro.classList.add("finished");},1680);
+      setTimeout(()=>siteIntro.remove(),1920);
+    }
+    window.addEventListener("load",runStanceboundIntro);
 
 
   </script>
