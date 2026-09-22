@@ -2210,7 +2210,7 @@
        PAGE NAVIGATION
        ======================================== */
 
-    function showPage(pageName) {
+    function showPage(pageName, addToHistory = true) {
 
       const pages =
         document.querySelectorAll(".page");
@@ -2287,11 +2287,14 @@
       });
 
 
-      history.replaceState(
-        null,
-        "",
-        "#" + pageName
-      );
+      const nextHash = "#" + pageName;
+      if (addToHistory) {
+        if (window.location.hash !== nextHash) {
+          history.pushState({ stanceboundPage: pageName }, "", nextHash);
+        }
+      } else if (window.location.hash !== nextHash) {
+        history.replaceState({ stanceboundPage: pageName }, "", nextHash);
+      }
 
     }
 
@@ -2390,11 +2393,24 @@
     ) {
 
       showPage(
-        requestedPage
+        requestedPage,
+        false
       );
 
     }
 
+
+
+    // Browser Back/Forward now moves through STANCEBOUND sections.
+    window.addEventListener("popstate", () => {
+      if (document.getElementById("lightbox").classList.contains("open")) return;
+      const pageFromHistory = window.location.hash.replace("#", "");
+      showPage(allowedPages.includes(pageFromHistory) ? pageFromHistory : "home", false);
+    });
+
+    if (!requestedPage) {
+      history.replaceState({ stanceboundPage: "home" }, "", "#home");
+    }
 
 
     /* ========================================
