@@ -2657,7 +2657,11 @@
       setTimeout(()=>{headerLogo.style.opacity="1";document.body.classList.remove("intro-running");siteIntro.classList.add("finished");},1680);
       setTimeout(()=>siteIntro.remove(),1920);
     }
-    window.addEventListener("load",runStanceboundIntro);
+    if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", runStanceboundIntro, { once: true });
+} else {
+  runStanceboundIntro();
+}
 
 
   </script>
