@@ -848,6 +848,46 @@
        CONTACT
        ======================================== */
 
+
+    .enquiry-shell {
+      width:min(820px,100%);
+      margin:0 auto 26px;
+      padding:34px;
+      background:rgba(7,7,7,.86);
+      border:1px solid rgba(255,255,255,.11);
+      backdrop-filter:blur(7px);
+    }
+    .enquiry-head { margin-bottom:24px; }
+    .enquiry-head .eyebrow { margin-bottom:8px; }
+    .enquiry-head h2 { margin:0 0 8px; font-size:clamp(22px,5vw,34px); letter-spacing:3px; text-transform:uppercase; }
+    .enquiry-head p { margin:0; color:#888; font-size:12px; line-height:1.7; }
+    .enquiry-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .enquiry-field { display:flex; flex-direction:column; gap:7px; text-align:left; }
+    .enquiry-field.full { grid-column:1/-1; }
+    .enquiry-field label { color:#aaa; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; }
+    .enquiry-field input,.enquiry-field select,.enquiry-field textarea {
+      width:100%; box-sizing:border-box; padding:14px 15px; color:#fff; background:#050505;
+      border:1px solid #2b2b2b; border-radius:0; font:inherit; outline:none;
+    }
+    .enquiry-field textarea { min-height:130px; resize:vertical; }
+    .enquiry-field input:focus,.enquiry-field select:focus,.enquiry-field textarea:focus { border-color:#777; }
+    .enquiry-actions { margin-top:18px; }
+    .enquiry-actions .btn { width:100%; }
+    .enquiry-status { min-height:20px; margin-top:12px; color:#aaa; font-size:11px; line-height:1.5; }
+    .enquiry-status.success { color:#d9d9d9; }
+    .enquiry-note { margin-top:12px; color:#666; font-size:10px; line-height:1.6; }
+    .verify-box { display:none; margin-top:18px; padding-top:18px; border-top:1px solid #222; }
+    .verify-box.show { display:block; }
+    .verify-row { display:flex; gap:9px; }
+    .verify-row input { flex:1; min-width:0; padding:14px; color:#fff; background:#050505; border:1px solid #333; font:inherit; }
+    .verify-row button { width:auto; margin:0; padding:0 18px; }
+    .hp-field { position:absolute!important; left:-9999px!important; width:1px!important; height:1px!important; overflow:hidden!important; }
+    @media(max-width:620px){
+      .enquiry-shell{padding:25px 18px}
+      .enquiry-grid{grid-template-columns:1fr}
+      .enquiry-field.full{grid-column:auto}
+    }
+
     .contact-card {
       width:
         min(720px, 100%);
@@ -1463,6 +1503,7 @@
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
   <link rel="shortcut icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
   <link rel="apple-touch-icon" href="/images/stanceboundlogo.png?v=30">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 
@@ -2015,6 +2056,76 @@
 
 
 
+
+        <div class="enquiry-shell">
+          <div class="enquiry-head">
+            <div class="eyebrow">REQUEST A QUOTE</div>
+            <h2>Tell Me About Your Car</h2>
+            <p>Send a genuine enquiry below. Your email is verified before the message reaches STANCEBOUND.</p>
+          </div>
+
+          <form id="enquiryForm" novalidate>
+            <div class="enquiry-grid">
+              <div class="enquiry-field">
+                <label for="enquiryName">Full name</label>
+                <input id="enquiryName" name="name" type="text" maxlength="80" autocomplete="name" required>
+              </div>
+              <div class="enquiry-field">
+                <label for="enquiryEmail">Email address</label>
+                <input id="enquiryEmail" name="email" type="email" maxlength="160" autocomplete="email" required>
+              </div>
+              <div class="enquiry-field">
+                <label for="enquiryPhone">Phone number</label>
+                <input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional">
+              </div>
+              <div class="enquiry-field">
+                <label for="enquiryService">Service</label>
+                <select id="enquiryService" name="service" required>
+                  <option value="">Choose a service</option>
+                  <option>Detailing</option>
+                  <option>Automotive Photography</option>
+                  <option>Detailing + Photography</option>
+                  <option>Collaboration / Other</option>
+                </select>
+              </div>
+              <div class="enquiry-field full">
+                <label for="enquiryVehicle">Vehicle</label>
+                <input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required>
+              </div>
+              <div class="enquiry-field full">
+                <label for="enquiryMessage">What do you need?</label>
+                <textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea>
+              </div>
+              <div class="hp-field" aria-hidden="true">
+                <label for="enquiryWebsite">Website</label>
+                <input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+              <div class="enquiry-field full">
+                <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-theme="dark"></div>
+              </div>
+            </div>
+
+            <div class="enquiry-actions">
+              <button class="btn" id="sendEnquiryBtn" type="submit">Send Enquiry</button>
+              <div id="enquiryStatus" class="enquiry-status" aria-live="polite"></div>
+              <div class="enquiry-note">A verification code will be sent to your email before the enquiry is delivered.</div>
+            </div>
+
+            <div id="verifyBox" class="verify-box">
+              <div class="enquiry-head">
+                <div class="eyebrow">ONE LAST CHECK</div>
+                <h2>Verify Your Email</h2>
+                <p>Enter the 6-digit code we just sent you.</p>
+              </div>
+              <div class="verify-row">
+                <input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
+                <button class="btn" id="verifyEnquiryBtn" type="button">Verify</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
         <div class="contact-card">
 
 
@@ -2042,7 +2153,14 @@
 
 
 
+
           <div class="social-links">
+
+            <a class="social-link" id="businessEmailLink" href="mailto:enquiries@stancebound.com">
+              <span class="social-name">Email</span>
+              <span class="social-handle" id="businessEmailText">enquiries@stancebound.com</span>
+            </a>
+
 
 
             <a
@@ -2171,7 +2289,18 @@
     async function loadSiteContent(){
       const {data,error}=await supabase.from("site_content").select("content_key,content_value");
       if(error||!data)return;
-      for(const row of data){const selector=contentMap[row.content_key];if(!selector)continue;const el=document.querySelector(selector);if(el)el.textContent=row.content_value;}
+      for(const row of data){
+        if(row.content_key==="business_email"){
+          const emailText=document.getElementById("businessEmailText");
+          const emailLink=document.getElementById("businessEmailLink");
+          if(emailText)emailText.textContent=row.content_value;
+          if(emailLink)emailLink.href="mailto:"+row.content_value;
+        }
+        const selector=contentMap[row.content_key];
+        if(!selector)continue;
+        const el=document.querySelector(selector);
+        if(el)el.textContent=row.content_value;
+      }
     }
 
     const publicUrl=path=>supabase.storage.from("website-images").getPublicUrl(path).data.publicUrl;
@@ -2205,6 +2334,88 @@
   </script>
 
   <script>
+
+
+    /* ========================================
+       VERIFIED ENQUIRY FORM
+       ======================================== */
+    const enquiryForm=document.getElementById("enquiryForm");
+    const enquiryStatus=document.getElementById("enquiryStatus");
+    const verifyBox=document.getElementById("verifyBox");
+    let pendingEnquiryId=null;
+
+    if(enquiryForm){
+      enquiryForm.addEventListener("submit",async(event)=>{
+        event.preventDefault();
+        enquiryStatus.classList.remove("success");
+
+        if(!enquiryForm.reportValidity())return;
+
+        const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
+        if(!turnstileToken){
+          enquiryStatus.textContent="Please complete the anti-spam check first.";
+          return;
+        }
+
+        const sendBtn=document.getElementById("sendEnquiryBtn");
+        sendBtn.disabled=true;
+        enquiryStatus.textContent="Sending verification code...";
+
+        const payload={
+          name:document.getElementById("enquiryName").value.trim(),
+          email:document.getElementById("enquiryEmail").value.trim(),
+          phone:document.getElementById("enquiryPhone").value.trim(),
+          service:document.getElementById("enquiryService").value,
+          vehicle:document.getElementById("enquiryVehicle").value.trim(),
+          message:document.getElementById("enquiryMessage").value.trim(),
+          website:document.getElementById("enquiryWebsite").value,
+          turnstileToken
+        };
+
+        try{
+          const {data,error}=await supabase.functions.invoke("start-enquiry",{body:payload});
+          if(error)throw error;
+          if(!data?.enquiry_id)throw new Error(data?.error||"Could not start verification.");
+          pendingEnquiryId=data.enquiry_id;
+          verifyBox.classList.add("show");
+          enquiryStatus.textContent="Code sent. Check your email and enter the 6 digits below.";
+          enquiryStatus.classList.add("success");
+          document.getElementById("verificationCode").focus();
+        }catch(error){
+          enquiryStatus.textContent=error?.message||"Something went wrong. Please try again.";
+          if(window.turnstile)window.turnstile.reset();
+        }finally{
+          sendBtn.disabled=false;
+        }
+      });
+
+      document.getElementById("verifyEnquiryBtn").addEventListener("click",async()=>{
+        const code=document.getElementById("verificationCode").value.trim();
+        if(!pendingEnquiryId||!/^\d{6}$/.test(code)){
+          enquiryStatus.textContent="Enter the 6-digit verification code.";
+          return;
+        }
+        const btn=document.getElementById("verifyEnquiryBtn");
+        btn.disabled=true;
+        enquiryStatus.textContent="Verifying...";
+        try{
+          const {data,error}=await supabase.functions.invoke("verify-enquiry",{body:{enquiry_id:pendingEnquiryId,code}});
+          if(error)throw error;
+          if(!data?.ok)throw new Error(data?.error||"Verification failed.");
+          enquiryStatus.textContent="Verified ✓ Your enquiry has been sent to STANCEBOUND.";
+          enquiryStatus.classList.add("success");
+          verifyBox.classList.remove("show");
+          enquiryForm.reset();
+          pendingEnquiryId=null;
+          if(window.turnstile)window.turnstile.reset();
+        }catch(error){
+          enquiryStatus.textContent=error?.message||"That code could not be verified.";
+        }finally{
+          btn.disabled=false;
+        }
+      });
+    }
+
 
     /* ========================================
        PAGE NAVIGATION
