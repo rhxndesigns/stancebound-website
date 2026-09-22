@@ -130,6 +130,28 @@ select, input[type="file"] {
 .help { color:#777; font-size:11px; line-height:1.6; margin-top:8px; }
 @media (max-width:560px) { .photo-grid { grid-template-columns:1fr; } }
 
+
+/* ADMIN APP NAVIGATION */
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+.admin-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;position:sticky;top:8px;z-index:20;padding:7px;background:rgba(5,5,5,.92);backdrop-filter:blur(14px);border:1px solid #222;margin:18px 0 22px}
+.admin-tab{margin:0;padding:12px 7px;background:transparent;color:#777;border:1px solid transparent;font-size:9px;letter-spacing:1.2px}
+.admin-tab.active{background:#fff;color:#050505;border-color:#fff}
+.admin-page{display:none}
+.admin-page.active{display:block;animation:adminIn .22s ease}
+@keyframes adminIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.dash-card{padding:18px;border:1px solid #252525;background:linear-gradient(145deg,#0b0b0b,#050505);min-height:120px;cursor:pointer}
+.dash-card:active{transform:scale(.985)}
+.dash-icon{font-size:21px;margin-bottom:18px}
+.dash-card h3{margin:0 0 7px;font-size:13px;letter-spacing:1.3px;text-transform:uppercase}
+.dash-card p{margin:0;color:#777;font-size:11px;line-height:1.5}
+.admin-kicker{font-size:9px;letter-spacing:2.2px;color:#666;text-transform:uppercase;margin-bottom:8px}
+.admin-title{font-size:24px;margin:0 0 6px}
+.tool-link{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;border:1px solid #292929;padding:15px;margin-top:10px;font-size:12px}
+.tool-link span{color:#777}
+.future-card{border:1px dashed #333;padding:15px;margin-top:10px;color:#777;font-size:11px;line-height:1.6}
+@media(max-width:560px){.admin-tabs{grid-template-columns:repeat(4,1fr)}.admin-tab{padding:11px 3px;font-size:8px}.dashboard-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 
@@ -179,34 +201,46 @@ Log In
 </section>
 
 
-<section
-  id="editor"
-  class="hidden">
+<section id="editor" class="hidden">
 
-<div class="panel">
+  <div class="admin-topbar">
+    <div>
+      <div class="admin-kicker">Private Control Panel</div>
+      <h1 class="admin-title">Website Admin</h1>
+    </div>
+  </div>
 
-<h2>Website Content</h2>
+  <nav class="admin-tabs" aria-label="Admin pages">
+    <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
+    <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
+    <button type="button" class="admin-tab" data-admin-target="text">Text</button>
+    <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
+  </nav>
 
-<div id="fields"></div>
+  <div class="admin-page active" data-admin-page="dashboard">
+    <div class="panel">
+      <div class="admin-kicker">STANCEBOUND</div>
+      <h2>Dashboard</h2>
+      <p class="help">Everything that changes the live website, separated properly instead of one enormous admin scroll.</p>
+      <div class="dashboard-grid">
+        <div class="dash-card" data-open-admin="photos">
+          <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
+        </div>
+        <div class="dash-card" data-open-admin="text">
+          <div class="dash-icon">Aa</div><h3>Text</h3><p>Edit headings, descriptions, services and contact details.</p>
+        </div>
+        <div class="dash-card" data-open-admin="tools">
+          <div class="dash-icon">⚙</div><h3>Tools</h3><p>Open the live site, refresh content and account controls.</p>
+        </div>
+        <a class="dash-card" href="/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+          <div class="dash-icon">↗</div><h3>Live Site</h3><p>Open STANCEBOUND exactly as customers see it.</p>
+        </a>
+      </div>
+    </div>
+  </div>
 
-<button id="saveBtn">
-Save Changes
-</button>
-
-<button
-  id="logoutBtn"
-  class="secondary">
-Log Out
-</button>
-
-<div
-  id="saveStatus"
-  class="status">
-</div>
-
-</div>
-
-<div class="panel">
+  <div class="admin-page" data-admin-page="photos">
+    <div class="panel">
   <h2>Photo Manager</h2>
   <p class="help">Upload website photos from your phone. Images are resized in your browser before upload to keep the site quick.</p>
   <p class="help"><strong style="color:#ddd">Mercedes Feature</strong> uploads appear in the swipeable photo gallery underneath the Mercedes video on the Detailing page. Use Display Order 1, 2, 3… to control their order.</p>
@@ -236,6 +270,47 @@ Log Out
   <div id="photoGrid" class="photo-grid"></div>
 </div>
 
+
+  </div>
+
+  <div class="admin-page" data-admin-page="text">
+    <div class="panel">
+
+<h2>Website Content</h2>
+
+<div id="fields"></div>
+
+<button id="saveBtn">
+Save Changes
+</button>
+
+<div
+  id="saveStatus"
+  class="status">
+</div>
+
+</div>
+
+
+  </div>
+
+  <div class="admin-page" data-admin-page="tools">
+    <div class="panel">
+      <div class="admin-kicker">Site Controls</div>
+      <h2>Tools</h2>
+      <a class="tool-link" href="/" target="_blank" rel="noopener">View Live Website <span>↗</span></a>
+      <button type="button" id="refreshAdminBtn" class="secondary">Refresh Website Data</button>
+      <button type="button" id="logoutBtn" class="secondary">Log Out</button>
+      <div id="toolStatus" class="status"></div>
+    </div>
+    <div class="panel">
+      <div class="admin-kicker">Next Upgrade</div>
+      <h2>Featured Details</h2>
+      <p class="help">This is reserved for the next stage: individual vehicle/job collections such as the Mercedes and Astra, with their own title, story, media and publish controls.</p>
+      <div class="future-card">COMING NEXT · Vehicle collections · Draft / Published · Individual galleries · Feature ordering</div>
+    </div>
+  </div>
+
 </section>
 
 </main>
@@ -261,6 +336,21 @@ const editor =
 
 const fields =
   document.querySelector('#fields');
+
+const adminTabs = [...document.querySelectorAll('.admin-tab')];
+const adminPages = [...document.querySelectorAll('.admin-page')];
+
+function openAdminPage(name) {
+  adminTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.adminTarget === name));
+  adminPages.forEach(page => page.classList.toggle('active', page.dataset.adminPage === name));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+adminTabs.forEach(tab => tab.addEventListener('click', () => openAdminPage(tab.dataset.adminTarget)));
+document.querySelectorAll('[data-open-admin]').forEach(card => {
+  card.addEventListener('click', () => openAdminPage(card.dataset.openAdmin));
+});
+
 
 
 const labels = {
@@ -425,6 +515,15 @@ async function loadContent() {
 
 }
 
+
+
+document.querySelector('#refreshAdminBtn').onclick = async () => {
+  const status = document.querySelector('#toolStatus');
+  status.textContent = 'Refreshing...';
+  await Promise.all([loadContent(), loadPhotos()]);
+  status.textContent = 'Website data refreshed.';
+  setTimeout(() => status.textContent = '', 1800);
+};
 
 async function showCorrectScreen() {
 
