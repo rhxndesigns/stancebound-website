@@ -2431,8 +2431,8 @@
         try{
           const {data,error}=await window.stanceboundSupabase.functions.invoke("start-enquiry",{body:payload});
           if(error)throw error;
-          if(!data?.enquiry_id)throw new Error(data?.error||"Could not start verification.");
-          pendingEnquiryId=data.enquiry_id;
+          if(!data?.enquiryId)throw new Error(data?.error||"Could not start verification.");
+          pendingEnquiryId=data.enquiryId;
           verifyBox.classList.add("show");
           enquiryStatus.textContent="Code sent. Check your email and enter the 6 digits below.";
           enquiryStatus.classList.add("success");
@@ -2455,9 +2455,9 @@
         btn.disabled=true;
         enquiryStatus.textContent="Verifying...";
         try{
-          const {data,error}=await window.stanceboundSupabase.functions.invoke("verify-enquiry",{body:{enquiry_id:pendingEnquiryId,code}});
+          const {data,error}=await window.stanceboundSupabase.functions.invoke("verify-enquiry",{body:{enquiryId:pendingEnquiryId,code}});
           if(error)throw error;
-          if(!data?.ok)throw new Error(data?.error||"Verification failed.");
+          if(!data?.success)throw new Error(data?.error||"Verification failed.");
           enquiryStatus.textContent="Verified ✓ Your enquiry has been sent to STANCEBOUND.";
           enquiryStatus.classList.add("success");
           verifyBox.classList.remove("show");
