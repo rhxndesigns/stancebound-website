@@ -1740,6 +1740,13 @@
       }
     }
 
+  
+    /* ===== SHOP PRODUCT INTERACTION ===== */
+    .product-card.is-live{cursor:pointer}.product-card.is-live:focus-visible{outline:2px solid var(--text);outline-offset:4px}.product-card.is-live .product-info button{color:var(--text);border-color:var(--grey);cursor:pointer}.product-card.is-live .product-info button:hover{background:var(--text);color:var(--bg)}
+    .product-modal{position:fixed;inset:0;z-index:10020;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.82);backdrop-filter:blur(12px)}.product-modal.open{display:flex}.product-modal-panel{position:relative;width:min(980px,100%);max-height:92vh;overflow:auto;background:var(--bg);border:1px solid var(--line);display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 30px 100px rgba(0,0,0,.45)}.product-modal-image{min-height:560px;background:#080808}.product-modal-image img{width:100%;height:100%;display:block;object-fit:cover}.product-modal-copy{padding:42px;display:flex;flex-direction:column;justify-content:center}.product-modal-copy .drop-label{font-size:8px;letter-spacing:2.5px;color:var(--grey)}.product-modal-copy h2{margin:10px 0 8px;font-size:clamp(25px,4vw,42px);line-height:1;text-transform:uppercase}.product-modal-price{font-size:20px;font-weight:700;margin:8px 0 24px}.product-modal-description{color:var(--grey);font-size:11px;line-height:1.75;margin-bottom:26px}.product-option-label{font-size:8px;letter-spacing:2px;margin-bottom:10px}.size-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}.size-option{min-width:48px;padding:12px 10px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:10px;cursor:pointer}.size-option:hover,.size-option.selected{border-color:var(--text);background:var(--text);color:var(--bg)}.product-buy-btn{width:100%;padding:15px;border:1px solid var(--text);background:var(--text);color:var(--bg);font-size:9px;font-weight:700;letter-spacing:2px;cursor:pointer}.product-buy-btn:disabled{opacity:.45;cursor:not-allowed}.product-buy-note{margin-top:10px;color:var(--grey);font-size:8px;line-height:1.6}.product-modal-close{position:absolute;top:14px;right:14px;z-index:2;width:38px;height:38px;border:1px solid var(--line);background:rgba(10,10,10,.75);color:#fff;font-size:20px;cursor:pointer}.product-selection-status{min-height:18px;margin-top:12px;font-size:9px;letter-spacing:1px}
+    @media(max-width:760px){.product-modal{padding:0;align-items:flex-end}.product-modal-panel{grid-template-columns:1fr;max-height:94vh;border-left:0;border-right:0;border-bottom:0}.product-modal-image{min-height:0;height:42vh}.product-modal-copy{padding:26px 20px 28px}.product-modal-copy h2{font-size:27px}.product-modal-description{margin-bottom:20px}.size-options{margin-bottom:20px}}
+    body.light-theme .product-modal-panel{background:#f4f3ef}.body.light-theme .size-option{border-color:#aaa}
+
   </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -2467,7 +2474,7 @@
         </div>
 
         <div class="shop-grid">
-          <article class="product-card" data-printful-product-id="474862785">
+          <article class="product-card is-live" data-printful-product-id="474862785" role="button" tabindex="0" onclick="openHoodieProduct(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHoodieProduct(event)}">
             <div class="product-visual product-image">
               <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" loading="lazy">
             </div>
@@ -2478,7 +2485,7 @@
                 <span class="product-price">£34.99</span>
                 <span class="product-sizes">BLACK · S · M · L · XL · 2XL · 3XL</span>
               </div>
-              <button type="button" disabled>SHOP SOON</button>
+              <button type="button">VIEW</button>
             </div>
           </article>
           <article class="product-card"><div class="product-visual"><span>STANCEBOUND</span><strong>02</strong></div><div class="product-info"><div><span>COMING SOON</span><h3>Stickers & Decals</h3></div><button disabled>SOON</button></div></article>
@@ -3050,6 +3057,51 @@
   </script>
 
 
+
+
+  <!-- SHOP PRODUCT MODAL -->
+  <div id="hoodieProductModal" class="product-modal" aria-hidden="true" onclick="productModalBackdrop(event)">
+    <div class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="hoodieProductTitle">
+      <button class="product-modal-close" type="button" aria-label="Close product" onclick="closeHoodieProduct()">×</button>
+      <div class="product-modal-image"><img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back"></div>
+      <div class="product-modal-copy">
+        <span class="drop-label">STANCEBOUND · DROP 001</span>
+        <h2 id="hoodieProductTitle">Signature Hoodie</h2>
+        <div class="product-modal-price">£34.99</div>
+        <p class="product-modal-description">Premium heavyweight black pullover hoodie with the STANCEBOUND SB emblem on the chest and full STANCEBOUND DETAILING artwork across the back.</p>
+        <div class="product-option-label">COLOUR · BLACK</div>
+        <div class="product-option-label">SELECT SIZE</div>
+        <div class="size-options" id="hoodieSizes">
+          <button class="size-option" type="button" data-size="S">S</button><button class="size-option" type="button" data-size="M">M</button><button class="size-option" type="button" data-size="L">L</button><button class="size-option" type="button" data-size="XL">XL</button><button class="size-option" type="button" data-size="2XL">2XL</button><button class="size-option" type="button" data-size="3XL">3XL</button>
+        </div>
+        <button id="hoodieBuyBtn" class="product-buy-btn" type="button" disabled>SELECT A SIZE</button>
+        <div id="hoodieSelectionStatus" class="product-selection-status"></div>
+        <p class="product-buy-note">Secure checkout is being connected. Size selection is live now; payment will only be enabled once the order flow is ready.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let selectedHoodieSize = null;
+  function openHoodieProduct(){
+    const modal=document.getElementById('hoodieProductModal');
+    if(!modal)return;
+    modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  }
+  function closeHoodieProduct(){
+    const modal=document.getElementById('hoodieProductModal');
+    if(!modal)return;
+    modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';
+  }
+  function productModalBackdrop(e){if(e.target===e.currentTarget)closeHoodieProduct()}
+  document.querySelectorAll('#hoodieSizes .size-option').forEach(btn=>{btn.addEventListener('click',()=>{
+    document.querySelectorAll('#hoodieSizes .size-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedHoodieSize=btn.dataset.size;
+    const buy=document.getElementById('hoodieBuyBtn');buy.disabled=false;buy.textContent='SIZE '+selectedHoodieSize+' · CHECKOUT COMING NEXT';
+    document.getElementById('hoodieSelectionStatus').textContent='Selected: Black / '+selectedHoodieSize;
+  })});
+  document.getElementById('hoodieBuyBtn')?.addEventListener('click',()=>{if(!selectedHoodieSize)return;document.getElementById('hoodieSelectionStatus').textContent='Black / '+selectedHoodieSize+' selected. Checkout is not live yet.'});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHoodieProduct()});
+</script>
 </body>
 
 </html>
