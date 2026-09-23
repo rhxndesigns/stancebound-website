@@ -240,6 +240,19 @@ body{padding-bottom:88px}
 
 
 .pipeline-card{transition:transform .16s ease,border-color .16s ease,background .16s ease}.pipeline-card:active{transform:scale(.992);border-color:#555;background:#0b0b0b}.pipeline-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.pipeline-details>div,.pipeline-note{border:1px solid #252525;background:#090909;padding:12px}.pipeline-details small,.pipeline-note small{display:block;color:#666;font-size:7px;letter-spacing:1.4px;margin-bottom:5px}.pipeline-details strong{font-size:11px;color:#ddd;text-transform:none}.pipeline-note{color:#aaa;font-size:11px;line-height:1.6;margin:12px 0}
+
+/* SHOP ORDERS */
+.order-card{border:1px solid #292929;background:#070707;padding:16px;margin-top:10px}
+.order-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.order-card h3{margin:0 0 5px;font-size:15px}
+.order-meta{font-size:10px;color:#777;line-height:1.7}
+.order-total{font-size:18px;font-weight:800;white-space:nowrap}
+.order-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.order-detail{border:1px solid #222;background:#090909;padding:11px;overflow-wrap:anywhere}
+.order-detail small{display:block;color:#666;font-size:7px;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:5px}
+.order-detail strong{font-size:11px;color:#ddd;font-weight:600;white-space:pre-line}
+.order-card.new-order{border-left:3px solid #fff}
+@media(max-width:560px){.order-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -322,6 +335,7 @@ Log In
     <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
     <button type="button" class="admin-tab" data-admin-target="completed">Completed</button>
+    <button type="button" class="admin-tab" data-admin-target="orders">Orders <span id="orderBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
     <button type="button" class="admin-tab" data-admin-target="text">Text</button>
     <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
@@ -336,7 +350,7 @@ Log In
         <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Needs attention</div></div>
         <div class="metric-card" data-open-admin="schedule"><div class="metric-label">Upcoming jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
         <div class="metric-card" data-open-admin="completed"><div class="metric-label">Completed</div><div class="metric-value" id="metricCompleted">0</div><div class="metric-sub">This month</div></div>
-        <div class="metric-card"><div class="metric-label">Booked value</div><div class="metric-value" id="metricRevenue">£0</div><div class="metric-sub">This month</div></div>
+        <div class="metric-card" data-open-admin="orders"><div class="metric-label">Paid orders</div><div class="metric-value" id="metricOrders">0</div><div class="metric-sub">Shop orders</div></div>
       </div>
       <div class="today-wrap">
         <div class="today-head"><h3>Today</h3><span id="todayLabel"></span></div>
@@ -357,6 +371,9 @@ Log In
         </div>
         <div class="dash-card" data-open-admin="completed">
           <div class="dash-icon">✓</div><h3>Completed</h3><p>Finished jobs, prices and job history.</p>
+        </div>
+        <div class="dash-card" data-open-admin="orders">
+          <div class="dash-icon">▣</div><h3>Orders</h3><p>Paid shop orders, customer details and fulfilment status.</p>
         </div>
         <div class="dash-card" data-open-admin="photos">
           <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
@@ -438,6 +455,16 @@ Log In
       <p class="help">Finished work lives here instead of clogging up active enquiries. Prices and booking details stay attached to the job.</p>
       <div id="completedSummary" class="overview-grid"></div>
       <div id="completedList" class="completed-list"></div>
+    </div>
+  </div>
+
+  <div class="admin-page" data-admin-page="orders">
+    <div class="panel">
+      <div class="admin-kicker">STANCEBOUND Shop</div>
+      <div class="section-title-row"><h2>Orders</h2><span class="status-pill" id="ordersCount">0 orders</span></div>
+      <p class="help">Paid Stripe orders appear here automatically. Fulfilment will remain pending until the Printful stage is connected.</p>
+      <div id="ordersStatus" class="status"></div>
+      <div id="ordersList"></div>
     </div>
   </div>
 
@@ -552,7 +579,7 @@ Save Changes
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
   <div class="more-sheet" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
-    <button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+    <button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
@@ -595,6 +622,7 @@ function openAdminPage(name, addToHistory=true) {
   document.querySelector('#moreSheet')?.classList.remove('show');
   document.querySelector('#quickSheet')?.classList.remove('show');
   if(name==='completed') renderCompleted();
+  if(name==='orders') renderOrders();
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
   if(name==='dashboard') renderDashboard();
@@ -993,6 +1021,52 @@ async function loadEnquiries(){
 }
 
 
+
+let cachedOrders = [];
+
+function formatOrderAddress(address){
+  if(!address)return 'Not supplied';
+  return [address.line1,address.line2,address.city,address.state,address.postal_code,address.country].filter(Boolean).join('\n');
+}
+
+async function loadOrders(){
+  const status=document.querySelector('#ordersStatus');
+  if(status)status.textContent='Loading orders...';
+  const {data,error}=await supabase.from('shop_orders').select('id,created_at,stripe_session_id,payment_status,customer_email,customer_name,product_name,size,quantity,amount_total,currency,shipping_address,fulfillment_status,printful_order_id,tracking_number').order('created_at',{ascending:false});
+  if(error){
+    if(status)status.textContent='Could not load orders: '+error.message;
+    return;
+  }
+  cachedOrders=data||[];
+  if(status)status.textContent='';
+  renderOrders();
+  renderDashboard();
+}
+
+function renderOrders(){
+  const list=document.querySelector('#ordersList'); if(!list)return;
+  const count=document.querySelector('#ordersCount'); if(count)count.textContent=`${cachedOrders.length} order${cachedOrders.length===1?'':'s'}`;
+  const badge=document.querySelector('#orderBadge'); if(badge)badge.textContent=cachedOrders.filter(r=>(r.fulfillment_status||'pending')==='pending').length||'';
+  if(!cachedOrders.length){list.innerHTML='<div class="empty-state">No shop orders yet.</div>';return;}
+  list.innerHTML=cachedOrders.map((r,i)=>{
+    const date=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
+    const amount=r.amount_total==null?'—':new Intl.NumberFormat('en-GB',{style:'currency',currency:(r.currency||'GBP').toUpperCase()}).format(Number(r.amount_total)/100);
+    const fulfil=(r.fulfillment_status||'pending').replaceAll('_',' ');
+    const paid=(r.payment_status||'pending').replaceAll('_',' ');
+    return `<article class="order-card ${fulfil==='pending'?'new-order':''}">
+      <div class="order-card-head"><div><h3>${escapeHtml(r.product_name||'STANCEBOUND order')}</h3><div class="order-meta">Order #${escapeHtml(r.id)} · ${escapeHtml(date)}<br>${escapeHtml(r.customer_name||'No customer name')} · ${escapeHtml(r.customer_email||'No email')}</div></div><div class="order-total">${escapeHtml(amount)}</div></div>
+      <div class="order-grid">
+        <div class="order-detail"><small>Product</small><strong>${escapeHtml(r.product_name||'—')} · Size ${escapeHtml(r.size||'—')} · Qty ${escapeHtml(r.quantity??1)}</strong></div>
+        <div class="order-detail"><small>Payment</small><strong>${escapeHtml(paid)}</strong></div>
+        <div class="order-detail"><small>Fulfilment</small><strong>${escapeHtml(fulfil)}</strong></div>
+        <div class="order-detail"><small>Delivery address</small><strong>${escapeHtml(formatOrderAddress(r.shipping_address))}</strong></div>
+        <div class="order-detail"><small>Printful order</small><strong>${escapeHtml(r.printful_order_id||'Not sent yet')}</strong></div>
+        <div class="order-detail"><small>Tracking</small><strong>${escapeHtml(r.tracking_number||'Not available yet')}</strong></div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
 function renderDashboard(){
   if(!cachedEnquiries.length && !document.querySelector('#metricNew')) return;
   const now=new Date();
@@ -1008,6 +1082,7 @@ function renderDashboard(){
   set('#metricUpcoming',upcoming.length);
   set('#metricCompleted',completedMonth.length);
   set('#metricRevenue','£'+revenue.toFixed(0));
+  set('#metricOrders',cachedOrders.filter(r=>r.payment_status==='paid').length);
   set('#todayLabel',now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}));
   const host=document.querySelector('#todayJob'); if(!host)return;
   const jobs=active.filter(r=>r.booking_date===today && r.status!=='completed').sort((a,b)=>(a.booking_time||'').localeCompare(b.booking_time||''));
@@ -1146,7 +1221,7 @@ document.querySelector('#calendarNext')?.addEventListener('click',()=>{
 document.querySelector('#refreshAdminBtn').onclick = async () => {
   const status = document.querySelector('#toolStatus');
   status.textContent = 'Refreshing...';
-  await Promise.all([loadContent(), loadPhotos(), loadEnquiries()]);
+  await Promise.all([loadContent(), loadPhotos(), loadEnquiries(), loadOrders()]);
   status.textContent = 'Website data refreshed.';
   setTimeout(() => status.textContent = '', 1800);
 };
@@ -1220,6 +1295,7 @@ async function showCorrectScreen() {
     loadContent();
     loadPhotos();
     loadEnquiries();
+    loadOrders();
   }
 
 }
