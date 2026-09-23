@@ -110,9 +110,7 @@ button.secondary {
   font-size: 12px;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
 
 
 
@@ -315,8 +313,6 @@ Log In
   id="loginStatus"
   class="status">
 </div>
-
-<div id="authDiagnostic" class="status" style="font-size:10px;color:#666;line-height:1.6;overflow-wrap:anywhere"></div>
 
 </section>
 
@@ -1279,99 +1275,49 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   setTimeout(()=>openAdminPage('upcoming'),350);
 });
 
-
-async function updateAuthDiagnostic(stage='page loaded') {
-  const host = document.querySelector('#authDiagnostic');
-  if (!host) return;
-
-  let storageWorks = false;
-  let storedAuthKeys = [];
-  let sessionExists = false;
-  let userEmail = '';
-
-  try {
-    const testKey = '__stancebound_storage_test__';
-    localStorage.setItem(testKey, '1');
-    storageWorks = localStorage.getItem(testKey) === '1';
-    localStorage.removeItem(testKey);
-    storedAuthKeys = Object.keys(localStorage).filter(
-      key => key.includes('stancebound-admin-auth') || key.startsWith('sb-')
-    );
-  } catch (_) {}
-
-  try {
-    const { data } = await supabase.auth.getSession();
-    sessionExists = !!data?.session;
-    userEmail = data?.session?.user?.email || '';
-  } catch (_) {}
-
-  host.textContent =
-    `AUTH CHECK · ${stage} · Storage: ${storageWorks ? 'OK' : 'BLOCKED'} · ` +
-    `Saved auth: ${storedAuthKeys.length ? 'YES' : 'NO'} · ` +
-    `Session: ${sessionExists ? 'YES' : 'NO'}` +
-    (userEmail ? ` · ${userEmail}` : '');
-}
-
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
 
-  if (error) {
-    const status = document.querySelector('#loginStatus');
-    if (status) status.textContent = 'Could not check login: ' + error.message;
-  }
+  if (error) console.error('Session restore error:', error);
 
-  const loggedIn = !!session;
-
+  const loggedIn = Boolean(session);
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.add('hidden');
+  document.querySelector('#quickSheet')?.classList.add('hidden');
 
-  if (loggedIn) {
-    const adminToday = document.querySelector('#adminToday');
-    if (adminToday) {
-      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
-        weekday:'long', day:'numeric', month:'long', year:'numeric'
-      });
-    }
-    await Promise.allSettled([
-      loadContent(),
-      loadPhotos(),
-      loadEnquiries(),
-      loadOrders()
-    ]);
-  }
+  if (!loggedIn) return;
+
+  await Promise.allSettled([
+    loadContent(),
+    loadPhotos(),
+    loadEnquiries(),
+    loadOrders()
+  ]);
 }
 
-
 async function adminLogin() {
+  const email = document.querySelector('#loginEmail')?.value?.trim();
+  const password = document.querySelector('#loginPassword')?.value || '';
   const status = document.querySelector('#loginStatus');
   const button = document.querySelector('#loginBtn');
-  const email = document.querySelector('#email').value.trim();
-  const password = document.querySelector('#password').value;
 
-  if (!email || !password) {
-    status.textContent = 'Enter your email and password.';
-    return;
-  }
-
-  button.disabled = true;
-  status.textContent = 'Logging in...';
-  await updateAuthDiagnostic('before login');
+  if (status) status.textContent = 'Logging in...';
+  if (button) button.disabled = true;
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    if (!data?.session) throw new Error('Login succeeded but no session was created.');
+    if (!data?.session) throw new Error('No login session was returned.');
 
-    status.textContent = '';
-    await updateAuthDiagnostic('after login');
+    if (status) status.textContent = '';
     await showCorrectScreen();
-  } catch (error) {
-    status.textContent = error?.message || 'Could not log in.';
+  } catch (err) {
+    console.error('Login error:', err);
+    if (status) status.textContent = err?.message || 'Could not log in.';
   } finally {
-    button.disabled = false;
+    if (button) button.disabled = false;
   }
 }
 
@@ -1726,18 +1672,9 @@ document
   };
 
 
-supabase.auth.onAuthStateChange((_event, session) => {
-  const loggedIn = !!session;
-  login.classList.toggle('hidden', loggedIn);
-  editor.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
-});
-
 const adminTodayFinal=document.querySelector('#adminToday');
 if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-showCorrectScreen().finally(() => updateAuthDiagnostic('after page load'));
+showCorrectScreen();
 
 </script>
 
