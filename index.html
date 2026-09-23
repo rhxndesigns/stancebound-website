@@ -3076,7 +3076,7 @@
         </div>
         <button id="hoodieBuyBtn" class="product-buy-btn" type="button" disabled>SELECT A SIZE</button>
         <div id="hoodieSelectionStatus" class="product-selection-status"></div>
-        <p class="product-buy-note">Secure checkout is being connected. Size selection is live now; payment will only be enabled once the order flow is ready.</p>
+        <p class="product-buy-note">Secure payment powered by Stripe. UK shipping details are collected at checkout.</p>
       </div>
     </div>
   </div>
@@ -3096,10 +3096,28 @@
   function productModalBackdrop(e){if(e.target===e.currentTarget)closeHoodieProduct()}
   document.querySelectorAll('#hoodieSizes .size-option').forEach(btn=>{btn.addEventListener('click',()=>{
     document.querySelectorAll('#hoodieSizes .size-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedHoodieSize=btn.dataset.size;
-    const buy=document.getElementById('hoodieBuyBtn');buy.disabled=false;buy.textContent='SIZE '+selectedHoodieSize+' · CHECKOUT COMING NEXT';
+    const buy=document.getElementById('hoodieBuyBtn');buy.disabled=false;buy.textContent='BUY NOW · £34.99';
     document.getElementById('hoodieSelectionStatus').textContent='Selected: Black / '+selectedHoodieSize;
   })});
-  document.getElementById('hoodieBuyBtn')?.addEventListener('click',()=>{if(!selectedHoodieSize)return;document.getElementById('hoodieSelectionStatus').textContent='Black / '+selectedHoodieSize+' selected. Checkout is not live yet.'});
+  document.getElementById('hoodieBuyBtn')?.addEventListener('click',async()=>{
+    if(!selectedHoodieSize)return;
+    const buy=document.getElementById('hoodieBuyBtn');
+    const status=document.getElementById('hoodieSelectionStatus');
+    const originalText=buy.textContent;
+    buy.disabled=true;buy.textContent='OPENING SECURE CHECKOUT…';
+    status.textContent='Preparing checkout for Black / '+selectedHoodieSize+'…';
+    try{
+      if(!window.stanceboundSupabase)throw new Error('Checkout service is unavailable.');
+      const {data,error}=await window.stanceboundSupabase.functions.invoke('create-checkout',{body:{size:selectedHoodieSize,quantity:1}});
+      if(error)throw error;
+      if(!data?.checkoutUrl)throw new Error(data?.error||'Checkout could not be created.');
+      window.location.href=data.checkoutUrl;
+    }catch(error){
+      console.error('Checkout error:',error);
+      status.textContent='Checkout could not be opened. Please try again.';
+      buy.disabled=false;buy.textContent=originalText;
+    }
+  });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHoodieProduct()});
 </script>
 </body>
