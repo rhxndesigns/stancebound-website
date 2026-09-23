@@ -111,7 +111,7 @@ button.secondary {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 
@@ -228,6 +228,7 @@ body{padding-bottom:88px}
 .mobile-nav{display:none}.more-sheet,.quick-sheet{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.72);backdrop-filter:blur(7px);align-items:flex-end}.more-sheet.show,.quick-sheet.show{display:flex}.sheet-card{width:100%;background:#080808;border-top:1px solid #333;padding:18px 18px calc(24px + env(safe-area-inset-bottom));animation:sheetUp .2s ease}.sheet-grab{width:38px;height:3px;background:#444;border-radius:5px;margin:0 auto 18px}.sheet-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#777;margin-bottom:12px}.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sheet-grid button{margin:0;background:#0d0d0d;border:1px solid #292929;color:#ddd;text-align:left;padding:16px}.sheet-grid button small{display:block;color:#666;margin-top:4px;font-size:8px}@keyframes sheetUp{from{transform:translateY(25px);opacity:0}to{transform:none;opacity:1}}
 .page-flash{animation:pageFlash .24s ease}@keyframes pageFlash{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(max-width:700px){
+ .mobile-nav.hidden,.more-sheet.hidden,.quick-sheet.hidden{display:none!important}
  body{padding-bottom:94px} main{padding-bottom:15px}.admin-tabs{display:none!important}.admin-topbar{margin-bottom:12px}.admin-title{font-size:24px}
  .overview-grid{grid-template-columns:1fr 1fr}.metric-card{min-height:84px;padding:14px}.metric-value{font-size:22px}
  .dashboard-grid{grid-template-columns:1fr 1fr}.dash-card{padding:14px}.dash-card p{font-size:9px}
