@@ -2783,10 +2783,10 @@
           <span class="sb-vf-meta sb-vf-camera">1/250 &nbsp; F2.8 &nbsp; ISO 100</span>
           <span class="sb-vf-meta sb-vf-brand">STANCEBOUND // AUTOMOTIVE PHOTOGRAPHY</span>`;
         card.appendChild(overlay);
-        card.addEventListener("pointerdown",()=>card.classList.add("sb-vf-active"),{passive:true});
-        const release=()=>card.classList.remove("sb-vf-active");
+        card.addEventListener("pointerdown",()=>{card.classList.add("sb-vf-active");card.dataset.vfPressedAt=String(performance.now())},{passive:true});
+        const release=()=>{ if(!window.matchMedia("(hover: none) and (pointer: coarse)").matches) card.classList.remove("sb-vf-active"); };
         card.addEventListener("pointerup",release,{passive:true});
-        card.addEventListener("pointercancel",release,{passive:true});
+        card.addEventListener("pointercancel",()=>card.classList.remove("sb-vf-active"),{passive:true});
         card.addEventListener("pointerleave",release,{passive:true});
       });
     }
@@ -2796,7 +2796,18 @@
       document.querySelectorAll(".swipe-gallery").forEach(gallery=>{
         const cards=[...gallery.querySelectorAll(".photo,.ba-card")];
         const images=cards.map(c=>c.querySelector("img")?.src).filter(Boolean);
-        cards.forEach((card,index)=>{card.onclick=()=>openGalleryAt(images,index);});
+        cards.forEach((card,index)=>{card.onclick=()=>{
+          const isPhotoViewfinder=card.matches("#photography-gallery .photo");
+          const isTouch=window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+          if(isPhotoViewfinder&&isTouch){
+            const pressedAt=Number(card.dataset.vfPressedAt||performance.now());
+            const elapsed=performance.now()-pressedAt;
+            const wait=Math.max(0,320-elapsed);
+            window.setTimeout(()=>{card.classList.remove("sb-vf-active");openGalleryAt(images,index)},wait);
+            return;
+          }
+          openGalleryAt(images,index);
+        };});
       });
     };
 
