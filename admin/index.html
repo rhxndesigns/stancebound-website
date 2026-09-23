@@ -425,6 +425,31 @@ Log In
     </div>
   </div>
 
+  <div class="admin-page" data-admin-page="manual-booking">
+    <div class="panel">
+      <div class="admin-kicker">Direct / Offline Client</div>
+      <h2>New Booking</h2>
+      <p class="help">Add a booking that came through phone, social media, word of mouth or anywhere outside the website.</p>
+      <form id="manualBookingForm">
+        <div class="booking-grid">
+          <div><label>Customer name</label><input id="manualName" type="text" maxlength="80" required placeholder="Customer name"></div>
+          <div><label>Vehicle</label><input id="manualVehicle" type="text" maxlength="100" required placeholder="e.g. BMW 330d"></div>
+          <div><label>Phone</label><input id="manualPhone" type="tel" maxlength="30" placeholder="Optional"></div>
+          <div><label>Email</label><input id="manualEmail" type="email" maxlength="160" placeholder="Optional"></div>
+          <div><label>Service</label><select id="manualService" required><option value="">Choose service</option><option>Detailing</option><option>Automotive Photography</option><option>Detailing + Photography</option><option>Collaboration / Other</option></select></div>
+          <div><label>Quoted price (£)</label><input id="manualPrice" type="number" min="0" step="0.01" placeholder="Optional"></div>
+          <div><label>Date</label><input id="manualDate" type="date" required></div>
+          <div><label>Start time</label><input id="manualTime" type="time"></div>
+          <div><label>End time</label><input id="manualEnd" type="time"></div>
+          <div class="full"><label>Location</label><input id="manualLocation" type="text" maxlength="200" placeholder="Where the job is taking place"></div>
+          <div class="full"><label>Private notes</label><textarea id="manualNotes" placeholder="Condition, access, customer requests, anything useful..."></textarea></div>
+        </div>
+        <button type="submit" id="manualSaveBtn">Create Booking</button>
+        <div id="manualBookingStatus" class="status"></div>
+      </form>
+    </div>
+  </div>
+
   <div class="admin-page" data-admin-page="photos">
     <div class="panel">
   <h2>Photo Manager</h2>
@@ -514,7 +539,7 @@ Save Changes
     <button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
-    <button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
+    <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
   </div></div></div>
 
 <script type="module">
@@ -541,7 +566,9 @@ const fields =
 const adminTabs = [...document.querySelectorAll('.admin-tab')];
 const adminPages = [...document.querySelectorAll('.admin-page')];
 
-function openAdminPage(name) {
+function openAdminPage(name, addToHistory=true) {
+  const valid=adminPages.some(page=>page.dataset.adminPage===name);
+  if(!valid) name='dashboard';
   adminTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.adminTarget === name));
   adminPages.forEach(page => {
     const active=page.dataset.adminPage === name;
@@ -555,6 +582,12 @@ function openAdminPage(name) {
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
   if(name==='dashboard') renderDashboard();
+  const nextHash='#'+name;
+  if(addToHistory){
+    if(location.hash!==nextHash) history.pushState({stanceboundAdmin:name},'',nextHash);
+  }else if(location.hash!==nextHash){
+    history.replaceState({stanceboundAdmin:name},'',nextHash);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -569,6 +602,18 @@ document.querySelector('#moreBtn')?.addEventListener('click',()=>moreSheet.class
 document.querySelector('#quickAddBtn')?.addEventListener('click',()=>quickSheet.classList.add('show'));
 document.querySelectorAll('[data-sheet-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.sheetTarget)));
 [moreSheet,quickSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show')}));
+
+const ADMIN_PAGE_NAMES=adminPages.map(p=>p.dataset.adminPage);
+window.addEventListener('popstate',()=>{
+  const name=location.hash.replace('#','');
+  openAdminPage(ADMIN_PAGE_NAMES.includes(name)?name:'dashboard',false);
+});
+if(!location.hash || !ADMIN_PAGE_NAMES.includes(location.hash.replace('#',''))){
+  history.replaceState({stanceboundAdmin:'dashboard'},'','#dashboard');
+}else{
+  openAdminPage(location.hash.replace('#',''),false);
+}
+
 
 
 
@@ -808,7 +853,7 @@ async function loadEnquiries(){
       <div class="enquiry-card-head">
         <div>
           <h3>${escapeHtml(r.name)}</h3>
-          <div class="enquiry-meta">${escapeHtml(r.email)}${phone}<br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)} · ${date}</div>
+          <div class="enquiry-meta">${escapeHtml(r.email||'No email')}${phone}<br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)} · ${date}</div>
         </div>
         <span class="status-pill">${escapeHtml((r.status||'new').replaceAll('_',' '))}</span>
       </div>
@@ -1089,6 +1134,47 @@ document.querySelector('#refreshAdminBtn').onclick = async () => {
   status.textContent = 'Website data refreshed.';
   setTimeout(() => status.textContent = '', 1800);
 };
+
+
+
+const manualBookingForm=document.querySelector('#manualBookingForm');
+manualBookingForm?.addEventListener('submit',async(event)=>{
+  event.preventDefault();
+  const status=document.querySelector('#manualBookingStatus');
+  const btn=document.querySelector('#manualSaveBtn');
+  const name=document.querySelector('#manualName').value.trim();
+  const vehicle=document.querySelector('#manualVehicle').value.trim();
+  const service=document.querySelector('#manualService').value;
+  const booking_date=document.querySelector('#manualDate').value;
+  if(!name||!vehicle||!service||!booking_date){status.textContent='Name, vehicle, service and date are required.';return;}
+  const email=document.querySelector('#manualEmail').value.trim()||null;
+  const price=document.querySelector('#manualPrice').value;
+  const payload={
+    name,
+    email,
+    phone:document.querySelector('#manualPhone').value.trim(),
+    service,
+    vehicle,
+    message:'Manual booking created in STANCEBOUND Admin',
+    status:'booked',
+    email_verified:true,
+    verified_at:new Date().toISOString(),
+    booking_date,
+    booking_time:document.querySelector('#manualTime').value||null,
+    booking_end_time:document.querySelector('#manualEnd').value||null,
+    booking_location:document.querySelector('#manualLocation').value.trim(),
+    quoted_price:price===''?null:Number(price),
+    admin_notes:document.querySelector('#manualNotes').value.trim()
+  };
+  btn.disabled=true;status.textContent='Creating booking...';
+  const {data,error}=await supabase.from('enquiries').insert(payload).select('id').single();
+  btn.disabled=false;
+  if(error){status.textContent='Could not create booking: '+error.message;return;}
+  status.textContent='Booking created ✓';
+  manualBookingForm.reset();
+  await loadEnquiries();
+  setTimeout(()=>openAdminPage('upcoming'),350);
+});
 
 async function showCorrectScreen() {
 
