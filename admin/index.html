@@ -169,6 +169,39 @@ select, input[type="file"] {
 #enquiryBadge:not(:empty){display:inline-block;margin-left:3px;min-width:15px;padding:2px 4px;background:#fff;color:#000;font-size:8px}
 .empty-state{padding:25px;border:1px dashed #333;color:#777;text-align:center;font-size:11px;line-height:1.7}
 
+
+/* STANCEBOUND booking manager */
+@media(max-width:560px){.admin-tabs{grid-template-columns:repeat(6,1fr)!important}.admin-tab{font-size:7px!important}}
+.enquiry-controls{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0}
+.enquiry-controls select,.booking-editor input,.booking-editor textarea{width:100%;box-sizing:border-box;background:#050505;border:1px solid #333;color:#fff;padding:11px;font:inherit}
+.enquiry-controls select{height:44px;text-transform:uppercase;letter-spacing:1px;font-size:10px}
+.enquiry-actions-admin.three{grid-template-columns:1fr 1fr 1fr}
+.enquiry-actions-admin .danger{border-color:#542222;color:#ffb3b3;background:#110606}
+.booking-editor{display:none;margin-top:12px;padding:14px;border:1px solid #292929;background:#090909}
+.booking-editor.show{display:block}
+.booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.booking-grid .full{grid-column:1/-1}
+.booking-editor label{display:block;margin:0 0 5px;color:#777;font-size:8px;letter-spacing:1.4px;text-transform:uppercase}
+.booking-editor textarea{min-height:90px}
+.booking-save{margin-top:10px}
+.calendar-toolbar{display:grid;grid-template-columns:48px 1fr 48px;gap:8px;align-items:center;margin:18px 0 10px}
+.calendar-toolbar button{margin:0;padding:10px}
+.calendar-toolbar strong{text-align:center;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.calendar-weekdays,.booking-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendar-weekdays span{text-align:center;color:#666;font-size:7px;text-transform:uppercase;padding:6px 0}
+.calendar-day{min-height:58px;border:1px solid #242424;background:#070707;padding:6px;position:relative;color:#aaa;font-size:9px}
+.calendar-day.muted{opacity:.25}
+.calendar-day.today{border-color:#777}
+.calendar-day.has-booking{background:#111;border-color:#555;color:#fff}
+.calendar-day .day-num{font-weight:700}
+.calendar-dot{display:block;margin-top:6px;font-size:7px;line-height:1.35;color:#bbb;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.schedule-kicker{margin-top:24px}
+.schedule-list{display:grid;gap:8px}
+.schedule-card{border:1px solid #292929;background:#070707;padding:14px}
+.schedule-card h3{margin:0 0 5px;font-size:13px}
+.schedule-meta{font-size:10px;color:#888;line-height:1.7}
+.schedule-price{color:#fff}
+
 </style>
 </head>
 
@@ -230,6 +263,7 @@ Log In
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
     <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
     <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
     <button type="button" class="admin-tab" data-admin-target="text">Text</button>
     <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
@@ -243,6 +277,9 @@ Log In
       <div class="dashboard-grid">
         <div class="dash-card" data-open-admin="enquiries">
           <div class="dash-icon">✉</div><h3>Enquiries</h3><p>Read, reply to and manage customer requests.</p>
+        </div>
+        <div class="dash-card" data-open-admin="schedule">
+          <div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, upcoming bookings and job details.</p>
         </div>
         <div class="dash-card" data-open-admin="photos">
           <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
@@ -268,6 +305,27 @@ Log In
       <p class="help">Only email-verified enquiries appear here. Reply from this page and the customer receives the response by email.</p>
       <div id="enquiryAdminStatus" class="status"></div>
       <div id="enquiryList" class="enquiry-list"></div>
+    </div>
+  </div>
+
+
+  <div class="admin-page" data-admin-page="schedule">
+    <div class="panel">
+      <div class="admin-kicker">Bookings & Jobs</div>
+      <h2>Schedule</h2>
+      <p class="help">Bookings saved from enquiries appear here automatically.</p>
+      <div class="calendar-toolbar">
+        <button type="button" class="secondary" id="calendarPrev">‹</button>
+        <strong id="calendarTitle"></strong>
+        <button type="button" class="secondary" id="calendarNext">›</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div id="bookingCalendar" class="booking-calendar"></div>
+      <div class="admin-kicker schedule-kicker">Upcoming</div>
+      <div id="scheduleStatus" class="status"></div>
+      <div id="scheduleList" class="schedule-list"></div>
     </div>
   </div>
 
@@ -554,6 +612,30 @@ function escapeHtml(value=""){
   return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
 }
 
+const ENQUIRY_STATUSES = [
+  ['new','New'],
+  ['awaiting_reply','Awaiting Reply'],
+  ['ongoing','Ongoing'],
+  ['booked','Booked'],
+  ['completed','Completed'],
+  ['cancelled','Cancelled'],
+  ['spam','Spam']
+];
+
+let cachedEnquiries = [];
+let calendarCursor = new Date();
+calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth(), 1);
+
+function statusOptions(current){
+  return ENQUIRY_STATUSES.map(([value,label]) =>
+    `<option value="${value}" ${value===current?'selected':''}>${label}</option>`
+  ).join('');
+}
+
+function moneyValue(v){
+  return v === null || v === undefined || v === '' ? '' : Number(v).toFixed(2);
+}
+
 async function loadEnquiries(){
   const list=document.querySelector('#enquiryList');
   const status=document.querySelector('#enquiryAdminStatus');
@@ -562,7 +644,7 @@ async function loadEnquiries(){
 
   const {data,error}=await supabase
     .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at')
     .eq('email_verified',true)
     .order('created_at',{ascending:false});
 
@@ -571,12 +653,14 @@ async function loadEnquiries(){
     return;
   }
 
-  const rows=data||[];
+  cachedEnquiries=data||[];
+  const rows=cachedEnquiries;
   document.querySelector('#enquiryBadge').textContent=rows.filter(r=>r.status==='new').length||'';
   status.textContent='';
 
   if(!rows.length){
-    list.innerHTML='<div class="empty-state">No verified enquiries yet.<br>Peace and quiet. Suspicious, but pleasant.</div>';
+    list.innerHTML='<div class="empty-state">No verified enquiries yet.</div>';
+    renderSchedule();
     return;
   }
 
@@ -585,14 +669,40 @@ async function loadEnquiries(){
     const phone=r.phone?` · ${escapeHtml(r.phone)}`:'';
     return `<article class="enquiry-card ${r.status==='new'?'new':''}" data-enquiry-id="${r.id}">
       <div class="enquiry-card-head">
-        <div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.email)}${phone}<br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)} · ${date}</div></div>
-        <span class="status-pill">${escapeHtml(r.status||'new')}</span>
+        <div>
+          <h3>${escapeHtml(r.name)}</h3>
+          <div class="enquiry-meta">${escapeHtml(r.email)}${phone}<br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)} · ${date}</div>
+        </div>
+        <span class="status-pill">${escapeHtml((r.status||'new').replaceAll('_',' '))}</span>
       </div>
+
       <div class="enquiry-message">${escapeHtml(r.message)}</div>
-      <div class="enquiry-actions-admin">
-        <button type="button" data-reply-toggle="${r.id}">Reply</button>
-        <button type="button" class="secondary" data-status-id="${r.id}" data-next-status="${r.status==='booked'?'closed':'booked'}">${r.status==='booked'?'Close':'Mark Booked'}</button>
+
+      <div class="enquiry-controls">
+        <select data-status-select="${r.id}" aria-label="Enquiry status">
+          ${statusOptions(r.status||'new')}
+        </select>
       </div>
+
+      <div class="enquiry-actions-admin three">
+        <button type="button" data-reply-toggle="${r.id}">Reply</button>
+        <button type="button" class="secondary" data-booking-toggle="${r.id}">Booking</button>
+        <button type="button" class="danger" data-delete-enquiry="${r.id}">Delete</button>
+      </div>
+
+      <div class="booking-editor" id="booking-${r.id}">
+        <div class="booking-grid">
+          <div><label>Date</label><input type="date" data-booking-date value="${escapeHtml(r.booking_date||'')}"></div>
+          <div><label>Start time</label><input type="time" data-booking-time value="${escapeHtml((r.booking_time||'').slice(0,5))}"></div>
+          <div><label>End time</label><input type="time" data-booking-end value="${escapeHtml((r.booking_end_time||'').slice(0,5))}"></div>
+          <div><label>Quoted price (£)</label><input type="number" min="0" step="0.01" data-booking-price value="${moneyValue(r.quoted_price)}"></div>
+          <div class="full"><label>Location</label><input type="text" data-booking-location value="${escapeHtml(r.booking_location||'')}" placeholder="Booking location"></div>
+          <div class="full"><label>Private notes</label><textarea data-booking-notes placeholder="Anything you need to remember...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+        </div>
+        <button type="button" class="booking-save" data-save-booking="${r.id}">Save Booking</button>
+        <div class="status"></div>
+      </div>
+
       <div class="enquiry-reply" id="reply-${r.id}">
         <label>Your reply</label>
         <textarea maxlength="4000" placeholder="Write your reply to ${escapeHtml(r.name)}..."></textarea>
@@ -606,10 +716,55 @@ async function loadEnquiries(){
     document.querySelector('#reply-'+btn.dataset.replyToggle)?.classList.toggle('show');
   });
 
-  list.querySelectorAll('[data-status-id]').forEach(btn=>btn.onclick=async()=>{
+  list.querySelectorAll('[data-booking-toggle]').forEach(btn=>btn.onclick=()=>{
+    document.querySelector('#booking-'+btn.dataset.bookingToggle)?.classList.toggle('show');
+  });
+
+  list.querySelectorAll('[data-status-select]').forEach(sel=>sel.onchange=async()=>{
+    sel.disabled=true;
+    const {error}=await supabase.from('enquiries').update({status:sel.value}).eq('id',sel.dataset.statusSelect);
+    if(error) status.textContent=error.message;
+    await loadEnquiries();
+  });
+
+  list.querySelectorAll('[data-save-booking]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('.enquiry-card');
+    const box=btn.closest('.booking-editor');
+    const st=box.querySelector('.status');
+    const booking_date=box.querySelector('[data-booking-date]').value||null;
+    const booking_time=box.querySelector('[data-booking-time]').value||null;
+    const booking_end_time=box.querySelector('[data-booking-end]').value||null;
+    const booking_location=box.querySelector('[data-booking-location]').value.trim();
+    const priceRaw=box.querySelector('[data-booking-price]').value;
+    const admin_notes=box.querySelector('[data-booking-notes]').value.trim();
+
+    btn.disabled=true; st.textContent='Saving...';
+    const update={
+      booking_date,
+      booking_time,
+      booking_end_time,
+      booking_location,
+      quoted_price: priceRaw==='' ? null : Number(priceRaw),
+      admin_notes
+    };
+    if(booking_date) update.status='booked';
+
+    const {error}=await supabase.from('enquiries').update(update).eq('id',card.dataset.enquiryId);
+    st.textContent=error ? error.message : 'Booking saved ✓';
+    btn.disabled=false;
+    if(!error) setTimeout(loadEnquiries,500);
+  });
+
+  list.querySelectorAll('[data-delete-enquiry]').forEach(btn=>btn.onclick=async()=>{
+    const row=cachedEnquiries.find(r=>r.id===btn.dataset.deleteEnquiry);
+    if(!confirm(`Delete ${row?.name||'this enquiry'} permanently? This cannot be undone.`)) return;
     btn.disabled=true;
-    const {error}=await supabase.from('enquiries').update({status:btn.dataset.nextStatus}).eq('id',btn.dataset.statusId);
-    if(error)status.textContent=error.message;
+    const {error}=await supabase.from('enquiries').delete().eq('id',btn.dataset.deleteEnquiry);
+    if(error){
+      status.textContent='Delete failed: '+error.message;
+      btn.disabled=false;
+      return;
+    }
     await loadEnquiries();
   });
 
@@ -622,7 +777,7 @@ async function loadEnquiries(){
     try{
       const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.sendReply,reply}});
       if(error)throw error;
-      if(!data?.ok)throw new Error(data?.error||'Reply failed.');
+      if(!data?.success)throw new Error(data?.error||'Reply failed.');
       st.textContent='Reply sent ✓';
       box.querySelector('textarea').value='';
       setTimeout(loadEnquiries,700);
@@ -630,7 +785,67 @@ async function loadEnquiries(){
       st.textContent=error?.message||'Could not send reply.';
     }finally{btn.disabled=false;}
   });
+
+  renderSchedule();
 }
+
+function renderSchedule(){
+  const calendar=document.querySelector('#bookingCalendar');
+  const list=document.querySelector('#scheduleList');
+  const title=document.querySelector('#calendarTitle');
+  const st=document.querySelector('#scheduleStatus');
+  if(!calendar||!list||!title)return;
+
+  const bookings=cachedEnquiries.filter(r=>r.booking_date && r.status!=='cancelled' && r.status!=='spam');
+  title.textContent=calendarCursor.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  const first=new Date(y,m,1);
+  const offset=(first.getDay()+6)%7;
+  const start=new Date(y,m,1-offset);
+  const todayKey=new Date().toISOString().slice(0,10);
+
+  let cells='';
+  for(let i=0;i<42;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dayBookings=bookings.filter(b=>b.booking_date===key);
+    const classes=['calendar-day'];
+    if(d.getMonth()!==m)classes.push('muted');
+    if(key===todayKey)classes.push('today');
+    if(dayBookings.length)classes.push('has-booking');
+    cells+=`<div class="${classes.join(' ')}"><span class="day-num">${d.getDate()}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
+  }
+  calendar.innerHTML=cells;
+
+  const nowKey=new Date().toISOString().slice(0,10);
+  const upcoming=bookings
+    .filter(r=>r.booking_date>=nowKey)
+    .sort((a,b)=>(a.booking_date+(a.booking_time||'')).localeCompare(b.booking_date+(b.booking_time||'')));
+
+  st.textContent=upcoming.length ? '' : 'No upcoming bookings.';
+  list.innerHTML=upcoming.map(r=>{
+    const date=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    const time=(r.booking_time||'').slice(0,5);
+    const end=(r.booking_end_time||'').slice(0,5);
+    const times=time ? `${time}${end?'–'+end:''}` : 'Time not set';
+    const price=r.quoted_price!==null && r.quoted_price!==undefined ? ` · <span class="schedule-price">£${Number(r.quoted_price).toFixed(2)}</span>` : '';
+    return `<div class="schedule-card">
+      <h3>${escapeHtml(r.name)} · ${escapeHtml(r.vehicle)}</h3>
+      <div class="schedule-meta">${escapeHtml(date)} · ${escapeHtml(times)}${price}<br>${escapeHtml(r.service)}${r.booking_location?' · '+escapeHtml(r.booking_location):''}<br>Status: ${escapeHtml((r.status||'').replaceAll('_',' '))}</div>
+      ${r.admin_notes?`<div class="enquiry-message">${escapeHtml(r.admin_notes)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+document.querySelector('#calendarPrev')?.addEventListener('click',()=>{
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
+  renderSchedule();
+});
+document.querySelector('#calendarNext')?.addEventListener('click',()=>{
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
+  renderSchedule();
+});
 
 document.querySelector('#refreshAdminBtn').onclick = async () => {
   const status = document.querySelector('#toolStatus');
