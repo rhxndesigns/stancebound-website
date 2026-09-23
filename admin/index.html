@@ -316,6 +316,8 @@ Log In
   class="status">
 </div>
 
+<div id="authDiagnostic" class="status" style="font-size:10px;color:#666;line-height:1.6;overflow-wrap:anywhere"></div>
+
 </section>
 
 
@@ -1277,6 +1279,39 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   setTimeout(()=>openAdminPage('upcoming'),350);
 });
 
+
+async function updateAuthDiagnostic(stage='page loaded') {
+  const host = document.querySelector('#authDiagnostic');
+  if (!host) return;
+
+  let storageWorks = false;
+  let storedAuthKeys = [];
+  let sessionExists = false;
+  let userEmail = '';
+
+  try {
+    const testKey = '__stancebound_storage_test__';
+    localStorage.setItem(testKey, '1');
+    storageWorks = localStorage.getItem(testKey) === '1';
+    localStorage.removeItem(testKey);
+    storedAuthKeys = Object.keys(localStorage).filter(
+      key => key.includes('stancebound-admin-auth') || key.startsWith('sb-')
+    );
+  } catch (_) {}
+
+  try {
+    const { data } = await supabase.auth.getSession();
+    sessionExists = !!data?.session;
+    userEmail = data?.session?.user?.email || '';
+  } catch (_) {}
+
+  host.textContent =
+    `AUTH CHECK · ${stage} · Storage: ${storageWorks ? 'OK' : 'BLOCKED'} · ` +
+    `Saved auth: ${storedAuthKeys.length ? 'YES' : 'NO'} · ` +
+    `Session: ${sessionExists ? 'YES' : 'NO'}` +
+    (userEmail ? ` · ${userEmail}` : '');
+}
+
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -1323,6 +1358,7 @@ async function adminLogin() {
 
   button.disabled = true;
   status.textContent = 'Logging in...';
+  await updateAuthDiagnostic('before login');
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -1330,6 +1366,7 @@ async function adminLogin() {
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
+    await updateAuthDiagnostic('after login');
     await showCorrectScreen();
   } catch (error) {
     status.textContent = error?.message || 'Could not log in.';
@@ -1700,7 +1737,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
 const adminTodayFinal=document.querySelector('#adminToday');
 if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-showCorrectScreen();
+showCorrectScreen().finally(() => updateAuthDiagnostic('after page load'));
 
 </script>
 
