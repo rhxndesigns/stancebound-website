@@ -1526,8 +1526,9 @@
     .home-choice-link{display:inline-flex;align-items:center;gap:10px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.55);font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
     .home-choice:hover img,.home-choice:focus-visible img{transform:scale(1.045);filter:brightness(.48) saturate(1)}
     .home-choice:active{transform:scale(.99)}
-    .home-showcase{display:grid;grid-template-columns:.72fr 1.28fr;gap:12px;margin-bottom:12px}
-    .home-feature-compact{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center;min-height:300px;padding:20px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 80% 0,rgba(255,255,255,.07),transparent 36%),#090909}
+    .home-showcase{margin-bottom:12px}
+    .home-feature-compact{position:relative;display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center;min-height:300px;padding:20px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 80% 0,rgba(255,255,255,.07),transparent 36%),#090909;overflow:hidden}
+    .home-feature-compact::after{content:"FEATURE 03";position:absolute;right:18px;top:16px;color:rgba(255,255,255,.16);font-size:9px;font-weight:800;letter-spacing:2px}
     .home-feature-video{position:relative;width:150px;aspect-ratio:9/16;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#050505}
     .home-feature-video video{width:100%;height:100%;display:block;object-fit:cover}
     .home-kicker{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#888;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
@@ -1536,23 +1537,36 @@
     .home-feature-compact p{margin:0 0 16px;color:#aaa;font-size:11px;line-height:1.65}
     .home-link{display:inline-flex;align-items:center;gap:10px;width:max-content;border:0;background:none;color:#fff;padding:0 0 6px;border-bottom:1px solid #777;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
     .home-link span{transition:transform .2s ease}.home-link:hover span{transform:translateX(4px)}
-    .home-reel{min-width:0;padding:20px;border:1px solid rgba(255,255,255,.1);background:#090909}
-    .home-reel-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}
-    .home-reel-head h3{margin:0;font-size:17px;letter-spacing:1px;text-transform:uppercase}.home-reel-head span{color:#777;font-size:8px;letter-spacing:2px;text-transform:uppercase}
-    .home-reel-track{display:grid;grid-auto-flow:column;grid-auto-columns:42%;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:3px}.home-reel-track::-webkit-scrollbar{display:none}
-    .home-reel-card{position:relative;aspect-ratio:4/5;overflow:hidden;scroll-snap-align:start;background:#050505;border:0;padding:0;cursor:pointer}
-    .home-reel-card img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease,filter .35s ease}.home-reel-card:active img{transform:scale(1.03);filter:brightness(.75)}
+
+    /* Micro-interactions: restrained, tactile, STANCEBOUND */
+    .home-choice{isolation:isolate;transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .25s ease,box-shadow .25s ease}
+    .home-choice::before{content:"";position:absolute;z-index:3;inset:0;border:1px solid transparent;pointer-events:none;transition:border-color .25s ease,box-shadow .25s ease}
+    .home-choice-content{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+    .home-choice-index{transition:color .25s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+    .home-choice-link{position:relative;border-bottom:0}
+    .home-choice-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(255,255,255,.65);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+    .home-choice:hover,.home-choice:focus-visible{border-color:rgba(255,255,255,.28);box-shadow:0 18px 45px rgba(0,0,0,.28)}
+    .home-choice:hover .home-choice-content,.home-choice:focus-visible .home-choice-content{transform:translateY(-4px)}
+    .home-choice:hover .home-choice-index,.home-choice:focus-visible .home-choice-index{color:rgba(255,255,255,.55);transform:translateY(3px)}
+    .home-choice:hover .home-choice-link::after,.home-choice:focus-visible .home-choice-link::after{transform:scaleX(.55)}
+    .home-choice.choice-leaving{transform:scale(.985);border-color:rgba(255,255,255,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+    .home-choice.choice-leaving img{transform:scale(1.075);filter:brightness(.34) saturate(1)}
+    .home-choice.choice-leaving .home-choice-content{transform:translateY(-7px)}
+    .home-choice.choice-leaving .home-choice-link::after{transform:scaleX(0)}
+    .home-choice.choice-leaving::before{border-color:rgba(255,255,255,.35);box-shadow:inset 0 0 35px rgba(255,255,255,.035)}
+    .page.page-enter-detail{animation:stancePageIn .42s cubic-bezier(.2,.8,.2,1)}
+    @keyframes stancePageIn{from{opacity:0;transform:translateY(10px) scale(.997)}to{opacity:1;transform:none}}
     .home-final-compact{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:30px 32px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 15% 0,rgba(255,255,255,.07),transparent 42%),#080808}
     .home-final-compact h2{margin:0 0 7px;font-size:clamp(28px,5vw,52px);line-height:.95;text-transform:uppercase;letter-spacing:-1.5px}.home-final-compact p{margin:0;color:#999;font-size:11px;line-height:1.65}
     .home-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}.home-reveal.visible{opacity:1;transform:none}
     @media(max-width:760px){
       .hero{min-height:calc(82svh - 66px);padding:24px 17px 54px}.hero-logo{width:min(560px,100%)}.hero-description{margin-top:17px;line-height:1.65}.hero-buttons{margin-top:24px}.home-scroll-cue{bottom:8px}
       .home-flow{width:100%;padding:10px 12px 34px}.home-choice-grid{gap:8px}.home-choice{min-height:285px}.home-choice-content{left:17px;right:17px;bottom:17px}.home-choice p{display:none}.home-choice h2{font-size:clamp(24px,7vw,34px)}
-      .home-showcase{grid-template-columns:1fr;gap:8px}.home-feature-compact{grid-template-columns:112px 1fr;gap:16px;min-height:225px;padding:14px}.home-feature-video{width:112px}.home-feature-compact p{display:none}.home-feature-compact h2{font-size:26px}
-      .home-reel{padding:15px}.home-reel-track{grid-auto-columns:47%}.home-final-compact{grid-template-columns:1fr;padding:24px 20px;gap:18px}.home-final-compact .btn{width:100%}
+      .home-feature-compact{grid-template-columns:112px 1fr;gap:16px;min-height:225px;padding:14px}.home-feature-video{width:112px}.home-feature-compact p{display:none}.home-feature-compact h2{font-size:26px}
+      .home-final-compact{grid-template-columns:1fr;padding:24px 20px;gap:18px}.home-final-compact .btn{width:100%}
     }
-    @media(max-width:430px){.home-choice{min-height:250px}.home-choice-content{left:14px;right:14px}.home-choice-kicker{letter-spacing:2px}.home-choice h2{font-size:23px}.home-choice-link{font-size:7px;letter-spacing:1.5px}.home-feature-compact{grid-template-columns:96px 1fr}.home-feature-video{width:96px}.home-feature-compact h2{font-size:23px}.home-reel-track{grid-auto-columns:55%}}
-    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-choice img{transition:none}}
+    @media(max-width:430px){.home-choice{min-height:250px}.home-choice-content{left:14px;right:14px}.home-choice-kicker{letter-spacing:2px}.home-choice h2{font-size:23px}.home-choice-link{font-size:7px;letter-spacing:1.5px}.home-feature-compact{grid-template-columns:96px 1fr}.home-feature-video{width:96px}.home-feature-compact h2{font-size:23px}}
+    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-choice img,.home-choice,.home-choice-content,.home-choice-index,.home-choice-link::after{transition:none!important}.page.page-enter-detail{animation:none}}
 
   </style>
 
@@ -1679,7 +1693,7 @@
 
       <div class="home-flow" id="home-discover">
         <div class="home-choice-grid home-reveal">
-          <button class="home-choice" onclick="showPage('detailing')" aria-label="Explore STANCEBOUND detailing">
+          <button class="home-choice" onclick="animateHomeChoice(this, 'detailing')" aria-label="Explore STANCEBOUND detailing">
             <img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async">
             <span class="home-choice-index">01</span>
             <span class="home-choice-content">
@@ -1689,7 +1703,7 @@
               <span class="home-choice-link">Explore detailing →</span>
             </span>
           </button>
-          <button class="home-choice" onclick="showPage('photography')" aria-label="Explore STANCEBOUND automotive photography">
+          <button class="home-choice" onclick="animateHomeChoice(this, 'photography')" aria-label="Explore STANCEBOUND automotive photography">
             <img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async">
             <span class="home-choice-index">02</span>
             <span class="home-choice-content">
@@ -1716,16 +1730,6 @@
             </div>
           </section>
 
-          <section class="home-reel">
-            <div class="home-reel-head"><h3>Selected Work</h3><span>Swipe to explore</span></div>
-            <div class="home-reel-track">
-              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND4.jpg')"><img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND detailing work" loading="lazy" decoding="async"></button>
-              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND3.jpg')"><img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async"></button>
-              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND5.jpg')"><img src="images/STANCEBOUND5.jpg" alt="STANCEBOUND Mercedes detail" loading="lazy" decoding="async"></button>
-              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND8.jpg')"><img src="images/STANCEBOUND8.jpg" alt="STANCEBOUND car photography" loading="lazy" decoding="async"></button>
-              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND9.jpg')"><img src="images/STANCEBOUND9.jpg" alt="STANCEBOUND modified car photography" loading="lazy" decoding="async"></button>
-            </div>
-          </section>
         </div>
 
         <section class="home-final-compact home-reveal">
@@ -2691,6 +2695,19 @@
     document.addEventListener("keydown",e=>{if(!document.getElementById("lightbox").classList.contains("open"))return;if(e.key==="ArrowLeft")moveViewer(-1);if(e.key==="ArrowRight")moveViewer(1);if(e.key==="Escape")closeViewer(false)});
     window.setupGalleryViewer();
 
+
+    // Small transition before opening a Home option. Keeps taps feeling deliberate without slowing navigation.
+    function animateHomeChoice(card, pageName){
+      if(!card || card.classList.contains("choice-leaving")) return;
+      if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){ showPage(pageName); return; }
+      card.classList.add("choice-leaving");
+      window.setTimeout(()=>{
+        showPage(pageName);
+        const target=document.getElementById(pageName);
+        if(target){target.classList.remove("page-enter-detail");void target.offsetWidth;target.classList.add("page-enter-detail");}
+        card.classList.remove("choice-leaving");
+      },220);
+    }
 
     // Home page reveal animation and lazy featured video.
     const homeRevealObserver = new IntersectionObserver(entries => {
