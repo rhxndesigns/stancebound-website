@@ -1509,6 +1509,44 @@
       .feature-video-wrap{width:min(360px,100%)}
     }
 
+
+    /* ===== HOME EXPERIENCE 2026 ===== */
+    .home-flow{width:min(1240px,92%);margin:0 auto;padding:20px 0 90px}
+    .home-scroll-cue{position:absolute;left:50%;bottom:24px;z-index:3;transform:translateX(-50%);color:#777;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+    .home-scroll-cue::after{content:"";display:block;width:1px;height:28px;margin:10px auto 0;background:linear-gradient(#777,transparent)}
+    .home-panel{position:relative;display:grid;grid-template-columns:1.08fr .92fr;min-height:560px;margin:18px 0 76px;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:#090909}
+    .home-panel.reverse{grid-template-columns:.92fr 1.08fr}
+    .home-panel.reverse .home-panel-media{order:2}.home-panel.reverse .home-panel-copy{order:1}
+    .home-panel-media{position:relative;min-height:560px;overflow:hidden;background:#080808}
+    .home-panel-media img,.home-panel-media video{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s ease}
+    .home-panel:hover .home-panel-media img{transform:scale(1.025)}
+    .home-panel-media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 45%,rgba(0,0,0,.48))}
+    .home-panel.reverse .home-panel-media::after{background:linear-gradient(270deg,transparent 45%,rgba(0,0,0,.48))}
+    .home-panel-copy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:clamp(32px,6vw,76px)}
+    .home-index{position:absolute;right:24px;top:12px;color:rgba(255,255,255,.045);font-size:clamp(90px,14vw,190px);font-weight:900;line-height:1;letter-spacing:-10px;pointer-events:none}
+    .home-panel.reverse .home-index{right:auto;left:20px}
+    .home-kicker{display:flex;align-items:center;gap:11px;margin-bottom:18px;color:#888;font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase}
+    .home-kicker::before{content:"";width:30px;height:1px;background:#777}
+    .home-panel h2,.home-feature h2,.home-final h2{margin:0;color:#fff;font-size:clamp(36px,6vw,74px);line-height:.94;letter-spacing:-2px;text-transform:uppercase}
+    .home-panel p{max-width:500px;margin:22px 0 28px;color:#aaa;font-size:13px;line-height:1.85}
+    .home-link{display:inline-flex;align-items:center;gap:12px;width:max-content;border:0;background:none;color:#fff;padding:0 0 7px;border-bottom:1px solid #777;font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer}
+    .home-link span{transition:transform .2s ease}.home-link:hover span{transform:translateX(4px)}
+    .home-feature{position:relative;margin:0 0 76px;padding:clamp(28px,5vw,60px);overflow:hidden;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 80% 10%,rgba(255,255,255,.07),transparent 30%),#090909}
+    .home-feature-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(28px,5vw,70px);align-items:center}
+    .home-feature-video{position:relative;width:min(390px,100%);aspect-ratio:9/16;margin:auto;overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:#050505;box-shadow:0 25px 70px rgba(0,0,0,.45)}
+    .home-feature-video video{width:100%;height:100%;object-fit:cover;display:block}
+    .home-feature p{max-width:560px;margin:20px 0 28px;color:#aaa;font-size:13px;line-height:1.8}
+    .home-feature-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:25px}.home-feature-meta span{padding:8px 10px;border:1px solid rgba(255,255,255,.1);color:#999;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .home-about{display:grid;grid-template-columns:minmax(260px,.75fr) 1.25fr;gap:clamp(28px,6vw,80px);align-items:center;margin:0 0 76px;padding:clamp(20px,4vw,46px);border-top:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09)}
+    .home-about-image{position:relative;min-height:480px;overflow:hidden;background:#080808}.home-about-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .home-about-copy h2{margin:8px 0 20px;font-size:clamp(34px,6vw,66px);line-height:.95;text-transform:uppercase;letter-spacing:-2px}.home-about-copy p{max-width:600px;margin:0 0 26px;color:#aaa;font-size:13px;line-height:1.85}
+    .home-final{position:relative;padding:clamp(55px,9vw,110px) 20px;text-align:center;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:radial-gradient(circle at 50% 0,rgba(255,255,255,.075),transparent 42%),#080808}
+    .home-final::before{content:"SB";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.025);font-size:clamp(150px,35vw,430px);font-weight:900;letter-spacing:-25px;pointer-events:none}
+    .home-final>*{position:relative;z-index:1}.home-final p{max-width:520px;margin:20px auto 30px;color:#999;font-size:13px;line-height:1.75}.home-final .hero-buttons{margin-top:0}
+    .home-reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}.home-reveal.visible{opacity:1;transform:none}
+    @media(max-width:800px){.home-flow{width:100%;padding:10px 0 60px}.home-panel,.home-panel.reverse{grid-template-columns:1fr;min-height:0;margin-bottom:48px;border-left:0;border-right:0}.home-panel.reverse .home-panel-media{order:1}.home-panel.reverse .home-panel-copy{order:2}.home-panel-media{min-height:62vw;max-height:440px}.home-panel-media::after,.home-panel.reverse .home-panel-media::after{background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.65))}.home-panel-copy{padding:32px 22px 38px}.home-index{font-size:100px;right:18px;top:8px}.home-panel.reverse .home-index{left:auto;right:18px}.home-feature{margin:0 14px 48px;padding:22px 18px}.home-feature-grid{grid-template-columns:1fr}.home-feature-video{width:min(330px,100%)}.home-about{grid-template-columns:1fr;margin:0 14px 48px;padding:18px 0 34px}.home-about-image{min-height:110vw;max-height:560px}.home-about-copy{padding:0 8px}.home-final{margin:0 14px}.home-scroll-cue{bottom:14px}.hero{padding-bottom:75px}}
+    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-panel-media img{transition:none}}
+
   </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -1618,66 +1656,78 @@
       id="home"
       class="page active"
     >
-
       <div class="hero">
-
         <div class="hero-content">
-
-
-          <img
-            class="hero-logo"
-            src="images/logo(1).png?v=30"
-            alt="STANCEBOUND Detailing"
-          >
-
-
-          <div class="tagline" id="home-tagline">
-            Cleaner · Higher · Further
-          </div>
-
-
-          <div class="hero-subtitle" id="home-subtitle">
-            Automotive Detailing & Photography
-          </div>
-
-
-          <p class="hero-description" id="home-description">
-
-            Automotive detailing and photography
-            built around modified cars, clean
-            presentation and attention to the
-            details that actually matter.
-
-          </p>
-
-
+          <img class="hero-logo" src="images/logo(1).png?v=30" alt="STANCEBOUND Detailing">
+          <div class="tagline" id="home-tagline">Cleaner · Higher · Further</div>
+          <div class="hero-subtitle" id="home-subtitle">Automotive Detailing &amp; Photography</div>
+          <p class="hero-description" id="home-description">Automotive detailing and photography built around modified cars, clean presentation and attention to the details that actually matter.</p>
           <div class="hero-buttons">
-
-
-            <button
-              class="btn"
-              onclick="showPage('detailing')"
-            >
-              Explore Detailing
-            </button>
-
-
-            <button
-              class="btn secondary"
-              onclick="showPage('photography')"
-            >
-              View Photography
-            </button>
-
-
+            <button class="btn" onclick="showPage('contact')">Start an Enquiry</button>
+            <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Discover STANCEBOUND</button>
           </div>
-
         </div>
-
+        <div class="home-scroll-cue">Scroll to discover</div>
       </div>
 
-    </section>
+      <div class="home-flow" id="home-discover">
+        <article class="home-panel home-reveal">
+          <div class="home-panel-media"><img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async"></div>
+          <div class="home-panel-copy">
+            <div class="home-index">01</div>
+            <div class="home-kicker">Detailing</div>
+            <h2>Built around<br>the details.</h2>
+            <p>Interior and exterior automotive care with the time and attention needed to make the whole car feel properly finished, not simply washed.</p>
+            <button class="home-link" onclick="showPage('detailing')">Explore detailing <span>→</span></button>
+          </div>
+        </article>
 
+        <article class="home-panel reverse home-reveal">
+          <div class="home-panel-media"><img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async"></div>
+          <div class="home-panel-copy">
+            <div class="home-index">02</div>
+            <div class="home-kicker">Automotive Photography</div>
+            <h2>Your car.<br>Properly captured.</h2>
+            <p>Automotive photography focused on modified cars, the details that make them individual and the atmosphere surrounding car culture.</p>
+            <button class="home-link" onclick="showPage('photography')">View photography <span>→</span></button>
+          </div>
+        </article>
+
+        <section class="home-feature home-reveal">
+          <div class="home-feature-grid">
+            <div class="home-feature-video">
+              <video id="homeMercVideo" muted loop playsinline preload="none" aria-label="Featured Mercedes detailing video">
+                <source data-src="Videos/merccla.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div>
+              <div class="home-kicker">Featured Detail</div>
+              <h2>Mercedes-AMG<br>CLA</h2>
+              <p>A complete interior and exterior detail and the first featured transformation in the STANCEBOUND portfolio. See the process, finished photographs and before-and-after results.</p>
+              <div class="home-feature-meta"><span>Exterior</span><span>Interior</span><span>Full Detail</span></div>
+              <button class="home-link" onclick="showPage('detailing')">View the full detail <span>→</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="home-about home-reveal">
+          <div class="home-about-image"><img src="images/profilepicture.png" alt="Ryan, founder of STANCEBOUND" loading="lazy" decoding="async"></div>
+          <div class="home-about-copy">
+            <div class="home-kicker">Behind STANCEBOUND</div>
+            <h2>Cars. Creativity.<br>Attention to detail.</h2>
+            <p>STANCEBOUND brings together automotive detailing and photography with a genuine interest in modified cars and the culture around them. Built by Ryan in South Wales, it's a project that's growing with every car.</p>
+            <button class="home-link" onclick="showPage('about')">Meet Ryan <span>→</span></button>
+          </div>
+        </section>
+
+        <section class="home-final home-reveal">
+          <div class="home-kicker" style="justify-content:center">Detailing · Photography · Both</div>
+          <h2>Your car<br>is next.</h2>
+          <p>Tell me about your car, what you'd like done and what you're looking to create. STANCEBOUND will take it from there.</p>
+          <div class="hero-buttons"><button class="btn" onclick="showPage('contact')">Start an Enquiry</button></div>
+        </section>
+      </div>
+    </section>
 
 
     <!-- ========================================
@@ -2635,6 +2685,19 @@
     document.addEventListener("keydown",e=>{if(!document.getElementById("lightbox").classList.contains("open"))return;if(e.key==="ArrowLeft")moveViewer(-1);if(e.key==="ArrowRight")moveViewer(1);if(e.key==="Escape")closeViewer(false)});
     window.setupGalleryViewer();
 
+
+    // Home page reveal animation and lazy featured video.
+    const homeRevealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("visible"); homeRevealObserver.unobserve(entry.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -35px" });
+    document.querySelectorAll(".home-reveal").forEach(el => homeRevealObserver.observe(el));
+
+    const homeMercVideo=document.getElementById("homeMercVideo");
+    if(homeMercVideo){
+      const loadHomeMercVideo=()=>{const source=homeMercVideo.querySelector("source[data-src]");if(source){source.src=source.dataset.src;source.removeAttribute("data-src");homeMercVideo.load();}homeMercVideo.play().catch(()=>{});};
+      const homeVideoObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){loadHomeMercVideo();homeVideoObserver.disconnect();}});},{rootMargin:"250px 0px"});
+      homeVideoObserver.observe(homeMercVideo);
+    }
 
     /* ========================================
        LOAD CORRECT PAGE FROM URL
