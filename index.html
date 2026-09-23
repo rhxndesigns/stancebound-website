@@ -1510,42 +1510,49 @@
     }
 
 
-    /* ===== HOME EXPERIENCE 2026 ===== */
-    .home-flow{width:min(1240px,92%);margin:0 auto;padding:20px 0 90px}
-    .home-scroll-cue{position:absolute;left:50%;bottom:24px;z-index:3;transform:translateX(-50%);color:#777;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
-    .home-scroll-cue::after{content:"";display:block;width:1px;height:28px;margin:10px auto 0;background:linear-gradient(#777,transparent)}
-    .home-panel{position:relative;display:grid;grid-template-columns:1.08fr .92fr;min-height:560px;margin:18px 0 76px;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:#090909}
-    .home-panel.reverse{grid-template-columns:.92fr 1.08fr}
-    .home-panel.reverse .home-panel-media{order:2}.home-panel.reverse .home-panel-copy{order:1}
-    .home-panel-media{position:relative;min-height:560px;overflow:hidden;background:#080808}
-    .home-panel-media img,.home-panel-media video{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s ease}
-    .home-panel:hover .home-panel-media img{transform:scale(1.025)}
-    .home-panel-media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 45%,rgba(0,0,0,.48))}
-    .home-panel.reverse .home-panel-media::after{background:linear-gradient(270deg,transparent 45%,rgba(0,0,0,.48))}
-    .home-panel-copy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:clamp(32px,6vw,76px)}
-    .home-index{position:absolute;right:24px;top:12px;color:rgba(255,255,255,.045);font-size:clamp(90px,14vw,190px);font-weight:900;line-height:1;letter-spacing:-10px;pointer-events:none}
-    .home-panel.reverse .home-index{right:auto;left:20px}
-    .home-kicker{display:flex;align-items:center;gap:11px;margin-bottom:18px;color:#888;font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase}
-    .home-kicker::before{content:"";width:30px;height:1px;background:#777}
-    .home-panel h2,.home-feature h2,.home-final h2{margin:0;color:#fff;font-size:clamp(36px,6vw,74px);line-height:.94;letter-spacing:-2px;text-transform:uppercase}
-    .home-panel p{max-width:500px;margin:22px 0 28px;color:#aaa;font-size:13px;line-height:1.85}
-    .home-link{display:inline-flex;align-items:center;gap:12px;width:max-content;border:0;background:none;color:#fff;padding:0 0 7px;border-bottom:1px solid #777;font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer}
+    /* ===== COMPACT INTERACTIVE HOME ===== */
+    .home-flow{width:min(1180px,94%);margin:0 auto;padding:22px 0 58px}
+    .home-scroll-cue{position:absolute;left:50%;bottom:18px;z-index:3;transform:translateX(-50%);color:#777;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+    .home-scroll-cue::after{content:"";display:block;width:1px;height:20px;margin:8px auto 0;background:linear-gradient(#777,transparent)}
+    .home-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+    .home-choice{position:relative;min-height:390px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#090909;cursor:pointer;text-align:left;color:#fff}
+    .home-choice img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(.88);transition:transform .65s cubic-bezier(.2,.8,.2,1),filter .35s ease}
+    .home-choice::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.94) 0%,rgba(0,0,0,.2) 65%,rgba(0,0,0,.12) 100%)}
+    .home-choice-content{position:absolute;z-index:2;left:26px;right:26px;bottom:24px}
+    .home-choice-index{position:absolute;z-index:2;right:18px;top:12px;color:rgba(255,255,255,.22);font-size:12px;font-weight:800;letter-spacing:3px}
+    .home-choice-kicker{margin-bottom:9px;color:#bbb;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+    .home-choice h2{margin:0 0 11px;font-size:clamp(28px,4vw,48px);line-height:.95;letter-spacing:-1.5px;text-transform:uppercase}
+    .home-choice p{max-width:430px;margin:0 0 16px;color:#b7b7b7;font-size:11px;line-height:1.6}
+    .home-choice-link{display:inline-flex;align-items:center;gap:10px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.55);font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .home-choice:hover img,.home-choice:focus-visible img{transform:scale(1.045);filter:brightness(.48) saturate(1)}
+    .home-choice:active{transform:scale(.99)}
+    .home-showcase{display:grid;grid-template-columns:.72fr 1.28fr;gap:12px;margin-bottom:12px}
+    .home-feature-compact{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center;min-height:300px;padding:20px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 80% 0,rgba(255,255,255,.07),transparent 36%),#090909}
+    .home-feature-video{position:relative;width:150px;aspect-ratio:9/16;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#050505}
+    .home-feature-video video{width:100%;height:100%;display:block;object-fit:cover}
+    .home-kicker{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#888;font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+    .home-kicker::before{content:"";width:24px;height:1px;background:#777}
+    .home-feature-compact h2{margin:0 0 12px;font-size:clamp(27px,4vw,48px);line-height:.95;letter-spacing:-1.5px;text-transform:uppercase}
+    .home-feature-compact p{margin:0 0 16px;color:#aaa;font-size:11px;line-height:1.65}
+    .home-link{display:inline-flex;align-items:center;gap:10px;width:max-content;border:0;background:none;color:#fff;padding:0 0 6px;border-bottom:1px solid #777;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
     .home-link span{transition:transform .2s ease}.home-link:hover span{transform:translateX(4px)}
-    .home-feature{position:relative;margin:0 0 76px;padding:clamp(28px,5vw,60px);overflow:hidden;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 80% 10%,rgba(255,255,255,.07),transparent 30%),#090909}
-    .home-feature-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(28px,5vw,70px);align-items:center}
-    .home-feature-video{position:relative;width:min(390px,100%);aspect-ratio:9/16;margin:auto;overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:#050505;box-shadow:0 25px 70px rgba(0,0,0,.45)}
-    .home-feature-video video{width:100%;height:100%;object-fit:cover;display:block}
-    .home-feature p{max-width:560px;margin:20px 0 28px;color:#aaa;font-size:13px;line-height:1.8}
-    .home-feature-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:25px}.home-feature-meta span{padding:8px 10px;border:1px solid rgba(255,255,255,.1);color:#999;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-    .home-about{display:grid;grid-template-columns:minmax(260px,.75fr) 1.25fr;gap:clamp(28px,6vw,80px);align-items:center;margin:0 0 76px;padding:clamp(20px,4vw,46px);border-top:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09)}
-    .home-about-image{position:relative;min-height:480px;overflow:hidden;background:#080808}.home-about-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    .home-about-copy h2{margin:8px 0 20px;font-size:clamp(34px,6vw,66px);line-height:.95;text-transform:uppercase;letter-spacing:-2px}.home-about-copy p{max-width:600px;margin:0 0 26px;color:#aaa;font-size:13px;line-height:1.85}
-    .home-final{position:relative;padding:clamp(55px,9vw,110px) 20px;text-align:center;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:radial-gradient(circle at 50% 0,rgba(255,255,255,.075),transparent 42%),#080808}
-    .home-final::before{content:"SB";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.025);font-size:clamp(150px,35vw,430px);font-weight:900;letter-spacing:-25px;pointer-events:none}
-    .home-final>*{position:relative;z-index:1}.home-final p{max-width:520px;margin:20px auto 30px;color:#999;font-size:13px;line-height:1.75}.home-final .hero-buttons{margin-top:0}
-    .home-reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}.home-reveal.visible{opacity:1;transform:none}
-    @media(max-width:800px){.home-flow{width:100%;padding:10px 0 60px}.home-panel,.home-panel.reverse{grid-template-columns:1fr;min-height:0;margin-bottom:48px;border-left:0;border-right:0}.home-panel.reverse .home-panel-media{order:1}.home-panel.reverse .home-panel-copy{order:2}.home-panel-media{min-height:62vw;max-height:440px}.home-panel-media::after,.home-panel.reverse .home-panel-media::after{background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.65))}.home-panel-copy{padding:32px 22px 38px}.home-index{font-size:100px;right:18px;top:8px}.home-panel.reverse .home-index{left:auto;right:18px}.home-feature{margin:0 14px 48px;padding:22px 18px}.home-feature-grid{grid-template-columns:1fr}.home-feature-video{width:min(330px,100%)}.home-about{grid-template-columns:1fr;margin:0 14px 48px;padding:18px 0 34px}.home-about-image{min-height:110vw;max-height:560px}.home-about-copy{padding:0 8px}.home-final{margin:0 14px}.home-scroll-cue{bottom:14px}.hero{padding-bottom:75px}}
-    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-panel-media img{transition:none}}
+    .home-reel{min-width:0;padding:20px;border:1px solid rgba(255,255,255,.1);background:#090909}
+    .home-reel-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .home-reel-head h3{margin:0;font-size:17px;letter-spacing:1px;text-transform:uppercase}.home-reel-head span{color:#777;font-size:8px;letter-spacing:2px;text-transform:uppercase}
+    .home-reel-track{display:grid;grid-auto-flow:column;grid-auto-columns:42%;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:3px}.home-reel-track::-webkit-scrollbar{display:none}
+    .home-reel-card{position:relative;aspect-ratio:4/5;overflow:hidden;scroll-snap-align:start;background:#050505;border:0;padding:0;cursor:pointer}
+    .home-reel-card img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease,filter .35s ease}.home-reel-card:active img{transform:scale(1.03);filter:brightness(.75)}
+    .home-final-compact{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:30px 32px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 15% 0,rgba(255,255,255,.07),transparent 42%),#080808}
+    .home-final-compact h2{margin:0 0 7px;font-size:clamp(28px,5vw,52px);line-height:.95;text-transform:uppercase;letter-spacing:-1.5px}.home-final-compact p{margin:0;color:#999;font-size:11px;line-height:1.65}
+    .home-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}.home-reveal.visible{opacity:1;transform:none}
+    @media(max-width:760px){
+      .hero{min-height:calc(82svh - 66px);padding:24px 17px 54px}.hero-logo{width:min(560px,100%)}.hero-description{margin-top:17px;line-height:1.65}.hero-buttons{margin-top:24px}.home-scroll-cue{bottom:8px}
+      .home-flow{width:100%;padding:10px 12px 34px}.home-choice-grid{gap:8px}.home-choice{min-height:285px}.home-choice-content{left:17px;right:17px;bottom:17px}.home-choice p{display:none}.home-choice h2{font-size:clamp(24px,7vw,34px)}
+      .home-showcase{grid-template-columns:1fr;gap:8px}.home-feature-compact{grid-template-columns:112px 1fr;gap:16px;min-height:225px;padding:14px}.home-feature-video{width:112px}.home-feature-compact p{display:none}.home-feature-compact h2{font-size:26px}
+      .home-reel{padding:15px}.home-reel-track{grid-auto-columns:47%}.home-final-compact{grid-template-columns:1fr;padding:24px 20px;gap:18px}.home-final-compact .btn{width:100%}
+    }
+    @media(max-width:430px){.home-choice{min-height:250px}.home-choice-content{left:14px;right:14px}.home-choice-kicker{letter-spacing:2px}.home-choice h2{font-size:23px}.home-choice-link{font-size:7px;letter-spacing:1.5px}.home-feature-compact{grid-template-columns:96px 1fr}.home-feature-video{width:96px}.home-feature-compact h2{font-size:23px}.home-reel-track{grid-auto-columns:55%}}
+    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-choice img{transition:none}}
 
   </style>
 
@@ -1664,37 +1671,38 @@
           <p class="hero-description" id="home-description">Automotive detailing and photography built around modified cars, clean presentation and attention to the details that actually matter.</p>
           <div class="hero-buttons">
             <button class="btn" onclick="showPage('contact')">Start an Enquiry</button>
-            <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Discover STANCEBOUND</button>
+            <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
           </div>
         </div>
-        <div class="home-scroll-cue">Scroll to discover</div>
+        <div class="home-scroll-cue">Discover</div>
       </div>
 
       <div class="home-flow" id="home-discover">
-        <article class="home-panel home-reveal">
-          <div class="home-panel-media"><img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async"></div>
-          <div class="home-panel-copy">
-            <div class="home-index">01</div>
-            <div class="home-kicker">Detailing</div>
-            <h2>Built around<br>the details.</h2>
-            <p>Interior and exterior automotive care with the time and attention needed to make the whole car feel properly finished, not simply washed.</p>
-            <button class="home-link" onclick="showPage('detailing')">Explore detailing <span>→</span></button>
-          </div>
-        </article>
+        <div class="home-choice-grid home-reveal">
+          <button class="home-choice" onclick="showPage('detailing')" aria-label="Explore STANCEBOUND detailing">
+            <img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async">
+            <span class="home-choice-index">01</span>
+            <span class="home-choice-content">
+              <span class="home-choice-kicker">Detailing</span>
+              <h2>Built around<br>the details.</h2>
+              <p>Interior and exterior care with proper attention given to the areas that make the finished car stand out.</p>
+              <span class="home-choice-link">Explore detailing →</span>
+            </span>
+          </button>
+          <button class="home-choice" onclick="showPage('photography')" aria-label="Explore STANCEBOUND automotive photography">
+            <img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async">
+            <span class="home-choice-index">02</span>
+            <span class="home-choice-content">
+              <span class="home-choice-kicker">Photography</span>
+              <h2>Your car.<br>Properly captured.</h2>
+              <p>Automotive photography focused on modified cars, individual details and the culture surrounding them.</p>
+              <span class="home-choice-link">View photography →</span>
+            </span>
+          </button>
+        </div>
 
-        <article class="home-panel reverse home-reveal">
-          <div class="home-panel-media"><img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async"></div>
-          <div class="home-panel-copy">
-            <div class="home-index">02</div>
-            <div class="home-kicker">Automotive Photography</div>
-            <h2>Your car.<br>Properly captured.</h2>
-            <p>Automotive photography focused on modified cars, the details that make them individual and the atmosphere surrounding car culture.</p>
-            <button class="home-link" onclick="showPage('photography')">View photography <span>→</span></button>
-          </div>
-        </article>
-
-        <section class="home-feature home-reveal">
-          <div class="home-feature-grid">
+        <div class="home-showcase home-reveal">
+          <section class="home-feature-compact">
             <div class="home-feature-video">
               <video id="homeMercVideo" muted loop playsinline preload="none" aria-label="Featured Mercedes detailing video">
                 <source data-src="Videos/merccla.mp4" type="video/mp4">
@@ -1702,29 +1710,27 @@
             </div>
             <div>
               <div class="home-kicker">Featured Detail</div>
-              <h2>Mercedes-AMG<br>CLA</h2>
-              <p>A complete interior and exterior detail and the first featured transformation in the STANCEBOUND portfolio. See the process, finished photographs and before-and-after results.</p>
-              <div class="home-feature-meta"><span>Exterior</span><span>Interior</span><span>Full Detail</span></div>
-              <button class="home-link" onclick="showPage('detailing')">View the full detail <span>→</span></button>
+              <h2>Mercedes-AMG CLA</h2>
+              <p>The first featured STANCEBOUND transformation. Full interior and exterior detail, finished photographs and before-and-after results.</p>
+              <button class="home-link" onclick="showPage('detailing')">View the detail <span>→</span></button>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="home-about home-reveal">
-          <div class="home-about-image"><img src="images/profilepicture.png" alt="Ryan, founder of STANCEBOUND" loading="lazy" decoding="async"></div>
-          <div class="home-about-copy">
-            <div class="home-kicker">Behind STANCEBOUND</div>
-            <h2>Cars. Creativity.<br>Attention to detail.</h2>
-            <p>STANCEBOUND brings together automotive detailing and photography with a genuine interest in modified cars and the culture around them. Built by Ryan in South Wales, it's a project that's growing with every car.</p>
-            <button class="home-link" onclick="showPage('about')">Meet Ryan <span>→</span></button>
-          </div>
-        </section>
+          <section class="home-reel">
+            <div class="home-reel-head"><h3>Selected Work</h3><span>Swipe to explore</span></div>
+            <div class="home-reel-track">
+              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND4.jpg')"><img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND detailing work" loading="lazy" decoding="async"></button>
+              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND3.jpg')"><img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async"></button>
+              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND5.jpg')"><img src="images/STANCEBOUND5.jpg" alt="STANCEBOUND Mercedes detail" loading="lazy" decoding="async"></button>
+              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND8.jpg')"><img src="images/STANCEBOUND8.jpg" alt="STANCEBOUND car photography" loading="lazy" decoding="async"></button>
+              <button class="home-reel-card" onclick="openLightbox('images/STANCEBOUND9.jpg')"><img src="images/STANCEBOUND9.jpg" alt="STANCEBOUND modified car photography" loading="lazy" decoding="async"></button>
+            </div>
+          </section>
+        </div>
 
-        <section class="home-final home-reveal">
-          <div class="home-kicker" style="justify-content:center">Detailing · Photography · Both</div>
-          <h2>Your car<br>is next.</h2>
-          <p>Tell me about your car, what you'd like done and what you're looking to create. STANCEBOUND will take it from there.</p>
-          <div class="hero-buttons"><button class="btn" onclick="showPage('contact')">Start an Enquiry</button></div>
+        <section class="home-final-compact home-reveal">
+          <div><div class="home-kicker">Detailing · Photography · Both</div><h2>Your car is next.</h2><p>Tell STANCEBOUND about your car and what you're looking for.</p></div>
+          <button class="btn" onclick="showPage('contact')">Start an Enquiry</button>
         </section>
       </div>
     </section>
