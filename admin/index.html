@@ -594,7 +594,16 @@ from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabase = createClient(
   'https://fxlekwzcxedkiyqfswvq.supabase.co',
-  'sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld'
+  'sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld',
+  {
+    auth: {
+      storage: window.localStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: 'stancebound-admin-auth'
+    }
+  }
 );
 
 
@@ -1681,11 +1690,12 @@ document
 
 
 supabase.auth.onAuthStateChange((_event, session) => {
-  login.classList.toggle('hidden', !!session);
-  editor.classList.toggle('hidden', !session);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !session);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !session);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !session);
+  const loggedIn = !!session;
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
 });
 
 const adminTodayFinal=document.querySelector('#adminToday');
