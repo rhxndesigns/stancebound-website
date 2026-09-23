@@ -1671,6 +1671,75 @@
     body.light-theme .theme-toggle .theme-label{color:#111!important}
     body.light-theme header{border-bottom-color:rgba(0,0,0,.14)}
 
+
+    /* ===== STANCEBOUND BRANDED SECTION BACKGROUNDS ===== */
+    #detailing, #photography, #shop {
+      position: relative;
+      isolation: isolate;
+    }
+    #detailing::before, #photography::before, #shop::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: url("images/backgroundsb.png");
+      background-repeat: no-repeat;
+      background-position: center 14%;
+      background-size: min(1500px, 125vw) auto;
+      opacity: .055;
+    }
+    body.light-theme #detailing::before,
+    body.light-theme #photography::before,
+    body.light-theme #shop::before {
+      background-image: url("images/backgroundsbwhite.png");
+      opacity: .07;
+    }
+    @media (max-width: 760px) {
+      #detailing::before, #photography::before, #shop::before {
+        background-size: 190vw auto;
+        background-position: center 90px;
+        opacity: .065;
+      }
+      body.light-theme #detailing::before,
+      body.light-theme #photography::before,
+      body.light-theme #shop::before { opacity: .08; }
+    }
+
+    /* ===== STANCEBOUND VIEWFINDER: ALL GALLERY PHOTOS ===== */
+    .gallery .photo { isolation: isolate; -webkit-touch-callout: none; user-select: none; }
+    .gallery .photo > img {
+      position: relative;
+      z-index: 1;
+      -webkit-user-drag: none;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+    .gallery .photo .sb-viewfinder {
+      opacity: .10;
+    }
+    .gallery .photo:hover .sb-viewfinder,
+    .gallery .photo:focus-within .sb-viewfinder,
+    .gallery .photo.sb-vf-active .sb-viewfinder { opacity: .82; }
+    .gallery .photo:hover .sb-viewfinder-art,
+    .gallery .photo:focus-within .sb-viewfinder-art,
+    .gallery .photo.sb-vf-active .sb-viewfinder-art {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .gallery .photo:hover .sb-vf-meta,
+    .gallery .photo:focus-within .sb-vf-meta,
+    .gallery .photo.sb-vf-active .sb-vf-meta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (hover:none) and (pointer:coarse) {
+      .gallery .photo.sb-vf-active > img {
+        transform: scale(1.025);
+        filter: brightness(.78);
+      }
+    }
+
   </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -2770,8 +2839,8 @@
 
 
 
-    function enhancePhotographyViewfinders(){
-      const cards=[...document.querySelectorAll("#photography-gallery .photo")];
+    function enhanceGalleryViewfinders(){
+      const cards=[...document.querySelectorAll(".gallery .photo")];
       cards.forEach((card,index)=>{
         if(card.querySelector(".sb-viewfinder"))return;
         const overlay=document.createElement("div");
@@ -2780,24 +2849,39 @@
         overlay.innerHTML=`
           <img class="sb-viewfinder-art" src="images/viewfinder.png" alt="" draggable="false">
           <span class="sb-vf-meta sb-vf-frame">SB / FRAME ${String(index+1).padStart(3,"0")}</span>
-          <span class="sb-vf-meta sb-vf-camera">1/250 &nbsp; F2.8 &nbsp; ISO 100</span>
-          <span class="sb-vf-meta sb-vf-brand">STANCEBOUND // AUTOMOTIVE PHOTOGRAPHY</span>`;
+          <span class="sb-vf-meta sb-vf-camera">STANCEBOUND // CAPTURE</span>
+          <span class="sb-vf-meta sb-vf-brand">CLEANER // HIGHER // FURTHER</span>`;
         card.appendChild(overlay);
-        card.addEventListener("pointerdown",()=>{card.classList.add("sb-vf-active");card.dataset.vfPressedAt=String(performance.now())},{passive:true});
-        const release=()=>{ if(!window.matchMedia("(hover: none) and (pointer: coarse)").matches) card.classList.remove("sb-vf-active"); };
-        card.addEventListener("pointerup",release,{passive:true});
-        card.addEventListener("pointercancel",()=>card.classList.remove("sb-vf-active"),{passive:true});
-        card.addEventListener("pointerleave",release,{passive:true});
+
+        const mainImage=card.querySelector(":scope > img");
+        if(mainImage){
+          mainImage.draggable=false;
+          mainImage.addEventListener("contextmenu",event=>event.preventDefault());
+        }
+        card.addEventListener("contextmenu",event=>event.preventDefault());
+
+        card.addEventListener("pointerdown",event=>{
+          if(event.pointerType==="touch" || event.pointerType==="pen"){
+            card.classList.add("sb-vf-active");
+            card.dataset.vfPressedAt=String(performance.now());
+          }
+        },{passive:true});
+
+        const cancel=()=>card.classList.remove("sb-vf-active");
+        card.addEventListener("pointercancel",cancel,{passive:true});
+        card.addEventListener("pointerleave",event=>{
+          if(event.pointerType==="touch" || event.pointerType==="pen") cancel();
+        },{passive:true});
       });
     }
 
         window.setupGalleryViewer=function(){
-      enhancePhotographyViewfinders();
+      enhanceGalleryViewfinders();
       document.querySelectorAll(".swipe-gallery").forEach(gallery=>{
         const cards=[...gallery.querySelectorAll(".photo,.ba-card")];
         const images=cards.map(c=>c.querySelector("img")?.src).filter(Boolean);
         cards.forEach((card,index)=>{card.onclick=()=>{
-          const isPhotoViewfinder=card.matches("#photography-gallery .photo");
+          const isPhotoViewfinder=card.matches(".gallery .photo");
           const isTouch=window.matchMedia("(hover: none) and (pointer: coarse)").matches;
           if(isPhotoViewfinder&&isTouch){
             const pressedAt=Number(card.dataset.vfPressedAt||performance.now());
