@@ -571,17 +571,17 @@ Save Changes
 
 
 
-  <nav class="mobile-nav" aria-label="Admin navigation">
+  <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
     <button type="button" data-mobile-target="enquiries"><span>✉</span>Enquiries</button>
     <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions">+</button>
     <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
     <button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
-  <div class="quick-sheet" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
+  <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
   </div></div></div>
 
@@ -1268,97 +1268,70 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 async function showCorrectScreen() {
+  const { data: { session }, error } = await supabase.auth.getSession();
 
-  const {
-    data: {
-      session
-    }
-  } =
-    await supabase
-      .auth
-      .getSession();
-
-
-  login.classList.toggle(
-    'hidden',
-    !!session
-  );
-
-
-  editor.classList.toggle(
-    'hidden',
-    !session
-  );
-
-
-  if (session) {
-    loadContent();
-    loadPhotos();
-    loadEnquiries();
-    loadOrders();
+  if (error) {
+    const status = document.querySelector('#loginStatus');
+    if (status) status.textContent = 'Could not check login: ' + error.message;
   }
 
+  const loggedIn = !!session;
+
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+
+  if (loggedIn) {
+    const adminToday = document.querySelector('#adminToday');
+    if (adminToday) {
+      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric'
+      });
+    }
+    await Promise.allSettled([
+      loadContent(),
+      loadPhotos(),
+      loadEnquiries(),
+      loadOrders()
+    ]);
+  }
 }
 
 
-document
-  .querySelector('#loginBtn')
-  .onclick =
-  async () => {
+async function adminLogin() {
+  const status = document.querySelector('#loginStatus');
+  const button = document.querySelector('#loginBtn');
+  const email = document.querySelector('#email').value.trim();
+  const password = document.querySelector('#password').value;
 
-    const status =
-      document
-        .querySelector(
-          '#loginStatus'
-        );
+  if (!email || !password) {
+    status.textContent = 'Enter your email and password.';
+    return;
+  }
 
+  button.disabled = true;
+  status.textContent = 'Logging in...';
 
-    status.textContent =
-      'Logging in...';
-
-
-    const {
-      error
-    } =
-      await supabase
-        .auth
-        .signInWithPassword({
-
-          email:
-            document
-              .querySelector(
-                '#email'
-              )
-              .value
-              .trim(),
-
-          password:
-            document
-              .querySelector(
-                '#password'
-              )
-              .value
-
-        });
-
-
-    if (error) {
-
-      status.textContent =
-        error.message;
-
-      return;
-
-    }
-
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
+    await showCorrectScreen();
+  } catch (error) {
+    status.textContent = error?.message || 'Could not log in.';
+  } finally {
+    button.disabled = false;
+  }
+}
 
-    const adminToday=document.querySelector('#adminToday');
-if(adminToday)adminToday.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-showCorrectScreen();
-
-  };
+document.querySelector('#loginBtn').addEventListener('click', adminLogin);
+document.querySelector('#password').addEventListener('keydown', event => {
+  if (event.key === 'Enter') adminLogin();
+});
 
 
 document
@@ -1706,62 +1679,20 @@ document
   };
 
 
+supabase.auth.onAuthStateChange((_event, session) => {
+  login.classList.toggle('hidden', !!session);
+  editor.classList.toggle('hidden', !session);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !session);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !session);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !session);
+});
+
 const adminTodayFinal=document.querySelector('#adminToday');
 if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 showCorrectScreen();
 
 </script>
 
-
-<section class="sb-contract-preview" id="customerAgreementPreview">
-  <div class="sb-contract-kicker">Admin only · Draft preview</div>
-  <h2>STANCEBOUND Customer Agreement</h2>
-  <p class="sb-contract-note">Draft booking terms for review inside Admin. This is not shown on the public website and is not yet connected to customer acceptance.</p>
-
-  <div class="sb-contract-fields">
-    <div class="sb-contract-field">Customer name</div>
-    <div class="sb-contract-field">Vehicle / registration</div>
-    <div class="sb-contract-field">Service booked</div>
-    <div class="sb-contract-field">Booking date / time</div>
-    <div class="sb-contract-field">Agreed price</div>
-    <div class="sb-contract-field">Service location</div>
-  </div>
-
-  <h3>1. Customer &amp; booking</h3>
-  <p>The person making and accepting the booking must be aged 18 or over and must have authority to authorise STANCEBOUND to carry out the agreed work on the vehicle.</p>
-
-  <h3>2. Vehicle condition</h3>
-  <p>The customer should tell STANCEBOUND about known damage, faults, loose trim, paint defects, electrical issues, aftermarket modifications or other problems that could affect the work. Existing defects may be photographed before work begins so the condition of the vehicle is recorded.</p>
-
-  <h3>3. Access &amp; working area</h3>
-  <p>For mobile work, the customer must provide safe and reasonable access to the vehicle and an appropriate working area. STANCEBOUND will carry out the service around the vehicle and does not require access to the customer's home unless separately agreed and genuinely necessary for the booked service.</p>
-
-  <h3>4. Children, pets &amp; safety</h3>
-  <p>Children and pets must be kept clear of the working area while work is taking place. Detailing may involve electrical equipment, cables, pressure-washing equipment, chemicals and machine-polishing equipment. The customer is responsible for helping keep the work area clear and safe.</p>
-
-  <h3>5. Results &amp; limitations</h3>
-  <p>STANCEBOUND will take reasonable care when working on the vehicle, but no guarantee is made that every stain, scratch, mark, odour or defect can be completely removed. Some defects may require specialist repair, paintwork or additional services beyond the original booking.</p>
-
-  <h3>6. Personal belongings</h3>
-  <p>The customer should remove valuables and important personal belongings before an interior service. STANCEBOUND is not responsible for items left unsecured in the vehicle unless loss or damage is caused by a failure to take reasonable care.</p>
-
-  <h3>7. Price, changes &amp; additional work</h3>
-  <p>The agreed price is based on the information available when the booking is made. If the vehicle requires materially more work than described, STANCEBOUND will discuss any proposed additional work or price change with the customer before carrying it out.</p>
-
-  <h3>8. Cancellation &amp; access</h3>
-  <p>If a booking cannot safely or reasonably be carried out because of weather, unsuitable access, vehicle condition or another unexpected issue, the work may be stopped or rearranged. Any cancellation or deposit terms communicated when booking will also apply.</p>
-
-  <h3>9. Photography &amp; media</h3>
-  <p>Vehicle photography for STANCEBOUND's portfolio, website or social media should only be used where the customer has separately agreed to it. Personal information, addresses and identifying information will not intentionally be included as part of promotional content.</p>
-
-  <h3>10. Acceptance</h3>
-  <p>By accepting the booking terms, the customer confirms that the information they have provided is accurate, they are aged 18 or over, they have authority to authorise the work, and they agree to the service and price recorded for the booking.</p>
-
-  <div class="sb-contract-sign">
-    <div>Customer signature / digital acceptance</div>
-    <div>Date</div>
-  </div>
-</section>
 
 </body>
 </html>
