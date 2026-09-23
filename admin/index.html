@@ -241,6 +241,22 @@ body{padding-bottom:88px}
 
 .pipeline-card{transition:transform .16s ease,border-color .16s ease,background .16s ease}.pipeline-card:active{transform:scale(.992);border-color:#555;background:#0b0b0b}.pipeline-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.pipeline-details>div,.pipeline-note{border:1px solid #252525;background:#090909;padding:12px}.pipeline-details small,.pipeline-note small{display:block;color:#666;font-size:7px;letter-spacing:1.4px;margin-bottom:5px}.pipeline-details strong{font-size:11px;color:#ddd;text-transform:none}.pipeline-note{color:#aaa;font-size:11px;line-height:1.6;margin:12px 0}
 </style>
+
+<style id="stancebound-contract-preview-style">
+  .sb-contract-preview{max-width:920px;margin:24px auto;padding:clamp(20px,4vw,42px);border:1px solid rgba(255,255,255,.12);background:#090909;color:#eee}
+  .sb-contract-preview .sb-contract-kicker{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#777;margin-bottom:10px}
+  .sb-contract-preview h2{margin:0 0 8px;font-size:clamp(25px,5vw,42px);text-transform:uppercase;letter-spacing:1px}
+  .sb-contract-preview .sb-contract-note{margin:0 0 28px;color:#888;font-size:12px;line-height:1.6}
+  .sb-contract-preview h3{margin:25px 0 8px;font-size:12px;letter-spacing:1.7px;text-transform:uppercase}
+  .sb-contract-preview p,.sb-contract-preview li{color:#b6b6b6;font-size:12px;line-height:1.7}
+  .sb-contract-preview ul{padding-left:19px;margin:8px 0}
+  .sb-contract-preview .sb-contract-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0}
+  .sb-contract-preview .sb-contract-field{min-height:48px;padding:12px;border:1px solid rgba(255,255,255,.1);color:#777;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+  .sb-contract-preview .sb-contract-sign{display:grid;grid-template-columns:1fr 180px;gap:12px;margin-top:26px}
+  .sb-contract-preview .sb-contract-sign div{min-height:58px;padding:12px;border:1px solid rgba(255,255,255,.12);color:#777;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
+  @media(max-width:650px){.sb-contract-preview .sb-contract-fields,.sb-contract-preview .sb-contract-sign{grid-template-columns:1fr}}
+</style>
+
 </head>
 
 <body>
@@ -1619,6 +1635,57 @@ if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en
 showCorrectScreen();
 
 </script>
+
+
+<section class="sb-contract-preview" id="customerAgreementPreview">
+  <div class="sb-contract-kicker">Admin only · Draft preview</div>
+  <h2>STANCEBOUND Customer Agreement</h2>
+  <p class="sb-contract-note">Draft booking terms for review inside Admin. This is not shown on the public website and is not yet connected to customer acceptance.</p>
+
+  <div class="sb-contract-fields">
+    <div class="sb-contract-field">Customer name</div>
+    <div class="sb-contract-field">Vehicle / registration</div>
+    <div class="sb-contract-field">Service booked</div>
+    <div class="sb-contract-field">Booking date / time</div>
+    <div class="sb-contract-field">Agreed price</div>
+    <div class="sb-contract-field">Service location</div>
+  </div>
+
+  <h3>1. Customer &amp; booking</h3>
+  <p>The person making and accepting the booking must be aged 18 or over and must have authority to authorise STANCEBOUND to carry out the agreed work on the vehicle.</p>
+
+  <h3>2. Vehicle condition</h3>
+  <p>The customer should tell STANCEBOUND about known damage, faults, loose trim, paint defects, electrical issues, aftermarket modifications or other problems that could affect the work. Existing defects may be photographed before work begins so the condition of the vehicle is recorded.</p>
+
+  <h3>3. Access &amp; working area</h3>
+  <p>For mobile work, the customer must provide safe and reasonable access to the vehicle and an appropriate working area. STANCEBOUND will carry out the service around the vehicle and does not require access to the customer's home unless separately agreed and genuinely necessary for the booked service.</p>
+
+  <h3>4. Children, pets &amp; safety</h3>
+  <p>Children and pets must be kept clear of the working area while work is taking place. Detailing may involve electrical equipment, cables, pressure-washing equipment, chemicals and machine-polishing equipment. The customer is responsible for helping keep the work area clear and safe.</p>
+
+  <h3>5. Results &amp; limitations</h3>
+  <p>STANCEBOUND will take reasonable care when working on the vehicle, but no guarantee is made that every stain, scratch, mark, odour or defect can be completely removed. Some defects may require specialist repair, paintwork or additional services beyond the original booking.</p>
+
+  <h3>6. Personal belongings</h3>
+  <p>The customer should remove valuables and important personal belongings before an interior service. STANCEBOUND is not responsible for items left unsecured in the vehicle unless loss or damage is caused by a failure to take reasonable care.</p>
+
+  <h3>7. Price, changes &amp; additional work</h3>
+  <p>The agreed price is based on the information available when the booking is made. If the vehicle requires materially more work than described, STANCEBOUND will discuss any proposed additional work or price change with the customer before carrying it out.</p>
+
+  <h3>8. Cancellation &amp; access</h3>
+  <p>If a booking cannot safely or reasonably be carried out because of weather, unsuitable access, vehicle condition or another unexpected issue, the work may be stopped or rearranged. Any cancellation or deposit terms communicated when booking will also apply.</p>
+
+  <h3>9. Photography &amp; media</h3>
+  <p>Vehicle photography for STANCEBOUND's portfolio, website or social media should only be used where the customer has separately agreed to it. Personal information, addresses and identifying information will not intentionally be included as part of promotional content.</p>
+
+  <h3>10. Acceptance</h3>
+  <p>By accepting the booking terms, the customer confirms that the information they have provided is accurate, they are aged 18 or over, they have authority to authorise the work, and they agree to the service and price recorded for the booking.</p>
+
+  <div class="sb-contract-sign">
+    <div>Customer signature / digital acceptance</div>
+    <div>Date</div>
+  </div>
+</section>
 
 </body>
 </html>
