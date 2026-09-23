@@ -202,6 +202,44 @@ select, input[type="file"] {
 .schedule-meta{font-size:10px;color:#888;line-height:1.7}
 .schedule-price{color:#fff}
 
+
+/* ===== STANCEBOUND ADMIN APP POLISH ===== */
+:root{--sb-border:#252525;--sb-soft:#0b0b0b;--sb-muted:#777;--sb-white:#f4f4f4}
+body{padding-bottom:88px}
+.admin-topbar{position:relative;overflow:hidden}
+.admin-topbar:after{content:"SB";position:absolute;right:-10px;top:-26px;font-size:92px;font-weight:900;letter-spacing:-8px;color:#fff;opacity:.025;pointer-events:none}
+.admin-date{margin-top:5px;color:#666;font-size:9px;letter-spacing:1.7px;text-transform:uppercase}
+.overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0}
+.metric-card{border:1px solid var(--sb-border);background:#080808;padding:16px 14px;min-height:92px;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.metric-card:active,.dash-card:active,.job-card:active{transform:scale(.985);background:#0d0d0d;border-color:#555}
+.metric-label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-bottom:11px}
+.metric-value{font-size:24px;font-weight:800;letter-spacing:-1px;color:#fff}
+.metric-sub{font-size:8px;color:#666;margin-top:4px}
+.today-wrap{margin:24px 0}
+.today-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}
+.today-head h3{margin:0;font-size:18px}.today-head span{font-size:8px;letter-spacing:1.5px;color:#666;text-transform:uppercase}
+.job-card{border:1px solid #333;background:linear-gradient(145deg,#0d0d0d,#050505);padding:18px;position:relative;overflow:hidden;transition:.16s ease}
+.job-card:before{content:"";position:absolute;left:0;top:0;width:2px;height:100%;background:#eee}
+.job-card-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.job-card h3{margin:0 0 5px;font-size:17px}.job-car{font-size:11px;color:#888}.job-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.job-detail small{display:block;color:#555;font-size:7px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px}.job-detail strong{font-size:11px;color:#ddd}.empty-today{border:1px dashed #282828;padding:20px;color:#666;font-size:11px;text-align:center}
+.section-title-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.section-title-row h2{margin:0}
+.filter-pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin:14px 0}.filter-pills::-webkit-scrollbar{display:none}.filter-pill{white-space:nowrap;border:1px solid #292929;background:#080808;color:#777;padding:8px 11px;font-size:8px;letter-spacing:1px;text-transform:uppercase}.filter-pill.active{background:#eee;color:#080808;border-color:#eee}
+.completed-list{display:grid;gap:10px}.completed-card{border:1px solid #282828;background:#070707;padding:16px}.completed-card-head{display:flex;justify-content:space-between;gap:12px}.completed-card h3{margin:0 0 5px;font-size:15px}.completed-meta{font-size:10px;color:#777;line-height:1.6}.completed-price{font-size:17px;font-weight:800;color:#fff}.completed-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.completed-actions button{margin:0}
+.day-jobs{margin:10px 0 22px;display:grid;gap:7px}.day-job{border:1px solid #292929;background:#090909;padding:11px;font-size:10px;color:#aaa}.day-job strong{color:#fff}.calendar-day{cursor:pointer;transition:.14s ease}.calendar-day:active{transform:scale(.96)}.calendar-day.selected{outline:1px solid #fff;outline-offset:-2px}
+.mobile-nav{display:none}.more-sheet,.quick-sheet{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.72);backdrop-filter:blur(7px);align-items:flex-end}.more-sheet.show,.quick-sheet.show{display:flex}.sheet-card{width:100%;background:#080808;border-top:1px solid #333;padding:18px 18px calc(24px + env(safe-area-inset-bottom));animation:sheetUp .2s ease}.sheet-grab{width:38px;height:3px;background:#444;border-radius:5px;margin:0 auto 18px}.sheet-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#777;margin-bottom:12px}.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sheet-grid button{margin:0;background:#0d0d0d;border:1px solid #292929;color:#ddd;text-align:left;padding:16px}.sheet-grid button small{display:block;color:#666;margin-top:4px;font-size:8px}@keyframes sheetUp{from{transform:translateY(25px);opacity:0}to{transform:none;opacity:1}}
+.page-flash{animation:pageFlash .24s ease}@keyframes pageFlash{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:700px){
+ body{padding-bottom:94px} main{padding-bottom:15px}.admin-tabs{display:none!important}.admin-topbar{margin-bottom:12px}.admin-title{font-size:24px}
+ .overview-grid{grid-template-columns:1fr 1fr}.metric-card{min-height:84px;padding:14px}.metric-value{font-size:22px}
+ .dashboard-grid{grid-template-columns:1fr 1fr}.dash-card{padding:14px}.dash-card p{font-size:9px}
+ .mobile-nav{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:90;grid-template-columns:1fr 1fr 64px 1fr 1fr;background:rgba(5,5,5,.94);backdrop-filter:blur(14px);border-top:1px solid #292929;padding:7px 7px calc(7px + env(safe-area-inset-bottom))}
+ .mobile-nav button{margin:0;border:0;background:transparent;color:#777;padding:8px 2px;font-size:7px;letter-spacing:1px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:4px}.mobile-nav button span{font-size:17px;line-height:1}.mobile-nav button.active{color:#fff}.mobile-nav .nav-plus{width:48px;height:48px;border-radius:50%;background:#f3f3f3;color:#050505;margin:-20px auto 0;font-size:26px;display:grid;place-items:center;padding:0;box-shadow:0 0 0 5px #050505}
+ .job-details{grid-template-columns:1fr 1fr}.completed-actions{grid-template-columns:1fr 1fr}
+ .panel{padding:22px 18px}.enquiry-card{padding:15px}.enquiry-actions-admin.three{gap:6px}.enquiry-actions-admin.three button{padding-left:6px;padding-right:6px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.metric-card,.job-card,.dash-card,.calendar-day{transition:none}.sheet-card,.page-flash{animation:none}}
+
+
+.pipeline-card{transition:transform .16s ease,border-color .16s ease,background .16s ease}.pipeline-card:active{transform:scale(.992);border-color:#555;background:#0b0b0b}.pipeline-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.pipeline-details>div,.pipeline-note{border:1px solid #252525;background:#090909;padding:12px}.pipeline-details small,.pipeline-note small{display:block;color:#666;font-size:7px;letter-spacing:1.4px;margin-bottom:5px}.pipeline-details strong{font-size:11px;color:#ddd;text-transform:none}.pipeline-note{color:#aaa;font-size:11px;line-height:1.6;margin:12px 0}
 </style>
 </head>
 
@@ -257,13 +295,17 @@ Log In
     <div>
       <div class="admin-kicker">Private Control Panel</div>
       <h1 class="admin-title">Website Admin</h1>
+      <div class="admin-date" id="adminToday"></div>
     </div>
   </div>
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
     <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
+    <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
+    <button type="button" class="admin-tab" data-admin-target="completed">Completed</button>
     <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
     <button type="button" class="admin-tab" data-admin-target="text">Text</button>
     <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
@@ -273,13 +315,32 @@ Log In
     <div class="panel">
       <div class="admin-kicker">STANCEBOUND</div>
       <h2>Welcome back, Ryan.</h2>
-      <p class="help">Everything that changes the live website, separated properly instead of one enormous admin scroll.</p>
+      <p class="help">A quick view of what needs your attention, what is booked and what STANCEBOUND has completed.</p>
+      <div class="overview-grid">
+        <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Needs attention</div></div>
+        <div class="metric-card" data-open-admin="schedule"><div class="metric-label">Upcoming jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
+        <div class="metric-card" data-open-admin="completed"><div class="metric-label">Completed</div><div class="metric-value" id="metricCompleted">0</div><div class="metric-sub">This month</div></div>
+        <div class="metric-card"><div class="metric-label">Booked value</div><div class="metric-value" id="metricRevenue">£0</div><div class="metric-sub">This month</div></div>
+      </div>
+      <div class="today-wrap">
+        <div class="today-head"><h3>Today</h3><span id="todayLabel"></span></div>
+        <div id="todayJob"></div>
+      </div>
       <div class="dashboard-grid">
         <div class="dash-card" data-open-admin="enquiries">
           <div class="dash-icon">✉</div><h3>Enquiries</h3><p>Read, reply to and manage customer requests.</p>
         </div>
+        <div class="dash-card" data-open-admin="pending">
+          <div class="dash-icon">○</div><h3>Pending</h3><p>Enquiries still waiting for a date to be booked.</p>
+        </div>
+        <div class="dash-card" data-open-admin="upcoming">
+          <div class="dash-icon">↗</div><h3>Upcoming</h3><p>Future booked jobs with the important details together.</p>
+        </div>
         <div class="dash-card" data-open-admin="schedule">
           <div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, upcoming bookings and job details.</p>
+        </div>
+        <div class="dash-card" data-open-admin="completed">
+          <div class="dash-icon">✓</div><h3>Completed</h3><p>Finished jobs, prices and job history.</p>
         </div>
         <div class="dash-card" data-open-admin="photos">
           <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
@@ -303,11 +364,35 @@ Log In
       <div class="admin-kicker">Customer Messages</div>
       <h2>Enquiries</h2>
       <p class="help">Only email-verified enquiries appear here. Reply from this page and the customer receives the response by email.</p>
+      <div class="filter-pills" id="enquiryFilters">
+        <button class="filter-pill active" type="button" data-filter="active">Active</button>
+        <button class="filter-pill" type="button" data-filter="new">New</button>
+        <button class="filter-pill" type="button" data-filter="booked">Booked</button>
+        <button class="filter-pill" type="button" data-filter="ongoing">Ongoing</button>
+      </div>
       <div id="enquiryAdminStatus" class="status"></div>
       <div id="enquiryList" class="enquiry-list"></div>
     </div>
   </div>
 
+
+  <div class="admin-page" data-admin-page="pending">
+    <div class="panel">
+      <div class="admin-kicker">Enquiry Pipeline</div>
+      <div class="section-title-row"><h2>Pending</h2><span class="status-pill" id="pendingCount">0</span></div>
+      <p class="help">Customers who have enquired but do not have a booking date yet. Keep these separate so nobody quietly disappears into the void.</p>
+      <div id="pendingList" class="completed-list"></div>
+    </div>
+  </div>
+
+  <div class="admin-page" data-admin-page="upcoming">
+    <div class="panel">
+      <div class="admin-kicker">Booked Ahead</div>
+      <div class="section-title-row"><h2>Upcoming</h2><span class="status-pill" id="upcomingCount">0</span></div>
+      <p class="help">Upcoming booked work, ordered by date and time. Price, location and notes stay visible without digging through the enquiry.</p>
+      <div id="upcomingList" class="completed-list"></div>
+    </div>
+  </div>
 
   <div class="admin-page" data-admin-page="schedule">
     <div class="panel">
@@ -323,9 +408,20 @@ Log In
         <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
       </div>
       <div id="bookingCalendar" class="booking-calendar"></div>
+      <div id="selectedDayJobs" class="day-jobs"></div>
       <div class="admin-kicker schedule-kicker">Upcoming</div>
       <div id="scheduleStatus" class="status"></div>
       <div id="scheduleList" class="schedule-list"></div>
+    </div>
+  </div>
+
+  <div class="admin-page" data-admin-page="completed">
+    <div class="panel">
+      <div class="admin-kicker">Job History</div>
+      <div class="section-title-row"><h2>Completed</h2><span class="status-pill" id="completedCount">0 jobs</span></div>
+      <p class="help">Finished work lives here instead of clogging up active enquiries. Prices and booking details stay attached to the job.</p>
+      <div id="completedSummary" class="overview-grid"></div>
+      <div id="completedList" class="completed-list"></div>
     </div>
   </div>
 
@@ -406,6 +502,21 @@ Save Changes
 </main>
 
 
+
+  <nav class="mobile-nav" aria-label="Admin navigation">
+    <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
+    <button type="button" data-mobile-target="enquiries"><span>✉</span>Enquiries</button>
+    <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions">+</button>
+    <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
+    <button type="button" id="moreBtn"><span>•••</span>More</button>
+  </nav>
+  <div class="more-sheet" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
+    <button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+  </div></div></div>
+  <div class="quick-sheet" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
+    <button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
+  </div></div></div>
+
 <script type="module">
 
 import { createClient }
@@ -432,7 +543,18 @@ const adminPages = [...document.querySelectorAll('.admin-page')];
 
 function openAdminPage(name) {
   adminTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.adminTarget === name));
-  adminPages.forEach(page => page.classList.toggle('active', page.dataset.adminPage === name));
+  adminPages.forEach(page => {
+    const active=page.dataset.adminPage === name;
+    page.classList.toggle('active',active);
+    if(active){page.classList.remove('page-flash');void page.offsetWidth;page.classList.add('page-flash');}
+  });
+  document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mobileTarget===name));
+  document.querySelector('#moreSheet')?.classList.remove('show');
+  document.querySelector('#quickSheet')?.classList.remove('show');
+  if(name==='completed') renderCompleted();
+  if(name==='pending') renderPending();
+  if(name==='upcoming') renderUpcoming();
+  if(name==='dashboard') renderDashboard();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -440,6 +562,14 @@ adminTabs.forEach(tab => tab.addEventListener('click', () => openAdminPage(tab.d
 document.querySelectorAll('[data-open-admin]').forEach(card => {
   card.addEventListener('click', () => openAdminPage(card.dataset.openAdmin));
 });
+
+document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.mobileTarget)));
+const moreSheet=document.querySelector('#moreSheet'), quickSheet=document.querySelector('#quickSheet');
+document.querySelector('#moreBtn')?.addEventListener('click',()=>moreSheet.classList.add('show'));
+document.querySelector('#quickAddBtn')?.addEventListener('click',()=>quickSheet.classList.add('show'));
+document.querySelectorAll('[data-sheet-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.sheetTarget)));
+[moreSheet,quickSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show')}));
+
 
 
 
@@ -623,6 +753,8 @@ const ENQUIRY_STATUSES = [
 ];
 
 let cachedEnquiries = [];
+let enquiryFilter = 'active';
+let selectedScheduleDate = null;
 let calendarCursor = new Date();
 calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth(), 1);
 
@@ -654,12 +786,17 @@ async function loadEnquiries(){
   }
 
   cachedEnquiries=data||[];
-  const rows=cachedEnquiries;
-  document.querySelector('#enquiryBadge').textContent=rows.filter(r=>r.status==='new').length||'';
+  const activeStatuses=['new','awaiting_reply','ongoing','booked'];
+  const rows=cachedEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
+  document.querySelector('#enquiryBadge').textContent=cachedEnquiries.filter(r=>r.status==='new').length||'';
+  renderDashboard();
+  renderPending();
+  renderUpcoming();
+  renderCompleted();
   status.textContent='';
 
   if(!rows.length){
-    list.innerHTML='<div class="empty-state">No verified enquiries yet.</div>';
+    list.innerHTML='<div class="empty-state">No enquiries in this view.</div>';
     renderSchedule();
     return;
   }
@@ -722,9 +859,11 @@ async function loadEnquiries(){
 
   list.querySelectorAll('[data-status-select]').forEach(sel=>sel.onchange=async()=>{
     sel.disabled=true;
-    const {error}=await supabase.from('enquiries').update({status:sel.value}).eq('id',sel.dataset.statusSelect);
-    if(error) status.textContent=error.message;
+    const nextStatus=sel.value;
+    const {error}=await supabase.from('enquiries').update({status:nextStatus}).eq('id',sel.dataset.statusSelect);
+    if(error){ status.textContent=error.message; sel.disabled=false; return; }
     await loadEnquiries();
+    if(nextStatus==='completed') openAdminPage('completed');
   });
 
   list.querySelectorAll('[data-save-booking]').forEach(btn=>btn.onclick=async()=>{
@@ -747,7 +886,8 @@ async function loadEnquiries(){
       quoted_price: priceRaw==='' ? null : Number(priceRaw),
       admin_notes
     };
-    if(booking_date) update.status='booked';
+    const currentRow=cachedEnquiries.find(r=>r.id===card.dataset.enquiryId);
+    if(booking_date && currentRow?.status!=='completed') update.status='booked';
 
     const {error}=await supabase.from('enquiries').update(update).eq('id',card.dataset.enquiryId);
     st.textContent=error ? error.message : 'Booking saved ✓';
@@ -759,12 +899,14 @@ async function loadEnquiries(){
     const row=cachedEnquiries.find(r=>r.id===btn.dataset.deleteEnquiry);
     if(!confirm(`Delete ${row?.name||'this enquiry'} permanently? This cannot be undone.`)) return;
     btn.disabled=true;
-    const {error}=await supabase.from('enquiries').delete().eq('id',btn.dataset.deleteEnquiry);
+    const {data:deleted,error}=await supabase.from('enquiries').delete().eq('id',btn.dataset.deleteEnquiry).select('id');
     if(error){
       status.textContent='Delete failed: '+error.message;
       btn.disabled=false;
       return;
     }
+    if(!deleted?.length){status.textContent='Nothing was deleted. Check the Supabase DELETE policy.';btn.disabled=false;return;}
+    status.textContent='Enquiry deleted permanently ✓';
     await loadEnquiries();
   });
 
@@ -788,6 +930,87 @@ async function loadEnquiries(){
 
   renderSchedule();
 }
+
+
+function renderDashboard(){
+  if(!cachedEnquiries.length && !document.querySelector('#metricNew')) return;
+  const now=new Date();
+  const today=now.toISOString().slice(0,10);
+  const month=today.slice(0,7);
+  const active=cachedEnquiries.filter(r=>!['cancelled','spam'].includes(r.status));
+  const upcoming=active.filter(r=>r.booking_date && r.booking_date>=today && r.status!=='completed');
+  const completedMonth=cachedEnquiries.filter(r=>r.status==='completed' && (r.booking_date||'').startsWith(month));
+  const bookedMonth=active.filter(r=>r.booking_date?.startsWith(month) && r.quoted_price!=null);
+  const revenue=bookedMonth.reduce((sum,r)=>sum+Number(r.quoted_price||0),0);
+  const set=(id,v)=>{const el=document.querySelector(id);if(el)el.textContent=v};
+  set('#metricNew',cachedEnquiries.filter(r=>r.status==='new').length);
+  set('#metricUpcoming',upcoming.length);
+  set('#metricCompleted',completedMonth.length);
+  set('#metricRevenue','£'+revenue.toFixed(0));
+  set('#todayLabel',now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}));
+  const host=document.querySelector('#todayJob'); if(!host)return;
+  const jobs=active.filter(r=>r.booking_date===today && r.status!=='completed').sort((a,b)=>(a.booking_time||'').localeCompare(b.booking_time||''));
+  if(!jobs.length){host.innerHTML='<div class="empty-today">No jobs booked for today.</div>';return;}
+  host.innerHTML=jobs.map(r=>`<div class="job-card" data-job-open="${r.id}"><div class="job-card-top"><div><h3>${escapeHtml(r.name)}</h3><div class="job-car">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}</div></div><span class="status-pill">${escapeHtml(r.status)}</span></div><div class="job-details"><div class="job-detail"><small>Time</small><strong>${escapeHtml((r.booking_time||'Not set').slice(0,5))}</strong></div><div class="job-detail"><small>Price</small><strong>${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'Not set'}</strong></div><div class="job-detail"><small>Location</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div class="job-detail"><small>Notes</small><strong>${escapeHtml(r.admin_notes||'None')}</strong></div></div></div>`).join('');
+  host.querySelectorAll('[data-job-open]').forEach(el=>el.onclick=()=>{openAdminPage('enquiries');setTimeout(()=>document.querySelector(`[data-enquiry-id="${el.dataset.jobOpen}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),100)});
+}
+
+function openEnquiryFromPipeline(id){
+  enquiryFilter='active';
+  document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x.dataset.filter==='active'));
+  openAdminPage('enquiries');
+  loadEnquiries().then(()=>setTimeout(()=>{
+    const card=document.querySelector(`[data-enquiry-id="${id}"]`);
+    card?.scrollIntoView({behavior:'smooth',block:'center'});
+    card?.classList.add('page-flash');
+  },80));
+}
+
+function renderPending(){
+  const list=document.querySelector('#pendingList'); if(!list)return;
+  const rows=cachedEnquiries.filter(r=>!r.booking_date && !['completed','cancelled','spam'].includes(r.status));
+  const count=document.querySelector('#pendingCount'); if(count)count.textContent=`${rows.length} waiting`;
+  if(!rows.length){list.innerHTML='<div class="empty-state">No enquiries are waiting for a date.</div>';return;}
+  list.innerHTML=rows.map(r=>{
+    const d=new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const price=r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'Price not set';
+    return `<article class="completed-card pipeline-card" data-pipeline-open="${r.id}"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>Enquired ${escapeHtml(d)} · ${escapeHtml((r.status||'new').replaceAll('_',' '))}</div></div><div class="completed-price">${price}</div></div><div class="enquiry-message">${escapeHtml(r.message)}</div>${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open enquiry</button><button type="button" class="secondary" data-pipeline-book="${r.id}">Add booking</button></div></article>`;
+  }).join('');
+  list.querySelectorAll('[data-pipeline-open]').forEach(el=>el.onclick=e=>{e.stopPropagation();openEnquiryFromPipeline(el.dataset.pipelineOpen)});
+  list.querySelectorAll('[data-pipeline-book]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openEnquiryFromPipeline(btn.dataset.pipelineBook);setTimeout(()=>document.querySelector('#booking-'+btn.dataset.pipelineBook)?.classList.add('show'),350)});
+}
+
+function renderUpcoming(){
+  const list=document.querySelector('#upcomingList'); if(!list)return;
+  const today=new Date().toISOString().slice(0,10);
+  const rows=cachedEnquiries.filter(r=>r.booking_date>=today && !['completed','cancelled','spam'].includes(r.status)).sort((a,b)=>(a.booking_date+(a.booking_time||'')).localeCompare(b.booking_date+(b.booking_time||'')));
+  const count=document.querySelector('#upcomingCount'); if(count)count.textContent=`${rows.length} booked`;
+  if(!rows.length){list.innerHTML='<div class="empty-state">No upcoming jobs booked.</div>';return;}
+  list.innerHTML=rows.map(r=>{
+    const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
+  }).join('');
+  list.querySelectorAll('[data-pipeline-open]').forEach(btn=>btn.onclick=()=>openEnquiryFromPipeline(btn.dataset.pipelineOpen));
+  list.querySelectorAll('[data-upcoming-calendar]').forEach(btn=>btn.onclick=()=>{calendarCursor=new Date(btn.dataset.upcomingCalendar+'T12:00:00');calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);openAdminPage('schedule');renderSchedule();setTimeout(()=>selectScheduleDay(btn.dataset.upcomingCalendar),80)});
+}
+
+function renderCompleted(){
+  const list=document.querySelector('#completedList'); if(!list)return;
+  const rows=cachedEnquiries.filter(r=>r.status==='completed').sort((a,b)=>(b.booking_date||b.created_at).localeCompare(a.booking_date||a.created_at));
+  const count=document.querySelector('#completedCount'); if(count)count.textContent=`${rows.length} job${rows.length===1?'':'s'}`;
+  const total=rows.reduce((s,r)=>s+Number(r.quoted_price||0),0);
+  const priced=rows.filter(r=>r.quoted_price!=null);
+  const avg=priced.length?total/priced.length:0;
+  const summary=document.querySelector('#completedSummary');
+  if(summary)summary.innerHTML=`<div class="metric-card"><div class="metric-label">Completed value</div><div class="metric-value">£${total.toFixed(0)}</div><div class="metric-sub">All completed jobs</div></div><div class="metric-card"><div class="metric-label">Average job</div><div class="metric-value">£${avg.toFixed(0)}</div><div class="metric-sub">Priced jobs</div></div>`;
+  if(!rows.length){list.innerHTML='<div class="empty-state">No completed jobs yet.</div>';return;}
+  list.innerHTML=rows.map(r=>{const d=r.booking_date?new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'No booking date';return `<article class="completed-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)}${r.booking_location?' · '+escapeHtml(r.booking_location):''}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div>${r.admin_notes?`<div class="enquiry-message">${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" class="secondary" data-reopen="${r.id}">Move to ongoing</button><button type="button" data-complete-schedule="${r.id}">View schedule</button></div></article>`}).join('');
+  list.querySelectorAll('[data-reopen]').forEach(btn=>btn.onclick=async()=>{btn.disabled=true;const {error}=await supabase.from('enquiries').update({status:'ongoing'}).eq('id',btn.dataset.reopen);if(!error){await loadEnquiries();openAdminPage('enquiries')}else btn.disabled=false;});
+  list.querySelectorAll('[data-complete-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
+}
+
+document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const btn=e.target.closest('[data-filter]');if(!btn)return;enquiryFilter=btn.dataset.filter;document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x===btn));loadEnquiries();});
 
 function renderSchedule(){
   const calendar=document.querySelector('#bookingCalendar');
@@ -814,9 +1037,11 @@ function renderSchedule(){
     if(d.getMonth()!==m)classes.push('muted');
     if(key===todayKey)classes.push('today');
     if(dayBookings.length)classes.push('has-booking');
-    cells+=`<div class="${classes.join(' ')}"><span class="day-num">${d.getDate()}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
+    cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
   }
   calendar.innerHTML=cells;
+  calendar.querySelectorAll('[data-date]').forEach(day=>day.onclick=()=>selectScheduleDay(day.dataset.date));
+  if(selectedScheduleDate) selectScheduleDay(selectedScheduleDate);
 
   const nowKey=new Date().toISOString().slice(0,10);
   const upcoming=bookings
@@ -836,6 +1061,16 @@ function renderSchedule(){
       ${r.admin_notes?`<div class="enquiry-message">${escapeHtml(r.admin_notes)}</div>`:''}
     </div>`;
   }).join('');
+}
+
+
+function selectScheduleDay(dateKey){
+  selectedScheduleDate=dateKey;
+  document.querySelectorAll('.calendar-day').forEach(el=>el.classList.toggle('selected',el.dataset.date===dateKey));
+  const host=document.querySelector('#selectedDayJobs'); if(!host)return;
+  const rows=cachedEnquiries.filter(r=>r.booking_date===dateKey && !['cancelled','spam'].includes(r.status));
+  const label=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  host.innerHTML=rows.length?`<div class="admin-kicker">${escapeHtml(label)}</div>`+rows.map(r=>`<div class="day-job"><strong>${escapeHtml((r.booking_time||'').slice(0,5)||'Time TBC')} · ${escapeHtml(r.name)}</strong><br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}${r.quoted_price!=null?' · £'+Number(r.quoted_price).toFixed(2):''}</div>`).join(''):`<div class="day-job"><strong>${escapeHtml(label)}</strong><br>No jobs booked.</div>`;
 }
 
 document.querySelector('#calendarPrev')?.addEventListener('click',()=>{
@@ -941,7 +1176,9 @@ document
 
     status.textContent = '';
 
-    showCorrectScreen();
+    const adminToday=document.querySelector('#adminToday');
+if(adminToday)adminToday.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+showCorrectScreen();
 
   };
 
@@ -1291,6 +1528,8 @@ document
   };
 
 
+const adminTodayFinal=document.querySelector('#adminToday');
+if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 showCorrectScreen();
 
 </script>
