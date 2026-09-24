@@ -110,7 +110,8 @@ button.secondary {
   font-size: 12px;
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;}
 
 
 
@@ -271,12 +272,6 @@ body{padding-bottom:88px}
 </head>
 
 <body>
-<div id="sbAuthDebug" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:999999;
-background:#111;border:2px solid #888;border-radius:10px;padding:10px;color:#fff;
-font:12px/1.45 monospace;box-shadow:0 4px 22px rgba(0,0,0,.65);overflow-wrap:anywhere;">
-AUTH DEBUG: loading…
-</div>
-
 
 <main>
 
@@ -603,8 +598,7 @@ const supabase = createClient(
       storage: window.localStorage,
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storageKey: 'stancebound-admin-auth'
+      detectSessionInUrl: true
     }
   }
 );
@@ -1280,33 +1274,8 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   setTimeout(()=>openAdminPage('upcoming'),350);
 });
 
-
-async function refreshAuthDebug(stage='check') {
-  const box = document.querySelector('#sbAuthDebug');
-  if (!box) return;
-  let storage='BLOCKED', keys=[], session=null, err=null;
-  try {
-    localStorage.setItem('__sb_test__','1');
-    storage = localStorage.getItem('__sb_test__') === '1' ? 'OK' : 'FAILED';
-    localStorage.removeItem('__sb_test__');
-    keys = Object.keys(localStorage).filter(k =>
-      k.includes('stancebound-admin-auth') || k.startsWith('sb-')
-    );
-  } catch(e) { storage='ERROR'; err=e; }
-  try {
-    const r = await supabase.auth.getSession();
-    session = r.data?.session || null;
-    if (r.error) err = r.error;
-  } catch(e) { err=e; }
-  box.textContent =
-    `AUTH DEBUG · ${stage} | storage=${storage} | savedKey=${keys.length ? 'YES' : 'NO'} | session=${session ? 'YES' : 'NO'}` +
-    (session?.user?.email ? ` | user=${session.user.email}` : '') +
-    (err ? ` | error=${err.message || err}` : '');
-}
-
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
-  await refreshAuthDebug('PAGE LOAD');
 
   if (error) {
     const status = document.querySelector('#loginStatus');
@@ -1356,7 +1325,6 @@ async function adminLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
-    await refreshAuthDebug('AFTER LOGIN');
 
     status.textContent = '';
     await showCorrectScreen();
