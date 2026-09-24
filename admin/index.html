@@ -251,7 +251,14 @@ body{padding-bottom:88px}
 .order-detail small{display:block;color:#666;font-size:7px;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:5px}
 .order-detail strong{font-size:11px;color:#ddd;font-weight:600;white-space:pre-line}
 .order-card.new-order{border-left:3px solid #fff}
-@media(max-width:560px){.order-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
+.order-editor{margin-top:14px;padding:14px;border:1px solid #292929;background:#090909}
+.order-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.order-editor .full{grid-column:1/-1}
+.order-editor label{display:block;margin:0 0 5px;color:#777;font-size:8px;letter-spacing:1.4px;text-transform:uppercase}
+.order-editor input,.order-editor select,.order-editor textarea{width:100%;box-sizing:border-box;background:#050505;border:1px solid #333;color:#fff;padding:11px;font:inherit}
+.order-editor textarea{min-height:82px}
+.order-save{margin-top:10px}
+@media(max-width:560px){.order-grid,.order-editor-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -476,7 +483,7 @@ Log In
     <div class="panel">
       <div class="admin-kicker">STANCEBOUND Shop</div>
       <div class="section-title-row"><h2>Orders</h2><span class="status-pill" id="ordersCount">0 orders</span></div>
-      <p class="help">Paid Stripe orders appear here automatically. Fulfilment will remain pending until the Printful stage is connected.</p>
+      <p class="help">Paid Stripe orders appear here automatically. Customer and payment details stay read-only; fulfilment, Printful and tracking details can be updated below.</p>
       <div id="ordersStatus" class="status"></div>
       <div id="ordersList"></div>
     </div>
@@ -1070,7 +1077,7 @@ function formatOrderAddress(address){
 async function loadOrders(){
   const status=document.querySelector('#ordersStatus');
   if(status)status.textContent='Loading orders...';
-  const {data,error}=await supabase.from('shop_orders').select('id,created_at,stripe_session_id,payment_status,customer_email,customer_name,product_name,size,quantity,amount_total,currency,shipping_address,fulfillment_status,printful_order_id,tracking_number').order('created_at',{ascending:false});
+  const {data,error}=await supabase.from('shop_orders').select('id,created_at,stripe_session_id,payment_status,customer_email,customer_name,product_name,size,quantity,amount_total,currency,shipping_address,fulfillment_status,printful_order_id,tracking_number,tracking_link,admin_notes').order('created_at',{ascending:false});
   if(error){
     if(status)status.textContent='Could not load orders: '+error.message;
     return;
@@ -1086,12 +1093,25 @@ function renderOrders(){
   const count=document.querySelector('#ordersCount'); if(count)count.textContent=`${cachedOrders.length} order${cachedOrders.length===1?'':'s'}`;
   const badge=document.querySelector('#orderBadge'); if(badge)badge.textContent=cachedOrders.filter(r=>(r.fulfillment_status||'pending')==='pending').length||'';
   if(!cachedOrders.length){list.innerHTML='<div class="empty-state">No shop orders yet.</div>';return;}
-  list.innerHTML=cachedOrders.map((r,i)=>{
+
+  const fulfilmentOptions=(current)=>{
+    const options=[
+      ['pending','Pending'],
+      ['draft','Draft'],
+      ['processing','Processing'],
+      ['shipped','Shipped'],
+      ['completed','Completed'],
+      ['cancelled','Cancelled']
+    ];
+    return options.map(([value,label])=>`<option value="${value}" ${value===(current||'pending')?'selected':''}>${label}</option>`).join('');
+  };
+
+  list.innerHTML=cachedOrders.map(r=>{
     const date=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
     const amount=r.amount_total==null?'—':new Intl.NumberFormat('en-GB',{style:'currency',currency:(r.currency||'GBP').toUpperCase()}).format(Number(r.amount_total)/100);
     const fulfil=(r.fulfillment_status||'pending').replaceAll('_',' ');
     const paid=(r.payment_status||'pending').replaceAll('_',' ');
-    return `<article class="order-card ${fulfil==='pending'?'new-order':''}">
+    return `<article class="order-card ${fulfil==='pending'?'new-order':''}" data-order-id="${r.id}">
       <div class="order-card-head"><div><h3>${escapeHtml(r.product_name||'STANCEBOUND order')}</h3><div class="order-meta">Order #${escapeHtml(r.id)} · ${escapeHtml(date)}<br>${escapeHtml(r.customer_name||'No customer name')} · ${escapeHtml(r.customer_email||'No email')}</div></div><div class="order-total">${escapeHtml(amount)}</div></div>
       <div class="order-grid">
         <div class="order-detail"><small>Product</small><strong>${escapeHtml(r.product_name||'—')} · Size ${escapeHtml(r.size||'—')} · Qty ${escapeHtml(r.quantity??1)}</strong></div>
@@ -1101,8 +1121,56 @@ function renderOrders(){
         <div class="order-detail"><small>Printful order</small><strong>${escapeHtml(r.printful_order_id||'Not sent yet')}</strong></div>
         <div class="order-detail"><small>Tracking</small><strong>${escapeHtml(r.tracking_number||'Not available yet')}</strong></div>
       </div>
+      <div class="order-editor">
+        <div class="order-editor-grid">
+          <div><label>Fulfilment status</label><select data-order-fulfilment>${fulfilmentOptions(r.fulfillment_status)}</select></div>
+          <div><label>Printful order ID</label><input type="text" data-order-printful maxlength="100" value="${escapeHtml(r.printful_order_id||'')}" placeholder="e.g. 177788478"></div>
+          <div><label>Tracking number</label><input type="text" data-order-tracking maxlength="160" value="${escapeHtml(r.tracking_number||'')}" placeholder="Courier tracking number"></div>
+          <div><label>Tracking link</label><input type="url" data-order-tracking-link maxlength="1000" value="${escapeHtml(r.tracking_link||'')}" placeholder="https://..."></div>
+          <div class="full"><label>Private admin notes</label><textarea data-order-notes maxlength="4000" placeholder="Anything useful about this order...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+        </div>
+        <button type="button" class="order-save" data-save-order="${r.id}">Save Changes</button>
+        <div class="status" data-order-save-status></div>
+      </div>
     </article>`;
   }).join('');
+
+  list.querySelectorAll('[data-save-order]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('.order-card');
+    const st=card.querySelector('[data-order-save-status]');
+    const orderId=btn.dataset.saveOrder;
+    const update={
+      fulfillment_status:card.querySelector('[data-order-fulfilment]').value,
+      printful_order_id:card.querySelector('[data-order-printful]').value.trim()||null,
+      tracking_number:card.querySelector('[data-order-tracking]').value.trim()||null,
+      tracking_link:card.querySelector('[data-order-tracking-link]').value.trim()||null,
+      admin_notes:card.querySelector('[data-order-notes]').value.trim()||null
+    };
+
+    btn.disabled=true;
+    st.textContent='Saving...';
+
+    const {data,error}=await supabase
+      .from('shop_orders')
+      .update(update)
+      .eq('id',orderId)
+      .select('id');
+
+    if(error){
+      st.textContent='Could not save: '+error.message;
+      btn.disabled=false;
+      return;
+    }
+    if(!data?.length){
+      st.textContent='Nothing was updated. Check the shop_orders UPDATE policy.';
+      btn.disabled=false;
+      return;
+    }
+
+    st.textContent='Order updated ✓';
+    btn.disabled=false;
+    await loadOrders();
+  });
 }
 
 function renderDashboard(){
