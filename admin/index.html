@@ -1290,6 +1290,7 @@ async function showCorrectScreen() {
   }
 
   const loggedIn = !!session;
+  window.sbUpdateAuthDiagnostic?.(session);
 
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
@@ -1711,32 +1712,34 @@ showCorrectScreen();
 
 <script>
 (function () {
-  function updateSessionSaveTest() {
-    const el = document.getElementById('sbSessionSaveTest');
-    if (!el) return;
+  function storageHasSession() {
     try {
       const keys = Object.keys(window.localStorage);
       const authKey = keys.find(k =>
         k === 'stancebound-admin-auth' ||
         (k.startsWith('sb-') && k.endsWith('-auth-token'))
       );
-      el.textContent = authKey && localStorage.getItem(authKey)
-        ? 'SESSION SAVED: YES'
-        : 'SESSION SAVED: NO';
+      return !!(authKey && localStorage.getItem(authKey));
     } catch (e) {
-      el.textContent = 'SESSION SAVED: STORAGE ERROR';
+      return false;
     }
   }
 
-  window.addEventListener('load', function () {
-    updateSessionSaveTest();
-    setTimeout(updateSessionSaveTest, 500);
-    setTimeout(updateSessionSaveTest, 1500);
-  });
+  window.sbUpdateAuthDiagnostic = function(session) {
+    const el = document.getElementById('sbSessionSaveTest');
+    if (!el) return;
+    el.textContent =
+      'STORAGE: ' + (storageHasSession() ? 'YES' : 'NO') +
+      ' | SUPABASE SESSION: ' + (session ? 'YES' : 'NO');
+  };
 
-  document.addEventListener('click', function () {
-    setTimeout(updateSessionSaveTest, 500);
-    setTimeout(updateSessionSaveTest, 1500);
+  window.addEventListener('load', function () {
+    const el = document.getElementById('sbSessionSaveTest');
+    if (el) {
+      el.textContent =
+        'STORAGE: ' + (storageHasSession() ? 'YES' : 'NO') +
+        ' | SUPABASE SESSION: CHECKING…';
+    }
   });
 })();
 </script>
