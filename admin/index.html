@@ -272,6 +272,21 @@ body{padding-bottom:88px}
 </head>
 
 <body>
+<script>
+(function(){
+  const KEY='stancebound_diagnostic_errors';
+  function save(kind,msg,src,line,col){
+    try{
+      const rows=JSON.parse(localStorage.getItem(KEY)||'[]');
+      rows.push({time:new Date().toISOString(),kind,message:String(msg||'Unknown error'),source:src||'',line:line||0,column:col||0});
+      localStorage.setItem(KEY,JSON.stringify(rows.slice(-25)));
+    }catch(_){}
+  }
+  window.addEventListener('error',e=>save('JS ERROR',e.message,e.filename,e.lineno,e.colno),true);
+  window.addEventListener('unhandledrejection',e=>save('PROMISE ERROR',e.reason?.message||String(e.reason||'Unknown rejection')));
+})();
+</script>
+
 
 <main>
 
@@ -566,6 +581,19 @@ Save Changes
 
 </section>
 
+
+<section class="admin-page" data-admin-page="diagnostics" id="diagnosticsPage">
+  <div class="admin-kicker">SYSTEM TOOLS</div>
+  <h2>Diagnostics</h2>
+  <p style="color:#9a9a9a;max-width:760px">Read-only checks for the STANCEBOUND website and admin. It does not change authentication, database records, Stripe, Printful, or site content.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0">
+    <button type="button" id="runDiagnosticsBtn">Run Full Diagnostic</button>
+    <button type="button" class="secondary" id="copyDiagnosticsBtn">Copy Report</button>
+  </div>
+  <div id="diagnosticsSummary" class="status">Not run yet.</div>
+  <div id="diagnosticsResults" style="display:grid;gap:10px;margin-top:16px"></div>
+</section>
+
 </main>
 
 
@@ -577,7 +605,7 @@ Save Changes
     <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid"><button type="button" data-sheet-target="diagnostics">Diagnostics</button>
     <button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
@@ -1733,6 +1761,102 @@ document
 
   };
 
+
+
+const DIAG_ERROR_KEY='stancebound_diagnostic_errors';
+
+function diagResult(name,state,detail){
+  const host=document.querySelector('#diagnosticsResults');
+  if(!host)return;
+  const symbol=state==='PASS'?'✓':state==='WARN'?'!':'×';
+  const border=state==='PASS'?'#3b5':state==='WARN'?'#b98b2e':'#b44';
+  const card=document.createElement('div');
+  card.style.cssText=`border:1px solid ${border};padding:12px;background:#0b0b0b`;
+  const title=document.createElement('strong');
+  title.textContent=`${symbol} ${state} · ${name}`;
+  const body=document.createElement('div');
+  body.style.cssText='color:#aaa;margin-top:5px;white-space:pre-wrap;word-break:break-word';
+  body.textContent=detail;
+  card.append(title,body);
+  host.appendChild(card);
+}
+
+async function runDiagnostics(){
+  const host=document.querySelector('#diagnosticsResults');
+  const summary=document.querySelector('#diagnosticsSummary');
+  if(!host||!summary)return;
+  host.innerHTML='';
+  summary.textContent='Running read-only checks…';
+  const states=[];
+  const add=(n,state,d)=>{states.push(state);diagResult(n,state,d)};
+
+  add('Admin JavaScript','PASS','Diagnostics engine is running.');
+
+  try{
+    const key=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.endsWith('-auth-token'))||'';
+    const stored=key?JSON.parse(localStorage.getItem(key)||'null'):null;
+    const ok=!!(stored?.access_token&&stored?.refresh_token&&stored?.user);
+    add('Saved session',ok?'PASS':'FAIL',ok?`Session stored for ${stored.user.email||'admin user'}.`:'No complete saved Supabase session found.');
+  }catch(e){add('Saved session','FAIL',e.message)}
+
+  try{
+    const result=await Promise.race([
+      supabase.auth.getSession(),
+      new Promise(resolve=>setTimeout(()=>resolve({error:new Error('Timed out after 5 seconds')}),5000))
+    ]);
+    if(result.error)add('Supabase auth','FAIL',result.error.message);
+    else add('Supabase auth',result.data?.session?'PASS':'WARN',result.data?.session?'Supabase recognizes the active session.':'No active session returned.');
+  }catch(e){add('Supabase auth','FAIL',e.message)}
+
+  try{
+    const {error}=await supabase.from('site_content').select('*',{head:true,count:'exact'}).limit(1);
+    add('Website database',error?'FAIL':'PASS',error?error.message:'site_content is reachable.');
+  }catch(e){add('Website database','FAIL',e.message)}
+
+  try{
+    const {error}=await supabase.from('enquiries').select('id',{head:true,count:'exact'}).limit(1);
+    add('Admin enquiries',error?'FAIL':'PASS',error?error.message:'Authenticated enquiry query succeeded.');
+  }catch(e){add('Admin enquiries','FAIL',e.message)}
+
+  try{
+    const {error}=await supabase.from('shop_orders').select('id',{head:true,count:'exact'}).limit(1);
+    add('Shop orders',error?'FAIL':'PASS',error?error.message:'Authenticated shop_orders query succeeded.');
+  }catch(e){add('Shop orders','FAIL',e.message)}
+
+  try{
+    const response=await fetch('https://stancebound.com/',{method:'GET',cache:'no-store'});
+    add('Public website',response.ok?'PASS':'FAIL',`HTTP ${response.status} ${response.statusText||''}`.trim());
+  }catch(e){add('Public website','FAIL',e.message)}
+
+  try{
+    const errors=JSON.parse(localStorage.getItem(DIAG_ERROR_KEY)||'[]');
+    if(errors.length){
+      add('Recorded browser errors','WARN',errors.slice(-5).map(e=>`${e.time} · ${e.kind}: ${e.message}${e.line?' @ line '+e.line:''}`).join('\n'));
+    }else{
+      add('Recorded browser errors','PASS','No recorded startup/runtime errors.');
+    }
+  }catch(e){add('Recorded browser errors','WARN','Could not read error log: '+e.message)}
+
+  const fails=states.filter(x=>x==='FAIL').length;
+  const warns=states.filter(x=>x==='WARN').length;
+  summary.textContent=fails?`${fails} failure(s), ${warns} warning(s).`:warns?`No failures, ${warns} warning(s).`:'All checks passed.';
+}
+
+function buildDiagnosticReport(){
+  const lines=['STANCEBOUND DIAGNOSTIC REPORT',new Date().toLocaleString('en-GB'),`URL: ${location.href}`,`Browser: ${navigator.userAgent}`,''];
+  document.querySelectorAll('#diagnosticsResults > div').forEach(card=>lines.push(card.innerText.trim(),''));
+  return lines.join('\n');
+}
+
+document.querySelector('#runDiagnosticsBtn')?.addEventListener('click',runDiagnostics);
+document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=>{
+  try{
+    await navigator.clipboard.writeText(buildDiagnosticReport());
+    document.querySelector('#diagnosticsSummary').textContent='Diagnostic report copied.';
+  }catch(e){
+    document.querySelector('#diagnosticsSummary').textContent='Copy failed: '+e.message;
+  }
+});
 
 supabase.auth.onAuthStateChange((event, session) => {
   applyAdminSession(session);
