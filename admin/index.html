@@ -258,6 +258,9 @@ body{padding-bottom:88px}
 .order-editor input,.order-editor select,.order-editor textarea{width:100%;box-sizing:border-box;background:#050505;border:1px solid #333;color:#fff;padding:11px;font:inherit}
 .order-editor textarea{min-height:82px}
 .order-save{margin-top:10px}
+.order-admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.order-admin-actions button{margin:0}
+.order-delete{background:#160707;color:#ffb3b3;border:1px solid #642323}
 @media(max-width:560px){.order-grid,.order-editor-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
 </style>
 
@@ -1129,7 +1132,10 @@ function renderOrders(){
           <div><label>Tracking link</label><input type="url" data-order-tracking-link maxlength="1000" value="${escapeHtml(r.tracking_link||'')}" placeholder="https://..."></div>
           <div class="full"><label>Private admin notes</label><textarea data-order-notes maxlength="4000" placeholder="Anything useful about this order...">${escapeHtml(r.admin_notes||'')}</textarea></div>
         </div>
-        <button type="button" class="order-save" data-save-order="${r.id}">Save Changes</button>
+        <div class="order-admin-actions">
+          <button type="button" class="order-save" data-save-order="${r.id}">Save Changes</button>
+          <button type="button" class="order-delete" data-delete-order="${r.id}">Delete Order</button>
+        </div>
         <div class="status" data-order-save-status></div>
       </div>
     </article>`;
@@ -1169,6 +1175,38 @@ function renderOrders(){
 
     st.textContent='Order updated ✓';
     btn.disabled=false;
+    await loadOrders();
+  });
+
+  list.querySelectorAll('[data-delete-order]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('.order-card');
+    const st=card.querySelector('[data-order-save-status]');
+    const orderId=btn.dataset.deleteOrder;
+    const row=cachedOrders.find(r=>String(r.id)===String(orderId));
+    const label=row?.product_name||'this order';
+
+    if(!confirm(`Permanently delete Order #${orderId} (${label}) from STANCEBOUND Admin?\n\nThis cannot be undone. This does NOT refund Stripe or cancel a Printful order.`)) return;
+
+    btn.disabled=true;
+    st.textContent='Deleting order...';
+
+    const {data,error}=await supabase
+      .from('shop_orders')
+      .delete()
+      .eq('id',orderId)
+      .select('id');
+
+    if(error){
+      st.textContent='Could not delete: '+error.message;
+      btn.disabled=false;
+      return;
+    }
+    if(!data?.length){
+      st.textContent='Nothing was deleted. Check the shop_orders DELETE policy.';
+      btn.disabled=false;
+      return;
+    }
+
     await loadOrders();
   });
 }
