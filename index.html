@@ -2507,7 +2507,7 @@
               <div>
                 <span>DROP 001 · AVAILABLE</span>
                 <h3>STANCEBOUND Signature Hoodie</h3>
-                <span class="product-price">£34.99</span>
+                <span class="product-price">£44.99</span>
                 <span class="product-sizes">BLACK · S · M · L · XL · 2XL · 3XL</span>
               </div>
               <button type="button">VIEW</button>
@@ -3165,7 +3165,7 @@
       <div class="product-modal-copy">
         <span class="drop-label">STANCEBOUND · DROP 001</span>
         <h2 id="hoodieProductTitle">Signature Hoodie</h2>
-        <div class="product-modal-price">£34.99</div>
+        <div class="product-modal-price">£44.99</div>
         <p class="product-modal-description">Premium heavyweight black pullover hoodie with the STANCEBOUND SB emblem on the chest and full STANCEBOUND DETAILING artwork across the back.</p>
         <div class="product-option-label">COLOUR · BLACK</div>
         <div class="product-option-label">SELECT SIZE</div>
@@ -3194,7 +3194,7 @@
   function productModalBackdrop(e){if(e.target===e.currentTarget)closeHoodieProduct()}
   document.querySelectorAll('#hoodieSizes .size-option').forEach(btn=>{btn.addEventListener('click',()=>{
     document.querySelectorAll('#hoodieSizes .size-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedHoodieSize=btn.dataset.size;
-    const buy=document.getElementById('hoodieBuyBtn');buy.disabled=false;buy.textContent='BUY NOW · £34.99';
+    const buy=document.getElementById('hoodieBuyBtn');buy.disabled=false;buy.textContent='BUY NOW · £44.99';
     document.getElementById('hoodieSelectionStatus').textContent='Selected: Black / '+selectedHoodieSize;
   })});
   document.getElementById('hoodieBuyBtn')?.addEventListener('click',async()=>{
