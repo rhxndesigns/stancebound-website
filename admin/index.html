@@ -272,36 +272,6 @@ body{padding-bottom:88px}
 </head>
 
 <body>
-<div id="sbJsErrorProbe" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483647;
-background:#111;color:#fff;border:1px solid #777;border-radius:8px;padding:9px;
-font:11px/1.45 monospace;text-align:left;word-break:break-word;">JS STARTUP: waiting…</div>
-<script>
-(function () {
-  const box = () => document.getElementById('sbJsErrorProbe');
-  window.__sbModuleStarted = false;
-
-  window.addEventListener('error', function (e) {
-    const el = box(); if (!el) return;
-    el.textContent = 'JS ERROR: ' + (e.message || 'unknown') +
-      (e.filename ? ' | ' + e.filename.split('/').pop() : '') +
-      (e.lineno ? ':' + e.lineno + ':' + e.colno : '');
-  }, true);
-
-  window.addEventListener('unhandledrejection', function (e) {
-    const el = box(); if (!el) return;
-    const r = e.reason;
-    el.textContent = 'PROMISE ERROR: ' + (r?.message || String(r || 'unknown'));
-  });
-
-  setTimeout(function () {
-    const el = box(); if (!el) return;
-    if (!window.__sbModuleStarted && el.textContent === 'JS STARTUP: waiting…') {
-      el.textContent = 'MODULE SCRIPT: DID NOT START';
-    }
-  }, 2500);
-})();
-</script>
-
 
 <main>
 
@@ -615,9 +585,6 @@ Save Changes
   </div></div></div>
 
 <script type="module">
-window.__sbModuleStarted = true;
-const __sbProbe = document.getElementById('sbJsErrorProbe');
-if (__sbProbe) __sbProbe.textContent = 'MODULE SCRIPT: STARTED';
 
 import { createClient }
 from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -648,6 +615,9 @@ const fields =
 
 const adminTabs = [...document.querySelectorAll('.admin-tab')];
 const adminPages = [...document.querySelectorAll('.admin-page')];
+
+let cachedEnquiries = [];
+let cachedOrders = [];
 
 function openAdminPage(name, addToHistory=true) {
   const valid=adminPages.some(page=>page.dataset.adminPage===name);
@@ -881,7 +851,7 @@ const ENQUIRY_STATUSES = [
   ['spam','Spam']
 ];
 
-let cachedEnquiries = [];
+
 let enquiryFilter = 'active';
 let selectedScheduleDate = null;
 let calendarCursor = new Date();
@@ -1062,7 +1032,7 @@ async function loadEnquiries(){
 
 
 
-let cachedOrders = [];
+
 
 function formatOrderAddress(address){
   if(!address)return 'Not supplied';
@@ -1307,6 +1277,43 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   setTimeout(()=>openAdminPage('upcoming'),350);
 });
 
+
+function applyAdminSession(session) {
+  const loggedIn = !!session;
+
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+
+  if (loggedIn) {
+    const adminToday = document.querySelector('#adminToday');
+    if (adminToday) {
+      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric'
+      });
+    }
+  }
+}
+
+function getStoredAdminSession() {
+  try {
+    const key = Object.keys(localStorage).find(
+      k => k.startsWith('sb-') && k.endsWith('-auth-token')
+    );
+    if (!key) return null;
+
+    const session = JSON.parse(localStorage.getItem(key) || 'null');
+    if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
+
+    if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
+    return session;
+  } catch {
+    return null;
+  }
+}
+
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -1340,6 +1347,16 @@ async function showCorrectScreen() {
 }
 
 
+
+async function loadAdminData() {
+  await Promise.allSettled([
+    loadContent(),
+    loadPhotos(),
+    loadEnquiries(),
+    loadOrders()
+  ]);
+}
+
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
   const button = document.querySelector('#loginBtn');
@@ -1360,7 +1377,8 @@ async function adminLogin() {
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
-    
+    applyAdminSession(data.session);
+    setTimeout(loadAdminData, 0);
   } catch (error) {
     status.textContent = error?.message || 'Could not log in.';
   } finally {
@@ -1710,33 +1728,31 @@ document
   .onclick =
   async () => {
 
-    await supabase
-      .auth
-      .signOut();
+    await supabase.auth.signOut();
+    applyAdminSession(null);
 
   };
 
 
 supabase.auth.onAuthStateChange((event, session) => {
-  const loggedIn = !!session;
-  login.classList.toggle('hidden', loggedIn);
-  editor.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+  applyAdminSession(session);
 
-  if (loggedIn && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN')) {
-    setTimeout(async () => {
-      await loadContent();
-      await loadPhotos();
-      await loadEnquiries();
-      await loadOrders();
-    }, 0);
+  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+    setTimeout(loadAdminData, 0);
   }
 });
 
 const adminTodayFinal=document.querySelector('#adminToday');
 if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// Restore the admin UI immediately from the valid persisted Supabase session.
+// RLS still protects all database data; this only prevents the login screen
+// flashing/sticking while Supabase restores its client state.
+const storedAdminSession = getStoredAdminSession();
+applyAdminSession(storedAdminSession);
+if (storedAdminSession) {
+  setTimeout(loadAdminData, 250);
+}
 
 </script>
 
