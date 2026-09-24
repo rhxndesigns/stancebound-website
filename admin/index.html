@@ -1824,7 +1824,7 @@ async function runDiagnostics(){
   }catch(e){add('Shop orders','FAIL',e.message)}
 
   try{
-    const response=await fetch('https://stancebound.com/',{method:'GET',cache:'no-store'});
+    const response=await fetch('/',{method:'GET',cache:'no-store'});
     add('Public website',response.ok?'PASS':'FAIL',`HTTP ${response.status} ${response.statusText||''}`.trim());
   }catch(e){add('Public website','FAIL',e.message)}
 
