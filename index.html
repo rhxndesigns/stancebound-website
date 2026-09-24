@@ -2628,20 +2628,39 @@
         if(status)status.textContent='Your payment was successful, but the order reference is missing.';
         return;
       }
-      try{
-        const {data,error}=await supabase.functions.invoke('get-order-confirmation',{body:{session_id:sessionId}});
-        if(error)throw error;
-        if(!data?.order_number)throw new Error(data?.error||'Order details unavailable.');
-        document.getElementById('confirmationOrderNumber').textContent=data.order_number;
-        document.getElementById('confirmationProduct').textContent=data.product_name||'STANCEBOUND Signature Hoodie';
-        document.getElementById('confirmationSize').textContent=data.size||'—';
-        document.getElementById('confirmationQuantity').textContent=String(data.quantity??1);
-        document.getElementById('confirmationTotal').textContent=new Intl.NumberFormat('en-GB',{style:'currency',currency:(data.currency||'GBP').toUpperCase()}).format(Number(data.amount_total||0)/100);
-        document.getElementById('confirmationPayment').textContent=data.payment_status==='paid'?'Paid':'Confirmed';
-        if(status)status.textContent='Your order has been received and is now awaiting fulfilment.';
-      }catch(error){
-        console.error('Order confirmation error:',error);
-        if(status)status.textContent='Your payment was successful. We could not load the order details right now.';
+
+      const maxAttempts=10;
+      const retryDelay=2000;
+
+      for(let attempt=1;attempt<=maxAttempts;attempt++){
+        try{
+          if(status){
+            status.textContent=attempt===1
+              ? 'Loading your order details…'
+              : 'Payment confirmed. Finalising your order details…';
+          }
+
+          const {data,error}=await supabase.functions.invoke('get-order-confirmation',{body:{session_id:sessionId}});
+          if(error)throw error;
+          if(!data?.order_number)throw new Error(data?.error||'Order details unavailable.');
+
+          document.getElementById('confirmationOrderNumber').textContent=data.order_number;
+          document.getElementById('confirmationProduct').textContent=data.product_name||'STANCEBOUND Signature Hoodie';
+          document.getElementById('confirmationSize').textContent=data.size||'—';
+          document.getElementById('confirmationQuantity').textContent=String(data.quantity??1);
+          document.getElementById('confirmationTotal').textContent=new Intl.NumberFormat('en-GB',{style:'currency',currency:(data.currency||'GBP').toUpperCase()}).format(Number(data.amount_total||0)/100);
+          document.getElementById('confirmationPayment').textContent=data.payment_status==='paid'?'Paid':'Confirmed';
+          if(status)status.textContent='Your order has been received and is now awaiting fulfilment.';
+          return;
+        }catch(error){
+          console.warn(`Order confirmation attempt ${attempt} failed:`,error);
+          if(attempt<maxAttempts){
+            await new Promise(resolve=>setTimeout(resolve,retryDelay));
+          }else{
+            console.error('Order confirmation error:',error);
+            if(status)status.textContent='Your payment was successful. Your confirmation email contains your order details.';
+          }
+        }
       }
     }
 
