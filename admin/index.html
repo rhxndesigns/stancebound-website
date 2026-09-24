@@ -1327,7 +1327,7 @@ async function adminLogin() {
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
-    await showCorrectScreen();
+    
   } catch (error) {
     status.textContent = error?.message || 'Could not log in.';
   } finally {
@@ -1681,26 +1681,23 @@ document
       .auth
       .signOut();
 
-    showCorrectScreen();
-
   };
 
 
 supabase.auth.onAuthStateChange((event, session) => {
   const loggedIn = !!session;
-
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
 
-  if (loggedIn && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
-    setTimeout(() => {
-      loadContent();
-      loadPhotos();
-      loadEnquiries();
-      loadOrders();
+  if (loggedIn && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN')) {
+    setTimeout(async () => {
+      await loadContent();
+      await loadPhotos();
+      await loadEnquiries();
+      await loadOrders();
     }, 0);
   }
 });
