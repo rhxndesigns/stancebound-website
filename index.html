@@ -1747,7 +1747,32 @@
     @media(max-width:760px){.product-modal{padding:0;align-items:flex-end}.product-modal-panel{grid-template-columns:1fr;max-height:94vh;border-left:0;border-right:0;border-bottom:0}.product-modal-image{min-height:0;height:42vh}.product-modal-copy{padding:26px 20px 28px}.product-modal-copy h2{font-size:27px}.product-modal-description{margin-bottom:20px}.size-options{margin-bottom:20px}}
     body.light-theme .product-modal-panel{background:#f4f3ef}.body.light-theme .size-option{border-color:#aaa}
 
-  </style>
+  
+    /* ORDER CONFIRMATION */
+    .order-confirmation-page{min-height:calc(100vh - 140px);display:flex;align-items:center;padding-top:120px;padding-bottom:70px}
+    .order-confirmation-shell{width:min(1080px,100%);margin:0 auto;display:grid;grid-template-columns:minmax(280px,.9fr) minmax(320px,1.1fr);border:1px solid rgba(255,255,255,.12);background:#090909}
+    .order-confirmation-image{min-height:520px;background:#111;display:flex;align-items:center;justify-content:center;padding:30px;border-right:1px solid rgba(255,255,255,.12)}
+    .order-confirmation-image img{width:100%;height:auto;max-height:520px;object-fit:contain}
+    .order-confirmation-copy{padding:clamp(28px,5vw,58px)}
+    .order-confirmation-tick{width:46px;height:46px;border:1px solid rgba(255,255,255,.5);border-radius:50%;display:grid;place-items:center;font-size:20px;margin-bottom:22px}
+    .order-confirmation-copy h1{font-size:clamp(34px,6vw,68px);line-height:.95;margin:0 0 16px;text-transform:uppercase}
+    .order-confirmation-copy>p{color:#aaa;line-height:1.7;margin-bottom:28px}
+    .order-confirmation-number{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#aaa;margin-bottom:26px}
+    .order-confirmation-number strong{display:block;color:#fff;font-size:22px;letter-spacing:.08em;margin-top:6px}
+    .order-confirmation-details{border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);margin:0 0 28px}
+    .order-confirmation-row{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+    .order-confirmation-row:last-child{border-bottom:0}
+    .order-confirmation-row span{color:#888;font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+    .order-confirmation-row strong{text-align:right}
+    .order-confirmation-status{color:#aaa;margin:18px 0}
+    @media(max-width:760px){
+      .order-confirmation-page{padding-top:92px}
+      .order-confirmation-shell{grid-template-columns:1fr}
+      .order-confirmation-image{min-height:300px;border-right:0;border-bottom:1px solid rgba(255,255,255,.12);padding:18px}
+      .order-confirmation-image img{max-height:330px}
+      .order-confirmation-copy{padding:28px 22px 34px}
+    }
+</style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
   <link rel="shortcut icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -2502,7 +2527,37 @@
       </div>
     </section>
 
-  </main>
+  
+    <!-- ========================================
+         ORDER CONFIRMATION
+         ======================================== -->
+    <section id="order-confirmation" class="page">
+      <div class="content order-confirmation-page">
+        <div class="order-confirmation-shell">
+          <div class="order-confirmation-image">
+            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001">
+          </div>
+          <div class="order-confirmation-copy">
+            <div class="order-confirmation-tick">✓</div>
+            <div class="eyebrow">ORDER CONFIRMED</div>
+            <h1>Thank you<br>for your order.</h1>
+            <p>Your payment has been confirmed. Keep your order number below for reference.</p>
+            <div class="order-confirmation-number">Order number<strong id="confirmationOrderNumber">Loading…</strong></div>
+            <div class="order-confirmation-details" id="confirmationDetails">
+              <div class="order-confirmation-row"><span>Product</span><strong id="confirmationProduct">STANCEBOUND Signature Hoodie</strong></div>
+              <div class="order-confirmation-row"><span>Size</span><strong id="confirmationSize">—</strong></div>
+              <div class="order-confirmation-row"><span>Quantity</span><strong id="confirmationQuantity">—</strong></div>
+              <div class="order-confirmation-row"><span>Total paid</span><strong id="confirmationTotal">—</strong></div>
+              <div class="order-confirmation-row"><span>Payment</span><strong id="confirmationPayment">Confirmed</strong></div>
+            </div>
+            <div class="order-confirmation-status" id="confirmationStatus">Loading your order details…</div>
+            <button class="btn" type="button" onclick="showPage('shop')">Back to Shop</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</main>
 
 
 
@@ -2563,6 +2618,49 @@
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     const supabase = createClient("https://fxlekwzcxedkiyqfswvq.supabase.co","sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld");
     window.stanceboundSupabase = supabase;
+
+    async function loadOrderConfirmation(){
+      const params=new URLSearchParams(window.location.search);
+      if(params.get('checkout')!=='success')return;
+      const sessionId=params.get('session_id');
+      const status=document.getElementById('confirmationStatus');
+      if(!sessionId){
+        if(status)status.textContent='Your payment was successful, but the order reference is missing.';
+        return;
+      }
+      try{
+        const {data,error}=await supabase.functions.invoke('get-order-confirmation',{body:{session_id:sessionId}});
+        if(error)throw error;
+        if(!data?.order_number)throw new Error(data?.error||'Order details unavailable.');
+        document.getElementById('confirmationOrderNumber').textContent=data.order_number;
+        document.getElementById('confirmationProduct').textContent=data.product_name||'STANCEBOUND Signature Hoodie';
+        document.getElementById('confirmationSize').textContent=data.size||'—';
+        document.getElementById('confirmationQuantity').textContent=String(data.quantity??1);
+        document.getElementById('confirmationTotal').textContent=new Intl.NumberFormat('en-GB',{style:'currency',currency:(data.currency||'GBP').toUpperCase()}).format(Number(data.amount_total||0)/100);
+        document.getElementById('confirmationPayment').textContent=data.payment_status==='paid'?'Paid':'Confirmed';
+        if(status)status.textContent='Your order has been received and is now awaiting fulfilment.';
+      }catch(error){
+        console.error('Order confirmation error:',error);
+        if(status)status.textContent='Your payment was successful. We could not load the order details right now.';
+      }
+    }
+
+    function openCheckoutConfirmationIfNeeded(){
+      const params=new URLSearchParams(window.location.search);
+      if(params.get('checkout')!=='success')return false;
+      const target=document.getElementById('order-confirmation');
+      if(!target)return false;
+      document.querySelectorAll('.page').forEach(page=>page.classList.remove('active'));
+      target.classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link=>link.classList.remove('active'));
+      window.scrollTo(0,0);
+      loadOrderConfirmation();
+      return true;
+    }
+
+
+
+    window.addEventListener('DOMContentLoaded',()=>{setTimeout(openCheckoutConfirmationIfNeeded,0);});
 
     const contentMap={home_tagline:"#home-tagline",home_subtitle:"#home-subtitle",home_description:"#home-description",detailing_title:"#detailing-title",photography_title:"#photography-title",contact_title:"#contact-title"};
     async function loadSiteContent(){
