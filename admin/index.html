@@ -272,48 +272,6 @@ body{padding-bottom:88px}
 </head>
 
 <body>
-<div id="sbStoredAuthTest" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:999999;
-background:#111;color:#fff;border:1px solid #777;border-radius:8px;padding:9px;
-font:11px/1.45 monospace;text-align:left;word-break:break-word;">AUTH STORAGE: CHECKING…</div>
-<script>
-(function(){
-  function inspectStoredAuth(){
-    const el=document.getElementById('sbStoredAuthTest');
-    try{
-      const key=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.endsWith('-auth-token'));
-      if(!key){ el.textContent='AUTH KEY: NO'; return; }
-
-      const raw=localStorage.getItem(key);
-      let obj=null;
-      try{ obj=JSON.parse(raw); }catch(e){}
-
-      const access=!!(obj && obj.access_token);
-      const refresh=!!(obj && obj.refresh_token);
-      const user=!!(obj && obj.user);
-      let expiry='UNKNOWN';
-
-      if(obj && obj.expires_at){
-        const d=new Date(Number(obj.expires_at)*1000);
-        expiry=isNaN(d.getTime())?'INVALID':d.toLocaleString('en-GB');
-      } else if(obj && obj.expires_in){
-        expiry='expires_in '+obj.expires_in+'s';
-      }
-
-      el.textContent=
-        'AUTH KEY: YES | ACCESS TOKEN: '+(access?'YES':'NO')+
-        ' | REFRESH TOKEN: '+(refresh?'YES':'NO')+
-        ' | USER: '+(user?'YES':'NO')+
-        ' | EXPIRES: '+expiry;
-    }catch(e){
-      el.textContent='AUTH STORAGE CHECK ERROR';
-    }
-  }
-  inspectStoredAuth();
-  window.addEventListener('load',inspectStoredAuth);
-  setTimeout(inspectStoredAuth,1000);
-})();
-</script>
-
 
 <main>
 
@@ -1316,6 +1274,43 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   setTimeout(()=>openAdminPage('upcoming'),350);
 });
 
+
+function applyAdminSession(session) {
+  const loggedIn = !!session;
+
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+
+  if (loggedIn) {
+    const adminToday = document.querySelector('#adminToday');
+    if (adminToday) {
+      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric'
+      });
+    }
+  }
+}
+
+function getStoredAdminSession() {
+  try {
+    const key = Object.keys(localStorage).find(
+      k => k.startsWith('sb-') && k.endsWith('-auth-token')
+    );
+    if (!key) return null;
+
+    const session = JSON.parse(localStorage.getItem(key) || 'null');
+    if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
+
+    if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
+    return session;
+  } catch {
+    return null;
+  }
+}
+
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -1349,6 +1344,16 @@ async function showCorrectScreen() {
 }
 
 
+
+async function loadAdminData() {
+  await Promise.allSettled([
+    loadContent(),
+    loadPhotos(),
+    loadEnquiries(),
+    loadOrders()
+  ]);
+}
+
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
   const button = document.querySelector('#loginBtn');
@@ -1369,7 +1374,8 @@ async function adminLogin() {
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
-    await showCorrectScreen();
+    applyAdminSession(data.session);
+    setTimeout(loadAdminData, 0);
   } catch (error) {
     status.textContent = error?.message || 'Could not log in.';
   } finally {
@@ -1719,26 +1725,31 @@ document
   .onclick =
   async () => {
 
-    await supabase
-      .auth
-      .signOut();
-
-    showCorrectScreen();
+    await supabase.auth.signOut();
+    applyAdminSession(null);
 
   };
 
 
-supabase.auth.onAuthStateChange((_event, session) => {
-  login.classList.toggle('hidden', !!session);
-  editor.classList.toggle('hidden', !session);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !session);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !session);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !session);
+supabase.auth.onAuthStateChange((event, session) => {
+  applyAdminSession(session);
+
+  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+    setTimeout(loadAdminData, 0);
+  }
 });
 
 const adminTodayFinal=document.querySelector('#adminToday');
 if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-showCorrectScreen();
+
+// Restore the admin UI immediately from the valid persisted Supabase session.
+// RLS still protects all database data; this only prevents the login screen
+// flashing/sticking while Supabase restores its client state.
+const storedAdminSession = getStoredAdminSession();
+applyAdminSession(storedAdminSession);
+if (storedAdminSession) {
+  setTimeout(loadAdminData, 250);
+}
 
 </script>
 
