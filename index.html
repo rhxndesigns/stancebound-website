@@ -2100,6 +2100,73 @@ body.light-theme .hero-subtitle{color:rgba(28,28,28,.32)}
 body.light-theme .hero-description{color:rgba(255,255,255,.72);text-shadow:0 1px 10px rgba(0,0,0,.16)}
 </style>
 
+
+<style id="stancebound-white-theme-v2">
+/* White mode: same industrial STANCEBOUND layout, now genuinely light. */
+html[data-theme="light"] body{background:#eeeeeb!important;color:#111!important}
+html[data-theme="light"] main,html[data-theme="light"] .page{color:#111!important}
+
+/* Replace the heavy black content slabs with silver/white editorial panels. */
+html[data-theme="light"] .featured-detail,
+html[data-theme="light"] .home-cta,
+html[data-theme="light"] .cta-panel,
+html[data-theme="light"] .service-card,
+html[data-theme="light"] .content-card,
+html[data-theme="light"] .booking-card,
+html[data-theme="light"] .shop-card,
+html[data-theme="light"] .about-card{
+ background:
+   linear-gradient(135deg,rgba(255,255,255,.98),rgba(225,225,221,.98))!important;
+ border:1px solid rgba(0,0,0,.16)!important;
+ color:#111!important;
+ box-shadow:0 14px 34px rgba(0,0,0,.06)!important
+}
+
+/* Strong readable typography throughout white mode. */
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] h4,
+html[data-theme="light"] .title,
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .feature-title,
+html[data-theme="light"] .card-title{color:#101010!important;opacity:1!important}
+
+html[data-theme="light"] p,
+html[data-theme="light"] .muted,
+html[data-theme="light"] .description,
+html[data-theme="light"] .subtitle,
+html[data-theme="light"] .eyebrow,
+html[data-theme="light"] .kicker,
+html[data-theme="light"] .section-kicker,
+html[data-theme="light"] label{color:#454545!important;opacity:1!important}
+
+/* Links/CTAs on pale panels */
+html[data-theme="light"] .featured-detail a,
+html[data-theme="light"] .home-cta a,
+html[data-theme="light"] .cta-panel a{color:#111!important;border-color:#555!important}
+
+/* Forms across Contact + Booking */
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select{
+ background:#fff!important;color:#111!important;border-color:#aaa!important
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder{color:#747474!important}
+
+/* Preserve dark photographic cards where white text belongs on imagery. */
+html[data-theme="light"] .photo-card,
+html[data-theme="light"] .photography-card,
+html[data-theme="light"] [class*="image-card"]{color:#fff}
+
+/* Footer remains a deliberate dark anchor. */
+html[data-theme="light"] footer,
+html[data-theme="light"] .footer{background:#171717!important;color:#eee!important}
+html[data-theme="light"] footer *,
+html[data-theme="light"] .footer *{color:#eee}
+</style>
+
 </head>
 
 
