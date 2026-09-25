@@ -379,6 +379,14 @@ body{padding-bottom:88px}
 }
 </style>
 
+
+<style id="stancebound-shop-delete-visible">
+.order-actions{display:flex;justify-content:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid #242424}
+.danger-order-btn{min-height:44px;padding:0 16px;border:1px solid rgba(205,65,65,.55);background:transparent;color:#efb0b0;font:inherit;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.danger-order-btn:hover{border-color:#d94b4b;color:#fff}
+@media(max-width:600px){.order-actions{display:block}.danger-order-btn{width:100%}}
+</style>
+
 </head>
 
 <body>
@@ -1539,6 +1547,9 @@ function renderOrders(){
         <div class="order-detail"><small>Delivery address</small><strong>${escapeHtml(formatOrderAddress(r.shipping_address))}</strong></div>
         <div class="order-detail"><small>Printful order</small><strong>${escapeHtml(r.printful_order_id||'Not sent yet')}</strong></div>
         <div class="order-detail"><small>Tracking</small><strong>${escapeHtml(r.tracking_number||'Not available yet')}</strong></div>
+      </div>
+      <div class="order-actions">
+        <button type="button" class="danger-order-btn" data-delete-shop-order="${r.id}">Delete Order</button>
       </div>
     </article>`;
   }).join('');
