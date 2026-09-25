@@ -387,6 +387,15 @@ body{padding-bottom:88px}
 @media(max-width:600px){.order-actions{display:block}.danger-order-btn{width:100%}}
 </style>
 
+<script>
+try{
+  const k='stancebound_diagnostic_errors';
+  const rows=JSON.parse(localStorage.getItem(k)||'[]');
+  const cleaned=rows.filter(e=>!String(e.message||'').includes("bookingRequestFilter' before initialization"));
+  localStorage.setItem(k,JSON.stringify(cleaned));
+}catch(_){}
+</script>
+
 </head>
 
 <body>
@@ -1082,7 +1091,7 @@ async function loadEnquiries(){
 
   cachedEnquiries=data||[];
   const activeStatuses=['new','awaiting_reply','ongoing','booked'];
-  const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted);
+  const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted && !String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
   document.querySelector('#enquiryBadge').textContent=contactEnquiries.filter(r=>r.status==='new').length||'';
   renderBookingRequests();
@@ -1250,7 +1259,7 @@ function bookingWorkflowStatus(r){
 }
 
 function updateBookingMetrics(){
-  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted);
+  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new').length;
   const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='awaiting').length;
   const a=document.querySelector('#metricBookingRequests');
@@ -1270,7 +1279,7 @@ function renderBookingRequests(){
   updateBookingMetrics();
 
   let rows=cachedEnquiries
-    .filter(r=>r.agreement_accepted)
+    .filter(r=>r.agreement_accepted || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'))
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
   if(bookingRequestFilter!=='all'){
@@ -1747,7 +1756,11 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
     booking_end_time:document.querySelector('#manualEnd').value||null,
     booking_location:document.querySelector('#manualLocation').value.trim(),
     quoted_price:price===''?null:Number(price),
-    admin_notes:document.querySelector('#manualNotes').value.trim()
+    admin_notes:document.querySelector('#manualNotes').value.trim(),
+    agreement_accepted:true,
+    agreement_version:'ADMIN-CREATED',
+    agreement_accepted_at:new Date().toISOString(),
+    media_consent:document.querySelector('#manualMediaConsent')?.checked===true
   };
   btn.disabled=true;status.textContent='Creating booking...';
   const {data,error}=await supabase.from('enquiries').insert(payload).select('id').single();
