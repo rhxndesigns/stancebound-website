@@ -297,6 +297,88 @@ body{padding-bottom:88px}
 .enquiry-actions-admin .danger{border-color:rgba(210,70,70,.55)!important}
 </style>
 
+
+<style id="stancebound-admin-polish">
+/* Consistent STANCEBOUND admin form rhythm */
+.booking-grid,
+.manual-booking-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.booking-grid .full,
+.manual-booking-grid .full{grid-column:1/-1}
+.booking-grid label,
+.manual-booking-grid label{
+  display:block;
+  margin:0 0 7px;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.booking-grid input,
+.booking-grid select,
+.booking-grid textarea,
+.manual-booking-grid input,
+.manual-booking-grid select,
+.manual-booking-grid textarea{
+  width:100%;
+  min-height:48px;
+  box-sizing:border-box;
+}
+.booking-grid textarea,
+.manual-booking-grid textarea{min-height:105px;resize:vertical}
+
+.admin-form-section{
+  border:1px solid var(--line);
+  padding:16px;
+  margin-top:12px;
+  background:rgba(255,255,255,.012);
+}
+.admin-form-section-title{
+  margin:0 0 13px;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.booking-email-choice{
+  border:1px solid var(--line);
+  padding:12px 13px;
+  margin:14px 0 12px!important;
+}
+.enquiry-actions-admin{
+  align-items:stretch;
+}
+.enquiry-actions-admin button{
+  min-height:48px;
+}
+@media(max-width:700px){
+  .booking-grid,.manual-booking-grid{grid-template-columns:1fr}
+  .booking-grid .full,.manual-booking-grid .full{grid-column:auto}
+  .admin-form-section{padding:13px}
+}
+</style>
+
+
+<style id="stancebound-admin-actions-polish">
+@media(min-width:701px){
+  [data-booking-request-id] .enquiry-actions-admin{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+}
+@media(max-width:700px){
+  [data-booking-request-id] .enquiry-actions-admin{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -332,6 +414,16 @@ document.addEventListener('click',async(e)=>{
     btn.disabled=false;
   }
 });
+
+
+async function sendManualBookingConfirmationIfRequested(enquiryId){
+  const choice=document.querySelector('#manualEmailCustomer');
+  if(!choice || !choice.checked || !enquiryId)return {skipped:true};
+  const {data,error}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:enquiryId}});
+  if(error)throw error;
+  if(!data?.success)throw new Error(data?.error||'Booking saved, but the confirmation email could not be sent.');
+  return data;
+}
 
 </script>
 
@@ -556,7 +648,7 @@ Log In
   <div class="admin-page" data-admin-page="manual-booking">
     <div class="panel">
       <div class="admin-kicker">Direct / Offline Client</div>
-      <h2>New Booking</h2>
+      <h2>New Booking</h2><p class="help">Create a confirmed booking directly. It uses the same customer, vehicle, job and email-confirmation flow as website booking requests, but skips the approval stage.</p>
       <p class="help">Add a booking that came through phone, social media, word of mouth or anywhere outside the website.</p>
       <form id="manualBookingForm">
         <div class="booking-grid">
@@ -574,7 +666,18 @@ Log In
         </div>
         <button type="submit" id="manualSaveBtn">Create Booking</button>
         <div id="manualBookingStatus" class="status"></div>
-      </form>
+      
+<div class="admin-form-section">
+  <div class="admin-form-section-title">Customer communication</div>
+  <label class="booking-email-choice">
+    <input type="checkbox" id="manualEmailCustomer" checked>
+    <span>Send the customer a STANCEBOUND booking confirmation email after saving</span>
+  </label>
+  <label class="booking-email-choice">
+    <input type="checkbox" id="manualMediaConsent">
+    <span>Customer has agreed that STANCEBOUND may photograph the vehicle for portfolio/social use</span>
+  </label>
+</div></form>
     </div>
   </div>
 
@@ -1250,8 +1353,8 @@ function renderBookingRequests(){
           ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">Confirm Booking</button>`:
     `<button type="button" data-save-booked="${r.id}">Save Changes</button>
      <button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`}
-          ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Mark Dealt With</button>`:''}
-          ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Move Back to Attention</button>`:''}
+          ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Move to Awaiting Customer</button>`:''}
+          ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Needs Attention Again</button>`:''}
           <button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>
           ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button>`:''}
         </div>
