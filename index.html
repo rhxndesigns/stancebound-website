@@ -1797,6 +1797,80 @@ body.light .radial-item,
 }
 </style>
 
+
+<style>
+/* STANCEBOUND frosted radial navigation backdrop */
+.radial-menu {
+    isolation: isolate;
+}
+
+/* A single soft glass half-circle behind the fan of links */
+.radial-menu::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    width: 330px;
+    height: 165px;
+    transform: translateX(-50%) scale(.78);
+    transform-origin: 50% 100%;
+    border-radius: 330px 330px 18px 18px;
+    background: rgba(12, 12, 14, .34);
+    border: 1px solid rgba(255,255,255,.13);
+    border-bottom-color: rgba(255,255,255,.07);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+    backdrop-filter: blur(18px) saturate(125%);
+    box-shadow: 0 -10px 38px rgba(0,0,0,.18),
+                inset 0 1px 0 rgba(255,255,255,.08);
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity .28s ease, transform .38s cubic-bezier(.2,.8,.2,1);
+}
+
+.radial-menu.open::before {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+/* Keep labels clean: no individual bubbles */
+.radial-item,
+[data-theme="light"] .radial-item,
+body.light .radial-item,
+.light-theme .radial-item {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    text-shadow: 0 1px 8px rgba(0,0,0,.58);
+}
+
+/* Light site gets a pale smoked-glass panel, while preserving contrast */
+[data-theme="light"] .radial-menu::before,
+body.light .radial-menu::before,
+.light-theme .radial-menu::before {
+    background: rgba(238,238,240,.58);
+    border-color: rgba(0,0,0,.10);
+    box-shadow: 0 -10px 34px rgba(0,0,0,.12),
+                inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+[data-theme="light"] .radial-item,
+body.light .radial-item,
+.light-theme .radial-item {
+    color: #111 !important;
+    text-shadow: 0 1px 8px rgba(255,255,255,.72);
+}
+
+@media (max-width:600px) {
+    .radial-menu::before {
+        width: 286px;
+        height: 143px;
+        bottom: 24px;
+        border-radius: 286px 286px 16px 16px;
+    }
+}
+</style>
+
 </head>
 
 
