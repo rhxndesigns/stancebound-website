@@ -269,10 +269,30 @@ body{padding-bottom:88px}
   @media(max-width:650px){.sb-contract-preview .sb-contract-fields,.sb-contract-preview .sb-contract-sign{grid-template-columns:1fr}}
 </style>
 
+
+<style id="stancebound-booking-mobile-actions-fix">
+@media (max-width:600px){
+  [data-booking-request-id] .enquiry-actions-admin{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:9px !important;
+  }
+  [data-booking-request-id] .enquiry-actions-admin button{
+    width:100% !important;
+    min-width:0 !important;
+    white-space:normal !important;
+    line-height:1.25 !important;
+    padding:14px 12px !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
 <script>
+let bookingRequestFilter='new';
+
 (function(){
   const KEY='stancebound_diagnostic_errors';
   function save(kind,msg,src,line,col){
@@ -1097,7 +1117,7 @@ function formatBookingDate(date,time){
   return pretty+(time?' · '+String(time).slice(0,5):'');
 }
 
-let bookingRequestFilter='new';
+
 
 function bookingWorkflowStatus(r){
   if(r.status==='booked'||r.status==='completed') return 'booked';
