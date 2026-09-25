@@ -1976,6 +1976,36 @@ body.light .radial-item,
 }
 </style>
 
+
+<style>
+/* True background-reactive menu labels.
+   Difference blending makes white text invert against whatever is directly behind it:
+   dark surface -> light text, light surface -> dark text. No glow or outline. */
+.radial-menu .radial-item,
+.radial-menu.adaptive-light .radial-item,
+.radial-menu.adaptive-dark .radial-item,
+[data-theme="light"] .radial-menu .radial-item,
+body.light .radial-menu .radial-item,
+.light-theme .radial-menu .radial-item {
+    color: #fff !important;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+    mix-blend-mode: difference !important;
+    font-weight: 400 !important;
+}
+
+/* Keep the glass neutral and very subtle so it doesn't fight the adaptive lettering. */
+.radial-menu::before,
+.radial-menu.adaptive-light::before,
+.radial-menu.adaptive-dark::before {
+    background: rgba(128,128,128,.10) !important;
+    border-color: rgba(128,128,128,.16) !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: blur(10px) saturate(105%) !important;
+    backdrop-filter: blur(10px) saturate(105%) !important;
+}
+</style>
+
 </head>
 
 
