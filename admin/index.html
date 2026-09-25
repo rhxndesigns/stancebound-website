@@ -251,17 +251,7 @@ body{padding-bottom:88px}
 .order-detail small{display:block;color:#666;font-size:7px;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:5px}
 .order-detail strong{font-size:11px;color:#ddd;font-weight:600;white-space:pre-line}
 .order-card.new-order{border-left:3px solid #fff}
-.order-editor{margin-top:14px;padding:14px;border:1px solid #292929;background:#090909}
-.order-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.order-editor .full{grid-column:1/-1}
-.order-editor label{display:block;margin:0 0 5px;color:#777;font-size:8px;letter-spacing:1.4px;text-transform:uppercase}
-.order-editor input,.order-editor select,.order-editor textarea{width:100%;box-sizing:border-box;background:#050505;border:1px solid #333;color:#fff;padding:11px;font:inherit}
-.order-editor textarea{min-height:82px}
-.order-save{margin-top:10px}
-.order-admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.order-admin-actions button{margin:0}
-.order-delete{background:#160707;color:#ffb3b3;border:1px solid #642323}
-@media(max-width:560px){.order-grid,.order-editor-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
+@media(max-width:560px){.order-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -355,6 +345,7 @@ Log In
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
     <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="bookings">Bookings <span id="bookingBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
     <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
@@ -383,6 +374,9 @@ Log In
       <div class="dashboard-grid">
         <div class="dash-card" data-open-admin="enquiries">
           <div class="dash-icon">✉</div><h3>Enquiries</h3><p>Read, reply to and manage customer requests.</p>
+        </div>
+        <div class="dash-card" data-open-admin="bookings">
+          <div class="dash-icon">▦</div><h3>Bookings</h3><p>Review website booking requests and confirm customers.</p>
         </div>
         <div class="dash-card" data-open-admin="pending">
           <div class="dash-icon">○</div><h3>Pending</h3><p>Enquiries still waiting for a date to be booked.</p>
@@ -432,6 +426,17 @@ Log In
     </div>
   </div>
 
+
+
+  <div class="admin-page" data-admin-page="bookings">
+    <div class="panel">
+      <div class="admin-kicker">Website Booking Requests</div>
+      <div class="section-title-row"><h2>Bookings</h2><span class="status-pill" id="bookingRequestCount">0</span></div>
+      <p class="help">Booking requests from the website live here separately from ordinary contact enquiries. Confirming a request saves the agreed booking details and sends the customer a branded confirmation email.</p>
+      <div id="bookingRequestStatus" class="status"></div>
+      <div id="bookingRequestList" class="enquiry-list"></div>
+    </div>
+  </div>
 
   <div class="admin-page" data-admin-page="pending">
     <div class="panel">
@@ -486,7 +491,7 @@ Log In
     <div class="panel">
       <div class="admin-kicker">STANCEBOUND Shop</div>
       <div class="section-title-row"><h2>Orders</h2><span class="status-pill" id="ordersCount">0 orders</span></div>
-      <p class="help">Paid Stripe orders appear here automatically. Customer and payment details stay read-only; fulfilment, Printful and tracking details can be updated below.</p>
+      <p class="help">Paid Stripe orders appear here automatically. Fulfilment will remain pending until the Printful stage is connected.</p>
       <div id="ordersStatus" class="status"></div>
       <div id="ordersList"></div>
     </div>
@@ -616,7 +621,7 @@ Save Changes
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
   <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid"><button type="button" data-sheet-target="diagnostics">Diagnostics</button>
-    <button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
@@ -673,6 +678,7 @@ function openAdminPage(name, addToHistory=true) {
   if(name==='orders') renderOrders();
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
+  if(name==='bookings') renderBookingRequests();
   if(name==='dashboard') renderDashboard();
   const nextHash='#'+name;
   if(addToHistory){
@@ -913,7 +919,7 @@ async function loadEnquiries(){
 
   const {data,error}=await supabase
     .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,media_consent,alternative_booking_date,alternative_booking_time')
     .eq('email_verified',true)
     .order('created_at',{ascending:false});
 
@@ -924,8 +930,10 @@ async function loadEnquiries(){
 
   cachedEnquiries=data||[];
   const activeStatuses=['new','awaiting_reply','ongoing','booked'];
-  const rows=cachedEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
-  document.querySelector('#enquiryBadge').textContent=cachedEnquiries.filter(r=>r.status==='new').length||'';
+  const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted);
+  const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
+  document.querySelector('#enquiryBadge').textContent=contactEnquiries.filter(r=>r.status==='new').length||'';
+  renderBookingRequests();
   renderDashboard();
   renderPending();
   renderUpcoming();
@@ -1072,6 +1080,137 @@ async function loadEnquiries(){
 
 
 
+
+function formatBookingDate(date,time){
+  if(!date)return 'No date requested';
+  const d=new Date(date+'T12:00:00');
+  const pretty=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  return pretty+(time?' · '+String(time).slice(0,5):'');
+}
+
+function renderBookingRequests(){
+  const list=document.querySelector('#bookingRequestList');
+  const status=document.querySelector('#bookingRequestStatus');
+  const count=document.querySelector('#bookingRequestCount');
+  const badge=document.querySelector('#bookingBadge');
+  if(!list)return;
+
+  const rows=cachedEnquiries
+    .filter(r=>r.agreement_accepted)
+    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  const waiting=rows.filter(r=>r.status!=='booked'&&r.status!=='completed');
+  if(count)count.textContent=`${waiting.length} waiting`;
+  if(badge)badge.textContent=waiting.length||'';
+  if(status)status.textContent='';
+
+  if(!rows.length){
+    list.innerHTML='<div class="empty-state">No website booking requests yet.</div>';
+    return;
+  }
+
+  list.innerHTML=rows.map(r=>{
+    const requested=formatBookingDate(r.booking_date,r.booking_time);
+    const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
+    const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
+    const confirmed=r.status==='booked'||r.status==='completed';
+    return `<article class="enquiry-card ${!confirmed?'new':''}" data-booking-request-id="${r.id}">
+      <div class="enquiry-card-head">
+        <div>
+          <h3>${escapeHtml(r.name)}</h3>
+          <div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>Submitted ${escapeHtml(submitted)}</div>
+        </div>
+        <span class="status-pill">${confirmed?'confirmed':'request'}</span>
+      </div>
+
+      <div class="job-details" style="margin-top:12px">
+        <div><span>Preferred</span><strong>${escapeHtml(requested)}</strong></div>
+        <div><span>Alternative</span><strong>${escapeHtml(alternative)}</strong></div>
+        <div><span>Location</span><strong>${escapeHtml(r.booking_location||'See message')}</strong></div>
+        <div><span>Media consent</span><strong>${r.media_consent?'Yes':'No'}</strong></div>
+      </div>
+
+      <div class="enquiry-message">${escapeHtml(r.message||'No additional message')}</div>
+
+      <div class="booking-editor show">
+        <div class="booking-grid">
+          <div><label>Confirmed date</label><input type="date" data-request-date value="${escapeHtml(r.booking_date||'')}"></div>
+          <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((r.booking_time||'').slice(0,5))}"></div>
+          <div><label>End time</label><input type="time" data-request-end value="${escapeHtml((r.booking_end_time||'').slice(0,5))}"></div>
+          <div><label>Agreed price (£)</label><input type="number" min="0" step="0.01" data-request-price value="${moneyValue(r.quoted_price)}"></div>
+          <div class="full"><label>Location</label><input type="text" data-request-location value="${escapeHtml(r.booking_location||'')}" placeholder="Job location"></div>
+          <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+        </div>
+        <div class="enquiry-actions-admin ${confirmed?'three':''}">
+          <button type="button" data-confirm-request="${r.id}">${confirmed?'Save & Resend Confirmation':'Confirm Booking & Email Customer'}</button>
+          <button type="button" class="secondary" data-reply-request="${r.id}">Reply</button>
+          ${confirmed?'<button type="button" class="secondary" data-open-schedule="'+r.id+'">Schedule</button>':''}
+        </div>
+        <div class="status" data-request-status></div>
+      </div>
+
+      <div class="enquiry-reply" id="booking-reply-${r.id}">
+        <label>Your reply</label>
+        <textarea maxlength="4000" placeholder="Write your reply to ${escapeHtml(r.name)}..."></textarea>
+        <button type="button" data-send-booking-reply="${r.id}">Send Reply</button>
+        <div class="status"></div>
+      </div>
+    </article>`;
+  }).join('');
+
+  list.querySelectorAll('[data-reply-request]').forEach(btn=>btn.onclick=()=>{
+    document.querySelector('#booking-reply-'+btn.dataset.replyRequest)?.classList.toggle('show');
+  });
+
+  list.querySelectorAll('[data-open-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
+
+  list.querySelectorAll('[data-send-booking-reply]').forEach(btn=>btn.onclick=async()=>{
+    const box=btn.closest('.enquiry-reply'), reply=box.querySelector('textarea').value.trim(), st=box.querySelector('.status');
+    if(!reply){st.textContent='Write a reply first.';return;}
+    btn.disabled=true;st.textContent='Sending...';
+    try{
+      const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.sendBookingReply,reply}});
+      if(error)throw error;
+      if(!data?.success)throw new Error(data?.error||'Reply failed.');
+      st.textContent='Reply sent ✓';box.querySelector('textarea').value='';
+    }catch(e){st.textContent=e?.message||'Could not send reply.'}
+    finally{btn.disabled=false}
+  });
+
+  list.querySelectorAll('[data-confirm-request]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const st=card.querySelector('[data-request-status]');
+    const id=btn.dataset.confirmRequest;
+    const date=card.querySelector('[data-request-date]').value||null;
+    const time=card.querySelector('[data-request-time]').value||null;
+    const end=card.querySelector('[data-request-end]').value||null;
+    const location=card.querySelector('[data-request-location]').value.trim();
+    const priceRaw=card.querySelector('[data-request-price]').value;
+    const notes=card.querySelector('[data-request-notes]').value.trim();
+    if(!date){st.textContent='Choose the confirmed date first.';return;}
+    if(!confirm('Confirm this booking and send the customer their STANCEBOUND confirmation email?'))return;
+
+    btn.disabled=true;st.textContent='Confirming booking...';
+    try{
+      const {error:updateError}=await supabase.from('enquiries').update({
+        booking_date:date,booking_time:time,booking_end_time:end,booking_location:location,
+        quoted_price:priceRaw===''?null:Number(priceRaw),admin_notes:notes,status:'booked'
+      }).eq('id',id);
+      if(updateError)throw updateError;
+
+      st.textContent='Booking saved. Sending confirmation email...';
+      const {data,error}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:id}});
+      if(error)throw error;
+      if(!data?.success)throw new Error(data?.error||'Confirmation email failed.');
+      st.textContent='Booking confirmed + customer emailed ✓';
+      await loadEnquiries();
+    }catch(e){
+      st.textContent=e?.message||'Could not confirm booking.';
+    }finally{btn.disabled=false}
+  });
+}
+
+
 function formatOrderAddress(address){
   if(!address)return 'Not supplied';
   return [address.line1,address.line2,address.city,address.state,address.postal_code,address.country].filter(Boolean).join('\n');
@@ -1080,7 +1219,7 @@ function formatOrderAddress(address){
 async function loadOrders(){
   const status=document.querySelector('#ordersStatus');
   if(status)status.textContent='Loading orders...';
-  const {data,error}=await supabase.from('shop_orders').select('id,created_at,stripe_session_id,payment_status,customer_email,customer_name,product_name,size,quantity,amount_total,currency,shipping_address,fulfillment_status,printful_order_id,tracking_number,tracking_link,admin_notes').order('created_at',{ascending:false});
+  const {data,error}=await supabase.from('shop_orders').select('id,created_at,stripe_session_id,payment_status,customer_email,customer_name,product_name,size,quantity,amount_total,currency,shipping_address,fulfillment_status,printful_order_id,tracking_number').order('created_at',{ascending:false});
   if(error){
     if(status)status.textContent='Could not load orders: '+error.message;
     return;
@@ -1096,25 +1235,12 @@ function renderOrders(){
   const count=document.querySelector('#ordersCount'); if(count)count.textContent=`${cachedOrders.length} order${cachedOrders.length===1?'':'s'}`;
   const badge=document.querySelector('#orderBadge'); if(badge)badge.textContent=cachedOrders.filter(r=>(r.fulfillment_status||'pending')==='pending').length||'';
   if(!cachedOrders.length){list.innerHTML='<div class="empty-state">No shop orders yet.</div>';return;}
-
-  const fulfilmentOptions=(current)=>{
-    const options=[
-      ['pending','Pending'],
-      ['draft','Draft'],
-      ['processing','Processing'],
-      ['shipped','Shipped'],
-      ['completed','Completed'],
-      ['cancelled','Cancelled']
-    ];
-    return options.map(([value,label])=>`<option value="${value}" ${value===(current||'pending')?'selected':''}>${label}</option>`).join('');
-  };
-
-  list.innerHTML=cachedOrders.map(r=>{
+  list.innerHTML=cachedOrders.map((r,i)=>{
     const date=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
     const amount=r.amount_total==null?'—':new Intl.NumberFormat('en-GB',{style:'currency',currency:(r.currency||'GBP').toUpperCase()}).format(Number(r.amount_total)/100);
     const fulfil=(r.fulfillment_status||'pending').replaceAll('_',' ');
     const paid=(r.payment_status||'pending').replaceAll('_',' ');
-    return `<article class="order-card ${fulfil==='pending'?'new-order':''}" data-order-id="${r.id}">
+    return `<article class="order-card ${fulfil==='pending'?'new-order':''}">
       <div class="order-card-head"><div><h3>${escapeHtml(r.product_name||'STANCEBOUND order')}</h3><div class="order-meta">Order #${escapeHtml(r.id)} · ${escapeHtml(date)}<br>${escapeHtml(r.customer_name||'No customer name')} · ${escapeHtml(r.customer_email||'No email')}</div></div><div class="order-total">${escapeHtml(amount)}</div></div>
       <div class="order-grid">
         <div class="order-detail"><small>Product</small><strong>${escapeHtml(r.product_name||'—')} · Size ${escapeHtml(r.size||'—')} · Qty ${escapeHtml(r.quantity??1)}</strong></div>
@@ -1124,91 +1250,8 @@ function renderOrders(){
         <div class="order-detail"><small>Printful order</small><strong>${escapeHtml(r.printful_order_id||'Not sent yet')}</strong></div>
         <div class="order-detail"><small>Tracking</small><strong>${escapeHtml(r.tracking_number||'Not available yet')}</strong></div>
       </div>
-      <div class="order-editor">
-        <div class="order-editor-grid">
-          <div><label>Fulfilment status</label><select data-order-fulfilment>${fulfilmentOptions(r.fulfillment_status)}</select></div>
-          <div><label>Printful order ID</label><input type="text" data-order-printful maxlength="100" value="${escapeHtml(r.printful_order_id||'')}" placeholder="e.g. 177788478"></div>
-          <div><label>Tracking number</label><input type="text" data-order-tracking maxlength="160" value="${escapeHtml(r.tracking_number||'')}" placeholder="Courier tracking number"></div>
-          <div><label>Tracking link</label><input type="url" data-order-tracking-link maxlength="1000" value="${escapeHtml(r.tracking_link||'')}" placeholder="https://..."></div>
-          <div class="full"><label>Private admin notes</label><textarea data-order-notes maxlength="4000" placeholder="Anything useful about this order...">${escapeHtml(r.admin_notes||'')}</textarea></div>
-        </div>
-        <div class="order-admin-actions">
-          <button type="button" class="order-save" data-save-order="${r.id}">Save Changes</button>
-          <button type="button" class="order-delete" data-delete-order="${r.id}">Delete Order</button>
-        </div>
-        <div class="status" data-order-save-status></div>
-      </div>
     </article>`;
   }).join('');
-
-  list.querySelectorAll('[data-save-order]').forEach(btn=>btn.onclick=async()=>{
-    const card=btn.closest('.order-card');
-    const st=card.querySelector('[data-order-save-status]');
-    const orderId=btn.dataset.saveOrder;
-    const update={
-      fulfillment_status:card.querySelector('[data-order-fulfilment]').value,
-      printful_order_id:card.querySelector('[data-order-printful]').value.trim()||null,
-      tracking_number:card.querySelector('[data-order-tracking]').value.trim()||null,
-      tracking_link:card.querySelector('[data-order-tracking-link]').value.trim()||null,
-      admin_notes:card.querySelector('[data-order-notes]').value.trim()||null
-    };
-
-    btn.disabled=true;
-    st.textContent='Saving...';
-
-    const {data,error}=await supabase
-      .from('shop_orders')
-      .update(update)
-      .eq('id',orderId)
-      .select('id');
-
-    if(error){
-      st.textContent='Could not save: '+error.message;
-      btn.disabled=false;
-      return;
-    }
-    if(!data?.length){
-      st.textContent='Nothing was updated. Check the shop_orders UPDATE policy.';
-      btn.disabled=false;
-      return;
-    }
-
-    st.textContent='Order updated ✓';
-    btn.disabled=false;
-    await loadOrders();
-  });
-
-  list.querySelectorAll('[data-delete-order]').forEach(btn=>btn.onclick=async()=>{
-    const card=btn.closest('.order-card');
-    const st=card.querySelector('[data-order-save-status]');
-    const orderId=btn.dataset.deleteOrder;
-    const row=cachedOrders.find(r=>String(r.id)===String(orderId));
-    const label=row?.product_name||'this order';
-
-    if(!confirm(`Permanently delete Order #${orderId} (${label}) from STANCEBOUND Admin?\n\nThis cannot be undone. This does NOT refund Stripe or cancel a Printful order.`)) return;
-
-    btn.disabled=true;
-    st.textContent='Deleting order...';
-
-    const {data,error}=await supabase
-      .from('shop_orders')
-      .delete()
-      .eq('id',orderId)
-      .select('id');
-
-    if(error){
-      st.textContent='Could not delete: '+error.message;
-      btn.disabled=false;
-      return;
-    }
-    if(!data?.length){
-      st.textContent='Nothing was deleted. Check the shop_orders DELETE policy.';
-      btn.disabled=false;
-      return;
-    }
-
-    await loadOrders();
-  });
 }
 
 function renderDashboard(){
