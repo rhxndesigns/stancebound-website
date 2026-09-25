@@ -363,6 +363,8 @@ Log In
       <p class="help">A quick view of what needs your attention, what is booked and what STANCEBOUND has completed.</p>
       <div class="overview-grid">
         <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Needs attention</div></div>
+        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Booking requests</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Needs a response</div></div>
+        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Awaiting customer</div><div class="metric-value" id="metricAwaitingCustomer">0</div><div class="metric-sub">Already dealt with</div></div>
         <div class="metric-card" data-open-admin="schedule"><div class="metric-label">Upcoming jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
         <div class="metric-card" data-open-admin="completed"><div class="metric-label">Completed</div><div class="metric-value" id="metricCompleted">0</div><div class="metric-sub">This month</div></div>
         <div class="metric-card" data-open-admin="orders"><div class="metric-label">Paid orders</div><div class="metric-value" id="metricOrders">0</div><div class="metric-sub">Shop orders</div></div>
@@ -432,7 +434,13 @@ Log In
     <div class="panel">
       <div class="admin-kicker">Website Booking Requests</div>
       <div class="section-title-row"><h2>Bookings</h2><span class="status-pill" id="bookingRequestCount">0</span></div>
-      <p class="help">Booking requests from the website live here separately from ordinary contact enquiries. Confirming a request saves the agreed booking details and sends the customer a branded confirmation email.</p>
+      <p class="help">Booking-form submissions stay separate from ordinary enquiries. Reply, suggest another date, mark a request dealt with while you wait for the customer, then confirm it only once the final date is agreed.</p>
+      <div class="filter-pills" id="bookingRequestFilters">
+        <button class="filter-pill active" type="button" data-booking-filter="new">Needs attention</button>
+        <button class="filter-pill" type="button" data-booking-filter="awaiting">Awaiting customer</button>
+        <button class="filter-pill" type="button" data-booking-filter="booked">Booked</button>
+        <button class="filter-pill" type="button" data-booking-filter="all">All</button>
+      </div>
       <div id="bookingRequestStatus" class="status"></div>
       <div id="bookingRequestList" class="enquiry-list"></div>
     </div>
@@ -679,6 +687,7 @@ function openAdminPage(name, addToHistory=true) {
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
   if(name==='bookings') renderBookingRequests();
+  updateBookingMetrics();
   if(name==='dashboard') renderDashboard();
   const nextHash='#'+name;
   if(addToHistory){
@@ -1088,24 +1097,61 @@ function formatBookingDate(date,time){
   return pretty+(time?' · '+String(time).slice(0,5):'');
 }
 
+let bookingRequestFilter='new';
+
+function bookingWorkflowStatus(r){
+  if(r.status==='booked'||r.status==='completed') return 'booked';
+  if(r.status==='awaiting_customer'||r.status==='ongoing') return 'awaiting';
+  return 'new';
+}
+
+function updateBookingMetrics(){
+  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted);
+  const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new').length;
+  const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='awaiting').length;
+  const a=document.querySelector('#metricBookingRequests');
+  const b=document.querySelector('#metricAwaitingCustomer');
+  const badge=document.querySelector('#bookingBadge');
+  if(a)a.textContent=needs;
+  if(b)b.textContent=awaiting;
+  if(badge)badge.textContent=needs||'';
+}
+
 function renderBookingRequests(){
   const list=document.querySelector('#bookingRequestList');
   const status=document.querySelector('#bookingRequestStatus');
   const count=document.querySelector('#bookingRequestCount');
-  const badge=document.querySelector('#bookingBadge');
   if(!list)return;
 
-  const rows=cachedEnquiries
+  updateBookingMetrics();
+
+  let rows=cachedEnquiries
     .filter(r=>r.agreement_accepted)
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
-  const waiting=rows.filter(r=>r.status!=='booked'&&r.status!=='completed');
-  if(count)count.textContent=`${waiting.length} waiting`;
-  if(badge)badge.textContent=waiting.length||'';
+  if(bookingRequestFilter!=='all'){
+    rows=rows.filter(r=>bookingWorkflowStatus(r)===bookingRequestFilter);
+  }
+
+  if(count)count.textContent=`${rows.length} shown`;
   if(status)status.textContent='';
 
+  document.querySelectorAll('[data-booking-filter]').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.bookingFilter===bookingRequestFilter);
+    btn.onclick=()=>{
+      bookingRequestFilter=btn.dataset.bookingFilter;
+      renderBookingRequests();
+    };
+  });
+
   if(!rows.length){
-    list.innerHTML='<div class="empty-state">No website booking requests yet.</div>';
+    const messages={
+      new:'No booking requests need attention.',
+      awaiting:'Nothing is currently awaiting a customer reply.',
+      booked:'No confirmed bookings in this view.',
+      all:'No website booking requests yet.'
+    };
+    list.innerHTML=`<div class="empty-state">${messages[bookingRequestFilter]||messages.all}</div>`;
     return;
   }
 
@@ -1113,20 +1159,25 @@ function renderBookingRequests(){
     const requested=formatBookingDate(r.booking_date,r.booking_time);
     const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
     const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
-    const confirmed=r.status==='booked'||r.status==='completed';
-    return `<article class="enquiry-card ${!confirmed?'new':''}" data-booking-request-id="${r.id}">
+    const workflow=bookingWorkflowStatus(r);
+    const label=workflow==='booked'?'BOOKED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
+
+    return `<article class="enquiry-card ${workflow==='new'?'new':''}" data-booking-request-id="${r.id}">
       <div class="enquiry-card-head">
         <div>
           <h3>${escapeHtml(r.name)}</h3>
-          <div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>Submitted ${escapeHtml(submitted)}</div>
+          <div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>
+          ${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>
+          Submitted ${escapeHtml(submitted)}</div>
         </div>
-        <span class="status-pill">${confirmed?'confirmed':'request'}</span>
+        <span class="status-pill">${label}</span>
       </div>
 
       <div class="job-details" style="margin-top:12px">
         <div><span>Preferred</span><strong>${escapeHtml(requested)}</strong></div>
         <div><span>Alternative</span><strong>${escapeHtml(alternative)}</strong></div>
-        <div><span>Location</span><strong>${escapeHtml(r.booking_location||'See message')}</strong></div>
+        <div><span>Location</span><strong>${escapeHtml(r.booking_location||'See customer message')}</strong></div>
+        <div><span>Agreement</span><strong>${r.agreement_accepted?'Accepted':'No'}</strong></div>
         <div><span>Media consent</span><strong>${r.media_consent?'Yes':'No'}</strong></div>
       </div>
 
@@ -1134,25 +1185,28 @@ function renderBookingRequests(){
 
       <div class="booking-editor show">
         <div class="booking-grid">
-          <div><label>Confirmed date</label><input type="date" data-request-date value="${escapeHtml(r.booking_date||'')}"></div>
+          <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(r.booking_date||'')}"></div>
           <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((r.booking_time||'').slice(0,5))}"></div>
           <div><label>End time</label><input type="time" data-request-end value="${escapeHtml((r.booking_end_time||'').slice(0,5))}"></div>
           <div><label>Agreed price (£)</label><input type="number" min="0" step="0.01" data-request-price value="${moneyValue(r.quoted_price)}"></div>
           <div class="full"><label>Location</label><input type="text" data-request-location value="${escapeHtml(r.booking_location||'')}" placeholder="Job location"></div>
           <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
         </div>
-        <div class="enquiry-actions-admin ${confirmed?'three':''}">
-          <button type="button" data-confirm-request="${r.id}">${confirmed?'Save & Resend Confirmation':'Confirm Booking & Email Customer'}</button>
-          <button type="button" class="secondary" data-reply-request="${r.id}">Reply</button>
-          ${confirmed?'<button type="button" class="secondary" data-open-schedule="'+r.id+'">Schedule</button>':''}
+
+        <div class="enquiry-actions-admin">
+          ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">Confirm Booking</button>`:''}
+          ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Mark Dealt With</button>`:''}
+          ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Move Back to Attention</button>`:''}
+          <button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>
+          ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button>`:''}
         </div>
         <div class="status" data-request-status></div>
       </div>
 
       <div class="enquiry-reply" id="booking-reply-${r.id}">
-        <label>Your reply</label>
-        <textarea maxlength="4000" placeholder="Write your reply to ${escapeHtml(r.name)}..."></textarea>
-        <button type="button" data-send-booking-reply="${r.id}">Send Reply</button>
+        <label>Email ${escapeHtml(r.name)}</label>
+        <textarea maxlength="4000" placeholder="Write your message. You can suggest another date or ask the customer to confirm availability..."></textarea>
+        <button type="button" data-send-booking-reply="${r.id}">Send Email</button>
         <div class="status"></div>
       </div>
     </article>`;
@@ -1164,16 +1218,46 @@ function renderBookingRequests(){
 
   list.querySelectorAll('[data-open-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
 
+  list.querySelectorAll('[data-awaiting-request]').forEach(btn=>btn.onclick=async()=>{
+    const st=btn.closest('[data-booking-request-id]').querySelector('[data-request-status]');
+    btn.disabled=true; st.textContent='Moving to Awaiting Customer...';
+    try{
+      const {error}=await supabase.from('enquiries').update({status:'awaiting_customer'}).eq('id',btn.dataset.awaitingRequest);
+      if(error)throw error;
+      st.textContent='Moved to Awaiting Customer ✓';
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not update request.'}
+    finally{btn.disabled=false}
+  });
+
+  list.querySelectorAll('[data-reopen-request]').forEach(btn=>btn.onclick=async()=>{
+    const st=btn.closest('[data-booking-request-id]').querySelector('[data-request-status]');
+    btn.disabled=true; st.textContent='Moving back...';
+    try{
+      const {error}=await supabase.from('enquiries').update({status:'booking_request'}).eq('id',btn.dataset.reopenRequest);
+      if(error)throw error;
+      st.textContent='Back in Needs Attention ✓';
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not update request.'}
+    finally{btn.disabled=false}
+  });
+
   list.querySelectorAll('[data-send-booking-reply]').forEach(btn=>btn.onclick=async()=>{
-    const box=btn.closest('.enquiry-reply'), reply=box.querySelector('textarea').value.trim(), st=box.querySelector('.status');
-    if(!reply){st.textContent='Write a reply first.';return;}
+    const box=btn.closest('.enquiry-reply');
+    const reply=box.querySelector('textarea').value.trim();
+    const st=box.querySelector('.status');
+    if(!reply){st.textContent='Write the email first.';return;}
     btn.disabled=true;st.textContent='Sending...';
     try{
       const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.sendBookingReply,reply}});
       if(error)throw error;
-      if(!data?.success)throw new Error(data?.error||'Reply failed.');
-      st.textContent='Reply sent ✓';box.querySelector('textarea').value='';
-    }catch(e){st.textContent=e?.message||'Could not send reply.'}
+      if(!data?.success)throw new Error(data?.error||'Email failed.');
+      st.textContent='Email sent ✓';
+      box.querySelector('textarea').value='';
+      const {error:moveError}=await supabase.from('enquiries').update({status:'awaiting_customer'}).eq('id',btn.dataset.sendBookingReply);
+      if(moveError)console.warn(moveError);
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not send email.'}
     finally{btn.disabled=false}
   });
 
@@ -1187,8 +1271,9 @@ function renderBookingRequests(){
     const location=card.querySelector('[data-request-location]').value.trim();
     const priceRaw=card.querySelector('[data-request-price]').value;
     const notes=card.querySelector('[data-request-notes]').value.trim();
-    if(!date){st.textContent='Choose the confirmed date first.';return;}
-    if(!confirm('Confirm this booking and send the customer their STANCEBOUND confirmation email?'))return;
+
+    if(!date){st.textContent='Set the final agreed date first.';return;}
+    if(!confirm('Move this request into Booked and send the customer their STANCEBOUND confirmation email?'))return;
 
     btn.disabled=true;st.textContent='Confirming booking...';
     try{
@@ -1198,18 +1283,17 @@ function renderBookingRequests(){
       }).eq('id',id);
       if(updateError)throw updateError;
 
-      st.textContent='Booking saved. Sending confirmation email...';
+      st.textContent='Booked. Sending customer confirmation...';
       const {data,error}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:id}});
       if(error)throw error;
       if(!data?.success)throw new Error(data?.error||'Confirmation email failed.');
-      st.textContent='Booking confirmed + customer emailed ✓';
+
+      st.textContent='Booked + confirmation sent ✓';
       await loadEnquiries();
-    }catch(e){
-      st.textContent=e?.message||'Could not confirm booking.';
-    }finally{btn.disabled=false}
+    }catch(e){st.textContent=e?.message||'Could not confirm booking.'}
+    finally{btn.disabled=false}
   });
 }
-
 
 function formatOrderAddress(address){
   if(!address)return 'Not supplied';
