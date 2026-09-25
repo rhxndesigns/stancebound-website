@@ -2025,6 +2025,19 @@ body.light .radial-menu .radial-item,
 }
 </style>
 
+
+<style id="stancebound-dark-menu-visibility-fix">
+html:not([data-theme="light"]) .radial-menu .radial-item,
+body:not(.light):not(.light-theme) .radial-menu .radial-item {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+}
+</style>
+
 </head>
 
 
@@ -3765,7 +3778,7 @@ body.light .radial-menu .radial-item,
     const avg = values.reduce((a,b)=>a+b,0) / values.length;
 
     // One clean colour for the whole fan prevents mixed outlined-looking labels.
-    menu.style.setProperty('--radial-text', avg > .56 ? '#111111' : '#ffffff');
+    /* colour now controlled by final theme CSS; preserve working light theme */
   }
   function queue() {
     if (!raf) raf = requestAnimationFrame(update);
