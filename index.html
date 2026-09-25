@@ -2067,6 +2067,39 @@ body:not(.light-theme) .radial-nav .radial-item {
 }
 </style>
 
+
+<style id="stancebound-light-hero-premium">
+/* Premium silver automotive-studio hero, light theme only */
+body.light-theme .hero{
+  background:
+    radial-gradient(ellipse at 50% 29%, rgba(255,255,255,.98) 0%, rgba(240,240,238,.94) 27%, rgba(199,200,199,.88) 60%, rgba(125,127,128,.94) 100%);
+}
+body.light-theme .hero::before{
+  background:
+    radial-gradient(ellipse at 50% 31%, rgba(255,255,255,.72) 0%, rgba(255,255,255,.20) 31%, transparent 57%),
+    linear-gradient(90deg, rgba(30,30,30,.09), transparent 15%, transparent 85%, rgba(30,30,30,.09)),
+    linear-gradient(to bottom, rgba(255,255,255,.08), rgba(25,25,25,.30)) !important;
+  opacity:1;
+}
+body.light-theme .hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.18;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.13) 0, rgba(255,255,255,.13) 1px, rgba(0,0,0,.025) 1px, rgba(0,0,0,.025) 2px);
+  mix-blend-mode:soft-light;
+}
+body.light-theme .hero-content{z-index:2}
+body.light-theme .hero-logo{
+  filter:drop-shadow(0 18px 28px rgba(0,0,0,.34));
+}
+body.light-theme .tagline{color:#f4f4f2;text-shadow:0 1px 10px rgba(0,0,0,.20)}
+body.light-theme .hero-subtitle{color:rgba(28,28,28,.32)}
+body.light-theme .hero-description{color:rgba(255,255,255,.72);text-shadow:0 1px 10px rgba(0,0,0,.16)}
+</style>
+
 </head>
 
 
@@ -3207,6 +3240,11 @@ body:not(.light-theme) .radial-nav .radial-item {
           const {data,error}=await window.stanceboundSupabase.functions.invoke("verify-enquiry",{body:{enquiryId:pendingEnquiryId,code}});
           if(error)throw error;
           if(!data?.success)throw new Error(data?.error||"Verification failed.");
+          try{
+            await window.stanceboundSupabase.functions.invoke("send-booking-notification",{body:{enquiry_id:pendingEnquiryId}});
+          }catch(notificationError){
+            console.warn("Booking notification email could not be sent:",notificationError);
+          }
           enquiryStatus.textContent="REQUEST RECEIVED ✓ Your requested date is not confirmed yet. STANCEBOUND will review your request and confirm availability by email.";
           enquiryStatus.classList.add("success");
           verifyBox.classList.remove("show");
