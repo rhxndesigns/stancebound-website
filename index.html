@@ -1950,6 +1950,32 @@ body.light .radial-item,
 }
 </style>
 
+
+<style>
+/* Clean adaptive menu contrast: same restrained treatment in both modes */
+.radial-menu .radial-item,
+.radial-menu.adaptive-light .radial-item,
+.radial-menu.adaptive-dark .radial-item {
+    text-shadow: none !important;
+}
+
+/* Dark content: white text, matching the clean light-mode treatment */
+.radial-menu.adaptive-dark .radial-item {
+    color: #fff !important;
+}
+
+/* Light content: black text */
+.radial-menu.adaptive-light .radial-item {
+    color: #111 !important;
+}
+
+/* Keep the glass equally subtle instead of making dark mode glow */
+.radial-menu.adaptive-dark::before,
+.radial-menu.adaptive-light::before {
+    box-shadow: 0 -8px 28px rgba(0,0,0,.08) !important;
+}
+</style>
+
 </head>
 
 
