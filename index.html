@@ -1779,6 +1779,15 @@
 
       <button
         class="nav-link"
+        data-page="booking"
+        onclick="showPage('booking')"
+      >
+        Booking
+      </button>
+
+
+      <button
+        class="nav-link"
         data-page="contact"
         onclick="showPage('contact')"
       >
@@ -1813,7 +1822,7 @@
           <div class="hero-subtitle" id="home-subtitle">Automotive Detailing &amp; Photography</div>
           <p class="hero-description" id="home-description">Automotive detailing and photography built around modified cars, clean presentation and attention to the details that actually matter.</p>
           <div class="hero-buttons">
-            <button class="btn" onclick="showPage('contact')">Start an Enquiry</button>
+            <button class="btn" onclick="showPage('booking')">Request a Booking</button>
             <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
           </div>
         </div>
@@ -1863,7 +1872,7 @@
 
         <section class="home-final-compact home-reveal">
           <div><div class="home-kicker">Detailing · Photography · Both</div><h2>Your car is next.</h2><p>Tell STANCEBOUND about your car and what you're looking for.</p></div>
-          <button class="btn" onclick="showPage('contact')">Start an Enquiry</button>
+          <button class="btn" onclick="showPage('booking')">Request a Booking</button>
         </section>
       </div>
     </section>
@@ -2186,44 +2195,16 @@
 
 
     <!-- ========================================
-         CONTACT
+         BOOKING REQUEST
          ======================================== -->
-
-    <section
-      id="contact"
-      class="page"
-    >
-
+    <section id="booking" class="page">
       <div class="content">
-
-
         <div class="page-heading">
-
-          <div class="eyebrow">
-            STANCEBOUND
-          </div>
-
-
-          <h1>
-            Contact
-          </h1>
-
-
+          <div class="eyebrow">STANCEBOUND</div>
+          <h1>Request a Booking</h1>
           <div class="heading-line"></div>
-
-
-          <p>
-
-            Detailing, automotive photography
-            and collaboration enquiries across
-            South Wales.
-
-          </p>
-
+          <p>Request a date for detailing, automotive photography or both. Your booking is only confirmed once STANCEBOUND has reviewed your request and confirmed availability.</p>
         </div>
-
-
-
 
         <div class="enquiry-shell">
           <div class="enquiry-head">
@@ -2279,6 +2260,51 @@
             <div id="verifyBox" class="verify-box"><div class="enquiry-head"><div class="eyebrow">ONE LAST CHECK</div><h2>Verify Your Email</h2><p>Enter the 6-digit code we just sent you.</p></div><div class="verify-row"><input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000"><button class="btn" id="verifyEnquiryBtn" type="button">Verify</button></div></div>
           </form>
         </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         CONTACT
+         ======================================== -->
+
+    <section
+      id="contact"
+      class="page"
+    >
+
+      <div class="content">
+
+
+        <div class="page-heading">
+
+          <div class="eyebrow">
+            STANCEBOUND
+          </div>
+
+
+          <h1>
+            Contact
+          </h1>
+
+
+          <div class="heading-line"></div>
+
+
+          <p>
+
+            Detailing, automotive photography
+            and collaboration enquiries across
+            South Wales.
+
+          </p>
+
+        </div>
+
+
+
+
+
 
 
         <div class="contact-card">
@@ -2883,6 +2909,7 @@
       "photography",
       "about",
       "shop",
+      "booking",
       "contact"
     ];
 
