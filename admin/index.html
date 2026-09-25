@@ -287,6 +287,16 @@ body{padding-bottom:88px}
 }
 </style>
 
+
+<style id="stancebound-booking-management-css">
+.booking-email-choice{
+  display:flex;align-items:center;gap:10px;margin:14px 0 12px;
+  color:var(--muted);font-size:12px;letter-spacing:.04em
+}
+.booking-email-choice input{width:18px;height:18px;accent-color:#fff}
+.enquiry-actions-admin .danger{border-color:rgba(210,70,70,.55)!important}
+</style>
+
 </head>
 
 <body>
@@ -305,6 +315,24 @@ let bookingRequestFilter='new';
   window.addEventListener('error',e=>save('JS ERROR',e.message,e.filename,e.lineno,e.colno),true);
   window.addEventListener('unhandledrejection',e=>save('PROMISE ERROR',e.reason?.message||String(e.reason||'Unknown rejection')));
 })();
+
+document.addEventListener('click',async(e)=>{
+  const btn=e.target.closest?.('[data-delete-shop-order]');
+  if(!btn)return;
+  const id=btn.dataset.deleteShopOrder;
+  if(!confirm('Delete this shop order from STANCEBOUND Admin? This does NOT refund Stripe or cancel a Printful order.'))return;
+  btn.disabled=true;
+  try{
+    const {error}=await supabase.from('shop_orders').delete().eq('id',id);
+    if(error)throw error;
+    if(typeof loadShopOrders==='function')await loadShopOrders();
+    else if(typeof loadOrders==='function')await loadOrders();
+  }catch(err){
+    alert(err?.message||'Could not delete the shop order.');
+    btn.disabled=false;
+  }
+});
+
 </script>
 
 
@@ -1121,6 +1149,7 @@ function formatBookingDate(date,time){
 
 function bookingWorkflowStatus(r){
   if(r.status==='booked'||r.status==='completed') return 'booked';
+  if(r.status==='cancelled') return 'cancelled';
   if(r.status==='awaiting_customer'||r.status==='ongoing') return 'awaiting';
   return 'new';
 }
@@ -1180,7 +1209,7 @@ function renderBookingRequests(){
     const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
     const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
     const workflow=bookingWorkflowStatus(r);
-    const label=workflow==='booked'?'BOOKED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
+    const label=workflow==='booked'?'BOOKED':workflow==='cancelled'?'CANCELLED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
 
     return `<article class="enquiry-card ${workflow==='new'?'new':''}" data-booking-request-id="${r.id}">
       <div class="enquiry-card-head">
@@ -1213,8 +1242,14 @@ function renderBookingRequests(){
           <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
         </div>
 
+        <label class="booking-email-choice">
+          <input type="checkbox" data-email-customer checked>
+          <span>Email customer about this confirmation/change</span>
+        </label>
         <div class="enquiry-actions-admin">
-          ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">Confirm Booking</button>`:''}
+          ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">Confirm Booking</button>`:
+    `<button type="button" data-save-booked="${r.id}">Save Changes</button>
+     <button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`}
           ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Mark Dealt With</button>`:''}
           ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Move Back to Attention</button>`:''}
           <button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>
@@ -1281,6 +1316,50 @@ function renderBookingRequests(){
     finally{btn.disabled=false}
   });
 
+  list.querySelectorAll('[data-save-booked]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const st=card.querySelector('[data-request-status]');
+    const id=btn.dataset.saveBooked;
+    const payload={
+      booking_date:card.querySelector('[data-request-date]').value||null,
+      booking_time:card.querySelector('[data-request-time]').value||null,
+      booking_end_time:card.querySelector('[data-request-end]').value||null,
+      booking_location:card.querySelector('[data-request-location]').value.trim(),
+      quoted_price:card.querySelector('[data-request-price]').value===''?null:Number(card.querySelector('[data-request-price]').value),
+      admin_notes:card.querySelector('[data-request-notes]').value.trim()
+    };
+    if(!payload.booking_date){st.textContent='A booked job needs a date.';return;}
+    btn.disabled=true;st.textContent='Saving changes...';
+    try{
+      const {error}=await supabase.from('enquiries').update(payload).eq('id',id);
+      if(error)throw error;
+      const emailCustomer=card.querySelector('[data-email-customer]')?.checked===true;
+      if(emailCustomer){
+        st.textContent='Saved. Emailing customer...';
+        const {data,error:mailError}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:id}});
+        if(mailError)throw mailError;
+        if(!data?.success)throw new Error(data?.error||'Email failed.');
+        st.textContent='Changes saved + customer emailed ✓';
+      }else st.textContent='Changes saved ✓';
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not save changes.'}
+    finally{btn.disabled=false}
+  });
+
+  list.querySelectorAll('[data-cancel-booking]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const st=card.querySelector('[data-request-status]');
+    if(!confirm('Cancel this booking? It will leave Upcoming and remain available in the booking history.'))return;
+    btn.disabled=true;st.textContent='Cancelling...';
+    try{
+      const {error}=await supabase.from('enquiries').update({status:'cancelled'}).eq('id',btn.dataset.cancelBooking);
+      if(error)throw error;
+      st.textContent='Booking cancelled ✓';
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not cancel booking.'}
+    finally{btn.disabled=false}
+  });
+
   list.querySelectorAll('[data-confirm-request]').forEach(btn=>btn.onclick=async()=>{
     const card=btn.closest('[data-booking-request-id]');
     const st=card.querySelector('[data-request-status]');
@@ -1303,12 +1382,16 @@ function renderBookingRequests(){
       }).eq('id',id);
       if(updateError)throw updateError;
 
-      st.textContent='Booked. Sending customer confirmation...';
-      const {data,error}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:id}});
-      if(error)throw error;
-      if(!data?.success)throw new Error(data?.error||'Confirmation email failed.');
-
-      st.textContent='Booked + confirmation sent ✓';
+      const emailCustomer=card.querySelector('[data-email-customer]')?.checked!==false;
+      if(emailCustomer){
+        st.textContent='Booked. Sending customer confirmation...';
+        const {data,error}=await supabase.functions.invoke('send-booking-confirmation',{body:{enquiry_id:id}});
+        if(error)throw error;
+        if(!data?.success)throw new Error(data?.error||'Confirmation email failed.');
+        st.textContent='Booked + confirmation sent ✓';
+      }else{
+        st.textContent='Booked without sending an email ✓';
+      }
       await loadEnquiries();
     }catch(e){st.textContent=e?.message||'Could not confirm booking.'}
     finally{btn.disabled=false}
