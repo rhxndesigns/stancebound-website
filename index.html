@@ -2038,6 +2038,35 @@ body:not(.light):not(.light-theme) .radial-menu .radial-item {
 }
 </style>
 
+
+<style id="stancebound-actual-dark-menu-fix">
+/* ACTUAL menu container is .radial-nav, not .radial-menu.
+   Dark theme only. Light theme is deliberately untouched. */
+body:not(.light-theme) .radial-nav .radial-item,
+body:not(.light-theme) .radial-nav .radial-item.active {
+    color: #fff !important;
+    opacity: 1 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    font-weight: 400 !important;
+}
+
+/* Give the dark-theme labels a tiny amount more presence without glow. */
+body:not(.light-theme) .radial-nav .radial-item {
+    font-size: 12px !important;
+}
+@media (max-width:600px) {
+    body:not(.light-theme) .radial-nav .radial-item {
+        font-size: 12px !important;
+    }
+}
+</style>
+
 </head>
 
 
