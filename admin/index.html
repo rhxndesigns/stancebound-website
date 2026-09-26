@@ -252,6 +252,24 @@ body{padding-bottom:88px}
 .order-detail strong{font-size:11px;color:#ddd;font-weight:600;white-space:pre-line}
 .order-card.new-order{border-left:3px solid #fff}
 @media(max-width:560px){.order-grid{grid-template-columns:1fr}.order-card-head{align-items:flex-start}}
+
+/* STANCEBOUND private chats */
+.chat-list{display:grid;gap:14px;margin-top:18px}
+.chat-card{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:16px;overflow:hidden}
+.chat-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:16px 16px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.chat-head h3{margin:0 0 5px;font-size:17px}
+.chat-meta{font-size:12px;opacity:.7;line-height:1.5}
+.chat-unread{display:inline-flex;min-width:24px;height:24px;padding:0 7px;align-items:center;justify-content:center;border-radius:999px;background:#fff;color:#111;font-size:11px;font-weight:800}
+.chat-thread{display:flex;flex-direction:column;gap:9px;padding:15px;max-height:430px;overflow:auto}
+.chat-bubble{max-width:86%;padding:11px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-bubble.customer{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.chat-bubble.stancebound{align-self:flex-end;background:#f2f2ef;color:#111}
+.chat-time{display:block;margin-top:5px;font-size:10px;opacity:.55}
+.chat-compose{padding:0 15px 15px}
+.chat-compose textarea{min-height:90px}
+.chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+@media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:100%}}
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -487,6 +505,7 @@ Log In
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
     <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="bookings">Bookings <span id="bookingBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="chats">Chats <span id="chatBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
     <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
@@ -521,6 +540,9 @@ Log In
         <div class="dash-card" data-open-admin="bookings">
           <div class="dash-icon">▦</div><h3>Bookings</h3><p>Review website booking requests and confirm customers.</p>
         </div>
+        <div class="dash-card" data-open-admin="chats">
+          <div class="dash-icon">◫</div><h3>Chats</h3><p>Private customer conversations from enquiry and booking emails.</p>
+        </div>
         <div class="dash-card" data-open-admin="pending">
           <div class="dash-icon">○</div><h3>Pending</h3><p>Enquiries still waiting for a date to be booked.</p>
         </div>
@@ -549,6 +571,17 @@ Log In
           <div class="dash-icon">↗</div><h3>Live Site</h3><p>Open STANCEBOUND exactly as customers see it.</p>
         </a>
       </div>
+    </div>
+  </div>
+
+
+  <div class="admin-page" data-admin-page="chats">
+    <div class="panel">
+      <div class="admin-kicker">Private Customer Conversations</div>
+      <h2>Chats</h2>
+      <p class="help">Messages sent through each customer's private STANCEBOUND link appear here.</p>
+      <div id="chatAdminStatus" class="status"></div>
+      <div id="chatList" class="chat-list"></div>
     </div>
   </div>
 
@@ -781,7 +814,7 @@ Save Changes
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
   <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid"><button type="button" data-sheet-target="diagnostics">Diagnostics</button>
-    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="chats">Chats<small>Private customer conversations</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
@@ -839,6 +872,7 @@ function openAdminPage(name, addToHistory=true) {
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
   if(name==='bookings') renderBookingRequests();
+  if(name==='chats') loadChats();
   updateBookingMetrics();
   if(name==='dashboard') renderDashboard();
   const nextHash='#'+name;
@@ -1080,7 +1114,7 @@ async function loadEnquiries(){
 
   const {data,error}=await supabase
     .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,media_consent,alternative_booking_date,alternative_booking_time')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token')
     .eq('email_verified',true)
     .order('created_at',{ascending:false});
 
@@ -1095,6 +1129,7 @@ async function loadEnquiries(){
   const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
   document.querySelector('#enquiryBadge').textContent=contactEnquiries.filter(r=>r.status==='new').length||'';
   renderBookingRequests();
+  loadChats();
   renderDashboard();
   renderPending();
   renderUpcoming();
@@ -1240,6 +1275,117 @@ async function loadEnquiries(){
 
 
 
+
+
+
+let cachedConversationMessages = [];
+
+function chatDate(value){
+  if(!value) return '';
+  try{return new Date(value).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});}
+  catch{return value;}
+}
+
+async function loadChats(){
+  const list=document.querySelector('#chatList');
+  const status=document.querySelector('#chatAdminStatus');
+  if(!list)return;
+  status.textContent='Loading chats...';
+
+  const {data,error}=await supabase
+    .from('conversation_messages')
+    .select('id,enquiry_id,sender,message,created_at,read_at')
+    .order('created_at',{ascending:true});
+
+  if(error){
+    status.textContent='Could not load chats: '+error.message;
+    return;
+  }
+
+  cachedConversationMessages=data||[];
+  const groups=new Map();
+  cachedConversationMessages.forEach(m=>{
+    if(!groups.has(String(m.enquiry_id))) groups.set(String(m.enquiry_id),[]);
+    groups.get(String(m.enquiry_id)).push(m);
+  });
+
+  const threads=[...groups.entries()].map(([id,messages])=>{
+    const enquiry=cachedEnquiries.find(r=>String(r.id)===id);
+    const last=messages[messages.length-1];
+    const unread=messages.filter(m=>m.sender==='customer'&&!m.read_at).length;
+    return {id,messages,enquiry,last,unread};
+  }).sort((a,b)=>new Date(b.last?.created_at||0)-new Date(a.last?.created_at||0));
+
+  const unreadTotal=threads.reduce((n,t)=>n+t.unread,0);
+  const badge=document.querySelector('#chatBadge');
+  if(badge) badge.textContent=unreadTotal||'';
+
+  status.textContent='';
+  if(!threads.length){
+    list.innerHTML='<div class="empty-state">No private conversations yet.</div>';
+    return;
+  }
+
+  list.innerHTML=threads.map(t=>{
+    const r=t.enquiry||{};
+    const messages=t.messages.map(m=>`
+      <div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">
+        ${escapeHtml(m.message||'')}
+        <span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span>
+      </div>`).join('');
+    return `<article class="chat-card" data-chat-enquiry="${escapeHtml(t.id)}">
+      <div class="chat-head">
+        <div>
+          <h3>${escapeHtml(r.name||'Customer')}</h3>
+          <div class="chat-meta">${escapeHtml(r.vehicle||'')} ${r.service?'· '+escapeHtml(r.service):''}<br>${escapeHtml(r.email||'')}</div>
+        </div>
+        ${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}
+      </div>
+      <div class="chat-thread">${messages}</div>
+      <div class="chat-compose">
+        <textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea>
+        <div class="chat-actions">
+          <button type="button" data-chat-send="${escapeHtml(t.id)}">Send Reply</button>
+          ${t.unread?`<button type="button" class="secondary" data-chat-read="${escapeHtml(t.id)}">Mark Read</button>`:''}
+        </div>
+        <div class="status"></div>
+      </div>
+    </article>`;
+  }).join('');
+
+  list.querySelectorAll('[data-chat-send]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('.chat-card');
+    const textarea=card.querySelector('textarea');
+    const st=card.querySelector('.status');
+    const reply=textarea.value.trim();
+    if(!reply){st.textContent='Write a reply first.';return;}
+    btn.disabled=true;st.textContent='Sending...';
+    try{
+      const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.chatSend,reply}});
+      if(error)throw error;
+      if(!data?.success)throw new Error(data?.error||'Reply failed.');
+      textarea.value='';
+      st.textContent='Reply sent ✓';
+      await loadEnquiries();
+      await loadChats();
+    }catch(e){st.textContent=e?.message||'Could not send reply.';}
+    finally{btn.disabled=false;}
+  });
+
+  list.querySelectorAll('[data-chat-read]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('.chat-card');
+    const st=card.querySelector('.status');
+    btn.disabled=true;
+    const {error}=await supabase
+      .from('conversation_messages')
+      .update({read_at:new Date().toISOString()})
+      .eq('enquiry_id',btn.dataset.chatRead)
+      .eq('sender','customer')
+      .is('read_at',null);
+    if(error){st.textContent='Could not mark read: '+error.message;btn.disabled=false;return;}
+    await loadChats();
+  });
+}
 
 
 function formatBookingDate(date,time){
