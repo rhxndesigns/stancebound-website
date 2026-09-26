@@ -3934,8 +3934,8 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 <section id="conversationPage" hidden style="min-height:100vh;padding:30px 16px 100px"><div style="max-width:760px;margin:auto"><a href="/" style="display:block;margin-bottom:24px">← STANCEBOUND</a><img src="images/logo(1).png" alt="STANCEBOUND" style="width:min(280px,70vw)"><p>PRIVATE CUSTOMER CONVERSATION</p><h1>YOUR CONVERSATION</h1><p id="convIntro">Loading…</p><div id="convJob"></div><div id="convError" hidden></div><div id="convMessages" class="conv-messages"></div><form id="convForm" hidden><label>Reply to STANCEBOUND</label><textarea id="convReply" maxlength="5000" rows="5" required placeholder="Type your message…"></textarea><div class="conv-actions"><span id="convStatus"></span><button type="submit">SEND REPLY</button></div></form><p class="conv-private">PRIVATE LINK · DO NOT SHARE</p></div></section>
 <script id="private-conversation-js">
 (()=>{
-const q=new URLSearchParams(location.search),token=q.get('token'),path=location.pathname.replace(/\/+$/,'');
-if(!token||!path.endsWith('/conversation'))return;
+const q=new URLSearchParams(location.search),token=q.get('conversation');
+if(!token)return;
 const page=document.getElementById('conversationPage');[...document.body.children].forEach(x=>{if(x!==page&&x.tagName!=='SCRIPT')x.style.display='none'});page.hidden=false;
 const endpoint='https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/customer-conversation';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
