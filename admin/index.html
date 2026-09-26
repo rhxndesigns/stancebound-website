@@ -496,8 +496,10 @@ ADMIN CONTROL
 <input
   id="email"
   type="email"
-  value="ryan@stancebound.com"
-  autocomplete="username"
+  value=""
+  autocomplete="off"
+  autocapitalize="none"
+  spellcheck="false"
 >
 
 <label>Password</label>
@@ -505,7 +507,8 @@ ADMIN CONTROL
 <input
   id="password"
   type="password"
-  autocomplete="current-password"
+  value=""
+  autocomplete="off"
 >
 
 <button id="loginBtn">
@@ -2552,6 +2555,22 @@ if (storedAdminSession) {
 
 </script>
 
+
+
+<script id="stancebound-login-clear">
+window.addEventListener('pageshow', function () {
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  if (email) {
+    email.value = '';
+    email.defaultValue = '';
+  }
+  if (password) {
+    password.value = '';
+    password.defaultValue = '';
+  }
+});
+</script>
 
 </body>
 </html>
