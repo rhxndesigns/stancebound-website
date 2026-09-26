@@ -2167,6 +2167,9 @@ html[data-theme="light"] footer *,
 html[data-theme="light"] .footer *{color:#eee}
 </style>
 
+<style id="private-conversation-css">
+#conversationPage{background:#0b0b0b;color:#eee}.conv-messages{display:flex;flex-direction:column;gap:12px;padding:24px 0}.conv-msg{max-width:86%;padding:14px;border:1px solid #333;background:#151515}.conv-msg.customer{align-self:flex-end;background:#292929}.conv-who{font-size:9px;letter-spacing:.18em;color:#888;margin-bottom:7px}.conv-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}.conv-time{font-size:9px;color:#777;margin-top:8px}.conv-job{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid #333;margin-top:18px}.conv-job span{font-size:11px;color:#999}.conv-job strong{display:block;color:inherit;margin-top:4px}#convForm{border-top:1px solid #333;padding-top:18px}#convForm label{display:block;margin-bottom:8px}#convReply{width:100%;box-sizing:border-box;padding:14px;background:#111;color:#eee;border:1px solid #444}.conv-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.conv-actions button{padding:14px 20px;border:0;font-weight:700}.conv-private{text-align:center;font-size:9px;letter-spacing:.18em;color:#666;margin-top:32px}#convError{padding:14px;border:1px solid #733;color:#f1b6b6;margin-top:18px}
+html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[data-theme="light"] .conv-msg{background:#fff;border-color:#ccc}html[data-theme="light"] .conv-msg.customer{background:#ddd}html[data-theme="light"] #convReply{background:#fff!important;color:#111!important;border-color:#aaa!important}@media(max-width:600px){.conv-job{grid-template-columns:1fr}.conv-msg{max-width:92%}}</style>
 </head>
 
 
@@ -3928,6 +3931,28 @@ html[data-theme="light"] .footer *{color:#eee}
 })();
 </script>
 
+<section id="conversationPage" hidden style="min-height:100vh;padding:30px 16px 100px"><div style="max-width:760px;margin:auto"><a href="/" style="display:block;margin-bottom:24px">← STANCEBOUND</a><img src="images/logo(1).png" alt="STANCEBOUND" style="width:min(280px,70vw)"><p>PRIVATE CUSTOMER CONVERSATION</p><h1>YOUR CONVERSATION</h1><p id="convIntro">Loading…</p><div id="convJob"></div><div id="convError" hidden></div><div id="convMessages" class="conv-messages"></div><form id="convForm" hidden><label>Reply to STANCEBOUND</label><textarea id="convReply" maxlength="5000" rows="5" required placeholder="Type your message…"></textarea><div class="conv-actions"><span id="convStatus"></span><button type="submit">SEND REPLY</button></div></form><p class="conv-private">PRIVATE LINK · DO NOT SHARE</p></div></section>
+<script id="private-conversation-js">
+(()=>{
+const q=new URLSearchParams(location.search),token=q.get('token'),path=location.pathname.replace(/\/+$/,'');
+if(!token||!path.endsWith('/conversation'))return;
+const page=document.getElementById('conversationPage');[...document.body.children].forEach(x=>{if(x!==page&&x.tagName!=='SCRIPT')x.style.display='none'});page.hidden=false;
+const endpoint='https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/customer-conversation';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const niceDate=v=>{if(!v)return'';const d=new Date(v+'T12:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})};
+async function load(){
+ try{const r=await fetch(endpoint+'?token='+encodeURIComponent(token)),d=await r.json();if(!r.ok)throw Error(d.error||'Could not load conversation.');
+ const c=d.conversation||{};document.getElementById('convIntro').textContent=c.name?'Hi '+c.name+'. You can securely view and reply to STANCEBOUND here.':'Your private STANCEBOUND conversation.';
+ const facts=[['Vehicle',c.vehicle],['Service',c.service],['Status',c.status],['Date',niceDate(c.booking_date)],['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],['Location',c.booking_location]].filter(x=>x[1]);
+ const job=document.getElementById('convJob');if(facts.length){job.className='conv-job';job.innerHTML=facts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('')}
+ document.getElementById('convMessages').innerHTML=(d.messages||[]).length?(d.messages||[]).map(m=>`<div class="conv-msg ${m.sender==='customer'?'customer':''}"><div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div><div class="conv-body">${esc(m.message)}</div><div class="conv-time">${esc(new Date(m.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}</div></div>`).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
+ document.getElementById('convForm').hidden=false;
+ }catch(e){const b=document.getElementById('convError');b.textContent=e.message;b.hidden=false}
+}
+document.getElementById('convForm').onsubmit=async e=>{e.preventDefault();const box=document.getElementById('convReply'),message=box.value.trim(),st=document.getElementById('convStatus'),btn=e.currentTarget.querySelector('button');if(!message)return;btn.disabled=true;st.textContent='Sending…';try{const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,message})}),d=await r.json();if(!r.ok)throw Error(d.error||'Could not send reply.');box.value='';st.textContent='Reply sent ✓';await load()}catch(x){st.textContent=x.message}finally{btn.disabled=false}};
+load();
+})();
+</script>
 </body>
 
 </html>
