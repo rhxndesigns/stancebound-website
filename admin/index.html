@@ -270,6 +270,35 @@ body{padding-bottom:88px}
 .chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 @media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:100%}}
 
+
+/* BOOKING MOBILE CLEANUP */
+@media (max-width:720px){
+  main{width:100%;padding-left:0;padding-right:0}
+  [data-admin-page="bookings"]>.panel{
+    border-left:0;
+    border-right:0;
+    padding-left:14px;
+    padding-right:14px;
+  }
+  [data-admin-page="bookings"] .enquiry-card{
+    border-left:0 !important;
+    border-right:0;
+    padding-left:0;
+    padding-right:0;
+  }
+  [data-admin-page="bookings"] .booking-editor{
+    border-left:0;
+    border-right:0;
+    padding-left:0;
+    padding-right:0;
+  }
+  [data-admin-page="bookings"] .enquiry-message,
+  [data-admin-page="bookings"] .enquiry-reply{
+    border-left:0;
+    border-right:0;
+  }
+}
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -1504,6 +1533,7 @@ function renderBookingRequests(){
           ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Needs Attention Again</button>`:''}
           <button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>
           ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button>`:''}
+          <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
         </div>
         <div class="status" data-request-status></div>
       </div>
@@ -1608,6 +1638,35 @@ function renderBookingRequests(){
       await loadEnquiries();
     }catch(e){st.textContent=e?.message||'Could not cancel booking.'}
     finally{btn.disabled=false}
+  });
+
+
+  list.querySelectorAll('[data-delete-booking]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const st=card.querySelector('[data-request-status]');
+    const row=cachedEnquiries.find(r=>String(r.id)===String(btn.dataset.deleteBooking));
+    const label=row?.name ? `${row.name}${row.vehicle?' · '+row.vehicle:''}` : 'this booking';
+
+    if(!confirm(`Permanently delete ${label}?\n\nThis removes the booking/request from STANCEBOUND Admin. This cannot be undone.`)) return;
+
+    btn.disabled=true;
+    st.textContent='Deleting...';
+
+    try{
+      const {error}=await supabase
+        .from('enquiries')
+        .delete()
+        .eq('id',btn.dataset.deleteBooking);
+
+      if(error) throw error;
+
+      st.textContent='Deleted ✓';
+      await loadEnquiries();
+    }catch(e){
+      st.textContent=e?.message||'Could not delete booking.';
+    }finally{
+      btn.disabled=false;
+    }
   });
 
   list.querySelectorAll('[data-confirm-request]').forEach(btn=>btn.onclick=async()=>{
