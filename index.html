@@ -3931,26 +3931,251 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 })();
 </script>
 
-<section id="conversationPage" hidden style="min-height:100vh;padding:30px 16px 100px"><div style="max-width:760px;margin:auto"><a href="/" style="display:block;margin-bottom:24px">← STANCEBOUND</a><img src="images/logo(1).png" alt="STANCEBOUND" style="width:min(280px,70vw)"><p>PRIVATE CUSTOMER CONVERSATION</p><h1>YOUR CONVERSATION</h1><p id="convIntro">Loading…</p><div id="convJob"></div><div id="convError" hidden></div><div id="convMessages" class="conv-messages"></div><form id="convForm" hidden><label>Reply to STANCEBOUND</label><textarea id="convReply" maxlength="5000" rows="5" required placeholder="Type your message…"></textarea><div class="conv-actions"><span id="convStatus"></span><button type="submit">SEND REPLY</button></div></form><p class="conv-private">PRIVATE LINK · DO NOT SHARE</p></div></section>
+<section id="conversationPage" hidden style="min-height:100vh;padding:30px 16px 100px">
+  <div style="max-width:760px;margin:auto">
+    <a href="/" style="display:block;margin-bottom:24px">← STANCEBOUND</a>
+    <img src="images/logo(1).png" alt="STANCEBOUND" style="width:min(280px,70vw)">
+    <p>PRIVATE CUSTOMER CONVERSATION</p>
+    <h1>YOUR CONVERSATION</h1>
+    <p id="convIntro">Checking this device…</p>
+
+    <div id="convVerify" class="conv-verify" hidden>
+      <h2>VERIFY THIS DEVICE</h2>
+      <p id="convVerifyText">For your privacy, we'll send a 6-digit code to the verified email address connected to this conversation.</p>
+      <button type="button" id="convRequestCode">SEND VERIFICATION CODE</button>
+      <div id="convCodeWrap" hidden>
+        <div class="conv-verify-row">
+          <input id="convCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+          <button type="button" id="convVerifyCode">VERIFY</button>
+        </div>
+      </div>
+      <div id="convVerifyStatus" class="conv-live"></div>
+    </div>
+
+    <div id="convJob"></div>
+    <div id="convError" hidden></div>
+    <div id="convMessages" class="conv-messages"></div>
+
+    <form id="convForm" hidden>
+      <label>Reply to STANCEBOUND</label>
+      <textarea id="convReply" maxlength="5000" rows="5" required placeholder="Type your message…"></textarea>
+      <div class="conv-actions">
+        <span id="convStatus"></span>
+        <button type="submit">SEND REPLY</button>
+      </div>
+      <div id="convLiveStatus" class="conv-live">LIVE · checking for replies automatically</div>
+    </form>
+
+    <p class="conv-private">SECURE PRIVATE CONVERSATION · VERIFIED DEVICE</p>
+  </div>
+</section>
+
 <script id="private-conversation-js">
 (()=>{
-const q=new URLSearchParams(location.search),token=q.get('conversation');
-if(!token)return;
-const page=document.getElementById('conversationPage');[...document.body.children].forEach(x=>{if(x!==page&&x.tagName!=='SCRIPT')x.style.display='none'});page.hidden=false;
-const endpoint='https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/customer-conversation';
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const niceDate=v=>{if(!v)return'';const d=new Date(v+'T12:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})};
-async function load(){
- try{const r=await fetch(endpoint+'?token='+encodeURIComponent(token)),d=await r.json();if(!r.ok)throw Error(d.error||'Could not load conversation.');
- const c=d.conversation||{};document.getElementById('convIntro').textContent=c.name?'Hi '+c.name+'. You can securely view and reply to STANCEBOUND here.':'Your private STANCEBOUND conversation.';
- const facts=[['Vehicle',c.vehicle],['Service',c.service],['Status',c.status],['Date',niceDate(c.booking_date)],['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],['Location',c.booking_location]].filter(x=>x[1]);
- const job=document.getElementById('convJob');if(facts.length){job.className='conv-job';job.innerHTML=facts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('')}
- document.getElementById('convMessages').innerHTML=(d.messages||[]).length?(d.messages||[]).map(m=>`<div class="conv-msg ${m.sender==='customer'?'customer':''}"><div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div><div class="conv-body">${esc(m.message)}</div><div class="conv-time">${esc(new Date(m.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))}</div></div>`).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
- document.getElementById('convForm').hidden=false;
- }catch(e){const b=document.getElementById('convError');b.textContent=e.message;b.hidden=false}
-}
-document.getElementById('convForm').onsubmit=async e=>{e.preventDefault();const box=document.getElementById('convReply'),message=box.value.trim(),st=document.getElementById('convStatus'),btn=e.currentTarget.querySelector('button');if(!message)return;btn.disabled=true;st.textContent='Sending…';try{const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,message})}),d=await r.json();if(!r.ok)throw Error(d.error||'Could not send reply.');box.value='';st.textContent='Reply sent ✓';await load()}catch(x){st.textContent=x.message}finally{btn.disabled=false}};
-load();
+  const q=new URLSearchParams(location.search), token=q.get('conversation');
+  if(!token)return;
+
+  const page=document.getElementById('conversationPage');
+  [...document.body.children].forEach(x=>{
+    if(x!==page && x.tagName!=='SCRIPT') x.style.display='none';
+  });
+  page.hidden=false;
+
+  const endpoint='https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/customer-conversation';
+  const sessionKey='stancebound-conversation-session:'+token;
+  let session=localStorage.getItem(sessionKey)||'';
+  let refreshTimer=null;
+  let loading=false;
+  let lastMessageSignature='';
+
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const niceDate=v=>{if(!v)return'';const d=new Date(v+'T12:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})};
+  const niceTime=v=>{try{return new Date(v).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}catch{return v||''}};
+
+  function showVerify(message='For your privacy, verify this device before opening the conversation.'){
+    $('convIntro').textContent='This conversation is protected with email verification.';
+    $('convVerify').hidden=false;
+    $('convVerifyText').textContent=message;
+    $('convJob').innerHTML='';
+    $('convMessages').innerHTML='';
+    $('convForm').hidden=true;
+    if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
+  }
+
+  function renderMessages(messages){
+    const signature=messages.map(m=>`${m.id}:${m.read_at||''}`).join('|');
+    if(signature===lastMessageSignature)return;
+    lastMessageSignature=signature;
+
+    $('convMessages').innerHTML=messages.length?messages.map(m=>{
+      let receipt='';
+      if(m.sender==='customer'){
+        receipt=m.read_at
+          ? `<span class="conv-receipt">Read ${esc(niceTime(m.read_at))}</span>`
+          : `<span class="conv-receipt">Sent</span>`;
+      }
+      return `<div class="conv-msg ${m.sender==='customer'?'customer':''}">
+        <div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div>
+        <div class="conv-body">${esc(m.message)}</div>
+        <div class="conv-time">${esc(niceTime(m.created_at))}</div>
+        ${receipt}
+      </div>`;
+    }).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
+
+    const messagesBox=$('convMessages');
+    messagesBox.lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  async function load(silent=false){
+    if(loading)return;
+    loading=true;
+    try{
+      const r=await fetch(endpoint+'?token='+encodeURIComponent(token)+'&session='+encodeURIComponent(session),{cache:'no-store'});
+      const d=await r.json().catch(()=>({}));
+
+      if(r.status===401 && d.verification_required){
+        localStorage.removeItem(sessionKey);
+        session='';
+        showVerify();
+        return;
+      }
+      if(!r.ok)throw Error(d.error||'Could not load conversation.');
+
+      $('convVerify').hidden=true;
+      $('convError').hidden=true;
+
+      const c=d.conversation||{};
+      $('convIntro').textContent=c.name
+        ? `Hi ${c.name}. This device is verified. You can securely view and reply to STANCEBOUND here.`
+        : 'Your secure STANCEBOUND conversation.';
+
+      const facts=[
+        ['Vehicle',c.vehicle],
+        ['Service',c.service],
+        ['Status',c.status],
+        ['Date',niceDate(c.booking_date)],
+        ['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],
+        ['Location',c.booking_location]
+      ].filter(x=>x[1]);
+
+      const job=$('convJob');
+      if(facts.length){
+        job.className='conv-job';
+        job.innerHTML=facts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('');
+      }else{
+        job.className='';
+        job.innerHTML='';
+      }
+
+      renderMessages(d.messages||[]);
+      $('convForm').hidden=false;
+      $('convLiveStatus').textContent='LIVE · checking for replies automatically';
+
+      if(!refreshTimer){
+        refreshTimer=setInterval(()=>load(true),3000);
+      }
+    }catch(e){
+      if(!silent){
+        $('convError').textContent=e.message;
+        $('convError').hidden=false;
+      }
+    }finally{
+      loading=false;
+    }
+  }
+
+  $('convRequestCode').onclick=async()=>{
+    const btn=$('convRequestCode'), st=$('convVerifyStatus');
+    btn.disabled=true;
+    st.textContent='Sending code…';
+    try{
+      const r=await fetch(endpoint,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'request_code',token})
+      });
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw Error(d.error||'Could not send verification code.');
+      $('convCodeWrap').hidden=false;
+      st.textContent='Code sent. Check your email.';
+      $('convCode').focus();
+    }catch(e){
+      st.textContent=e.message;
+    }finally{
+      btn.disabled=false;
+    }
+  };
+
+  $('convVerifyCode').onclick=async()=>{
+    const code=$('convCode').value.trim(), btn=$('convVerifyCode'), st=$('convVerifyStatus');
+    if(!/^\d{6}$/.test(code)){st.textContent='Enter the 6-digit code.';return}
+    btn.disabled=true;
+    st.textContent='Verifying…';
+    try{
+      const r=await fetch(endpoint,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'verify_code',token,code})
+      });
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw Error(d.error||'Verification failed.');
+      if(!d.session)throw Error('Secure session was not created.');
+      session=d.session;
+      localStorage.setItem(sessionKey,session);
+      st.textContent='Verified ✓';
+      await load();
+    }catch(e){
+      st.textContent=e.message;
+    }finally{
+      btn.disabled=false;
+    }
+  };
+
+  $('convCode').addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();$('convVerifyCode').click()}
+  });
+
+  $('convForm').onsubmit=async e=>{
+    e.preventDefault();
+    const box=$('convReply'), message=box.value.trim(), st=$('convStatus'), btn=e.currentTarget.querySelector('button');
+    if(!message)return;
+    btn.disabled=true;
+    st.textContent='Sending…';
+    try{
+      const r=await fetch(endpoint,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'send',token,session,message})
+      });
+      const d=await r.json().catch(()=>({}));
+      if(r.status===401 && d.verification_required){
+        localStorage.removeItem(sessionKey);
+        session='';
+        showVerify('Your secure session has expired. Verify this device again to continue.');
+        return;
+      }
+      if(!r.ok)throw Error(d.error||'Could not send reply.');
+      box.value='';
+      st.textContent='Sent ✓';
+      await load();
+    }catch(x){
+      st.textContent=x.message;
+    }finally{
+      btn.disabled=false;
+    }
+  };
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){
+      if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
+    }else if(session){
+      load(true);
+    }
+  });
+
+  if(session) load();
+  else showVerify();
 })();
 </script>
 </body>
