@@ -497,9 +497,7 @@ ADMIN CONTROL
   id="email"
   type="email"
   value=""
-  autocomplete="off"
-  autocapitalize="none"
-  spellcheck="false"
+  autocomplete="username"
 >
 
 <label>Password</label>
@@ -507,8 +505,7 @@ ADMIN CONTROL
 <input
   id="password"
   type="password"
-  value=""
-  autocomplete="off"
+  autocomplete="current-password"
 >
 
 <button id="loginBtn">
@@ -2060,12 +2057,6 @@ async function loadAdminData() {
   ]);
 }
 
-// Keep admin credentials blank on every fresh login screen.
-const adminEmailInput = document.querySelector('#email');
-const adminPasswordInput = document.querySelector('#password');
-if (adminEmailInput) adminEmailInput.value = '';
-if (adminPasswordInput) adminPasswordInput.value = '';
-
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
   const button = document.querySelector('#loginBtn');
@@ -2561,6 +2552,28 @@ if (storedAdminSession) {
 
 </script>
 
+
+
+<script id="admin-login-empty-fields-fix">
+document.addEventListener('DOMContentLoaded', function () {
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+
+  if (email) {
+    email.value = '';
+    email.defaultValue = '';
+    email.setAttribute('value', '');
+    email.setAttribute('autocomplete', 'off');
+  }
+
+  if (password) {
+    password.value = '';
+    password.defaultValue = '';
+    password.setAttribute('value', '');
+    password.setAttribute('autocomplete', 'off');
+  }
+});
+</script>
 
 </body>
 </html>
