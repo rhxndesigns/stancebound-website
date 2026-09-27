@@ -2169,7 +2169,7 @@ html[data-theme="light"] .footer *{color:#eee}
 </style>
 
 <style id="private-conversation-css">
-#conversationPage{background:#0b0b0b;color:#eee}.conv-messages{display:flex;flex-direction:column;gap:12px;padding:24px 0}.conv-msg{max-width:86%;padding:14px;border:1px solid #333;background:#151515}.conv-msg.customer{align-self:flex-end;background:#292929}.conv-who{font-size:9px;letter-spacing:.18em;color:#888;margin-bottom:7px}.conv-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}.conv-time{font-size:9px;color:#777;margin-top:8px}.conv-job{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid #333;margin-top:18px}.conv-job span{font-size:11px;color:#999}.conv-job strong{display:block;color:inherit;margin-top:4px}#convForm{border-top:1px solid #333;padding-top:18px}#convForm label{display:block;margin-bottom:8px}#convReply{width:100%;box-sizing:border-box;padding:14px;background:#111;color:#eee;border:1px solid #444}.conv-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.conv-actions button{padding:14px 20px;border:0;font-weight:700}.conv-private{text-align:center;font-size:9px;letter-spacing:.18em;color:#666;margin-top:32px}#convError{padding:14px;border:1px solid #733;color:#ff6868;margin-top:18px}.conv-live.error{color:#ff5252!important;font-weight:700}.conv-live.success{color:#35d07f!important;font-weight:700}
+#conversationPage{background:#0b0b0b;color:#eee}.conv-messages{display:flex;flex-direction:column;gap:12px;padding:24px 0}.conv-msg{max-width:86%;padding:14px;border:1px solid #333;background:#151515}.conv-msg.customer{align-self:flex-end;background:#292929}.conv-who{font-size:9px;letter-spacing:.18em;color:#888;margin-bottom:7px}.conv-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}.conv-time{font-size:9px;color:#777;margin-top:8px}.conv-job{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid #333;margin-top:18px}.conv-job span{font-size:11px;color:#999}.conv-response-note{margin-top:18px;padding:15px 16px;border:1px solid #333;background:#101010;color:#aaa;font-size:12px;line-height:1.65}.conv-response-note strong{display:block;color:#eee;font-size:11px;letter-spacing:.12em;margin-bottom:6px}.conv-job strong{display:block;color:inherit;margin-top:4px}#convForm{border-top:1px solid #333;padding-top:18px}#convForm label{display:block;margin-bottom:8px}#convReply{width:100%;box-sizing:border-box;padding:14px;background:#111;color:#eee;border:1px solid #444}.conv-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.conv-actions button{padding:14px 20px;border:0;font-weight:700}.conv-private{text-align:center;font-size:9px;letter-spacing:.18em;color:#666;margin-top:32px}#convError{padding:14px;border:1px solid #733;color:#ff6868;margin-top:18px}.conv-live.error{color:#ff5252!important;font-weight:700}.conv-live.success{color:#35d07f!important;font-weight:700}
 html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[data-theme="light"] .conv-msg{background:#fff;border-color:#ccc}html[data-theme="light"] .conv-msg.customer{background:#ddd}html[data-theme="light"] #convReply{background:#fff!important;color:#111!important;border-color:#aaa!important}@media(max-width:600px){.conv-job{grid-template-columns:1fr}.conv-msg{max-width:92%}}</style>
 
 <script id="stancebound-conversation-route-guard">
@@ -3879,6 +3879,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     </div>
 
     <div id="convJob"></div>
+    <div id="convResponseNote" class="conv-response-note" hidden><strong>NO NEED TO KEEP THIS PAGE OPEN</strong>When STANCEBOUND replies, we’ll send an email to let you know. You can return to this private chat from the link in that email.</div>
     <div id="convError" hidden></div>
     <div id="convMessages" class="conv-messages"></div>
 
@@ -3980,24 +3981,27 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       const facts=[
         ['Vehicle',c.vehicle],
         ['Service',c.service],
-        ['Status',c.status],
         ['Date',niceDate(c.booking_date)],
         ['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],
         ['Location',c.booking_location]
       ].filter(x=>x[1]);
 
       const job=$('convJob');
-      if(facts.length){
+      const isGeneralChat=String(c.service||'').toLowerCase()==='private chat';
+      const visibleFacts=isGeneralChat?[]:facts;
+      if(visibleFacts.length){
         job.className='conv-job';
-        job.innerHTML=facts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('');
+        job.innerHTML=visibleFacts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('');
       }else{
         job.className='';
         job.innerHTML='';
       }
+      const responseNote=$('convResponseNote');
+      if(responseNote)responseNote.hidden=false;
 
       renderMessages(d.messages||[]);
       $('convForm').hidden=false;
-      $('convLiveStatus').textContent='LIVE · checking for replies automatically';
+      $('convLiveStatus').textContent='CHECKING FOR REPLIES WHILE THIS PAGE IS OPEN · WE’LL EMAIL YOU WHEN STANCEBOUND RESPONDS';
 
       if(!refreshTimer){
         refreshTimer=setInterval(()=>load(true),3000);
