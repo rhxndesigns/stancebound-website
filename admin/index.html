@@ -299,6 +299,12 @@ body{padding-bottom:88px}
   }
 }
 
+
+/* STANCEBOUND admin chat image + delete controls */
+.chat-file-input{display:none}.chat-attach-btn{display:inline-flex!important;align-items:center;justify-content:center;width:auto!important;min-width:46px}.chat-upload-previews{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:9px}.chat-upload-preview{position:relative;aspect-ratio:1;border-radius:9px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,.12)}.chat-upload-preview img{width:100%;height:100%;object-fit:cover;display:block}.chat-upload-remove{position:absolute;top:4px;right:4px;width:26px!important;height:26px;padding:0!important;margin:0!important;border-radius:50%;background:rgba(0,0,0,.8)!important;color:#fff!important;font-size:16px;line-height:1}.chat-upload-note{font-size:11px;opacity:.55;margin-top:7px}
+.chat-attachment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}.chat-attachment-grid.single{grid-template-columns:1fr}.chat-attachment{display:block;width:100%;margin:0;padding:0;border:0;background:transparent;border-radius:10px;overflow:hidden}.chat-attachment img{display:block;width:100%;height:150px;object-fit:cover}.chat-attachment-grid.single img{height:auto;max-height:340px;object-fit:contain;background:#050505}.chat-image-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:18px}.chat-image-lightbox img{max-width:100%;max-height:92vh;object-fit:contain}.chat-image-lightbox button{position:absolute;top:14px;right:14px;width:44px;height:44px;margin:0;padding:0;border-radius:50%;background:#fff;color:#000;font-size:22px}
+.chat-actions .chat-delete-btn{margin-left:auto;background:transparent;color:#ff9f9f;border:1px solid rgba(255,92,92,.28);letter-spacing:1.4px}.chat-actions .chat-delete-btn:hover{background:rgba(255,70,70,.08);border-color:rgba(255,92,92,.48)}.chat-actions .chat-delete-btn:disabled{opacity:.45;cursor:wait}
+@media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:auto}.chat-actions [data-thread-send]{flex:1}.chat-upload-previews{grid-template-columns:repeat(3,minmax(0,1fr))}.chat-actions{flex-wrap:wrap}.chat-delete-btn{width:100%!important;margin-left:0!important}}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -866,8 +872,6 @@ const supabase = createClient(
 );
 
 
-const ADMIN_EMAIL = 'ryan@stancebound.com';
-
 const login =
   document.querySelector('#login');
 
@@ -1109,6 +1113,18 @@ function escapeHtml(value=""){
   return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
 }
 
+
+function openChatImage(url){
+  if(!url)return;
+  const box=document.createElement('div');
+  box.className='chat-image-lightbox';
+  box.innerHTML=`<button type="button" aria-label="Close image">×</button><img src="${escapeHtml(url)}" alt="Chat image">`;
+  const close=()=>box.remove();
+  box.querySelector('button').onclick=close;
+  box.onclick=e=>{if(e.target===box)close();};
+  document.body.appendChild(box);
+}
+
 const ENQUIRY_STATUSES = [
   ['new','New'],
   ['awaiting_reply','Awaiting Reply'],
@@ -1333,7 +1349,7 @@ async function loadChats(){
 
   const {data,error}=await supabase
     .from('conversation_messages')
-    .select('id,enquiry_id,sender,message,created_at,read_at')
+    .select('id,enquiry_id,sender,message,created_at,read_at,attachments')
     .order('created_at',{ascending:true});
   if(error){
     if(bookingStatus)bookingStatus.textContent='Could not load chats: '+error.message;
@@ -1341,7 +1357,16 @@ async function loadChats(){
     return;
   }
 
-  cachedConversationMessages=data||[];
+  cachedConversationMessages=await Promise.all((data||[]).map(async m=>{
+    const raw=Array.isArray(m.attachments)?m.attachments:[];
+    const attachments=[];
+    for(const a of raw){
+      if(!a?.path) continue;
+      const {data:signed}=await supabase.storage.from('chat-attachments').createSignedUrl(a.path,3600);
+      attachments.push({...a,url:signed?.signedUrl||''});
+    }
+    return {...m,attachments};
+  }));
   const groups=new Map();
   cachedConversationMessages.forEach(m=>{
     const key=String(m.enquiry_id);
@@ -1381,7 +1406,8 @@ async function loadChats(){
     if(!filtered.length){host.innerHTML=`<div class="empty-state">${q?'No matching conversations.':type==='general'?'No Chat With Us conversations yet.':'No booking conversations yet.'}</div>`;return;}
     host.innerHTML=filtered.map(t=>{
       const r=t.enquiry||{}; const last=t.last||{};
-      const preview=String(last.message||'No messages yet').replace(/\s+/g,' ').slice(0,100);
+      const hasPhotos=Array.isArray(last.attachments)&&last.attachments.length;
+      const preview=String((hasPhotos && (!last.message || last.message==='Photo attachment')) ? `📷 ${last.attachments.length} photo${last.attachments.length===1?'':'s'}` : (last.message||'No messages yet')).replace(/\s+/g,' ').slice(0,100);
       return `<article class="chat-inbox-row" data-open-thread="${escapeHtml(t.id)}" data-thread-type="${type}" tabindex="0">
         <div class="chat-inbox-main"><div class="chat-inbox-name">${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</div>
         <div class="chat-inbox-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')):(escapeHtml(r.email||''))}</div>
@@ -1401,16 +1427,61 @@ async function loadChats(){
     host.innerHTML=`<div class="chat-thread-view">
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
       <div class="chat-head"><div><h3>${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
-      <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
-      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
+      <div class="chat-thread">${t.messages.map(m=>{const at=Array.isArray(m.attachments)?m.attachments.filter(a=>a.url):[];const text=(at.length&&m.message==='Photo attachment')?'':(m.message||'');return `<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${text?`<div>${escapeHtml(text)}</div>`:''}${at.length?`<div class="chat-attachment-grid ${at.length===1?'single':''}">${at.map(a=>`<button type="button" class="chat-attachment" data-chat-image="${escapeHtml(a.url)}" aria-label="Open image"><img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.name||'Chat image')}" loading="lazy"></button>`).join('')}</div>`:''}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`;}).join('')}</div>
+      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><input class="chat-file-input" data-thread-files type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="chat-upload-previews" data-thread-previews></div><div class="chat-actions"><button type="button" class="secondary chat-attach-btn" data-thread-attach aria-label="Add photos">📎 Photos</button><button type="button" data-thread-send>Send</button><button type="button" class="chat-delete-btn" data-thread-delete>Delete Chat</button></div><div class="chat-upload-note">JPG, PNG or WebP · up to 5 images · 10 MB each</div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
+    host.querySelectorAll('[data-chat-image]').forEach(btn=>btn.onclick=()=>openChatImage(btn.dataset.chatImage));
+    const fileInput=host.querySelector('[data-thread-files]');
+    const attachBtn=host.querySelector('[data-thread-attach]');
+    const previewBox=host.querySelector('[data-thread-previews]');
+    const composeStatus=host.querySelector('.chat-compose .status');
+    let selectedFiles=[];
+    const renderSelected=()=>{
+      previewBox.innerHTML=selectedFiles.map((f,i)=>`<div class="chat-upload-preview"><img src="${URL.createObjectURL(f)}" alt="Selected image"><button type="button" class="chat-upload-remove" data-remove-upload="${i}" aria-label="Remove image">×</button></div>`).join('');
+      previewBox.querySelectorAll('[data-remove-upload]').forEach(b=>b.onclick=()=>{selectedFiles.splice(Number(b.dataset.removeUpload),1);renderSelected();});
+    };
+    attachBtn.onclick=()=>fileInput.click();
+    fileInput.onchange=()=>{
+      const incoming=[...fileInput.files];
+      const allowed=new Set(['image/jpeg','image/png','image/webp']);
+      for(const f of incoming){
+        if(selectedFiles.length>=5)break;
+        if(!allowed.has(f.type)){composeStatus.textContent='Only JPG, PNG and WebP images are supported.';continue;}
+        if(f.size>10*1024*1024){composeStatus.textContent=`${f.name} is over 10 MB.`;continue;}
+        selectedFiles.push(f);
+      }
+      fileInput.value=''; renderSelected();
+    };
+    const readFile=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('One of the selected images could not be read.'));r.readAsDataURL(file);});
     host.querySelector('[data-thread-send]').onclick=async()=>{
       const btn=host.querySelector('[data-thread-send]'), textarea=host.querySelector('textarea'), st=host.querySelector('.status');
-      const reply=textarea.value.trim(); if(!reply){st.textContent='Write a reply first.';return;}
-      btn.disabled=true;st.textContent='Sending...';
-      try{const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:t.id,reply}});if(error)throw error;if(!data?.success)throw new Error(data?.error||'Reply failed.');st.textContent='Reply sent ✓';await loadEnquiries();}
-      catch(e){st.textContent=e?.message||'Could not send reply.';}finally{btn.disabled=false;}
+      const reply=textarea.value.trim(); if(!reply&&!selectedFiles.length){st.textContent='Write a reply or select a photo first.';return;}
+      btn.disabled=true;attachBtn.disabled=true;st.textContent=selectedFiles.length?'Uploading & sending...':'Sending...';
+      try{
+        const attachments=await Promise.all(selectedFiles.map(async f=>({name:f.name,type:f.type,size:f.size,data:await readFile(f)})));
+        const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:t.id,reply,attachments}});
+        if(error)throw error;if(!data?.success)throw new Error(data?.error||'Reply failed.');
+        textarea.value='';selectedFiles=[];renderSelected();st.textContent='Reply sent ✓';await loadEnquiries();await loadChats();
+      }catch(e){st.textContent=e?.message||'Could not send reply.';}finally{btn.disabled=false;attachBtn.disabled=false;}
+    };
+    host.querySelector('[data-thread-delete]').onclick=async()=>{
+      const btn=host.querySelector('[data-thread-delete]');
+      const st=host.querySelector('.chat-compose .status');
+      const customerName=r.name||((r.email||'').split('@')[0])||'this customer';
+      if(!confirm(`Delete the chat with ${customerName}? This permanently removes the conversation and cannot be undone.`))return;
+      btn.disabled=true;st.textContent='Deleting conversation...';
+      try{
+        const {data,error}=await supabase.functions.invoke('delete-conversation',{body:{enquiry_id:t.id}});
+        if(error)throw error;
+        if(!data?.success)throw new Error(data?.error||'Delete failed.');
+        st.textContent='Conversation deleted ✓';
+        await loadEnquiries();
+        await loadChats();
+      }catch(e){
+        st.textContent=e?.message||'Could not delete conversation.';
+        btn.disabled=false;
+      }
     };
     if(t.unread){supabase.from('conversation_messages').update({read_at:new Date().toISOString()}).eq('enquiry_id',t.id).eq('sender','customer').is('read_at',null).then(()=>{});}
   };
@@ -1985,12 +2056,8 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 
-function isAuthorisedAdminSession(session) {
-  return !!session?.user?.email && session.user.email.toLowerCase() === ADMIN_EMAIL;
-}
-
 function applyAdminSession(session) {
-  const loggedIn = isAuthorisedAdminSession(session);
+  const loggedIn = !!session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com';
 
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
@@ -2014,10 +2081,12 @@ function getStoredAdminSession() {
       k => k.startsWith('sb-') && k.endsWith('-auth-token')
     );
     if (!key) return null;
+
     const session = JSON.parse(localStorage.getItem(key) || 'null');
     if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
+
     if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
-    return isAuthorisedAdminSession(session) ? session : null;
+    return session;
   } catch {
     return null;
   }
@@ -2025,27 +2094,39 @@ function getStoredAdminSession() {
 
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
-  const status = document.querySelector('#loginStatus');
 
   if (error) {
+    const status = document.querySelector('#loginStatus');
     if (status) status.textContent = 'Could not check login: ' + error.message;
-    applyAdminSession(null);
-    return;
   }
 
-  if (session && !isAuthorisedAdminSession(session)) {
-    applyAdminSession(null);
-    if (status) status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
-    return;
-  }
+  const loggedIn = !!session;
 
-  applyAdminSession(session);
-  if (session) await loadAdminData();
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+
+  if (loggedIn) {
+    const adminToday = document.querySelector('#adminToday');
+    if (adminToday) {
+      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric'
+      });
+    }
+    await Promise.allSettled([
+      loadContent(),
+      loadPhotos(),
+      loadEnquiries(),
+      loadOrders()
+    ]);
+  }
 }
 
+
+
 async function loadAdminData() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!isAuthorisedAdminSession(session)) return;
   await Promise.allSettled([
     loadContent(),
     loadPhotos(),
@@ -2065,21 +2146,13 @@ async function adminLogin() {
     return;
   }
 
-  if (email.toLowerCase() !== ADMIN_EMAIL) {
-    status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
-    return;
-  }
-
   button.disabled = true;
   status.textContent = 'Logging in...';
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    if (!isAuthorisedAdminSession(data?.session)) {
-      await supabase.auth.signOut();
-      throw new Error('This account is not authorised for STANCEBOUND Admin.');
-    }
+    if (!data?.session) throw new Error('Login succeeded but no session was created.');
 
     status.textContent = '';
     applyAdminSession(data.session);
@@ -2324,26 +2397,24 @@ async function loadPhotos() {
   }
 
   for (const row of data) {
+    // Admin previews use an authenticated signed URL rather than assuming
+    // the storage bucket is publicly readable.
+    const { data: signedData, error: signedError } = await supabase.storage
+      .from('website-images')
+      .createSignedUrl(row.storage_path, 3600);
+
     const card = document.createElement('div');
     card.className = 'photo-card';
 
     const img = document.createElement('img');
-    img.alt = row.caption || 'STANCEBOUND website photo';
-    img.loading = 'lazy';
-
-    // website-images is the public website media bucket. Public URLs avoid
-    // requiring a storage SELECT policy merely to render the admin gallery.
-    const { data: publicData } = supabase.storage
-      .from('website-images')
-      .getPublicUrl(row.storage_path);
-
-    if (publicData?.publicUrl) {
-      img.src = publicData.publicUrl;
-    } else {
+    if (signedError || !signedData?.signedUrl) {
       img.alt = 'Photo preview unavailable';
       img.style.minHeight = '120px';
       img.style.background = '#111';
-      photoStatus.textContent = 'One or more photo previews could not be loaded.';
+      photoStatus.textContent = signedError?.message || 'One or more photo previews could not be loaded.';
+    } else {
+      img.src = signedData.signedUrl;
+      img.alt = row.caption || 'STANCEBOUND website photo';
     }
 
     const meta = document.createElement('div');
@@ -2547,15 +2618,9 @@ document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=
 });
 
 supabase.auth.onAuthStateChange((event, session) => {
-  const authorised = isAuthorisedAdminSession(session);
-  applyAdminSession(authorised ? session : null);
+  applyAdminSession(session);
 
-  const status = document.querySelector('#loginStatus');
-  if (session && !authorised && status) {
-    status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
-  }
-
-  if (authorised && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
   }
 });
