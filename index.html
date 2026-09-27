@@ -2302,6 +2302,66 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 }
 </style>
 
+
+<style id="stancebound-recovery-detail-polish">
+/* Recovery polish: remove stray horizontal rules and reduce nested-box clutter. */
+.sb-chat-recover-toggle::before,
+.sb-chat-security::before{
+  display:none!important;
+  content:none!important;
+}
+.sb-chat-recover-toggle{
+  padding-top:10px!important;
+  margin-top:24px!important;
+}
+.sb-chat-security{
+  padding-top:8px!important;
+  margin-top:22px!important;
+}
+.sb-recover-modern{
+  overflow:hidden;
+}
+.sb-recover-code{
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.09)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:26px 0 2px!important;
+  margin-top:22px!important;
+}
+.sb-code-badge{
+  position:static!important;
+  display:inline-flex!important;
+  align-items:center;
+  margin:0 0 16px!important;
+  padding:7px 11px!important;
+}
+.sb-recover-trust{
+  margin-top:26px!important;
+  padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.sb-recover-modern .sb-chat-recover-back{
+  margin-top:14px!important;
+}
+@media(max-width:600px){
+  .sb-recover-modern{
+    padding:24px 20px!important;
+  }
+  .sb-recover-code{
+    padding-top:24px!important;
+  }
+  .sb-code-input{
+    min-height:68px;
+    border-radius:14px!important;
+  }
+  .sb-recover-primary{
+    min-height:58px;
+    border-radius:13px!important;
+  }
+}
+</style>
+
 </head>
 
 
