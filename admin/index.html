@@ -269,6 +269,8 @@ body{padding-bottom:88px}
 .chat-compose textarea{min-height:90px}
 .chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 @media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:100%}}
+.chat-attachment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}.chat-attachment-grid.single{grid-template-columns:1fr}.chat-attachment{display:block;width:100%;margin:0;padding:0;border:0;background:transparent;border-radius:10px;overflow:hidden}.chat-attachment img{display:block;width:100%;height:150px;object-fit:cover}.chat-attachment-grid.single img{height:auto;max-height:340px;object-fit:contain;background:#050505}.chat-image-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:18px}.chat-image-lightbox img{max-width:100%;max-height:92vh;object-fit:contain}.chat-image-lightbox button{position:absolute;top:14px;right:14px;width:44px;height:44px;margin:0;padding:0;border-radius:50%;background:#fff;color:#000;font-size:22px}
+
 
 
 /* BOOKING MOBILE CLEANUP */
@@ -1107,6 +1109,17 @@ function escapeHtml(value=""){
   return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
 }
 
+function openChatImage(url){
+  if(!url)return;
+  const box=document.createElement('div');
+  box.className='chat-image-lightbox';
+  box.innerHTML=`<button type="button" aria-label="Close image">×</button><img src="${escapeHtml(url)}" alt="Chat image">`;
+  const close=()=>box.remove();
+  box.querySelector('button').onclick=close;
+  box.onclick=e=>{if(e.target===box)close();};
+  document.body.appendChild(box);
+}
+
 const ENQUIRY_STATUSES = [
   ['new','New'],
   ['awaiting_reply','Awaiting Reply'],
@@ -1331,7 +1344,7 @@ async function loadChats(){
 
   const {data,error}=await supabase
     .from('conversation_messages')
-    .select('id,enquiry_id,sender,message,created_at,read_at')
+    .select('id,enquiry_id,sender,message,created_at,read_at,attachments')
     .order('created_at',{ascending:true});
   if(error){
     if(bookingStatus)bookingStatus.textContent='Could not load chats: '+error.message;
@@ -1339,7 +1352,16 @@ async function loadChats(){
     return;
   }
 
-  cachedConversationMessages=data||[];
+  cachedConversationMessages=await Promise.all((data||[]).map(async m=>{
+    const raw=Array.isArray(m.attachments)?m.attachments:[];
+    const attachments=[];
+    for(const a of raw){
+      if(!a?.path) continue;
+      const {data:signed}=await supabase.storage.from('chat-attachments').createSignedUrl(a.path,3600);
+      attachments.push({...a,url:signed?.signedUrl||''});
+    }
+    return {...m,attachments};
+  }));
   const groups=new Map();
   cachedConversationMessages.forEach(m=>{
     const key=String(m.enquiry_id);
@@ -1379,7 +1401,8 @@ async function loadChats(){
     if(!filtered.length){host.innerHTML=`<div class="empty-state">${q?'No matching conversations.':type==='general'?'No Chat With Us conversations yet.':'No booking conversations yet.'}</div>`;return;}
     host.innerHTML=filtered.map(t=>{
       const r=t.enquiry||{}; const last=t.last||{};
-      const preview=String(last.message||'No messages yet').replace(/\s+/g,' ').slice(0,100);
+      const hasPhotos=Array.isArray(last.attachments)&&last.attachments.length;
+      const preview=String((hasPhotos && (!last.message || last.message==='Photo attachment')) ? `📷 ${last.attachments.length} photo${last.attachments.length===1?'':'s'}` : (last.message||'No messages yet')).replace(/\s+/g,' ').slice(0,100);
       return `<article class="chat-inbox-row" data-open-thread="${escapeHtml(t.id)}" data-thread-type="${type}" tabindex="0">
         <div class="chat-inbox-main"><div class="chat-inbox-name">${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</div>
         <div class="chat-inbox-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')):(escapeHtml(r.email||''))}</div>
@@ -1399,10 +1422,11 @@ async function loadChats(){
     host.innerHTML=`<div class="chat-thread-view">
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
       <div class="chat-head"><div><h3>${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
-      <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
+      <div class="chat-thread">${t.messages.map(m=>{const at=Array.isArray(m.attachments)?m.attachments.filter(a=>a.url):[];const text=(at.length&&m.message==='Photo attachment')?'':(m.message||'');return `<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${text?`<div>${escapeHtml(text)}</div>`:''}${at.length?`<div class="chat-attachment-grid ${at.length===1?'single':''}">${at.map(a=>`<button type="button" class="chat-attachment" data-chat-image="${escapeHtml(a.url)}" aria-label="Open image"><img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.name||'Chat image')}" loading="lazy"></button>`).join('')}</div>`:''}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`;}).join('')}</div>
       <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
+    host.querySelectorAll('[data-chat-image]').forEach(btn=>btn.onclick=()=>openChatImage(btn.dataset.chatImage));
     host.querySelector('[data-thread-send]').onclick=async()=>{
       const btn=host.querySelector('[data-thread-send]'), textarea=host.querySelector('textarea'), st=host.querySelector('.status');
       const reply=textarea.value.trim(); if(!reply){st.textContent='Write a reply first.';return;}
