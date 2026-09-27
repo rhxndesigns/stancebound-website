@@ -2789,14 +2789,31 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       </div>
     </section>
 
-    <section id="bookingThanks" class="page" style="display:none;min-height:75vh;align-items:center;justify-content:center;">
-      <div class="content" style="max-width:760px;text-align:center;padding-top:120px;padding-bottom:120px;">
+    <section id="bookingThanks" class="page">
+      <div class="content" style="max-width:980px;text-align:center;padding-top:110px;padding-bottom:110px;">
         <div class="eyebrow">BOOKING REQUEST RECEIVED</div>
         <h1 style="margin:14px 0 18px;">THANK YOU FOR BOOKING WITH STANCEBOUND</h1>
         <div class="heading-line" style="margin-left:auto;margin-right:auto;"></div>
-        <p style="max-width:620px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. I’ll review the requested date, time and details before confirming the booking by email.</p>
+        <p style="max-width:650px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. I’ll review the requested date, time and details before confirming the booking by email.</p>
         <p style="color:var(--grey);font-size:12px;letter-spacing:.08em;">YOUR REQUEST IS NOT CONFIRMED UNTIL YOU RECEIVE A STANCEBOUND BOOKING CONFIRMATION.</p>
-        <button class="btn" type="button" style="margin-top:28px;" onclick="showPage('home')">BACK TO STANCEBOUND</button>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:42px auto 24px;text-align:left;">
+          <button type="button" onclick="showPage('shop')" style="cursor:pointer;text-align:left;padding:26px;border:1px solid var(--line);background:var(--panel);color:var(--white);font:inherit;">
+            <span class="eyebrow">STANCEBOUND SHOP</span>
+            <strong style="display:block;font-size:22px;margin:10px 0 8px;letter-spacing:-.02em;">CHECK OUT THE SHOP</strong>
+            <span style="display:block;color:var(--grey);font-size:12px;line-height:1.65;">Take a look at the latest STANCEBOUND clothing and drops while your request is being reviewed.</span>
+            <span style="display:block;margin-top:20px;font-size:10px;font-weight:800;letter-spacing:2px;">SHOP STANCEBOUND →</span>
+          </button>
+
+          <button type="button" onclick="showPage('detailing');setTimeout(()=>document.querySelector('.feature-detail')?.scrollIntoView({behavior:'smooth',block:'start'}),250)" style="cursor:pointer;text-align:left;padding:26px;border:1px solid var(--line);background:var(--panel);color:var(--white);font:inherit;">
+            <span class="eyebrow">FEATURED DETAIL</span>
+            <strong style="display:block;font-size:22px;margin:10px 0 8px;letter-spacing:-.02em;">SEE THE WORK</strong>
+            <span style="display:block;color:var(--grey);font-size:12px;line-height:1.65;">Have a look through the featured STANCEBOUND detail and see what goes into the finished result.</span>
+            <span style="display:block;margin-top:20px;font-size:10px;font-weight:800;letter-spacing:2px;">VIEW FEATURED DETAIL →</span>
+          </button>
+        </div>
+
+        <button class="btn" type="button" style="margin-top:12px;" onclick="showPage('home')">BACK TO HOME</button>
       </div>
     </section>
 
@@ -3352,16 +3369,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           pendingEnquiryId=null;
           if(window.turnstile)window.turnstile.reset();
 
-          document.querySelectorAll("section.page").forEach(page=>{
-            page.classList.remove("active");
-            page.style.display="none";
-          });
-          const thanksPage=document.getElementById("bookingThanks");
-          if(thanksPage){
-            thanksPage.style.display="flex";
-            thanksPage.classList.add("active");
-            window.scrollTo({top:0,behavior:"smooth"});
-          }
+          showPage("bookingThanks");
         }catch(error){
           enquiryStatus.classList.remove("success");
           enquiryStatus.classList.add("error");
