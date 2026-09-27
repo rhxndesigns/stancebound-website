@@ -268,9 +268,6 @@ body{padding-bottom:88px}
 .chat-compose{padding:0 15px 15px}
 .chat-compose textarea{min-height:90px}
 .chat-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
-.chat-actions .chat-delete-btn{margin-left:auto;background:transparent;color:#ff9f9f;border:1px solid rgba(255,92,92,.28);letter-spacing:1.4px}
-.chat-actions .chat-delete-btn:hover{background:rgba(255,70,70,.08);border-color:rgba(255,92,92,.48)}
-.chat-actions .chat-delete-btn:disabled{opacity:.45;cursor:wait}
 @media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:100%}}
 
 
@@ -1403,7 +1400,7 @@ async function loadChats(){
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
       <div class="chat-head"><div><h3>${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
       <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
-      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button><button type="button" class="chat-delete-btn" data-thread-delete>Delete Chat</button></div><div class="status"></div></div>
+      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
     host.querySelector('[data-thread-send]').onclick=async()=>{
@@ -1412,23 +1409,6 @@ async function loadChats(){
       btn.disabled=true;st.textContent='Sending...';
       try{const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:t.id,reply}});if(error)throw error;if(!data?.success)throw new Error(data?.error||'Reply failed.');st.textContent='Reply sent ✓';await loadEnquiries();}
       catch(e){st.textContent=e?.message||'Could not send reply.';}finally{btn.disabled=false;}
-    };
-    host.querySelector('[data-thread-delete]').onclick=async()=>{
-      const btn=host.querySelector('[data-thread-delete]');
-      const st=host.querySelector('.chat-compose .status');
-      const customerName=r.name||((r.email||'').split('@')[0])||'this customer';
-      if(!confirm(`Delete the chat with ${customerName}? This permanently removes the conversation and cannot be undone.`))return;
-      btn.disabled=true;st.textContent='Deleting conversation...';
-      try{
-        const {data,error}=await supabase.functions.invoke('delete-conversation',{body:{enquiry_id:t.id}});
-        if(error)throw error;
-        if(!data?.success)throw new Error(data?.error||'Delete failed.');
-        st.textContent='Conversation deleted ✓';
-        await loadChats();
-      }catch(e){
-        st.textContent=e?.message||'Could not delete conversation.';
-        btn.disabled=false;
-      }
     };
     if(t.unread){supabase.from('conversation_messages').update({read_at:new Date().toISOString()}).eq('enquiry_id',t.id).eq('sender','customer').is('read_at',null).then(()=>{});}
   };
@@ -2003,23 +1983,16 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 
-const STANCEBOUND_ADMIN_EMAIL = 'ryan@stancebound.com';
-
-function isAuthorizedAdminSession(session) {
-  return !!session?.user?.email &&
-    String(session.user.email).trim().toLowerCase() === STANCEBOUND_ADMIN_EMAIL;
-}
-
 function applyAdminSession(session) {
-  const isAdmin = isAuthorizedAdminSession(session);
+  const loggedIn = !!session;
 
-  login.classList.toggle('hidden', isAdmin);
-  editor.classList.toggle('hidden', !isAdmin);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !isAdmin);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !isAdmin);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !isAdmin);
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
 
-  if (isAdmin) {
+  if (loggedIn) {
     const adminToday = document.querySelector('#adminToday');
     if (adminToday) {
       adminToday.textContent = new Date().toLocaleDateString('en-GB', {
@@ -2027,8 +2000,6 @@ function applyAdminSession(session) {
       });
     }
   }
-
-  return isAdmin;
 }
 
 function getStoredAdminSession() {
@@ -2040,8 +2011,9 @@ function getStoredAdminSession() {
 
     const session = JSON.parse(localStorage.getItem(key) || 'null');
     if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
+
     if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
-    return isAuthorizedAdminSession(session) ? session : null;
+    return session;
   } catch {
     return null;
   }
@@ -2049,23 +2021,36 @@ function getStoredAdminSession() {
 
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
-  const status = document.querySelector('#loginStatus');
 
   if (error) {
+    const status = document.querySelector('#loginStatus');
     if (status) status.textContent = 'Could not check login: ' + error.message;
-    applyAdminSession(null);
-    return;
   }
 
-  if (!isAuthorizedAdminSession(session)) {
-    applyAdminSession(null);
-    if (session && status) status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
-    return;
-  }
+  const loggedIn = !!session;
 
-  applyAdminSession(session);
-  await loadAdminData();
+  login.classList.toggle('hidden', loggedIn);
+  editor.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+
+  if (loggedIn) {
+    const adminToday = document.querySelector('#adminToday');
+    if (adminToday) {
+      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric'
+      });
+    }
+    await Promise.allSettled([
+      loadContent(),
+      loadPhotos(),
+      loadEnquiries(),
+      loadOrders()
+    ]);
+  }
 }
+
 
 
 async function loadAdminData() {
@@ -2095,12 +2080,6 @@ async function adminLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
-
-    if (!isAuthorizedAdminSession(data.session)) {
-      await supabase.auth.signOut();
-      applyAdminSession(null);
-      throw new Error('This account is not authorised for STANCEBOUND Admin.');
-    }
 
     status.textContent = '';
     applyAdminSession(data.session);
@@ -2345,16 +2324,25 @@ async function loadPhotos() {
   }
 
   for (const row of data) {
-    const { data: publicData } = supabase.storage
+    // Admin previews use an authenticated signed URL rather than assuming
+    // the storage bucket is publicly readable.
+    const { data: signedData, error: signedError } = await supabase.storage
       .from('website-images')
-      .getPublicUrl(row.storage_path);
+      .createSignedUrl(row.storage_path, 3600);
 
     const card = document.createElement('div');
     card.className = 'photo-card';
 
     const img = document.createElement('img');
-    img.src = publicData.publicUrl;
-    img.alt = row.caption || 'STANCEBOUND website photo';
+    if (signedError || !signedData?.signedUrl) {
+      img.alt = 'Photo preview unavailable';
+      img.style.minHeight = '120px';
+      img.style.background = '#111';
+      photoStatus.textContent = signedError?.message || 'One or more photo previews could not be loaded.';
+    } else {
+      img.src = signedData.signedUrl;
+      img.alt = row.caption || 'STANCEBOUND website photo';
+    }
 
     const meta = document.createElement('div');
     meta.className = 'photo-meta';
@@ -2557,9 +2545,9 @@ document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=
 });
 
 supabase.auth.onAuthStateChange((event, session) => {
-  const isAdmin = applyAdminSession(session);
+  applyAdminSession(session);
 
-  if (isAdmin && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
   }
 });
@@ -2572,8 +2560,9 @@ if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en
 // flashing/sticking while Supabase restores its client state.
 const storedAdminSession = getStoredAdminSession();
 applyAdminSession(storedAdminSession);
-// Always re-check the real Supabase session before exposing/loading admin data.
-setTimeout(showCorrectScreen, 0);
+if (storedAdminSession) {
+  setTimeout(loadAdminData, 250);
+}
 
 </script>
 
