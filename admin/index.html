@@ -536,7 +536,7 @@ Log In
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
-    <button type="button" class="admin-tab" data-admin-target="enquiries">Chats <span id="enquiryBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="enquiries">Chat Enquiries <span id="enquiryBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="bookings">Bookings <span id="bookingBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="chats">Booking Chats <span id="chatBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
@@ -568,7 +568,7 @@ Log In
       </div>
       <div class="dashboard-grid">
         <div class="dash-card" data-open-admin="enquiries">
-          <div class="dash-icon">✉</div><h3>Chats</h3><p>Messages from customers who used Chat With Us.</p>
+          <div class="dash-icon">✉</div><h3>Chat Enquiries</h3><p>Customers who contacted STANCEBOUND through Chat With Us.</p>
         </div>
         <div class="dash-card" data-open-admin="bookings">
           <div class="dash-icon">▦</div><h3>Bookings</h3><p>Review website booking requests and confirm customers.</p>
@@ -622,7 +622,7 @@ Log In
   <div class="admin-page" data-admin-page="enquiries">
     <div class="panel">
       <div class="admin-kicker">Customer Conversations</div>
-      <h2>Chats</h2>
+      <h2>Chat Enquiries</h2>
       <p class="help">Customers who started a conversation through Chat With Us. These are kept separate from bookings.</p>
       <input id="generalChatSearch" class="chat-search" type="search" placeholder="Search name, email or messages..." autocomplete="off">
       <div id="generalChatStatus" class="status"></div>
@@ -834,13 +834,13 @@ Save Changes
 
   <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
-    <button type="button" data-mobile-target="enquiries"><span>✉</span>Enquiries</button>
+    <button type="button" data-mobile-target="enquiries"><span>✉</span>Chats</button>
     <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions">+</button>
     <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
   <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid"><button type="button" data-sheet-target="diagnostics">Diagnostics</button>
-    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="chats">Chats<small>Private customer conversations</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="chats">Booking Chats<small>Conversations attached to bookings</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
@@ -1136,8 +1136,7 @@ function moneyValue(v){
 async function loadEnquiries(){
   const list=document.querySelector('#enquiryList');
   const status=document.querySelector('#enquiryAdminStatus');
-  if(!list)return;
-  status.textContent='Loading enquiries...';
+  if(status)status.textContent='Loading customer data...';
 
   const {data,error}=await supabase
     .from('enquiries')
@@ -1146,7 +1145,7 @@ async function loadEnquiries(){
     .order('created_at',{ascending:false});
 
   if(error){
-    status.textContent=error.message;
+    if(status)status.textContent=error.message;
     return;
   }
 
@@ -1161,7 +1160,15 @@ async function loadEnquiries(){
   renderPending();
   renderUpcoming();
   renderCompleted();
-  status.textContent='';
+  if(status)status.textContent='';
+
+  // The old Enquiries card list has intentionally been removed. Chat Enquiries
+  // now uses the dedicated inbox above, while cachedEnquiries still supplies
+  // customer names/details to both chat inboxes and the booking system.
+  if(!list){
+    renderSchedule();
+    return;
+  }
 
   if(!rows.length){
     list.innerHTML='<div class="empty-state">No enquiries in this view.</div>';
@@ -1374,7 +1381,7 @@ async function loadChats(){
       const r=t.enquiry||{}; const last=t.last||{};
       const preview=String(last.message||'No messages yet').replace(/\s+/g,' ').slice(0,100);
       return `<article class="chat-inbox-row" data-open-thread="${escapeHtml(t.id)}" data-thread-type="${type}" tabindex="0">
-        <div class="chat-inbox-main"><div class="chat-inbox-name">${escapeHtml(r.name||'Customer')}</div>
+        <div class="chat-inbox-main"><div class="chat-inbox-name">${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</div>
         <div class="chat-inbox-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')):(escapeHtml(r.email||''))}</div>
         <div class="chat-inbox-preview">${last.sender==='stancebound'?'You: ':''}${escapeHtml(preview)}</div></div>
         <div class="chat-inbox-side"><span>${escapeHtml(last.created_at?chatDate(last.created_at):'')}</span>${t.unread?`<b class="chat-unread">${t.unread}</b>`:''}</div>
@@ -1391,9 +1398,9 @@ async function loadChats(){
     const r=t.enquiry||{};
     host.innerHTML=`<div class="chat-thread-view">
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
-      <div class="chat-head"><div><h3>${escapeHtml(r.name||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
+      <div class="chat-head"><div><h3>${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
       <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
-      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
+      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
     host.querySelector('[data-thread-send]').onclick=async()=>{
