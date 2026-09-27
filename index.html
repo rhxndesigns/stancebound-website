@@ -2188,12 +2188,25 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 })();
 </script>
+
+<style id="stancebound-dark-chat-home-upgrade">
+/* STANCEBOUND is intentionally dark-only. */
+.theme-toggle,.theme-wipe,.radial-theme{display:none!important}
+.hero-socials{display:flex;align-items:center;justify-content:center;gap:13px;margin:15px 0 2px;font-size:9px;font-weight:800;letter-spacing:1.7px;color:#d5d5d5}
+.hero-socials a{opacity:.78;transition:opacity .2s ease,transform .2s ease}.hero-socials a:hover{opacity:1;transform:translateY(-1px)}
+.hero-socials a span{color:#777;font-weight:600}.hero-socials i{width:3px;height:3px;border-radius:50%;background:#555}
+.home-shop-teaser{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);border:1px solid var(--line);background:rgba(8,8,8,.82);overflow:hidden;margin-top:22px}
+.home-shop-image{min-height:360px;background:#0c0c0c;display:grid;place-items:center;padding:18px}.home-shop-image img{width:100%;height:100%;max-height:430px;object-fit:contain}
+.home-shop-copy{padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}.home-shop-copy h2{font-size:clamp(30px,5vw,52px);line-height:.98;margin:10px 0 16px}.home-shop-copy p{color:var(--grey);line-height:1.7;max-width:520px}.home-shop-meta{display:flex;align-items:baseline;gap:14px;margin:22px 0}.home-shop-meta strong{font-size:22px}.home-shop-meta span{font-size:9px;letter-spacing:1.8px;color:#777}
+.sb-chat-start{max-width:760px;margin:0 auto;border:1px solid rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(18,18,18,.96),rgba(6,6,6,.96));padding:clamp(24px,5vw,46px);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.sb-chat-start-head{margin-bottom:28px}.sb-chat-lock{display:inline-flex;align-items:center;gap:8px;color:#63d997;font-size:9px;font-weight:900;letter-spacing:2px;margin-bottom:16px}.sb-chat-start h2{font-size:clamp(30px,6vw,48px);line-height:1;margin-bottom:14px}.sb-chat-start p{color:#999;line-height:1.7}.sb-chat-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}.sb-chat-fields label span{display:block;font-size:9px;font-weight:800;letter-spacing:1.7px;color:#888;margin-bottom:8px}.sb-chat-fields input,.sb-chat-code-row input{width:100%;padding:15px 14px;border:1px solid #353535;background:#0b0b0b;color:#fff;font:inherit;outline:none}.sb-chat-fields input:focus,.sb-chat-code-row input:focus{border-color:#aaa}.sb-chat-status{min-height:20px;margin-top:14px;font-size:11px;letter-spacing:.5px;color:#999}.sb-chat-status.error{color:#ff6767;font-weight:800}.sb-chat-status.success{color:#4ddd8d;font-weight:800}.sb-chat-verify{margin-top:26px;padding:24px;border:1px solid #2c2c2c;background:#0a0a0a}.sb-chat-verify h3{font-size:24px;margin:8px 0}.sb-chat-code-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:18px}.sb-chat-code-row input{font-size:22px;letter-spacing:8px;text-align:center}.sb-chat-security{border-top:1px solid #252525;margin-top:30px;padding-top:22px}.sb-chat-security strong{font-size:9px;letter-spacing:2px;color:#aaa}.sb-chat-security p{font-size:11px;margin-top:10px;color:#707070}.sb-chat-socials{max-width:760px;margin:18px auto 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:9px;letter-spacing:1.5px;color:#666}.sb-chat-socials a{color:#aaa}.sb-chat-socials a:hover{color:#fff}
+@media(max-width:720px){.hero-socials{gap:9px;font-size:8px;letter-spacing:1.2px;flex-wrap:wrap}.hero-socials a span{display:none}.home-shop-teaser{grid-template-columns:1fr}.home-shop-image{min-height:260px}.home-shop-copy{padding:28px 22px}.sb-chat-fields{grid-template-columns:1fr}.sb-chat-code-row{grid-template-columns:1fr}.sb-chat-code-row .btn{width:100%}.sb-chat-socials{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 
 
 
 <body class="intro-running">
-  <div class="theme-wipe" id="themeWipe" aria-hidden="true"></div>
   <div id="site-intro" class="site-intro" aria-hidden="true">
     <div class="intro-inner">
       <img src="images/stanceboundlogo.png?v=30" alt="STANCEBOUND Detailing" class="intro-logo">
@@ -2289,11 +2302,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         data-page="contact"
         onclick="showPage('contact')"
       >
-        Contact
-      </button>
-
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
-        <span class="theme-icon">◐</span><span class="theme-label">LIGHT</span>
+        Chat
       </button>
 
     </nav>
@@ -2308,11 +2317,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       <button class="radial-item" style="--i:3;--a:0deg" data-page="about">About</button>
       <button class="radial-item" style="--i:4;--a:25deg" data-page="shop">Shop</button>
       <button class="radial-item" style="--i:5;--a:50deg" data-page="booking">Booking</button>
-      <button class="radial-item" style="--i:6;--a:75deg" data-page="contact">Contact</button>
+      <button class="radial-item" style="--i:6;--a:75deg" data-page="contact">Chat</button>
     </div>
     <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false">+</button>
   </div>
-  <button class="radial-theme" id="radialTheme" type="button" aria-label="Switch colour theme">◐</button>
 
 
 
@@ -2333,6 +2341,11 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           <img class="hero-logo" src="images/logo(1).png?v=30" alt="STANCEBOUND Detailing">
           <div class="tagline" id="home-tagline">Cleaner · Higher · Further</div>
           <div class="hero-subtitle" id="home-subtitle">Automotive Detailing &amp; Photography</div>
+          <div class="hero-socials" aria-label="STANCEBOUND social media">
+            <a href="https://www.instagram.com/stancebound/" target="_blank" rel="noopener noreferrer">INSTAGRAM <span>@STANCEBOUND</span></a>
+            <i></i>
+            <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK <span>@STANCEBOUND</span></a>
+          </div>
           <p class="hero-description" id="home-description">Automotive detailing and photography built around modified cars, clean presentation and attention to the details that actually matter.</p>
           <div class="hero-buttons">
             <button class="btn" onclick="showPage('booking')">Request a Booking</button>
@@ -2382,6 +2395,19 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           </section>
 
         </div>
+
+        <section class="home-shop-teaser home-reveal">
+          <div class="home-shop-image">
+            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001" loading="lazy">
+          </div>
+          <div class="home-shop-copy">
+            <div class="home-kicker">STANCEBOUND STORE · DROP 001</div>
+            <h2>Wear the brand.</h2>
+            <p>The STANCEBOUND Signature Hoodie is live. Heavyweight black, understated front mark and full STANCEBOUND back graphic.</p>
+            <div class="home-shop-meta"><strong>£44.99</strong><span>FREE UK DELIVERY</span></div>
+            <button class="btn" type="button" onclick="showPage('shop')">SHOP STANCEBOUND</button>
+          </div>
+        </section>
 
         <section class="home-final-compact home-reveal">
           <div><div class="home-kicker">Detailing · Photography · Both</div><h2>Your car is next.</h2><p>Tell STANCEBOUND about your car and what you're looking for.</p></div>
@@ -2530,7 +2556,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             class="btn"
             onclick="showPage('contact')"
           >
-            Contact STANCEBOUND
+            Chat With STANCEBOUND
           </button>
 
         </div>
@@ -2700,7 +2726,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             <p>Cars have been part of my life for as long as I can remember. I grew up loving heavily modified car culture, from wild body kits and Corsa Lambo doors to the cars my dad was passionate about, including several Subaru Imprezas and a classic Ford RS. After losing my dad, that connection with cars became even more meaningful to me.</p>
             <p>Detailing became another creative outlet. I enjoy slowing down, focusing on the tiny details and watching a car gradually come together. I'm BICSc qualified in cleaning, and I'm now developing those skills further within automotive detailing while combining them with my background in photography.</p>
             <p>STANCEBOUND is still in its early days, and that's part of what excites me. As it grows, I'll be developing my skills in areas such as headlight restoration, scratch removal, machine polishing and paint correction. The aim is simple: keep learning, improve with every car, and build something I'm genuinely proud to put my name behind.</p>
-            <button class="btn" onclick="showPage('contact')">Contact STANCEBOUND</button>
+            <button class="btn" onclick="showPage('contact')">Chat With STANCEBOUND</button>
           </div>
         </div>
       </div>
@@ -2817,208 +2843,60 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       </div>
     </section>
 
-    <section
-      id="contact"
-      class="page"
-    >
-
+    <section id="contact" class="page">
       <div class="content">
-
-
         <div class="page-heading">
-
-          <div class="eyebrow">
-            STANCEBOUND
-          </div>
-
-
-          <h1>
-            Contact
-          </h1>
-
-
+          <div class="eyebrow">PRIVATE CUSTOMER CHAT</div>
+          <h1>Chat With Us</h1>
           <div class="heading-line"></div>
-
-
-          <p>
-
-            Detailing, automotive photography
-            and collaboration enquiries across
-            South Wales.
-
-          </p>
-
+          <p>Got a question without making a booking? Start a secure private conversation with STANCEBOUND.</p>
         </div>
 
-
-
-
-        <div class="enquiry-shell">
-          <div class="enquiry-head">
-            <div class="eyebrow">REQUEST A QUOTE</div>
-            <h2>Tell Me About Your Car</h2>
-            <p>Send a genuine enquiry below. Your email is verified before the message reaches STANCEBOUND.</p>
+        <div class="sb-chat-start">
+          <div class="sb-chat-start-head">
+            <span class="sb-chat-lock">● SECURE CHAT</span>
+            <h2>Start a conversation.</h2>
+            <p>Enter your name and email. We'll send you a 6-digit verification code, then your private chat opens straight on the website.</p>
           </div>
 
-          <form id="enquiryForm" novalidate>
-            <div class="enquiry-grid">
-              <div class="enquiry-field">
-                <label for="enquiryName">Full name</label>
-                <input id="enquiryName" name="name" type="text" maxlength="80" autocomplete="name" required>
-              </div>
-              <div class="enquiry-field">
-                <label for="enquiryEmail">Email address</label>
-                <input id="enquiryEmail" name="email" type="email" maxlength="160" autocomplete="email" required>
-              </div>
-              <div class="enquiry-field">
-                <label for="enquiryPhone">Phone number</label>
-                <input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional">
-              </div>
-              <div class="enquiry-field">
-                <label for="enquiryService">Service</label>
-                <select id="enquiryService" name="service" required>
-                  <option value="">Choose a service</option>
-                  <option>Detailing</option>
-                  <option>Automotive Photography</option>
-                  <option>Detailing + Photography</option>
-                  <option>Collaboration / Other</option>
-                </select>
-              </div>
-              <div class="enquiry-field full">
-                <label for="enquiryVehicle">Vehicle</label>
-                <input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required>
-              </div>
-              <div class="enquiry-field full">
-                <label for="enquiryMessage">What do you need?</label>
-                <textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea>
-              </div>
-              <div class="hp-field" aria-hidden="true">
-                <label for="enquiryWebsite">Website</label>
-                <input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
-              </div>
-              <div class="enquiry-field full">
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div>
-              </div>
+          <form id="customerChatStartForm" novalidate>
+            <div class="sb-chat-fields">
+              <label>
+                <span>YOUR NAME</span>
+                <input id="customerChatName" type="text" maxlength="100" autocomplete="name" placeholder="Name" required>
+              </label>
+              <label>
+                <span>EMAIL ADDRESS</span>
+                <input id="customerChatEmail" type="email" maxlength="160" autocomplete="email" placeholder="you@example.com" required>
+              </label>
             </div>
-
-            <div class="enquiry-actions">
-              <button class="btn" id="sendEnquiryBtn" type="submit">Send Enquiry</button>
-              <div id="enquiryStatus" class="enquiry-status" aria-live="polite"></div>
-              <div class="enquiry-note">A verification code will be sent to your email before the enquiry is delivered.</div>
-            </div>
-
-            <div id="verifyBox" class="verify-box">
-              <div class="enquiry-head">
-                <div class="eyebrow">ONE LAST CHECK</div>
-                <h2>Verify Your Email</h2>
-                <p>Enter the 6-digit code we just sent you.</p>
-              </div>
-              <div class="verify-row">
-                <input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
-                <button class="btn" id="verifyEnquiryBtn" type="button">Verify</button>
-              </div>
-            </div>
+            <button class="btn" id="customerChatCodeBtn" type="submit">SEND VERIFICATION CODE</button>
+            <div id="customerChatStatus" class="sb-chat-status" aria-live="polite"></div>
           </form>
-        </div>
 
-
-        <div class="contact-card">
-
-
-          <img
-            class="contact-logo"
-            src="images/stanceboundlogo.png?v=3"
-            alt="STANCEBOUND"
-          >
-
-
-          <h2>
-            Get In Touch
-          </h2>
-
-
-          <p>
-
-            For detailing bookings,
-            photography enquiries or
-            collaborations, message
-            STANCEBOUND directly through
-            social media.
-
-          </p>
-
-
-
-
-          <div class="social-links">
-
-            <a class="social-link" id="businessEmailLink" href="mailto:enquiries@stancebound.com">
-              <span class="social-name">Email</span>
-              <span class="social-handle" id="businessEmailText">enquiries@stancebound.com</span>
-            </a>
-
-
-
-            <a
-              class="social-link"
-              href="https://www.instagram.com/stancebound/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-
-              <span class="social-name">
-                Instagram
-              </span>
-
-              <span class="social-handle">
-                @stancebound
-              </span>
-
-            </a>
-
-
-
-            <a
-              class="social-link"
-              href="https://www.tiktok.com/@stancebound"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-
-              <span class="social-name">
-                TikTok
-              </span>
-
-              <span class="social-handle">
-                @stancebound
-              </span>
-
-            </a>
-
-
+          <div id="customerChatVerify" class="sb-chat-verify" hidden>
+            <div class="eyebrow">CHECK YOUR EMAIL</div>
+            <h3>Verify it's you.</h3>
+            <p>Enter the 6-digit code sent to your email.</p>
+            <div class="sb-chat-code-row">
+              <input id="customerChatCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
+              <button class="btn" id="customerChatVerifyBtn" type="button">OPEN PRIVATE CHAT</button>
+            </div>
           </div>
 
-
-
-          <div class="location">
-
-            South Wales
-
-            <br>
-
-            Carmarthenshire · Swansea
-            & Surrounding Areas
-
+          <div class="sb-chat-security">
+            <strong>SECURITY &amp; PRIVACY</strong>
+            <p>We verify your email before opening the conversation. You may be asked to verify again on a new device, browser, or after your secure session expires. This helps keep your messages and booking details private.</p>
           </div>
-
-
         </div>
 
-
+        <div class="sb-chat-socials">
+          <span>OR FIND STANCEBOUND</span>
+          <a href="https://www.instagram.com/stancebound/" target="_blank" rel="noopener noreferrer">INSTAGRAM · @STANCEBOUND</a>
+          <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK · @STANCEBOUND</a>
+        </div>
       </div>
-
     </section>
-
 
     <!-- ========================================
          SHOP
@@ -3379,28 +3257,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         }
       });
     }
-
-
-    /* ========================================
-       LIGHT / DARK THEME
-       ======================================== */
-    const themeToggle=document.getElementById("themeToggle");
-    const themeWipe=document.getElementById("themeWipe");
-    function applyTheme(theme){
-      const light=theme==="light";
-      document.body.classList.toggle("light-theme",light);
-      if(themeToggle){themeToggle.querySelector(".theme-label").textContent=light?"DARK":"LIGHT";themeToggle.setAttribute("aria-label",light?"Switch to dark mode":"Switch to light mode");}
-      document.querySelectorAll('.cf-turnstile').forEach(el=>el.dataset.theme=light?'light':'dark');
-    }
-    const savedTheme=localStorage.getItem("stancebound-theme")||"dark";
-    applyTheme(savedTheme);
-    themeToggle?.addEventListener("click",()=>{
-      const next=document.body.classList.contains("light-theme")?"dark":"light";
-      themeWipe?.classList.toggle("to-dark",next==="dark");
-      themeWipe?.classList.remove("run"); void themeWipe?.offsetWidth; themeWipe?.classList.add("run");
-      setTimeout(()=>{applyTheme(next);localStorage.setItem("stancebound-theme",next)},340);
-      setTimeout(()=>themeWipe?.classList.remove("run"),780);
-    });
 
 
     /* ========================================
@@ -3813,7 +3669,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   toggle?.addEventListener('click',()=>{const open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop?.classList.toggle('show',open);toggle.setAttribute('aria-expanded',String(open))});
   backdrop?.addEventListener('click',closeMenu);
   document.querySelectorAll('.radial-item').forEach(btn=>btn.addEventListener('click',()=>{showPage(btn.dataset.page);closeMenu()}));
-  document.getElementById('radialTheme')?.addEventListener('click',()=>document.getElementById('themeToggle')?.click());
   const oldShow=window.showPage; if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
 
   const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
@@ -4252,6 +4107,53 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 
   if(session) load();
   else showVerify();
+})();
+</script>
+<script id="stancebound-dark-only">
+(() => {
+  localStorage.removeItem('stancebound-theme');
+  document.documentElement.removeAttribute('data-theme');
+  document.body?.classList.remove('light-theme');
+})();
+</script>
+
+<script id="stancebound-start-customer-chat">
+(() => {
+  const form=document.getElementById('customerChatStartForm');
+  const nameEl=document.getElementById('customerChatName');
+  const emailEl=document.getElementById('customerChatEmail');
+  const sendBtn=document.getElementById('customerChatCodeBtn');
+  const verifyWrap=document.getElementById('customerChatVerify');
+  const codeEl=document.getElementById('customerChatCode');
+  const verifyBtn=document.getElementById('customerChatVerifyBtn');
+  const status=document.getElementById('customerChatStatus');
+  if(!form||!window.stanceboundSupabase)return;
+  let conversationToken='';
+  const setStatus=(message,type='')=>{status.textContent=message||'';status.className='sb-chat-status'+(type?' '+type:'')};
+  form.addEventListener('submit',async e=>{
+    e.preventDefault(); if(!form.reportValidity())return;
+    sendBtn.disabled=true; setStatus('Sending verification code...');
+    try{
+      const {data,error}=await window.stanceboundSupabase.functions.invoke('start-customer-chat',{body:{action:'request_code',name:nameEl.value.trim(),email:emailEl.value.trim()}});
+      if(error)throw error; if(!data?.success||!data?.conversation_token)throw new Error(data?.error||'Could not start private chat.');
+      conversationToken=data.conversation_token; verifyWrap.hidden=false; setStatus('CODE SENT · CHECK YOUR EMAIL','success'); codeEl.focus();
+    }catch(err){setStatus(err?.message||'Could not send verification code.','error')}finally{sendBtn.disabled=false}
+  });
+  verifyBtn?.addEventListener('click',async()=>{
+    const code=codeEl.value.replace(/\D/g,'').slice(0,6);
+    if(!/^\d{6}$/.test(code)){setStatus('INVALID CODE','error');return}
+    if(!conversationToken){setStatus('Request a verification code first.','error');return}
+    verifyBtn.disabled=true; setStatus('Verifying...');
+    try{
+      const {data,error}=await window.stanceboundSupabase.functions.invoke('start-customer-chat',{body:{action:'verify_code',email:emailEl.value.trim(),conversation_token:conversationToken,code}});
+      if(error)throw error; if(!data?.success||!data?.session)throw new Error(data?.error||'INVALID CODE');
+      const token=data.conversation_token||conversationToken;
+      localStorage.setItem('stancebound-conversation-session:'+token,data.session);
+      setStatus('VERIFIED · OPENING PRIVATE CHAT','success');
+      location.href='/?conversation='+encodeURIComponent(token);
+    }catch(err){const msg=String(err?.message||'INVALID CODE');setStatus(/code|invalid/i.test(msg)?'INVALID CODE':msg,'error')}finally{verifyBtn.disabled=false}
+  });
+  codeEl?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();verifyBtn?.click()}});
 })();
 </script>
 </body>
