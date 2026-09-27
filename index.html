@@ -4546,7 +4546,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   const later=document.getElementById('sbPasskeyLater');
   const status=document.getElementById('sbPasskeyStatus');
   const sessionKey='stancebound-conversation-session:'+token;
-  const setupKey='stancebound-passkey-setup:'+token;
+  const setupKey='stancebound-passkey-onboarding-v2:'+token;
   const dismissedKey='stancebound-passkey-dismissed:'+token;
   const supported=!!(window.PublicKeyCredential&&navigator.credentials);
   if(!modal||!enable||!later)return;
