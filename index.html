@@ -3850,6 +3850,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 50% -10%,#fff 0,#f1f1ee 45%,#e8e8e4 100%)!important;color:#111!important}html[data-theme="light"] .conv-hero,html[data-theme="light"] #convForm,html[data-theme="light"] .conv-job{background:rgba(255,255,255,.78)!important;border-color:#d1d1cd!important}html[data-theme="light"] .conv-verify{background:#fff;border-color:#d0d0cc}html[data-theme="light"] .conv-secure-pill{border-color:#ccc;background:rgba(255,255,255,.7);color:#555}html[data-theme="light"] .conv-back{color:#555!important}
 @media(max-width:600px){.conv-topbar{align-items:flex-start;margin-bottom:24px}.conv-secure-pill{font-size:8px;padding:7px 9px}.conv-hero{padding:22px 18px;border-radius:15px}.conv-verify{padding:18px 14px}.conv-verify-row{flex-direction:column}.conv-verify-row button{width:100%}.conv-msg{max-width:90%!important}#convForm{padding:16px!important}.conv-actions{align-items:flex-end}.conv-actions button{padding:13px 15px}.conv-logo{width:min(205px,52vw)!important}}
 </style>
+<style id="stancebound-passkey-ui">
+.conv-passkey-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#666;font-size:10px;font-weight:800;letter-spacing:.16em}.conv-passkey-divider:before,.conv-passkey-divider:after{content:"";height:1px;background:#292a2d;flex:1}.conv-passkey-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border:1px solid #3b3d41;border-radius:8px;background:#f2f2f2;color:#090909;font:inherit;font-size:11px;font-weight:900;letter-spacing:.1em;cursor:pointer}.conv-passkey-btn:disabled{opacity:.5;cursor:wait}.conv-passkey-icon{font-size:17px;line-height:1}.conv-passkey-fallback{margin:12px 0 0;color:#777;font-size:11px;line-height:1.6;text-align:center}.conv-passkey-setup{margin:18px 0 24px;padding:18px;border:1px solid #292a2d;border-radius:10px;background:#101113}.conv-passkey-setup strong{display:block;margin-bottom:7px;font-size:11px;letter-spacing:.13em}.conv-passkey-setup p{margin:0 0 14px;color:#929292;font-size:12px;line-height:1.65}.conv-passkey-status{margin-top:10px;color:#929292;font-size:11px;line-height:1.5}.conv-passkey-status.success{color:#b9ffc8}.conv-passkey-status.error{color:#ff9f9f}
+</style>
+
 <section id="conversationPage" hidden>
   <div class="conv-shell">
     <div class="conv-topbar">
@@ -3866,8 +3870,13 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       <p id="convIntro">Checking this device…</p>
 
     <div id="convVerify" class="conv-verify" hidden>
-      <h2>VERIFY THIS DEVICE</h2>
-      <p id="convVerifyText">For your privacy, we'll send a 6-digit code to the verified email address connected to this conversation.</p>
+      <h2>UNLOCK PRIVATE CHAT</h2>
+      <p id="convVerifyText">Use your passkey for the fastest secure sign-in, or verify by email.</p>
+      <div id="convPasskeyLoginWrap">
+        <button type="button" id="convPasskeyLogin" class="conv-passkey-btn"><span class="conv-passkey-icon">🔐</span> UNLOCK WITH PASSKEY</button>
+        <div id="convPasskeyLoginStatus" class="conv-passkey-status"></div>
+        <div class="conv-passkey-divider">OR USE EMAIL</div>
+      </div>
       <button type="button" id="convRequestCode">SEND VERIFICATION CODE</button>
       <div id="convCodeWrap" hidden>
         <div class="conv-verify-row">
@@ -3876,7 +3885,15 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
         </div>
       </div>
       <div id="convVerifyStatus" class="conv-live"></div>
+      <p class="conv-passkey-fallback">Passkeys use your device security, such as fingerprint, face or screen lock. STANCEBOUND never receives your biometric data.</p>
     </div>
+    </div>
+
+    <div id="convPasskeySetup" class="conv-passkey-setup" hidden>
+      <strong>FASTER SIGN-IN ON THIS DEVICE</strong>
+      <p>Set up a passkey so you can unlock this private chat with your device security next time instead of waiting for an email code.</p>
+      <button type="button" id="convPasskeySetupBtn" class="conv-passkey-btn"><span class="conv-passkey-icon">🔐</span> SET UP PASSKEY</button>
+      <div id="convPasskeySetupStatus" class="conv-passkey-status"></div>
     </div>
 
     <div id="convJob"></div>
@@ -3908,241 +3925,131 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   window.__STANCEBOUND_CONVERSATION_ROUTE__=true;
 
   const page=document.getElementById('conversationPage');
-  [...document.body.children].forEach(x=>{
-    if(x!==page && x.tagName!=='SCRIPT') x.style.display='none';
-  });
+  [...document.body.children].forEach(x=>{if(x!==page && x.tagName!=='SCRIPT' && x.tagName!=='STYLE')x.style.display='none'});
   page.hidden=false;
 
   const endpoint='https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/customer-conversation';
   const sessionKey='stancebound-conversation-session:'+token;
+  const passkeySetupKey='stancebound-passkey-setup:'+token;
   let session=localStorage.getItem(sessionKey)||'';
-  let refreshTimer=null;
-  let loading=false;
-  let lastMessageSignature='';
-  let selectedAttachments=[];
+  let refreshTimer=null,loading=false,lastMessageSignature='',selectedAttachments=[];
 
   const $=id=>document.getElementById(id);
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const niceDate=v=>{if(!v)return'';const d=new Date(v+'T12:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})};
   const niceTime=v=>{try{return new Date(v).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}catch{return v||''}};
+  const passkeysSupported=!!(window.PublicKeyCredential&&navigator.credentials);
 
-  function showVerify(message='For your privacy, verify this device before opening the conversation.'){
-    $('convIntro').textContent='This conversation is protected with email verification.';
-    $('convVerify').hidden=false;
-    $('convVerifyText').textContent=message;
-    $('convJob').innerHTML='';
-    $('convMessages').innerHTML='';
-    $('convForm').hidden=true;
+  function b64urlToBytes(value){
+    const base64=String(value).replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(String(value).length/4)*4,'=');
+    const binary=atob(base64),bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    return bytes;
+  }
+  function bytesToB64url(value){
+    const bytes=new Uint8Array(value);let binary='';
+    for(const b of bytes)binary+=String.fromCharCode(b);
+    return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function registrationOptions(options){
+    return {...options,challenge:b64urlToBytes(options.challenge),user:{...options.user,id:b64urlToBytes(options.user.id)},excludeCredentials:(options.excludeCredentials||[]).map(c=>({...c,id:b64urlToBytes(c.id)}))};
+  }
+  function authenticationOptions(options){
+    return {...options,challenge:b64urlToBytes(options.challenge),allowCredentials:(options.allowCredentials||[]).map(c=>({...c,id:b64urlToBytes(c.id)}))};
+  }
+  function registrationCredential(cred){
+    return {id:cred.id,rawId:bytesToB64url(cred.rawId),type:cred.type,authenticatorAttachment:cred.authenticatorAttachment||undefined,response:{clientDataJSON:bytesToB64url(cred.response.clientDataJSON),attestationObject:bytesToB64url(cred.response.attestationObject),transports:typeof cred.response.getTransports==='function'?cred.response.getTransports():[]},clientExtensionResults:cred.getClientExtensionResults()};
+  }
+  function authenticationCredential(cred){
+    return {id:cred.id,rawId:bytesToB64url(cred.rawId),type:cred.type,authenticatorAttachment:cred.authenticatorAttachment||undefined,response:{clientDataJSON:bytesToB64url(cred.response.clientDataJSON),authenticatorData:bytesToB64url(cred.response.authenticatorData),signature:bytesToB64url(cred.response.signature),userHandle:cred.response.userHandle?bytesToB64url(cred.response.userHandle):null},clientExtensionResults:cred.getClientExtensionResults()};
+  }
+  async function api(body){
+    const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){const e=new Error(d.error||'Something went wrong.');e.status=r.status;e.data=d;throw e}
+    return d;
+  }
+  function passkeyError(e,fallback){
+    if(e?.name==='NotAllowedError')return 'Passkey cancelled or timed out.';
+    if(e?.name==='InvalidStateError')return 'This passkey is already set up on this device.';
+    if(e?.name==='SecurityError')return 'Passkeys are unavailable for this page.';
+    return e?.message||fallback;
+  }
+
+  function showVerify(message='Use your passkey for the fastest secure sign-in, or verify this device by email.'){
+    $('convIntro').textContent='This conversation is protected.';
+    $('convVerify').hidden=false;$('convVerifyText').textContent=message;
+    $('convJob').innerHTML='';$('convMessages').innerHTML='';$('convForm').hidden=true;$('convPasskeySetup').hidden=true;
+    $('convPasskeyLoginWrap').hidden=!passkeysSupported;
     if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
   }
 
   function renderMessages(messages){
-    const signature=messages.map(m=>`${m.id}:${m.read_at||''}`).join('|');
-    if(signature===lastMessageSignature)return;
-    lastMessageSignature=signature;
-
-    $('convMessages').innerHTML=messages.length?messages.map(m=>{
-      let receipt='';
-      if(m.sender==='customer'){
-        receipt=m.read_at
-          ? `<span class="conv-receipt">Read ${esc(niceTime(m.read_at))}</span>`
-          : `<span class="conv-receipt">Sent</span>`;
-      }
-      return `<div class="conv-msg ${m.sender==='customer'?'customer':''}">
-        <div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div>
-        <div class="conv-body">${esc(m.message||'')}</div>
-        ${Array.isArray(m.attachments)&&m.attachments.length?`<div class="conv-image-grid">${m.attachments.map(a=>`<img src="${esc(a.url||a)}" alt="Chat image" loading="lazy" data-conv-image="${esc(a.url||a)}">`).join('')}</div>`:''}
-        <div class="conv-time">${esc(niceTime(m.created_at))}</div>
-        ${receipt}
-      </div>`;
-    }).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
-
-    const messagesBox=$('convMessages');
-    messagesBox.lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    const signature=messages.map(m=>`${m.id}:${m.read_at||''}:${(m.attachments||[]).map(a=>a.path||'').join(',')}`).join('|');
+    if(signature===lastMessageSignature)return;lastMessageSignature=signature;
+    $('convMessages').innerHTML=messages.length?messages.map(m=>{let receipt='';if(m.sender==='customer')receipt=m.read_at?`<span class="conv-receipt">Read ${esc(niceTime(m.read_at))}</span>`:`<span class="conv-receipt">Sent</span>`;return `<div class="conv-msg ${m.sender==='customer'?'customer':''}"><div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div><div class="conv-body">${esc(m.message||'')}</div>${Array.isArray(m.attachments)&&m.attachments.length?`<div class="conv-image-grid">${m.attachments.map(a=>`<img src="${esc(a.url||a)}" alt="Chat image" loading="lazy" data-conv-image="${esc(a.url||a)}">`).join('')}</div>`:''}<div class="conv-time">${esc(niceTime(m.created_at))}</div>${receipt}</div>`}).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
+    $('convMessages').lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
   async function load(silent=false){
-    if(loading)return;
-    loading=true;
+    if(loading)return;loading=true;
     try{
-      const r=await fetch(endpoint+'?token='+encodeURIComponent(token)+'&session='+encodeURIComponent(session),{cache:'no-store'});
-      const d=await r.json().catch(()=>({}));
-
-      if(r.status===401 && d.verification_required){
-        localStorage.removeItem(sessionKey);
-        session='';
-        showVerify();
-        return;
-      }
+      const r=await fetch(endpoint+'?token='+encodeURIComponent(token)+'&session='+encodeURIComponent(session),{cache:'no-store'}),d=await r.json().catch(()=>({}));
+      if(r.status===401&&d.verification_required){localStorage.removeItem(sessionKey);session='';showVerify();return}
       if(!r.ok)throw Error(d.error||'Could not load conversation.');
-
-      $('convVerify').hidden=true;
-      $('convError').hidden=true;
-
+      $('convVerify').hidden=true;$('convError').hidden=true;
       const c=d.conversation||{};
-      $('convIntro').textContent=c.name
-        ? `Hi ${c.name}. This device is verified. You can securely view and reply to STANCEBOUND here.`
-        : 'Your secure STANCEBOUND conversation.';
-
-      const facts=[
-        ['Vehicle',c.vehicle],
-        ['Service',c.service],
-        ['Date',niceDate(c.booking_date)],
-        ['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],
-        ['Location',c.booking_location]
-      ].filter(x=>x[1]);
-
-      const job=$('convJob');
-      const isGeneralChat=String(c.service||'').toLowerCase()==='private chat';
-      const visibleFacts=isGeneralChat?[]:facts;
-      if(visibleFacts.length){
-        job.className='conv-job';
-        job.innerHTML=visibleFacts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('');
-      }else{
-        job.className='';
-        job.innerHTML='';
-      }
-      const responseNote=$('convResponseNote');
-      if(responseNote)responseNote.hidden=false;
-
-      renderMessages(d.messages||[]);
-      $('convForm').hidden=false;
+      $('convIntro').textContent=c.name?`Hi ${c.name}. This device is verified. You can securely view and reply to STANCEBOUND here.`:'Your secure STANCEBOUND conversation.';
+      const facts=[['Vehicle',c.vehicle],['Service',c.service],['Date',niceDate(c.booking_date)],['Time',[c.booking_time?.slice(0,5),c.booking_end_time?.slice(0,5)].filter(Boolean).join(' – ')],['Location',c.booking_location]].filter(x=>x[1]);
+      const job=$('convJob'),isGeneralChat=String(c.service||'').toLowerCase()==='private chat',visibleFacts=isGeneralChat?[]:facts;
+      if(visibleFacts.length){job.className='conv-job';job.innerHTML=visibleFacts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('')}else{job.className='';job.innerHTML=''}
+      $('convResponseNote').hidden=false;renderMessages(d.messages||[]);$('convForm').hidden=false;
       $('convLiveStatus').textContent='CHECKING FOR REPLIES WHILE THIS PAGE IS OPEN · WE’LL EMAIL YOU WHEN STANCEBOUND RESPONDS';
-
-      if(!refreshTimer){
-        refreshTimer=setInterval(()=>load(true),3000);
-      }
-    }catch(e){
-      if(!silent){
-        $('convError').textContent=e.message;
-        $('convError').hidden=false;
-      }
-    }finally{
-      loading=false;
-    }
+      if(passkeysSupported&&!localStorage.getItem(passkeySetupKey))$('convPasskeySetup').hidden=false;else $('convPasskeySetup').hidden=true;
+      if(!refreshTimer)refreshTimer=setInterval(()=>load(true),3000);
+    }catch(e){if(!silent){$('convError').textContent=e.message;$('convError').hidden=false}}finally{loading=false}
   }
 
-  $('convRequestCode').onclick=async()=>{
-    const btn=$('convRequestCode'), st=$('convVerifyStatus');
-    btn.disabled=true;
-    st.textContent='Sending code…';
+  $('convPasskeyLogin').onclick=async()=>{
+    const btn=$('convPasskeyLogin'),st=$('convPasskeyLoginStatus');btn.disabled=true;st.className='conv-passkey-status';st.textContent='Waiting for your device…';
     try{
-      const r=await fetch(endpoint,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'request_code',token})
-      });
-      const d=await r.json().catch(()=>({}));
-      if(!r.ok)throw Error(d.error||'Could not send verification code.');
-      $('convCodeWrap').hidden=false;
-      st.textContent='Code sent. Check your email.';
-      $('convCode').focus();
-    }catch(e){
-      st.textContent=e.message;
-    }finally{
-      btn.disabled=false;
-    }
+      const start=await api({action:'passkey_authentication_options',token});
+      const cred=await navigator.credentials.get({publicKey:authenticationOptions(start.options)});
+      if(!cred)throw Error('No passkey response received.');
+      const done=await api({action:'passkey_authentication_verify',token,challenge_id:start.challenge_id,credential:authenticationCredential(cred)});
+      if(!done.session)throw Error('Secure session was not created.');
+      session=done.session;localStorage.setItem(sessionKey,session);localStorage.setItem(passkeySetupKey,'1');st.classList.add('success');st.textContent='UNLOCKED ✓';await load();
+    }catch(e){st.classList.add('error');st.textContent=e?.status===404?'No passkey is set up yet. Use email verification below.':passkeyError(e,'Could not unlock with passkey.')}
+    finally{btn.disabled=false}
   };
 
-  $('convVerifyCode').onclick=async()=>{
-    const code=$('convCode').value.trim(), btn=$('convVerifyCode'), st=$('convVerifyStatus');
-    if(!/^\d{6}$/.test(code)){st.textContent='Enter the 6-digit code.';return}
-    btn.disabled=true;
-    st.textContent='Verifying…';
+  $('convPasskeySetupBtn').onclick=async()=>{
+    const btn=$('convPasskeySetupBtn'),st=$('convPasskeySetupStatus');btn.disabled=true;st.className='conv-passkey-status';st.textContent='Waiting for your device…';
     try{
-      const r=await fetch(endpoint,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'verify_code',token,code})
-      });
-      const d=await r.json().catch(()=>({}));
-      if(!r.ok)throw Error(d.error||'Verification failed.');
-      if(!d.session)throw Error('Secure session was not created.');
-      session=d.session;
-      localStorage.setItem(sessionKey,session);
-      st.classList.remove('error');
-      st.classList.add('success');
-      st.textContent='VERIFIED ✓';
-      await load();
-    }catch(e){
-      st.classList.remove('success');
-      st.classList.add('error');
-      st.textContent='INVALID CODE';
-    }finally{
-      btn.disabled=false;
-    }
+      const start=await api({action:'passkey_registration_options',token,session});
+      const cred=await navigator.credentials.create({publicKey:registrationOptions(start.options)});
+      if(!cred)throw Error('No passkey response received.');
+      await api({action:'passkey_registration_verify',token,session,challenge_id:start.challenge_id,credential:registrationCredential(cred),device_name:navigator.userAgentData?.platform||navigator.platform||'This device'});
+      localStorage.setItem(passkeySetupKey,'1');st.classList.add('success');st.textContent='PASSKEY READY ✓ You can use it next time.';btn.hidden=true;
+    }catch(e){st.classList.add('error');st.textContent=passkeyError(e,'Could not set up passkey.')}
+    finally{btn.disabled=false}
   };
 
-  $('convCode').addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();$('convVerifyCode').click()}
-  });
+  $('convRequestCode').onclick=async()=>{const btn=$('convRequestCode'),st=$('convVerifyStatus');btn.disabled=true;st.textContent='Sending code…';try{await api({action:'request_code',token});$('convCodeWrap').hidden=false;st.textContent='Code sent. Check your email.';$('convCode').focus()}catch(e){st.textContent=e.message}finally{btn.disabled=false}};
+  $('convVerifyCode').onclick=async()=>{const code=$('convCode').value.trim(),btn=$('convVerifyCode'),st=$('convVerifyStatus');if(!/^\d{6}$/.test(code)){st.textContent='Enter the 6-digit code.';return}btn.disabled=true;st.textContent='Verifying…';try{const d=await api({action:'verify_code',token,code});if(!d.session)throw Error('Secure session was not created.');session=d.session;localStorage.setItem(sessionKey,session);st.classList.remove('error');st.classList.add('success');st.textContent='VERIFIED ✓';await load()}catch(e){st.classList.remove('success');st.classList.add('error');st.textContent=e.message||'INVALID CODE'}finally{btn.disabled=false}};
+  $('convCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('convVerifyCode').click()}});
 
-  const attachmentInput=$('convAttachments'), attachmentPreview=$('convAttachPreview');
-  function drawAttachmentPreview(){
-    attachmentPreview.innerHTML=selectedAttachments.map((f,i)=>`<div class="conv-attach-item"><img src="${URL.createObjectURL(f)}" alt="Selected image"><button type="button" class="conv-attach-remove" data-remove-attachment="${i}">×</button></div>`).join('');
-  }
-  attachmentInput?.addEventListener('change',()=>{
-    const incoming=[...(attachmentInput.files||[])].filter(f=>f.type.startsWith('image/'));
-    selectedAttachments=[...selectedAttachments,...incoming].slice(0,5);
-    attachmentInput.value=''; drawAttachmentPreview();
-  });
+  const attachmentInput=$('convAttachments'),attachmentPreview=$('convAttachPreview');
+  function drawAttachmentPreview(){attachmentPreview.innerHTML=selectedAttachments.map((f,i)=>`<div class="conv-attach-item"><img src="${URL.createObjectURL(f)}" alt="Selected image"><button type="button" class="conv-attach-remove" data-remove-attachment="${i}">×</button></div>`).join('')}
+  attachmentInput?.addEventListener('change',()=>{const incoming=[...(attachmentInput.files||[])].filter(f=>['image/jpeg','image/png','image/webp'].includes(f.type)&&f.size<=10*1024*1024);selectedAttachments=[...selectedAttachments,...incoming].slice(0,5);attachmentInput.value='';drawAttachmentPreview()});
   attachmentPreview?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-attachment]');if(!b)return;selectedAttachments.splice(Number(b.dataset.removeAttachment),1);drawAttachmentPreview()});
   $('convMessages').addEventListener('click',e=>{const img=e.target.closest('[data-conv-image]');if(!img)return;$('convLightboxImage').src=img.dataset.convImage;$('convLightbox').hidden=false});
-  $('convLightboxClose').onclick=()=>{$('convLightbox').hidden=true;$('convLightboxImage').src=''};
-  $('convLightbox').addEventListener('click',e=>{if(e.target===$('convLightbox'))$('convLightboxClose').click()});
+  $('convLightboxClose').onclick=()=>{$('convLightbox').hidden=true;$('convLightboxImage').src=''};$('convLightbox').addEventListener('click',e=>{if(e.target===$('convLightbox'))$('convLightboxClose').click()});
 
-  $('convForm').onsubmit=async e=>{
-    e.preventDefault();
-    const box=$('convReply'), message=box.value.trim(), st=$('convStatus'), btn=e.currentTarget.querySelector('button');
-    if(!message && !selectedAttachments.length)return;
-    btn.disabled=true;
-    st.textContent='Sending…';
-    try{
-      const readFileAsDataURL=file=>new Promise((resolve,reject)=>{
-        const reader=new FileReader();
-        reader.onload=()=>resolve(String(reader.result||''));
-        reader.onerror=()=>reject(new Error('One of the selected images could not be read.'));
-        reader.readAsDataURL(file);
-      });
-      const attachments=await Promise.all(selectedAttachments.map(async f=>({
-        name:f.name,
-        type:f.type,
-        size:f.size,
-        data:await readFileAsDataURL(f)
-      })));
-      const r=await fetch(endpoint,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'send',token,session,message,attachments})
-      });
-      const d=await r.json().catch(()=>({}));
-      if(r.status===401 && d.verification_required){
-        localStorage.removeItem(sessionKey);
-        session='';
-        showVerify('Your secure session has expired. Verify this device again to continue.');
-        return;
-      }
-      if(!r.ok)throw Error(d.error||'Could not send reply.');
-      box.value=''; selectedAttachments=[]; drawAttachmentPreview();
-      st.textContent='Sent ✓';
-      await load();
-    }catch(x){
-      st.textContent=x.message;
-    }finally{
-      btn.disabled=false;
-    }
-  };
+  $('convForm').onsubmit=async e=>{e.preventDefault();const box=$('convReply'),message=box.value.trim(),st=$('convStatus'),btn=e.currentTarget.querySelector('button');if(!message&&!selectedAttachments.length)return;btn.disabled=true;st.textContent='Sending…';try{const readFileAsDataURL=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('One of the selected images could not be read.'));reader.readAsDataURL(file)});const attachments=await Promise.all(selectedAttachments.map(async f=>({name:f.name,type:f.type,size:f.size,data:await readFileAsDataURL(f)})));const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'send',token,session,message,attachments})}),d=await r.json().catch(()=>({}));if(r.status===401&&d.verification_required){localStorage.removeItem(sessionKey);session='';showVerify('Your secure session has expired. Unlock with your passkey or verify by email.');return}if(!r.ok)throw Error(d.error||'Could not send reply.');box.value='';selectedAttachments=[];drawAttachmentPreview();st.textContent='Sent ✓';await load()}catch(x){st.textContent=x.message}finally{btn.disabled=false}};
 
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){
-      if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
-    }else if(session){
-      load(true);
-    }
-  });
-
-  if(session) load();
-  else showVerify();
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}}else if(session)load(true)});
+  if(session)load();else showVerify();
 })();
 </script>
 <script id="stancebound-dark-only">
