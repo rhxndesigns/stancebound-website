@@ -3974,13 +3974,32 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 })();
 </script>
 
-<section id="conversationPage" hidden style="min-height:100vh;padding:30px 16px 100px">
-  <div style="max-width:760px;margin:auto">
-    <a href="/" style="display:block;margin-bottom:24px">← STANCEBOUND</a>
-    <img src="images/logo(1).png" alt="STANCEBOUND" style="width:min(280px,70vw)">
-    <p>PRIVATE CUSTOMER CONVERSATION</p>
-    <h1>YOUR CONVERSATION</h1>
-    <p id="convIntro">Checking this device…</p>
+<style id="stancebound-chat-premium-css">
+#conversationPage{min-height:100vh!important;padding:24px 16px 90px!important;background:radial-gradient(circle at 50% -10%,#242424 0,#0d0d0d 36%,#070707 75%)!important;color:#f5f5f5!important}
+.conv-shell{max-width:820px;margin:0 auto}.conv-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:34px}.conv-back{color:#aaa!important;text-decoration:none;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.conv-back:hover{color:#fff!important}.conv-logo{width:min(235px,58vw)!important;display:block}.conv-secure-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #2f2f2f;border-radius:999px;background:rgba(255,255,255,.025);font-size:9px;letter-spacing:.16em;color:#9b9b9b;white-space:nowrap}.conv-secure-dot{width:7px;height:7px;border-radius:50%;background:#45d483;box-shadow:0 0 14px rgba(69,212,131,.45)}
+.conv-hero{padding:30px;border:1px solid #292929;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));box-shadow:0 20px 70px rgba(0,0,0,.32);margin-bottom:18px}.conv-eyebrow{font-size:10px;letter-spacing:.24em;color:#818181;margin:0 0 12px}.conv-hero h1{font-size:clamp(28px,6vw,48px);line-height:.98;letter-spacing:-.035em;margin:0 0 14px}.conv-hero #convIntro{color:#aaa;line-height:1.65;margin:0;max-width:620px}
+.conv-verify{margin-top:22px;padding:22px;border:1px solid #303030;border-radius:14px;background:#0b0b0b}.conv-verify h2{font-size:16px;letter-spacing:.08em;margin:0 0 9px}.conv-verify p{color:#999;line-height:1.6;margin:0 0 17px}.conv-verify button,#convForm button{border:0;border-radius:10px;background:#f2f2f2;color:#080808;font-weight:800;letter-spacing:.08em;padding:14px 18px}.conv-verify button:disabled,#convForm button:disabled{opacity:.55}.conv-verify-row{display:flex;gap:10px;margin-top:12px}.conv-verify-row input{min-width:0;flex:1;border:1px solid #383838;border-radius:10px;background:#050505;color:#fff;padding:14px;font-size:18px;letter-spacing:.22em;text-align:center;outline:none}.conv-verify-row input:focus,#convReply:focus{border-color:#777;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.conv-live{margin-top:12px;font-size:11px;color:#888}
+.conv-job{border-radius:14px!important;background:rgba(255,255,255,.025)!important;padding:18px!important;gap:16px!important}.conv-job span{font-size:9px!important;letter-spacing:.12em;text-transform:uppercase}.conv-job strong{font-size:13px!important;letter-spacing:0;text-transform:none;margin-top:7px!important}
+.conv-messages{padding:26px 2px!important;gap:14px!important}.conv-msg{border-radius:15px!important;border:1px solid #2b2b2b!important;background:#121212!important;padding:15px 17px!important;box-shadow:0 10px 24px rgba(0,0,0,.12)}.conv-msg.customer{background:#f0f0f0!important;color:#090909!important;border-color:#f0f0f0!important}.conv-msg.customer .conv-who,.conv-msg.customer .conv-time,.conv-msg.customer .conv-receipt{color:#656565!important}.conv-who{font-weight:800!important}.conv-receipt{display:block;font-size:9px;color:#777;margin-top:4px}
+#convForm{padding:20px!important;border:1px solid #2d2d2d!important;border-radius:16px;background:rgba(255,255,255,.025)}#convForm label{font-size:10px;letter-spacing:.16em;color:#999;text-transform:uppercase;margin-bottom:10px!important}#convReply{border-radius:12px!important;resize:vertical;min-height:118px;line-height:1.55;padding:15px!important}.conv-actions{margin-top:12px!important}.conv-actions #convStatus{font-size:11px;color:#888}.conv-private{margin-top:24px!important;padding:16px 10px;border-top:1px solid #202020;line-height:1.7!important;letter-spacing:.11em!important;color:#737373!important}.conv-privacy-note{display:block;max-width:610px;margin:8px auto 0;letter-spacing:0;text-transform:none;font-size:10px;color:#666;line-height:1.55}
+#convError{border-radius:12px!important;background:rgba(160,20,20,.08)}
+html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 50% -10%,#fff 0,#f1f1ee 45%,#e8e8e4 100%)!important;color:#111!important}html[data-theme="light"] .conv-hero,html[data-theme="light"] #convForm,html[data-theme="light"] .conv-job{background:rgba(255,255,255,.78)!important;border-color:#d1d1cd!important}html[data-theme="light"] .conv-verify{background:#fff;border-color:#d0d0cc}html[data-theme="light"] .conv-secure-pill{border-color:#ccc;background:rgba(255,255,255,.7);color:#555}html[data-theme="light"] .conv-back{color:#555!important}
+@media(max-width:600px){.conv-topbar{align-items:flex-start;margin-bottom:24px}.conv-secure-pill{font-size:8px;padding:7px 9px}.conv-hero{padding:22px 18px;border-radius:15px}.conv-verify{padding:18px 14px}.conv-verify-row{flex-direction:column}.conv-verify-row button{width:100%}.conv-msg{max-width:90%!important}#convForm{padding:16px!important}.conv-actions{align-items:flex-end}.conv-actions button{padding:13px 15px}.conv-logo{width:min(205px,52vw)!important}}
+</style>
+<section id="conversationPage" hidden>
+  <div class="conv-shell">
+    <div class="conv-topbar">
+      <div>
+        <a class="conv-back" href="/">← Back to STANCEBOUND</a>
+        <img class="conv-logo" src="images/logo(1).png" alt="STANCEBOUND" style="margin-top:18px">
+      </div>
+      <div class="conv-secure-pill"><span class="conv-secure-dot"></span> PRIVATE CHAT</div>
+    </div>
+
+    <div class="conv-hero">
+      <p class="conv-eyebrow">STANCEBOUND // CUSTOMER CONVERSATION</p>
+      <h1>YOUR PRIVATE CHAT</h1>
+      <p id="convIntro">Checking this device…</p>
 
     <div id="convVerify" class="conv-verify" hidden>
       <h2>VERIFY THIS DEVICE</h2>
@@ -3993,6 +4012,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         </div>
       </div>
       <div id="convVerifyStatus" class="conv-live"></div>
+    </div>
     </div>
 
     <div id="convJob"></div>
@@ -4009,7 +4029,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       <div id="convLiveStatus" class="conv-live">LIVE · checking for replies automatically</div>
     </form>
 
-    <p class="conv-private">SECURE PRIVATE CONVERSATION · VERIFIED DEVICE</p>
+    <p class="conv-private">SECURE PRIVATE CONVERSATION · VERIFIED DEVICE<span class="conv-privacy-note">For your security and privacy, we may ask you to verify your identity again when using a new device, browser, or after your secure session expires. This helps keep your conversation and booking details private.</span></p>
   </div>
 </section>
 
