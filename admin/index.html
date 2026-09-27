@@ -1211,7 +1211,7 @@ async function loadEnquiries(){
       <div class="enquiry-reply" id="reply-${r.id}">
         <label>Your reply</label>
         <textarea maxlength="4000" placeholder="Write your reply to ${escapeHtml(r.name)}..."></textarea>
-        <button type="button" data-send-reply="${r.id}">Send Reply</button>
+        <button type="button" data-send-reply="${r.id}">Send</button>
         <div class="status"></div>
       </div>
     </article>`;
@@ -1393,7 +1393,7 @@ async function loadChats(){
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
       <div class="chat-head"><div><h3>${escapeHtml(r.name||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
       <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
-      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send Reply</button></div><div class="status"></div></div>
+      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send</button></div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
     host.querySelector('[data-thread-send]').onclick=async()=>{
