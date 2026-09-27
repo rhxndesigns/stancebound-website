@@ -3844,6 +3844,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 .conv-verify{margin-top:22px;padding:22px;border:1px solid #303030;border-radius:14px;background:#0b0b0b}.conv-verify h2{font-size:16px;letter-spacing:.08em;margin:0 0 9px}.conv-verify p{color:#999;line-height:1.6;margin:0 0 17px}.conv-verify button,#convForm button{border:0;border-radius:10px;background:#f2f2f2;color:#080808;font-weight:800;letter-spacing:.08em;padding:14px 18px}.conv-verify button:disabled,#convForm button:disabled{opacity:.55}.conv-verify-row{display:flex;gap:10px;margin-top:12px}.conv-verify-row input{min-width:0;flex:1;border:1px solid #383838;border-radius:10px;background:#050505;color:#fff;padding:14px;font-size:18px;letter-spacing:.22em;text-align:center;outline:none}.conv-verify-row input:focus,#convReply:focus{border-color:#777;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.conv-live{margin-top:12px;font-size:11px;color:#888}
 .conv-job{border-radius:14px!important;background:rgba(255,255,255,.025)!important;padding:18px!important;gap:16px!important}.conv-job span{font-size:9px!important;letter-spacing:.12em;text-transform:uppercase}.conv-job strong{font-size:13px!important;letter-spacing:0;text-transform:none;margin-top:7px!important}
 .conv-messages{padding:26px 2px!important;gap:14px!important}.conv-msg{border-radius:15px!important;border:1px solid #2b2b2b!important;background:#121212!important;padding:15px 17px!important;box-shadow:0 10px 24px rgba(0,0,0,.12)}.conv-msg.customer{background:#f0f0f0!important;color:#090909!important;border-color:#f0f0f0!important}.conv-msg.customer .conv-who,.conv-msg.customer .conv-time,.conv-msg.customer .conv-receipt{color:#656565!important}.conv-who{font-weight:800!important}.conv-receipt{display:block;font-size:9px;color:#777;margin-top:4px}
+.conv-attach-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}.conv-attach-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid #343434;border-radius:10px;background:#111;color:#fff;font-size:20px;cursor:pointer}.conv-attach-btn:hover{border-color:#777}.conv-attach-input{display:none}.conv-attach-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.conv-attach-item{position:relative;width:72px;height:72px;border:1px solid #333;border-radius:10px;overflow:hidden;background:#111}.conv-attach-item img{width:100%;height:100%;object-fit:cover}.conv-attach-remove{position:absolute;top:4px;right:4px;width:22px;height:22px;border:0!important;border-radius:50%!important;background:rgba(0,0,0,.78)!important;color:#fff!important;padding:0!important;font-size:14px!important;line-height:22px;letter-spacing:0!important}.conv-image-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}.conv-image-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:9px;cursor:pointer;border:1px solid rgba(255,255,255,.15)}.conv-lightbox{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:18px}.conv-lightbox[hidden]{display:none}.conv-lightbox img{max-width:96vw;max-height:92vh;object-fit:contain}.conv-lightbox button{position:absolute;top:16px;right:16px;width:42px;height:42px;border:1px solid #444;border-radius:50%;background:#111;color:#fff;font-size:24px}
 #convForm{padding:20px!important;border:1px solid #2d2d2d!important;border-radius:16px;background:rgba(255,255,255,.025)}#convForm label{font-size:10px;letter-spacing:.16em;color:#999;text-transform:uppercase;margin-bottom:10px!important}#convReply{border-radius:12px!important;resize:vertical;min-height:118px;line-height:1.55;padding:15px!important}.conv-actions{margin-top:12px!important}.conv-actions #convStatus{font-size:11px;color:#888}.conv-private{margin-top:24px!important;padding:16px 10px;border-top:1px solid #202020;line-height:1.7!important;letter-spacing:.11em!important;color:#737373!important}.conv-privacy-note{display:block;max-width:610px;margin:8px auto 0;letter-spacing:0;text-transform:none;font-size:10px;color:#666;line-height:1.55}
 #convError{border-radius:12px!important;background:rgba(160,20,20,.08)}
 html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 50% -10%,#fff 0,#f1f1ee 45%,#e8e8e4 100%)!important;color:#111!important}html[data-theme="light"] .conv-hero,html[data-theme="light"] #convForm,html[data-theme="light"] .conv-job{background:rgba(255,255,255,.78)!important;border-color:#d1d1cd!important}html[data-theme="light"] .conv-verify{background:#fff;border-color:#d0d0cc}html[data-theme="light"] .conv-secure-pill{border-color:#ccc;background:rgba(255,255,255,.7);color:#555}html[data-theme="light"] .conv-back{color:#555!important}
@@ -3885,13 +3886,16 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 
     <form id="convForm" hidden>
       <label>Reply to STANCEBOUND</label>
-      <textarea id="convReply" maxlength="5000" rows="5" required placeholder="Type your message…"></textarea>
+      <textarea id="convReply" maxlength="5000" rows="5" placeholder="Type your message…"></textarea>
+      <div class="conv-attach-row"><label class="conv-attach-btn" for="convAttachments" aria-label="Attach images">📎</label><input class="conv-attach-input" id="convAttachments" type="file" accept="image/*" multiple><span style="font-size:10px;color:#777;letter-spacing:.08em">UP TO 5 IMAGES</span></div><div id="convAttachPreview" class="conv-attach-preview"></div>
       <div class="conv-actions">
         <span id="convStatus"></span>
         <button type="submit">SEND</button>
       </div>
       <div id="convLiveStatus" class="conv-live">LIVE · checking for replies automatically</div>
     </form>
+
+    <div id="convLightbox" class="conv-lightbox" hidden><button type="button" id="convLightboxClose">×</button><img id="convLightboxImage" alt="Chat attachment"></div>
 
     <p class="conv-private">SECURE PRIVATE CONVERSATION · VERIFIED DEVICE<span class="conv-privacy-note">For your security and privacy, we may ask you to verify your identity again when using a new device, browser, or after your secure session expires. This helps keep your conversation and booking details private.</span></p>
   </div>
@@ -3915,6 +3919,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   let refreshTimer=null;
   let loading=false;
   let lastMessageSignature='';
+  let selectedAttachments=[];
 
   const $=id=>document.getElementById(id);
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -3945,7 +3950,8 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       }
       return `<div class="conv-msg ${m.sender==='customer'?'customer':''}">
         <div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div>
-        <div class="conv-body">${esc(m.message)}</div>
+        <div class="conv-body">${esc(m.message||'')}</div>
+        ${Array.isArray(m.attachments)&&m.attachments.length?`<div class="conv-image-grid">${m.attachments.map(a=>`<img src="${esc(a.url||a)}" alt="Chat image" loading="lazy" data-conv-image="${esc(a.url||a)}">`).join('')}</div>`:''}
         <div class="conv-time">${esc(niceTime(m.created_at))}</div>
         ${receipt}
       </div>`;
@@ -4071,17 +4077,31 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     if(e.key==='Enter'){e.preventDefault();$('convVerifyCode').click()}
   });
 
+  const attachmentInput=$('convAttachments'), attachmentPreview=$('convAttachPreview');
+  function drawAttachmentPreview(){
+    attachmentPreview.innerHTML=selectedAttachments.map((f,i)=>`<div class="conv-attach-item"><img src="${URL.createObjectURL(f)}" alt="Selected image"><button type="button" class="conv-attach-remove" data-remove-attachment="${i}">×</button></div>`).join('');
+  }
+  attachmentInput?.addEventListener('change',()=>{
+    const incoming=[...(attachmentInput.files||[])].filter(f=>f.type.startsWith('image/'));
+    selectedAttachments=[...selectedAttachments,...incoming].slice(0,5);
+    attachmentInput.value=''; drawAttachmentPreview();
+  });
+  attachmentPreview?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-attachment]');if(!b)return;selectedAttachments.splice(Number(b.dataset.removeAttachment),1);drawAttachmentPreview()});
+  $('convMessages').addEventListener('click',e=>{const img=e.target.closest('[data-conv-image]');if(!img)return;$('convLightboxImage').src=img.dataset.convImage;$('convLightbox').hidden=false});
+  $('convLightboxClose').onclick=()=>{$('convLightbox').hidden=true;$('convLightboxImage').src=''};
+  $('convLightbox').addEventListener('click',e=>{if(e.target===$('convLightbox'))$('convLightboxClose').click()});
+
   $('convForm').onsubmit=async e=>{
     e.preventDefault();
     const box=$('convReply'), message=box.value.trim(), st=$('convStatus'), btn=e.currentTarget.querySelector('button');
-    if(!message)return;
+    if(!message && !selectedAttachments.length)return;
     btn.disabled=true;
     st.textContent='Sending…';
     try{
       const r=await fetch(endpoint,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'send',token,session,message})
+        body:JSON.stringify({action:'send',token,session,message,attachments:selectedAttachments.map(f=>({name:f.name,type:f.type,size:f.size}))})
       });
       const d=await r.json().catch(()=>({}));
       if(r.status===401 && d.verification_required){
@@ -4091,7 +4111,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
         return;
       }
       if(!r.ok)throw Error(d.error||'Could not send reply.');
-      box.value='';
+      box.value=''; selectedAttachments=[]; drawAttachmentPreview();
       st.textContent='Sent ✓';
       await load();
     }catch(x){
