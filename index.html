@@ -2202,6 +2202,106 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 .sb-chat-start-head{margin-bottom:28px}.sb-chat-lock{display:inline-flex;align-items:center;gap:8px;color:#63d997;font-size:9px;font-weight:900;letter-spacing:2px;margin-bottom:16px}.sb-chat-start h2{font-size:clamp(30px,6vw,48px);line-height:1;margin-bottom:14px}.sb-chat-start p{color:#999;line-height:1.7}.sb-chat-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}.sb-chat-fields label span{display:block;font-size:9px;font-weight:800;letter-spacing:1.7px;color:#888;margin-bottom:8px}.sb-chat-fields input,.sb-chat-code-row input{width:100%;padding:15px 14px;border:1px solid #353535;background:#0b0b0b;color:#fff;font:inherit;outline:none}.sb-chat-fields input:focus,.sb-chat-code-row input:focus{border-color:#aaa}.sb-chat-status{min-height:20px;margin-top:14px;font-size:11px;letter-spacing:.5px;color:#999}.sb-chat-status.error{color:#ff6767;font-weight:800}.sb-chat-status.success{color:#4ddd8d;font-weight:800}.sb-chat-verify{margin-top:26px;padding:24px;border:1px solid #2c2c2c;background:#0a0a0a}.sb-chat-verify h3{font-size:24px;margin:8px 0}.sb-chat-code-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:18px}.sb-chat-code-row input{font-size:22px;letter-spacing:8px;text-align:center}.sb-chat-recover-toggle{margin-top:22px;padding-top:22px;border-top:1px solid #252525;text-align:center}.sb-chat-recover-toggle p{font-size:11px;margin:0 0 12px;color:#777}.sb-chat-recover{margin-top:18px;padding:24px;border:1px solid #2c2c2c;background:#0a0a0a}.sb-chat-recover h3{font-size:24px;margin:8px 0}.sb-chat-recover-back{margin-top:12px;background:none;border:0;color:#777;font:inherit;font-size:9px;font-weight:800;letter-spacing:1.5px;cursor:pointer}.sb-chat-recover-back:hover{color:#fff}.sb-chat-security{border-top:1px solid #252525;margin-top:30px;padding-top:22px}.sb-chat-security strong{font-size:9px;letter-spacing:2px;color:#aaa}.sb-chat-security p{font-size:11px;margin-top:10px;color:#707070}.sb-chat-socials{max-width:760px;margin:18px auto 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:9px;letter-spacing:1.5px;color:#666}.sb-chat-socials a{color:#aaa}.sb-chat-socials a:hover{color:#fff}
 @media(max-width:720px){.hero-socials{gap:9px;font-size:8px;letter-spacing:1.2px;flex-wrap:wrap}.hero-socials a span{display:none}.home-shop-teaser{grid-template-columns:1fr}.home-shop-image{min-height:260px}.home-shop-copy{padding:28px 22px}.sb-chat-fields{grid-template-columns:1fr}.sb-chat-code-row{grid-template-columns:1fr}.sb-chat-code-row .btn{width:100%}.sb-chat-socials{align-items:flex-start;flex-direction:column}}
 </style>
+
+<style id="stancebound-recovery-modern-v2">
+/* Existing conversation recovery: deliberately softer, cleaner and less "boxes inside boxes". */
+.sb-chat-recover-toggle{
+  margin-top:26px!important;padding:22px 0 0!important;border:0!important;
+  position:relative;text-align:left!important
+}
+.sb-chat-recover-toggle:before{
+  content:"";display:block;width:42px;height:1px;background:rgba(255,255,255,.18);margin-bottom:20px
+}
+.sb-chat-recover-toggle p{font-size:11px!important;letter-spacing:.02em!important;margin:0 0 12px!important;color:#858585!important}
+.sb-chat-recover-toggle .btn{width:100%;min-height:52px;background:#121212!important;border:1px solid rgba(255,255,255,.16)!important;color:#f4f4f4!important}
+.sb-chat-recover-toggle .btn:hover{background:#181818!important;border-color:rgba(255,255,255,.32)!important}
+
+.sb-recover-modern{
+  margin-top:22px!important;padding:clamp(22px,5vw,34px)!important;
+  border:1px solid rgba(255,255,255,.11)!important;border-radius:18px;
+  background:
+    radial-gradient(circle at 92% 4%,rgba(255,255,255,.055),transparent 30%),
+    linear-gradient(145deg,rgba(17,17,17,.98),rgba(7,7,7,.99))!important;
+  box-shadow:0 22px 60px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.025)
+}
+.sb-recover-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:26px}
+.sb-recover-icon{
+  width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+  color:#e8e8e8;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
+}
+.sb-recover-modern .eyebrow{font-size:8px!important;letter-spacing:2.4px!important;color:#7d7d7d!important;margin:1px 0 8px!important}
+.sb-recover-modern h3{font-size:clamp(26px,5vw,36px)!important;line-height:1.04!important;letter-spacing:-.025em!important;margin:0 0 10px!important}
+.sb-recover-modern p{font-size:12px!important;line-height:1.72!important;color:#858585!important;margin:0!important;max-width:570px}
+.sb-recover-fields{margin:0 0 14px!important}
+.sb-recover-fields label span{color:#777!important}
+.sb-recover-fields input{
+  min-height:54px;border-radius:10px!important;border:1px solid rgba(255,255,255,.12)!important;
+  background:rgba(255,255,255,.025)!important;padding:0 15px!important;
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease!important
+}
+.sb-recover-fields input:focus{
+  border-color:rgba(255,255,255,.38)!important;background:rgba(255,255,255,.045)!important;
+  box-shadow:0 0 0 3px rgba(255,255,255,.035)!important
+}
+.sb-recover-primary{
+  width:100%;min-height:54px;border-radius:10px!important;border:1px solid #e8e8e8!important;
+  background:#f2f2f2!important;color:#090909!important;font-size:10px!important;font-weight:900!important;
+  letter-spacing:2px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+  transition:transform .16s ease,background .16s ease,opacity .16s ease!important
+}
+.sb-recover-primary:active{transform:scale(.988)}
+.sb-recover-primary:disabled{opacity:.5;cursor:wait}
+.sb-btn-lock{font-size:18px;line-height:1;transform:rotate(-20deg)}
+.sb-recover-email{
+  width:100%;margin:11px 0 0;padding:10px 8px;border:0;background:transparent;color:#777;
+  font:inherit;font-size:8px;font-weight:850;letter-spacing:1.65px;cursor:pointer
+}
+.sb-recover-email:hover{color:#ddd}
+.sb-recover-status{min-height:0!important;margin-top:10px!important;text-align:center;font-size:10px!important}
+.sb-recover-status:empty{display:none}
+.sb-recover-status.success{color:#63d997!important}
+.sb-recover-code{
+  margin:22px 0 0!important;padding:22px!important;border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:14px;background:rgba(255,255,255,.025)!important;position:relative
+}
+.sb-code-badge{
+  position:absolute;right:18px;top:18px;font-size:7px;font-weight:900;letter-spacing:1.6px;
+  color:#777;background:#111;border:1px solid rgba(255,255,255,.1);padding:7px 9px;border-radius:999px
+}
+.sb-recover-code h3{font-size:24px!important;margin-bottom:8px!important}
+.sb-code-input{
+  display:block;width:100%;box-sizing:border-box;margin:20px 0 12px;min-height:64px;
+  border:1px solid rgba(255,255,255,.18);border-radius:11px;background:#080808;color:#fff;
+  text-align:center;font:700 28px/1 monospace;letter-spacing:.42em;padding:0 8px 0 calc(8px + .42em);outline:none
+}
+.sb-code-input:focus{border-color:rgba(255,255,255,.48);box-shadow:0 0 0 3px rgba(255,255,255,.035)}
+.sb-recover-trust{
+  display:flex;align-items:center;justify-content:center;gap:8px;margin:20px 0 2px;
+  color:#666;font-size:7px;font-weight:850;letter-spacing:1.35px;text-align:center
+}
+.sb-recover-dot{width:6px;height:6px;border-radius:50%;background:#63d997;box-shadow:0 0 10px rgba(99,217,151,.35)}
+.sb-recover-modern .sb-chat-recover-back{
+  display:block;margin:16px auto 0!important;padding:8px!important;color:#666!important;letter-spacing:1.4px!important
+}
+.sb-chat-security{
+  border:0!important;margin-top:28px!important;padding:20px 0 0!important;position:relative
+}
+.sb-chat-security:before{
+  content:"";display:block;width:42px;height:1px;background:rgba(255,255,255,.14);margin-bottom:20px
+}
+.sb-chat-security strong{font-size:8px!important;letter-spacing:2.2px!important;color:#8b8b8b!important}
+.sb-chat-security p{font-size:11px!important;line-height:1.75!important;color:#626262!important;max-width:590px}
+@media(max-width:600px){
+  .sb-recover-modern{padding:22px 18px!important;border-radius:16px}
+  .sb-recover-head{grid-template-columns:1fr;gap:13px}
+  .sb-recover-icon{width:44px;height:44px;border-radius:12px}
+  .sb-recover-fields{grid-template-columns:1fr!important;gap:12px!important}
+  .sb-code-badge{position:static;display:inline-block;margin-bottom:12px}
+  .sb-code-input{font-size:25px;letter-spacing:.32em;padding-left:calc(8px + .32em)}
+}
+</style>
+
 </head>
 
 
@@ -2889,33 +2989,60 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             <button class="btn" id="customerChatRecoverOpen" type="button">FIND MY CONVERSATION</button>
           </div>
 
-          <div id="customerChatRecover" class="sb-chat-recover" hidden>
-            <div class="eyebrow">EXISTING CUSTOMER</div>
-            <h3>Find your conversation.</h3>
-            <p>Enter the same name and email address you used with STANCEBOUND. We'll send a 6-digit code if we find a matching private conversation.</p>
-            <form id="customerChatRecoverForm" novalidate>
-              <div class="sb-chat-fields">
-                <label><span>YOUR NAME</span><input id="customerChatRecoverName" type="text" maxlength="150" autocomplete="name" placeholder="Enter your name" required></label>
-                <label><span>EMAIL ADDRESS</span><input id="customerChatRecoverEmail" type="email" maxlength="160" autocomplete="email" placeholder="you@example.com" required></label>
+          <div id="customerChatRecover" class="sb-chat-recover sb-recover-modern" hidden>
+            <div class="sb-recover-head">
+              <div class="sb-recover-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+                  <path d="M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                  <path d="M7.5 21v-2.5a4.5 4.5 0 0 1 9 0V21"/>
+                  <path d="M4 10V7a3 3 0 0 1 3-3M20 10V7a3 3 0 0 0-3-3M4 14v3a3 3 0 0 0 3 3M20 14v3a3 3 0 0 1-3 3"/>
+                </svg>
               </div>
-              <button class="btn" id="customerChatRecoverSend" type="submit">SEND VERIFICATION CODE</button>
-              <div id="customerChatRecoverStatus" class="sb-chat-status" aria-live="polite"></div>
-            </form>
-            <div id="customerChatRecoverVerify" class="sb-chat-verify" hidden>
-              <div class="eyebrow">CHECK YOUR EMAIL</div>
-              <h3>Enter your code.</h3>
-              <p>Enter the 6-digit verification code to securely reopen your private conversation.</p>
-              <div class="sb-chat-code-row">
-                <input id="customerChatRecoverCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
-                <button class="btn" id="customerChatRecoverVerifyBtn" type="button">OPEN PRIVATE CHAT</button>
+              <div>
+                <div class="eyebrow">EXISTING CUSTOMER</div>
+                <h3>Reopen your private chat.</h3>
+                <p>Enter the details you used with STANCEBOUND. If a passkey is registered, your device will ask for your fingerprint, face or screen lock.</p>
               </div>
             </div>
-            <button class="sb-chat-recover-back" id="customerChatRecoverBack" type="button">← BACK TO NEW CONVERSATION</button>
+
+            <form id="customerChatRecoverForm" novalidate>
+              <div class="sb-chat-fields sb-recover-fields">
+                <label>
+                  <span>YOUR NAME</span>
+                  <input id="customerChatRecoverName" type="text" maxlength="150" autocomplete="name" placeholder="Enter your name" required>
+                </label>
+                <label>
+                  <span>EMAIL ADDRESS</span>
+                  <input id="customerChatRecoverEmail" type="email" maxlength="160" autocomplete="email" placeholder="you@example.com" required>
+                </label>
+              </div>
+              <button class="btn sb-recover-primary" id="customerChatRecoverSend" type="submit">
+                <span class="sb-btn-lock">⌁</span> UNLOCK PRIVATE CHAT
+              </button>
+              <button class="sb-recover-email" id="customerChatRecoverEmailFallback" type="button">USE EMAIL VERIFICATION INSTEAD</button>
+              <div id="customerChatRecoverStatus" class="sb-chat-status sb-recover-status" aria-live="polite"></div>
+            </form>
+
+            <div id="customerChatRecoverVerify" class="sb-chat-verify sb-recover-code" hidden>
+              <div class="sb-code-badge">6 DIGITS</div>
+              <div class="eyebrow">EMAIL VERIFICATION</div>
+              <h3>Check your inbox.</h3>
+              <p>Enter the one-time code sent to your email. This is only needed when a passkey isn't available or you choose email recovery.</p>
+              <input id="customerChatRecoverCode" class="sb-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" aria-label="6-digit verification code">
+              <button class="btn sb-recover-primary" id="customerChatRecoverVerifyBtn" type="button">OPEN PRIVATE CHAT</button>
+            </div>
+
+            <div class="sb-recover-trust">
+              <span class="sb-recover-dot"></span>
+              <span>PASSKEY PROTECTED · BIOMETRICS STAY ON YOUR DEVICE</span>
+            </div>
+
+            <button class="sb-chat-recover-back" id="customerChatRecoverBack" type="button">← BACK</button>
           </div>
 
           <div class="sb-chat-security">
             <strong>SECURITY &amp; PRIVACY</strong>
-            <p>We verify your email before opening the conversation. You may be asked to verify again on a new device, browser, or after your secure session expires. This helps keep your messages and booking details private.</p>
+            <p>Existing conversations can be reopened with a registered passkey using your device security. Email verification remains available as a secure fallback. Your fingerprint or face never leaves your device.</p>
           </div>
         </div>
 
@@ -4143,43 +4270,166 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   const nameEl=document.getElementById('customerChatRecoverName');
   const emailEl=document.getElementById('customerChatRecoverEmail');
   const sendBtn=document.getElementById('customerChatRecoverSend');
+  const emailFallbackBtn=document.getElementById('customerChatRecoverEmailFallback');
   const status=document.getElementById('customerChatRecoverStatus');
   const verifyWrap=document.getElementById('customerChatRecoverVerify');
   const codeEl=document.getElementById('customerChatRecoverCode');
   const verifyBtn=document.getElementById('customerChatRecoverVerifyBtn');
   const backBtn=document.getElementById('customerChatRecoverBack');
   if(!openBtn||!panel||!form)return;
-  const setStatus=(message,type='')=>{status.textContent=message||'';status.className='sb-chat-status'+(type?' '+type:'')};
-  const showRecovery=()=>{panel.hidden=false;toggle.hidden=true;if(newForm)newForm.hidden=true;if(newVerify)newVerify.hidden=true;setStatus('');setTimeout(()=>nameEl?.focus(),50)};
-  const hideRecovery=()=>{panel.hidden=true;toggle.hidden=false;if(newForm)newForm.hidden=false;verifyWrap.hidden=true;codeEl.value='';setStatus('')};
+
+  const passkeySupported=!!(window.PublicKeyCredential&&navigator.credentials);
+  const setStatus=(message,type='')=>{
+    status.textContent=message||'';
+    status.className='sb-chat-status sb-recover-status'+(type?' '+type:'');
+  };
+
+  const b64urlToBytes=value=>{
+    const base64=String(value).replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(String(value).length/4)*4,'=');
+    const binary=atob(base64),bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    return bytes;
+  };
+  const bytesToB64url=value=>{
+    const bytes=new Uint8Array(value);let binary='';
+    for(const b of bytes)binary+=String.fromCharCode(b);
+    return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  };
+  const authenticationOptions=options=>({
+    ...options,
+    challenge:b64urlToBytes(options.challenge),
+    allowCredentials:(options.allowCredentials||[]).map(c=>({...c,id:b64urlToBytes(c.id)}))
+  });
+  const authenticationCredential=cred=>({
+    id:cred.id,
+    rawId:bytesToB64url(cred.rawId),
+    type:cred.type,
+    authenticatorAttachment:cred.authenticatorAttachment||null,
+    response:{
+      clientDataJSON:bytesToB64url(cred.response.clientDataJSON),
+      authenticatorData:bytesToB64url(cred.response.authenticatorData),
+      signature:bytesToB64url(cred.response.signature),
+      userHandle:cred.response.userHandle?bytesToB64url(cred.response.userHandle):null
+    },
+    clientExtensionResults:cred.getClientExtensionResults?cred.getClientExtensionResults():{}
+  });
+  const api=async body=>{
+    const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw Object.assign(new Error(d.error||'Could not complete secure sign-in.'),{status:r.status,data:d});
+    return d;
+  };
+  const showRecovery=()=>{
+    panel.hidden=false;toggle.hidden=true;
+    if(newForm)newForm.hidden=true;
+    if(newVerify)newVerify.hidden=true;
+    verifyWrap.hidden=true;codeEl.value='';setStatus('');
+    setTimeout(()=>nameEl?.focus(),50);
+  };
+  const hideRecovery=()=>{
+    panel.hidden=true;toggle.hidden=false;
+    if(newForm)newForm.hidden=false;
+    verifyWrap.hidden=true;codeEl.value='';setStatus('');
+  };
+  const validateDetails=()=>{
+    if(!form.reportValidity())return false;
+    return true;
+  };
+  const openRecoveredChat=d=>{
+    if(!d?.token||!d?.session)throw new Error('Secure sign-in completed but the conversation could not be opened.');
+    localStorage.setItem('stancebound-conversation-session:'+d.token,d.session);
+    setStatus('UNLOCKED · OPENING PRIVATE CHAT','success');
+    location.href='/?conversation='+encodeURIComponent(d.token);
+  };
+  const startEmailFallback=async()=>{
+    if(!validateDetails())return;
+    sendBtn.disabled=true;
+    if(emailFallbackBtn)emailFallbackBtn.disabled=true;
+    setStatus('Sending secure email code...');
+    try{
+      const d=await api({
+        action:'recover_conversation',
+        name:nameEl.value.trim(),
+        email:emailEl.value.trim()
+      });
+      verifyWrap.hidden=false;
+      setStatus(d.message||"If we found a matching conversation, we've sent a verification code to that email address.",'success');
+      setTimeout(()=>codeEl?.focus(),80);
+    }catch(err){
+      setStatus(err?.message||'Could not start email verification.','error');
+    }finally{
+      sendBtn.disabled=false;
+      if(emailFallbackBtn)emailFallbackBtn.disabled=false;
+    }
+  };
+  const startPasskeyRecovery=async()=>{
+    if(!validateDetails())return;
+    sendBtn.disabled=true;
+    if(emailFallbackBtn)emailFallbackBtn.disabled=true;
+    verifyWrap.hidden=true;
+    setStatus(passkeySupported?'CHECKING FOR YOUR PASSKEY…':'PASSKEYS ARE NOT AVAILABLE HERE · USING EMAIL','');
+    try{
+      if(!passkeySupported){
+        await startEmailFallback();
+        return;
+      }
+      const start=await api({
+        action:'recover_authentication_options',
+        name:nameEl.value.trim(),
+        email:emailEl.value.trim()
+      });
+      if(!start?.passkey_available){
+        setStatus('NO PASSKEY FOUND · SENDING EMAIL VERIFICATION','');
+        await startEmailFallback();
+        return;
+      }
+      setStatus('USE YOUR DEVICE SECURITY TO UNLOCK','');
+      const cred=await navigator.credentials.get({publicKey:authenticationOptions(start.options)});
+      if(!cred)throw new Error('Passkey sign-in was cancelled.');
+      const done=await api({
+        action:'recover_authentication_verify',
+        challenge_id:start.challenge_id,
+        credential:authenticationCredential(cred)
+      });
+      openRecoveredChat(done);
+    }catch(err){
+      if(err?.name==='NotAllowedError'){
+        setStatus('PASSKEY CANCELLED · YOU CAN TRY AGAIN OR USE EMAIL','error');
+      }else if(err?.name==='SecurityError'){
+        setStatus('PASSKEY COULD NOT BE USED ON THIS PAGE · USE EMAIL INSTEAD','error');
+      }else{
+        setStatus(err?.message||'Passkey sign-in failed. You can use email verification instead.','error');
+      }
+    }finally{
+      sendBtn.disabled=false;
+      if(emailFallbackBtn)emailFallbackBtn.disabled=false;
+    }
+  };
+
   openBtn.addEventListener('click',showRecovery);
   backBtn?.addEventListener('click',hideRecovery);
-  form.addEventListener('submit',async e=>{
-    e.preventDefault();
-    if(!form.reportValidity())return;
-    sendBtn.disabled=true;setStatus('Checking securely...');
-    try{
-      const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'recover_conversation',name:nameEl.value.trim(),email:emailEl.value.trim()})});
-      const d=await r.json().catch(()=>({}));
-      if(!r.ok)throw new Error(d.error||'Could not start conversation recovery.');
-      verifyWrap.hidden=false;
-      setStatus(d.message||"If we found a matching STANCEBOUND conversation, we've sent a verification code to that email address.",'success');
-      setTimeout(()=>codeEl?.focus(),50);
-    }catch(err){setStatus(err?.message||'Could not start conversation recovery.','error')}finally{sendBtn.disabled=false}
-  });
+  form.addEventListener('submit',async e=>{e.preventDefault();await startPasskeyRecovery()});
+  emailFallbackBtn?.addEventListener('click',startEmailFallback);
+
   verifyBtn?.addEventListener('click',async()=>{
     const code=codeEl.value.replace(/\D/g,'').slice(0,6);
     if(!/^\d{6}$/.test(code)){setStatus('ENTER THE 6-DIGIT CODE','error');return}
-    verifyBtn.disabled=true;setStatus('Verifying...');
+    verifyBtn.disabled=true;setStatus('VERIFYING…');
     try{
-      const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'verify_recovery_code',name:nameEl.value.trim(),email:emailEl.value.trim(),code})});
-      const d=await r.json().catch(()=>({}));
-      if(!r.ok||!d?.success||!d?.token||!d?.session)throw new Error(d.error||'Verification failed. Check the code or request a new one.');
-      localStorage.setItem('stancebound-conversation-session:'+d.token,d.session);
-      setStatus('VERIFIED · OPENING PRIVATE CHAT','success');
-      location.href='/?conversation='+encodeURIComponent(d.token);
-    }catch(err){setStatus(err?.message||'Verification failed. Check the code or request a new one.','error')}finally{verifyBtn.disabled=false}
+      const d=await api({
+        action:'verify_recovery_code',
+        name:nameEl.value.trim(),
+        email:emailEl.value.trim(),
+        code
+      });
+      openRecoveredChat(d);
+    }catch(err){
+      setStatus(err?.message||'Verification failed. Check the code or request a new one.','error');
+    }finally{
+      verifyBtn.disabled=false;
+    }
   });
+
   codeEl?.addEventListener('input',()=>{codeEl.value=codeEl.value.replace(/\D/g,'').slice(0,6)});
   codeEl?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();verifyBtn?.click()}});
 })();
