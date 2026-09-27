@@ -874,7 +874,8 @@
     .enquiry-actions { margin-top:18px; }
     .enquiry-actions .btn { width:100%; }
     .enquiry-status { min-height:20px; margin-top:12px; color:#aaa; font-size:11px; line-height:1.5; }
-    .enquiry-status.success { color:#d9d9d9; }
+    .enquiry-status.success { color:#35d07f; font-weight:700; }
+    .enquiry-status.error { color:#ff5252; font-weight:700; }
     .enquiry-note { margin-top:12px; color:#666; font-size:10px; line-height:1.6; }
     .verify-box { display:none; margin-top:18px; padding-top:18px; border-top:1px solid #222; }
     .verify-box.show { display:block; }
@@ -2168,7 +2169,7 @@ html[data-theme="light"] .footer *{color:#eee}
 </style>
 
 <style id="private-conversation-css">
-#conversationPage{background:#0b0b0b;color:#eee}.conv-messages{display:flex;flex-direction:column;gap:12px;padding:24px 0}.conv-msg{max-width:86%;padding:14px;border:1px solid #333;background:#151515}.conv-msg.customer{align-self:flex-end;background:#292929}.conv-who{font-size:9px;letter-spacing:.18em;color:#888;margin-bottom:7px}.conv-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}.conv-time{font-size:9px;color:#777;margin-top:8px}.conv-job{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid #333;margin-top:18px}.conv-job span{font-size:11px;color:#999}.conv-job strong{display:block;color:inherit;margin-top:4px}#convForm{border-top:1px solid #333;padding-top:18px}#convForm label{display:block;margin-bottom:8px}#convReply{width:100%;box-sizing:border-box;padding:14px;background:#111;color:#eee;border:1px solid #444}.conv-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.conv-actions button{padding:14px 20px;border:0;font-weight:700}.conv-private{text-align:center;font-size:9px;letter-spacing:.18em;color:#666;margin-top:32px}#convError{padding:14px;border:1px solid #733;color:#f1b6b6;margin-top:18px}
+#conversationPage{background:#0b0b0b;color:#eee}.conv-messages{display:flex;flex-direction:column;gap:12px;padding:24px 0}.conv-msg{max-width:86%;padding:14px;border:1px solid #333;background:#151515}.conv-msg.customer{align-self:flex-end;background:#292929}.conv-who{font-size:9px;letter-spacing:.18em;color:#888;margin-bottom:7px}.conv-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}.conv-time{font-size:9px;color:#777;margin-top:8px}.conv-job{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid #333;margin-top:18px}.conv-job span{font-size:11px;color:#999}.conv-job strong{display:block;color:inherit;margin-top:4px}#convForm{border-top:1px solid #333;padding-top:18px}#convForm label{display:block;margin-bottom:8px}#convReply{width:100%;box-sizing:border-box;padding:14px;background:#111;color:#eee;border:1px solid #444}.conv-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.conv-actions button{padding:14px 20px;border:0;font-weight:700}.conv-private{text-align:center;font-size:9px;letter-spacing:.18em;color:#666;margin-top:32px}#convError{padding:14px;border:1px solid #733;color:#ff6868;margin-top:18px}.conv-live.error{color:#ff5252!important;font-weight:700}.conv-live.success{color:#35d07f!important;font-weight:700}
 html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[data-theme="light"] .conv-msg{background:#fff;border-color:#ccc}html[data-theme="light"] .conv-msg.customer{background:#ddd}html[data-theme="light"] #convReply{background:#fff!important;color:#111!important;border-color:#aaa!important}@media(max-width:600px){.conv-job{grid-template-columns:1fr}.conv-msg{max-width:92%}}</style>
 
 <script id="stancebound-conversation-route-guard">
@@ -2788,6 +2789,17 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       </div>
     </section>
 
+    <section id="bookingThanks" class="page" style="display:none;min-height:75vh;align-items:center;justify-content:center;">
+      <div class="content" style="max-width:760px;text-align:center;padding-top:120px;padding-bottom:120px;">
+        <div class="eyebrow">BOOKING REQUEST RECEIVED</div>
+        <h1 style="margin:14px 0 18px;">THANK YOU FOR BOOKING WITH STANCEBOUND</h1>
+        <div class="heading-line" style="margin-left:auto;margin-right:auto;"></div>
+        <p style="max-width:620px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. I’ll review the requested date, time and details before confirming the booking by email.</p>
+        <p style="color:var(--grey);font-size:12px;letter-spacing:.08em;">YOUR REQUEST IS NOT CONFIRMED UNTIL YOU RECEIVE A STANCEBOUND BOOKING CONFIRMATION.</p>
+        <button class="btn" type="button" style="margin-top:28px;" onclick="showPage('home')">BACK TO STANCEBOUND</button>
+      </div>
+    </section>
+
     <section
       id="contact"
       class="page"
@@ -3332,14 +3344,28 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           }catch(notificationError){
             console.warn("Booking notification email could not be sent:",notificationError);
           }
-          enquiryStatus.textContent="REQUEST RECEIVED ✓ Your requested date is not confirmed yet. STANCEBOUND will review your request and confirm availability by email.";
+          enquiryStatus.classList.remove("error");
+          enquiryStatus.textContent="REQUEST RECEIVED ✓";
           enquiryStatus.classList.add("success");
           verifyBox.classList.remove("show");
           enquiryForm.reset();
           pendingEnquiryId=null;
           if(window.turnstile)window.turnstile.reset();
+
+          document.querySelectorAll("section.page").forEach(page=>{
+            page.classList.remove("active");
+            page.style.display="none";
+          });
+          const thanksPage=document.getElementById("bookingThanks");
+          if(thanksPage){
+            thanksPage.style.display="flex";
+            thanksPage.classList.add("active");
+            window.scrollTo({top:0,behavior:"smooth"});
+          }
         }catch(error){
-          enquiryStatus.textContent=error?.message||"That code could not be verified.";
+          enquiryStatus.classList.remove("success");
+          enquiryStatus.classList.add("error");
+          enquiryStatus.textContent="INVALID CODE";
         }finally{
           btn.disabled=false;
         }
@@ -4141,10 +4167,14 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       if(!d.session)throw Error('Secure session was not created.');
       session=d.session;
       localStorage.setItem(sessionKey,session);
-      st.textContent='Verified ✓';
+      st.classList.remove('error');
+      st.classList.add('success');
+      st.textContent='VERIFIED ✓';
       await load();
     }catch(e){
-      st.textContent=e.message;
+      st.classList.remove('success');
+      st.classList.add('error');
+      st.textContent='INVALID CODE';
     }finally{
       btn.disabled=false;
     }
