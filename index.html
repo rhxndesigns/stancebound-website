@@ -4098,10 +4098,22 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     btn.disabled=true;
     st.textContent='Sending…';
     try{
+      const readFileAsDataURL=file=>new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(String(reader.result||''));
+        reader.onerror=()=>reject(new Error('One of the selected images could not be read.'));
+        reader.readAsDataURL(file);
+      });
+      const attachments=await Promise.all(selectedAttachments.map(async f=>({
+        name:f.name,
+        type:f.type,
+        size:f.size,
+        data:await readFileAsDataURL(f)
+      })));
       const r=await fetch(endpoint,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'send',token,session,message,attachments:selectedAttachments.map(f=>({name:f.name,type:f.type,size:f.size}))})
+        body:JSON.stringify({action:'send',token,session,message,attachments})
       });
       const d=await r.json().catch(()=>({}));
       if(r.status===401 && d.verification_required){
