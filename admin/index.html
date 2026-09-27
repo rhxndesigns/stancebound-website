@@ -866,6 +866,8 @@ const supabase = createClient(
 );
 
 
+const ADMIN_EMAIL = 'ryan@stancebound.com';
+
 const login =
   document.querySelector('#login');
 
@@ -1983,8 +1985,12 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 
+function isAuthorisedAdminSession(session) {
+  return !!session?.user?.email && session.user.email.toLowerCase() === ADMIN_EMAIL;
+}
+
 function applyAdminSession(session) {
-  const loggedIn = !!session;
+  const loggedIn = isAuthorisedAdminSession(session);
 
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
@@ -2008,12 +2014,10 @@ function getStoredAdminSession() {
       k => k.startsWith('sb-') && k.endsWith('-auth-token')
     );
     if (!key) return null;
-
     const session = JSON.parse(localStorage.getItem(key) || 'null');
     if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
-
     if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
-    return session;
+    return isAuthorisedAdminSession(session) ? session : null;
   } catch {
     return null;
   }
@@ -2021,39 +2025,27 @@ function getStoredAdminSession() {
 
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
+  const status = document.querySelector('#loginStatus');
 
   if (error) {
-    const status = document.querySelector('#loginStatus');
     if (status) status.textContent = 'Could not check login: ' + error.message;
+    applyAdminSession(null);
+    return;
   }
 
-  const loggedIn = !!session;
-
-  login.classList.toggle('hidden', loggedIn);
-  editor.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
-
-  if (loggedIn) {
-    const adminToday = document.querySelector('#adminToday');
-    if (adminToday) {
-      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
-        weekday:'long', day:'numeric', month:'long', year:'numeric'
-      });
-    }
-    await Promise.allSettled([
-      loadContent(),
-      loadPhotos(),
-      loadEnquiries(),
-      loadOrders()
-    ]);
+  if (session && !isAuthorisedAdminSession(session)) {
+    applyAdminSession(null);
+    if (status) status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
+    return;
   }
+
+  applyAdminSession(session);
+  if (session) await loadAdminData();
 }
 
-
-
 async function loadAdminData() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!isAuthorisedAdminSession(session)) return;
   await Promise.allSettled([
     loadContent(),
     loadPhotos(),
@@ -2073,13 +2065,21 @@ async function adminLogin() {
     return;
   }
 
+  if (email.toLowerCase() !== ADMIN_EMAIL) {
+    status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
+    return;
+  }
+
   button.disabled = true;
   status.textContent = 'Logging in...';
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    if (!data?.session) throw new Error('Login succeeded but no session was created.');
+    if (!isAuthorisedAdminSession(data?.session)) {
+      await supabase.auth.signOut();
+      throw new Error('This account is not authorised for STANCEBOUND Admin.');
+    }
 
     status.textContent = '';
     applyAdminSession(data.session);
@@ -2324,24 +2324,26 @@ async function loadPhotos() {
   }
 
   for (const row of data) {
-    // Admin previews use an authenticated signed URL rather than assuming
-    // the storage bucket is publicly readable.
-    const { data: signedData, error: signedError } = await supabase.storage
-      .from('website-images')
-      .createSignedUrl(row.storage_path, 3600);
-
     const card = document.createElement('div');
     card.className = 'photo-card';
 
     const img = document.createElement('img');
-    if (signedError || !signedData?.signedUrl) {
+    img.alt = row.caption || 'STANCEBOUND website photo';
+    img.loading = 'lazy';
+
+    // website-images is the public website media bucket. Public URLs avoid
+    // requiring a storage SELECT policy merely to render the admin gallery.
+    const { data: publicData } = supabase.storage
+      .from('website-images')
+      .getPublicUrl(row.storage_path);
+
+    if (publicData?.publicUrl) {
+      img.src = publicData.publicUrl;
+    } else {
       img.alt = 'Photo preview unavailable';
       img.style.minHeight = '120px';
       img.style.background = '#111';
-      photoStatus.textContent = signedError?.message || 'One or more photo previews could not be loaded.';
-    } else {
-      img.src = signedData.signedUrl;
-      img.alt = row.caption || 'STANCEBOUND website photo';
+      photoStatus.textContent = 'One or more photo previews could not be loaded.';
     }
 
     const meta = document.createElement('div');
@@ -2545,9 +2547,15 @@ document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=
 });
 
 supabase.auth.onAuthStateChange((event, session) => {
-  applyAdminSession(session);
+  const authorised = isAuthorisedAdminSession(session);
+  applyAdminSession(authorised ? session : null);
 
-  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  const status = document.querySelector('#loginStatus');
+  if (session && !authorised && status) {
+    status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
+  }
+
+  if (authorised && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
   }
 });
