@@ -2003,16 +2003,23 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 
+const STANCEBOUND_ADMIN_EMAIL = 'ryan@stancebound.com';
+
+function isAuthorizedAdminSession(session) {
+  return !!session?.user?.email &&
+    String(session.user.email).trim().toLowerCase() === STANCEBOUND_ADMIN_EMAIL;
+}
+
 function applyAdminSession(session) {
-  const loggedIn = !!session;
+  const isAdmin = isAuthorizedAdminSession(session);
 
-  login.classList.toggle('hidden', loggedIn);
-  editor.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+  login.classList.toggle('hidden', isAdmin);
+  editor.classList.toggle('hidden', !isAdmin);
+  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !isAdmin);
+  document.querySelector('#moreSheet')?.classList.toggle('hidden', !isAdmin);
+  document.querySelector('#quickSheet')?.classList.toggle('hidden', !isAdmin);
 
-  if (loggedIn) {
+  if (isAdmin) {
     const adminToday = document.querySelector('#adminToday');
     if (adminToday) {
       adminToday.textContent = new Date().toLocaleDateString('en-GB', {
@@ -2020,6 +2027,8 @@ function applyAdminSession(session) {
       });
     }
   }
+
+  return isAdmin;
 }
 
 function getStoredAdminSession() {
@@ -2031,9 +2040,8 @@ function getStoredAdminSession() {
 
     const session = JSON.parse(localStorage.getItem(key) || 'null');
     if (!session?.access_token || !session?.refresh_token || !session?.user) return null;
-
     if (session.expires_at && Number(session.expires_at) * 1000 <= Date.now()) return null;
-    return session;
+    return isAuthorizedAdminSession(session) ? session : null;
   } catch {
     return null;
   }
@@ -2041,36 +2049,23 @@ function getStoredAdminSession() {
 
 async function showCorrectScreen() {
   const { data: { session }, error } = await supabase.auth.getSession();
+  const status = document.querySelector('#loginStatus');
 
   if (error) {
-    const status = document.querySelector('#loginStatus');
     if (status) status.textContent = 'Could not check login: ' + error.message;
+    applyAdminSession(null);
+    return;
   }
 
-  const loggedIn = !!session;
-
-  login.classList.toggle('hidden', loggedIn);
-  editor.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
-  document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
-
-  if (loggedIn) {
-    const adminToday = document.querySelector('#adminToday');
-    if (adminToday) {
-      adminToday.textContent = new Date().toLocaleDateString('en-GB', {
-        weekday:'long', day:'numeric', month:'long', year:'numeric'
-      });
-    }
-    await Promise.allSettled([
-      loadContent(),
-      loadPhotos(),
-      loadEnquiries(),
-      loadOrders()
-    ]);
+  if (!isAuthorizedAdminSession(session)) {
+    applyAdminSession(null);
+    if (session && status) status.textContent = 'This account is not authorised for STANCEBOUND Admin.';
+    return;
   }
+
+  applyAdminSession(session);
+  await loadAdminData();
 }
-
 
 
 async function loadAdminData() {
@@ -2100,6 +2095,12 @@ async function adminLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     if (!data?.session) throw new Error('Login succeeded but no session was created.');
+
+    if (!isAuthorizedAdminSession(data.session)) {
+      await supabase.auth.signOut();
+      applyAdminSession(null);
+      throw new Error('This account is not authorised for STANCEBOUND Admin.');
+    }
 
     status.textContent = '';
     applyAdminSession(data.session);
@@ -2556,9 +2557,9 @@ document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=
 });
 
 supabase.auth.onAuthStateChange((event, session) => {
-  applyAdminSession(session);
+  const isAdmin = applyAdminSession(session);
 
-  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  if (isAdmin && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
   }
 });
@@ -2571,9 +2572,8 @@ if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en
 // flashing/sticking while Supabase restores its client state.
 const storedAdminSession = getStoredAdminSession();
 applyAdminSession(storedAdminSession);
-if (storedAdminSession) {
-  setTimeout(loadAdminData, 250);
-}
+// Always re-check the real Supabase session before exposing/loading admin data.
+setTimeout(showCorrectScreen, 0);
 
 </script>
 
