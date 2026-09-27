@@ -4127,13 +4127,14 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   const codeEl=document.getElementById('customerChatCode');
   const verifyBtn=document.getElementById('customerChatVerifyBtn');
   const status=document.getElementById('customerChatStatus');
-  if(!form||!window.stanceboundSupabase)return;
+  if(!form)return;
   let conversationToken='';
   const setStatus=(message,type='')=>{status.textContent=message||'';status.className='sb-chat-status'+(type?' '+type:'')};
   form.addEventListener('submit',async e=>{
     e.preventDefault(); if(!form.reportValidity())return;
     sendBtn.disabled=true; setStatus('Sending verification code...');
     try{
+      if(!window.stanceboundSupabase) throw new Error('Chat service is still loading. Please try again.');
       const {data,error}=await window.stanceboundSupabase.functions.invoke('start-customer-chat',{body:{action:'request_code',name:nameEl.value.trim(),email:emailEl.value.trim()}});
       if(error)throw error; if(!data?.success||!data?.conversation_token)throw new Error(data?.error||'Could not start private chat.');
       conversationToken=data.conversation_token; verifyWrap.hidden=false; setStatus('CODE SENT · CHECK YOUR EMAIL','success'); codeEl.focus();
@@ -4145,6 +4146,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     if(!conversationToken){setStatus('Request a verification code first.','error');return}
     verifyBtn.disabled=true; setStatus('Verifying...');
     try{
+      if(!window.stanceboundSupabase) throw new Error('Chat service is still loading. Please try again.');
       const {data,error}=await window.stanceboundSupabase.functions.invoke('start-customer-chat',{body:{action:'verify_code',email:emailEl.value.trim(),conversation_token:conversationToken,code}});
       if(error)throw error; if(!data?.success||!data?.session)throw new Error(data?.error||'INVALID CODE');
       const token=data.conversation_token||conversationToken;
