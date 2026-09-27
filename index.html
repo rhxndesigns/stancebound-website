@@ -4579,15 +4579,35 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     },250);
   };
 
+  // Trigger from the verified secure session itself, not a UI element.
+  const hadSessionAtLoad=!!localStorage.getItem(sessionKey);
   let tries=0;
   const wait=setInterval(()=>{
     tries++;
-    const form=document.getElementById('convForm');
-    if(localStorage.getItem(sessionKey)&&form&&!form.hidden){
+    const hasSession=!!localStorage.getItem(sessionKey);
+
+    // A successful email verification has just created the chat session.
+    if(hasSession && !hadSessionAtLoad){
       clearInterval(wait);
-      setTimeout(open,650);
-    }else if(tries>120)clearInterval(wait);
+      setTimeout(open,700);
+      return;
+    }
+
+    // Also cover a reload/open immediately after verification.
+    if(hasSession && hadSessionAtLoad && tries>=4){
+      clearInterval(wait);
+      setTimeout(open,300);
+      return;
+    }
+
+    if(tries>240) clearInterval(wait);
   },250);
+
+  window.addEventListener('storage',(event)=>{
+    if(event.key===sessionKey && event.newValue){
+      setTimeout(open,500);
+    }
+  });
 })();
 </script>
 
