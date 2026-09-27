@@ -443,6 +443,10 @@ try{
 }catch(_){}
 </script>
 
+
+<style id="stancebound-chat-inbox-upgrade">
+.chat-search{width:100%;box-sizing:border-box;margin:14px 0 18px;padding:14px 15px;background:#0e0e0e;color:#fff;border:1px solid #333;border-radius:10px;font:inherit}.chat-inbox-row{display:flex;justify-content:space-between;gap:14px;padding:16px 4px;border-bottom:1px solid #292929;cursor:pointer}.chat-inbox-row:hover{background:#111}.chat-inbox-main{min-width:0;flex:1}.chat-inbox-name{font-weight:800;font-size:15px}.chat-inbox-meta,.chat-inbox-preview,.chat-inbox-side{color:#888;font-size:11px;margin-top:5px}.chat-inbox-preview{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:720px}.chat-inbox-side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto}.chat-thread-view{max-width:860px;margin:0 auto}.chat-back{margin-bottom:18px}.chat-thread-view .chat-thread{max-height:58vh;overflow:auto;padding-right:4px}@media(max-width:600px){.chat-inbox-row{padding:15px 0}.chat-inbox-preview{max-width:62vw}.chat-thread-view .chat-thread{max-height:52vh}}
+</style>
 </head>
 
 <body>
@@ -497,9 +501,7 @@ ADMIN CONTROL
   id="email"
   type="email"
   value=""
-  autocomplete="off"
-  autocapitalize="none"
-  spellcheck="false"
+  autocomplete="username"
 >
 
 <label>Password</label>
@@ -507,8 +509,7 @@ ADMIN CONTROL
 <input
   id="password"
   type="password"
-  value=""
-  autocomplete="off"
+  autocomplete="current-password"
 >
 
 <button id="loginBtn">
@@ -535,9 +536,9 @@ Log In
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
-    <button type="button" class="admin-tab" data-admin-target="enquiries">Enquiries <span id="enquiryBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="enquiries">Chats <span id="enquiryBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="bookings">Bookings <span id="bookingBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="chats">Chats <span id="chatBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="chats">Booking Chats <span id="chatBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
     <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
@@ -554,7 +555,7 @@ Log In
       <h2>Welcome back, Ryan.</h2>
       <p class="help">A quick view of what needs your attention, what is booked and what STANCEBOUND has completed.</p>
       <div class="overview-grid">
-        <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Needs attention</div></div>
+        <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New chats</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Unread customer messages</div></div>
         <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Booking requests</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Needs a response</div></div>
         <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Awaiting customer</div><div class="metric-value" id="metricAwaitingCustomer">0</div><div class="metric-sub">Already dealt with</div></div>
         <div class="metric-card" data-open-admin="schedule"><div class="metric-label">Upcoming jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
@@ -567,13 +568,13 @@ Log In
       </div>
       <div class="dashboard-grid">
         <div class="dash-card" data-open-admin="enquiries">
-          <div class="dash-icon">✉</div><h3>Enquiries</h3><p>Read, reply to and manage customer requests.</p>
+          <div class="dash-icon">✉</div><h3>Chats</h3><p>Messages from customers who used Chat With Us.</p>
         </div>
         <div class="dash-card" data-open-admin="bookings">
           <div class="dash-icon">▦</div><h3>Bookings</h3><p>Review website booking requests and confirm customers.</p>
         </div>
         <div class="dash-card" data-open-admin="chats">
-          <div class="dash-icon">◫</div><h3>Chats</h3><p>Private customer conversations from enquiry and booking emails.</p>
+          <div class="dash-icon">◫</div><h3>Booking Chats</h3><p>Private conversations attached to booking customers.</p>
         </div>
         <div class="dash-card" data-open-admin="pending">
           <div class="dash-icon">○</div><h3>Pending</h3><p>Enquiries still waiting for a date to be booked.</p>
@@ -609,32 +610,25 @@ Log In
 
   <div class="admin-page" data-admin-page="chats">
     <div class="panel">
-      <div class="admin-kicker">Private Customer Conversations</div>
-      <h2>Chats</h2>
-      <p class="help">Messages sent through each customer's private STANCEBOUND link appear here.</p>
+      <div class="admin-kicker">Booking Conversations</div>
+      <h2>Booking Chats</h2>
+      <p class="help">Private conversations attached to booking customers. Open a customer to view the full conversation.</p>
+      <input id="bookingChatSearch" class="chat-search" type="search" placeholder="Search name, email, vehicle or messages..." autocomplete="off">
       <div id="chatAdminStatus" class="status"></div>
       <div id="chatList" class="chat-list"></div>
     </div>
   </div>
 
-
   <div class="admin-page" data-admin-page="enquiries">
     <div class="panel">
-      <div class="admin-kicker">Customer Messages</div>
-      <h2>Enquiries</h2>
-      <p class="help">Only email-verified enquiries appear here. Reply from this page and the customer receives the response by email.</p>
-      <div class="filter-pills" id="enquiryFilters">
-        <button class="filter-pill active" type="button" data-filter="active">Active</button>
-        <button class="filter-pill" type="button" data-filter="new">New</button>
-        <button class="filter-pill" type="button" data-filter="booked">Booked</button>
-        <button class="filter-pill" type="button" data-filter="ongoing">Ongoing</button>
-      </div>
-      <div id="enquiryAdminStatus" class="status"></div>
-      <div id="enquiryList" class="enquiry-list"></div>
+      <div class="admin-kicker">Customer Conversations</div>
+      <h2>Chats</h2>
+      <p class="help">Customers who started a conversation through Chat With Us. These are kept separate from bookings.</p>
+      <input id="generalChatSearch" class="chat-search" type="search" placeholder="Search name, email or messages..." autocomplete="off">
+      <div id="generalChatStatus" class="status"></div>
+      <div id="generalChatList" class="chat-list"></div>
     </div>
   </div>
-
-
 
   <div class="admin-page" data-admin-page="bookings">
     <div class="panel">
@@ -905,6 +899,7 @@ function openAdminPage(name, addToHistory=true) {
   if(name==='upcoming') renderUpcoming();
   if(name==='bookings') renderBookingRequests();
   if(name==='chats') loadChats();
+  if(name==='enquiries') loadChats();
   updateBookingMetrics();
   if(name==='dashboard') renderDashboard();
   const nextHash='#'+name;
@@ -1319,104 +1314,104 @@ function chatDate(value){
 }
 
 async function loadChats(){
-  const list=document.querySelector('#chatList');
-  const status=document.querySelector('#chatAdminStatus');
-  if(!list)return;
-  status.textContent='Loading chats...';
+  const bookingList=document.querySelector('#chatList');
+  const generalList=document.querySelector('#generalChatList');
+  const bookingStatus=document.querySelector('#chatAdminStatus');
+  const generalStatus=document.querySelector('#generalChatStatus');
+  if(!bookingList&&!generalList)return;
+  if(bookingStatus)bookingStatus.textContent='Loading booking chats...';
+  if(generalStatus)generalStatus.textContent='Loading chats...';
 
   const {data,error}=await supabase
     .from('conversation_messages')
     .select('id,enquiry_id,sender,message,created_at,read_at')
     .order('created_at',{ascending:true});
-
   if(error){
-    status.textContent='Could not load chats: '+error.message;
+    if(bookingStatus)bookingStatus.textContent='Could not load chats: '+error.message;
+    if(generalStatus)generalStatus.textContent='Could not load chats: '+error.message;
     return;
   }
 
   cachedConversationMessages=data||[];
   const groups=new Map();
   cachedConversationMessages.forEach(m=>{
-    if(!groups.has(String(m.enquiry_id))) groups.set(String(m.enquiry_id),[]);
-    groups.get(String(m.enquiry_id)).push(m);
+    const key=String(m.enquiry_id);
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push(m);
   });
 
-  const threads=[...groups.entries()].map(([id,messages])=>{
-    const enquiry=cachedEnquiries.find(r=>String(r.id)===id);
+  const allThreads=[...groups.entries()].map(([id,messages])=>{
+    const enquiry=cachedEnquiries.find(r=>String(r.id)===id)||{};
     const last=messages[messages.length-1];
     const unread=messages.filter(m=>m.sender==='customer'&&!m.read_at).length;
-    return {id,messages,enquiry,last,unread};
+    const isGeneral=String(enquiry.service||'').toLowerCase()==='private chat';
+    return {id,messages,enquiry,last,unread,isGeneral};
   }).sort((a,b)=>new Date(b.last?.created_at||0)-new Date(a.last?.created_at||0));
 
-  const unreadTotal=threads.reduce((n,t)=>n+t.unread,0);
-  const badge=document.querySelector('#chatBadge');
-  if(badge) badge.textContent=unreadTotal||'';
+  const generalThreads=allThreads.filter(t=>t.isGeneral);
+  const bookingThreads=allThreads.filter(t=>!t.isGeneral);
+  const generalUnread=generalThreads.reduce((n,t)=>n+t.unread,0);
+  const bookingUnread=bookingThreads.reduce((n,t)=>n+t.unread,0);
+  const enquiryBadge=document.querySelector('#enquiryBadge');
+  const chatBadge=document.querySelector('#chatBadge');
+  if(enquiryBadge)enquiryBadge.textContent=generalUnread||'';
+  if(chatBadge)chatBadge.textContent=bookingUnread||'';
+  const metric=document.querySelector('#metricNew'); if(metric)metric.textContent=generalUnread;
+  if(bookingStatus)bookingStatus.textContent='';
+  if(generalStatus)generalStatus.textContent='';
 
-  status.textContent='';
-  if(!threads.length){
-    list.innerHTML='<div class="empty-state">No private conversations yet.</div>';
-    return;
-  }
+  const renderInbox=(host,threads,searchEl,type)=>{
+    if(!host)return;
+    const q=(searchEl?.value||'').trim().toLowerCase();
+    const filtered=threads.filter(t=>{
+      if(!q)return true;
+      const r=t.enquiry||{};
+      const hay=[r.name,r.email,r.vehicle,r.service,...t.messages.map(m=>m.message)].filter(Boolean).join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+    if(!filtered.length){host.innerHTML=`<div class="empty-state">${q?'No matching conversations.':type==='general'?'No Chat With Us conversations yet.':'No booking conversations yet.'}</div>`;return;}
+    host.innerHTML=filtered.map(t=>{
+      const r=t.enquiry||{}; const last=t.last||{};
+      const preview=String(last.message||'No messages yet').replace(/\s+/g,' ').slice(0,100);
+      return `<article class="chat-inbox-row" data-open-thread="${escapeHtml(t.id)}" data-thread-type="${type}" tabindex="0">
+        <div class="chat-inbox-main"><div class="chat-inbox-name">${escapeHtml(r.name||'Customer')}</div>
+        <div class="chat-inbox-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')):(escapeHtml(r.email||''))}</div>
+        <div class="chat-inbox-preview">${last.sender==='stancebound'?'You: ':''}${escapeHtml(preview)}</div></div>
+        <div class="chat-inbox-side"><span>${escapeHtml(last.created_at?chatDate(last.created_at):'')}</span>${t.unread?`<b class="chat-unread">${t.unread}</b>`:''}</div>
+      </article>`;
+    }).join('');
+    host.querySelectorAll('[data-open-thread]').forEach(row=>{
+      const open=()=>renderThread(host,threads.find(t=>t.id===row.dataset.openThread),type,searchEl);
+      row.onclick=open; row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};
+    });
+  };
 
-  list.innerHTML=threads.map(t=>{
+  const renderThread=(host,t,type,searchEl)=>{
+    if(!t)return;
     const r=t.enquiry||{};
-    const messages=t.messages.map(m=>`
-      <div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">
-        ${escapeHtml(m.message||'')}
-        <span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span>
-      </div>`).join('');
-    return `<article class="chat-card" data-chat-enquiry="${escapeHtml(t.id)}">
-      <div class="chat-head">
-        <div>
-          <h3>${escapeHtml(r.name||'Customer')}</h3>
-          <div class="chat-meta">${escapeHtml(r.vehicle||'')} ${r.service?'· '+escapeHtml(r.service):''}<br>${escapeHtml(r.email||'')}</div>
-        </div>
-        ${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}
-      </div>
-      <div class="chat-thread">${messages}</div>
-      <div class="chat-compose">
-        <textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea>
-        <div class="chat-actions">
-          <button type="button" data-chat-send="${escapeHtml(t.id)}">Send Reply</button>
-          ${t.unread?`<button type="button" class="secondary" data-chat-read="${escapeHtml(t.id)}">Mark Read</button>`:''}
-        </div>
-        <div class="status"></div>
-      </div>
-    </article>`;
-  }).join('');
+    host.innerHTML=`<div class="chat-thread-view">
+      <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
+      <div class="chat-head"><div><h3>${escapeHtml(r.name||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
+      <div class="chat-thread">${t.messages.map(m=>`<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${escapeHtml(m.message||'')}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`).join('')}</div>
+      <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||'customer')}..."></textarea><div class="chat-actions"><button type="button" data-thread-send>Send Reply</button></div><div class="status"></div></div>
+    </div>`;
+    host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
+    host.querySelector('[data-thread-send]').onclick=async()=>{
+      const btn=host.querySelector('[data-thread-send]'), textarea=host.querySelector('textarea'), st=host.querySelector('.status');
+      const reply=textarea.value.trim(); if(!reply){st.textContent='Write a reply first.';return;}
+      btn.disabled=true;st.textContent='Sending...';
+      try{const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:t.id,reply}});if(error)throw error;if(!data?.success)throw new Error(data?.error||'Reply failed.');st.textContent='Reply sent ✓';await loadEnquiries();}
+      catch(e){st.textContent=e?.message||'Could not send reply.';}finally{btn.disabled=false;}
+    };
+    if(t.unread){supabase.from('conversation_messages').update({read_at:new Date().toISOString()}).eq('enquiry_id',t.id).eq('sender','customer').is('read_at',null).then(()=>{});}
+  };
 
-  list.querySelectorAll('[data-chat-send]').forEach(btn=>btn.onclick=async()=>{
-    const card=btn.closest('.chat-card');
-    const textarea=card.querySelector('textarea');
-    const st=card.querySelector('.status');
-    const reply=textarea.value.trim();
-    if(!reply){st.textContent='Write a reply first.';return;}
-    btn.disabled=true;st.textContent='Sending...';
-    try{
-      const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:btn.dataset.chatSend,reply}});
-      if(error)throw error;
-      if(!data?.success)throw new Error(data?.error||'Reply failed.');
-      textarea.value='';
-      st.textContent='Reply sent ✓';
-      await loadEnquiries();
-      await loadChats();
-    }catch(e){st.textContent=e?.message||'Could not send reply.';}
-    finally{btn.disabled=false;}
-  });
-
-  list.querySelectorAll('[data-chat-read]').forEach(btn=>btn.onclick=async()=>{
-    const card=btn.closest('.chat-card');
-    const st=card.querySelector('.status');
-    btn.disabled=true;
-    const {error}=await supabase
-      .from('conversation_messages')
-      .update({read_at:new Date().toISOString()})
-      .eq('enquiry_id',btn.dataset.chatRead)
-      .eq('sender','customer')
-      .is('read_at',null);
-    if(error){st.textContent='Could not mark read: '+error.message;btn.disabled=false;return;}
-    await loadChats();
-  });
+  const generalSearch=document.querySelector('#generalChatSearch');
+  const bookingSearch=document.querySelector('#bookingChatSearch');
+  renderInbox(generalList,generalThreads,generalSearch,'general');
+  renderInbox(bookingList,bookingThreads,bookingSearch,'booking');
+  if(generalSearch&&!generalSearch.dataset.bound){generalSearch.dataset.bound='1';generalSearch.addEventListener('input',()=>renderInbox(generalList,generalThreads,generalSearch,'general'));}
+  if(bookingSearch&&!bookingSearch.dataset.bound){bookingSearch.dataset.bound='1';bookingSearch.addEventListener('input',()=>renderInbox(bookingList,bookingThreads,bookingSearch,'booking'));}
 }
 
 
@@ -2557,17 +2552,23 @@ if (storedAdminSession) {
 
 
 
-<script id="stancebound-login-clear">
-window.addEventListener('pageshow', function () {
+<script id="admin-login-empty-fields-fix">
+document.addEventListener('DOMContentLoaded', function () {
   const email = document.getElementById('email');
   const password = document.getElementById('password');
+
   if (email) {
     email.value = '';
     email.defaultValue = '';
+    email.setAttribute('value', '');
+    email.setAttribute('autocomplete', 'off');
   }
+
   if (password) {
     password.value = '';
     password.defaultValue = '';
+    password.setAttribute('value', '');
+    password.setAttribute('autocomplete', 'off');
   }
 });
 </script>
