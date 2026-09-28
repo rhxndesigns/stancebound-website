@@ -2187,6 +2187,18 @@ async function adminPasskeyLogin(){
 }
 document.querySelector('#adminPasskeyRegisterBtn')?.addEventListener('click',adminPasskeyRegister);
 document.querySelector('#adminPasskeyLoginBtn')?.addEventListener('click',adminPasskeyLogin);
+async function handleSecureAdminEntry(){
+  const p=new URLSearchParams(location.search);
+  if(p.get('lock')!=='1')return;
+  history.replaceState({},'',location.pathname);
+  try{await supabase.auth.signOut()}catch(e){}
+  applyAdminSession(null);
+  const st=document.querySelector('#adminPasskeyLoginStatus');
+  if(st)st.textContent='Verify your identity to continue.';
+  setTimeout(()=>adminPasskeyLogin(),150);
+}
+handleSecureAdminEntry();
+
 
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
