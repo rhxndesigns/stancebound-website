@@ -316,6 +316,13 @@ body{padding-bottom:88px}
 .chat-bubble.stancebound:has(> .chat-attachment-grid:first-child){background:transparent}
 .chat-bubble:has(> .chat-attachment-grid:first-child) .chat-time{padding:0 5px;margin-top:7px}
 
+/* Admin passkey UI */
+.admin-passkey-login,.admin-passkey-tools{margin:12px 0 20px;padding:16px;border:1px solid #2b2b2b;background:#0d0d0d;border-radius:14px}
+.admin-passkey-login strong,.admin-passkey-tools strong{font-size:11px;letter-spacing:.16em}
+.admin-passkey-login p{color:#999;font-size:13px;line-height:1.5;margin:7px 0 14px}
+.admin-passkey-login button{width:100%}
+.admin-login-divider{display:flex;align-items:center;gap:10px;color:#666;font-size:10px;letter-spacing:.15em;margin:4px 0 18px}
+.admin-login-divider:before,.admin-login-divider:after{content:"";height:1px;background:#292929;flex:1}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -511,7 +518,8 @@ ADMIN CONTROL
 <section id="login" class="panel">
 
 <h2>Admin Login</h2>
-
+<div class="admin-passkey-login"><strong>QUICK SECURE ACCESS</strong><p>Use your saved passkey with fingerprint, face or device PIN.</p><button type="button" id="adminPasskeyLoginBtn">🔐 UNLOCK ADMIN</button><div id="adminPasskeyLoginStatus" class="status"></div></div>
+<div class="admin-login-divider"><span>OR USE PASSWORD</span></div>
 <label>Email</label>
 
 <input
@@ -819,6 +827,7 @@ Save Changes
       <h2>Tools</h2>
       <a class="tool-link" href="/" target="_blank" rel="noopener">View Live Website <span>↗</span></a>
       <button type="button" id="refreshAdminBtn" class="secondary">Refresh Website Data</button>
+      <div class="admin-passkey-tools"><strong>PASSKEY / BIOMETRICS</strong><p class="help">Register this device for secure biometric or device-PIN admin access.</p><button type="button" id="adminPasskeyRegisterBtn" class="secondary">Set Up Passkey</button><div id="adminPasskeyRegisterStatus" class="status"></div></div>
       <button type="button" id="logoutBtn" class="secondary">Log Out</button>
       <div id="toolStatus" class="status"></div>
     </div>
@@ -2145,6 +2154,39 @@ async function loadAdminData() {
     loadOrders()
   ]);
 }
+
+
+function sbB64ToBytes(v){const b=String(v||'').replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(String(v||'').length/4)*4,'=');return Uint8Array.from(atob(b),c=>c.charCodeAt(0))}
+function sbBytesToB64(v){let b='';new Uint8Array(v).forEach(x=>b+=String.fromCharCode(x));return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function sbCredentialJSON(c){const r=c.response,o={id:c.id,rawId:sbBytesToB64(c.rawId),type:c.type,clientExtensionResults:c.getClientExtensionResults?.()||{},response:{clientDataJSON:sbBytesToB64(r.clientDataJSON)}};if(r.attestationObject){o.response.attestationObject=sbBytesToB64(r.attestationObject);o.response.transports=r.getTransports?.()||[]}if(r.authenticatorData){o.response.authenticatorData=sbBytesToB64(r.authenticatorData);o.response.signature=sbBytesToB64(r.signature);o.response.userHandle=r.userHandle?sbBytesToB64(r.userHandle):null}return o}
+function sbRegOptions(o){o=structuredClone(o);o.challenge=sbB64ToBytes(o.challenge);o.user.id=sbB64ToBytes(o.user.id);if(o.excludeCredentials)o.excludeCredentials=o.excludeCredentials.map(c=>({...c,id:sbB64ToBytes(c.id)}));return o}
+function sbAuthOptions(o){o=structuredClone(o);o.challenge=sbB64ToBytes(o.challenge);if(o.allowCredentials)o.allowCredentials=o.allowCredentials.map(c=>({...c,id:sbB64ToBytes(c.id)}));return o}
+
+async function adminPasskeyRegister(){
+ const b=document.querySelector('#adminPasskeyRegisterBtn'),st=document.querySelector('#adminPasskeyRegisterStatus');b.disabled=true;st.textContent='Preparing passkey...';
+ try{
+  if(!window.PublicKeyCredential)throw new Error('Passkeys are not supported on this device.');
+  const {data:ss}=await supabase.auth.getSession(),token=ss?.session?.access_token;if(!token)throw new Error('Log in with your password first.');
+  const {data:a,error:e}=await supabase.functions.invoke('admin-passkey',{body:{action:'registration_options'},headers:{Authorization:`Bearer ${token}`}});if(e)throw e;if(!a?.success)throw new Error(a?.error||'Could not start setup.');
+  const cred=await navigator.credentials.create({publicKey:sbRegOptions(a.options)});if(!cred)throw new Error('Passkey setup cancelled.');
+  const {data:d,error:x}=await supabase.functions.invoke('admin-passkey',{body:{action:'registration_verify',challenge_id:a.challenge_id,credential:sbCredentialJSON(cred),device_name:navigator.userAgent.slice(0,120)},headers:{Authorization:`Bearer ${token}`}});if(x)throw x;if(!d?.success)throw new Error(d?.error||'Passkey registration failed.');
+  st.textContent='Passkey ready ✓';
+ }catch(e){st.textContent=e?.name==='NotAllowedError'?'Passkey setup cancelled.':(e?.message||'Could not set up passkey.')}finally{b.disabled=false}
+}
+async function adminPasskeyLogin(){
+ const b=document.querySelector('#adminPasskeyLoginBtn'),st=document.querySelector('#adminPasskeyLoginStatus');b.disabled=true;st.textContent='Waiting for device verification...';
+ try{
+  if(!window.PublicKeyCredential)throw new Error('Passkeys are not supported on this device.');
+  const {data:a,error:e}=await supabase.functions.invoke('admin-passkey',{body:{action:'authentication_options'}});if(e)throw e;if(!a?.success)throw new Error(a?.error||'No admin passkey registered yet.');
+  const cred=await navigator.credentials.get({publicKey:sbAuthOptions(a.options)});if(!cred)throw new Error('Passkey sign-in cancelled.');
+  const {data:d,error:x}=await supabase.functions.invoke('admin-passkey',{body:{action:'authentication_verify',challenge_id:a.challenge_id,credential:sbCredentialJSON(cred)}});if(x)throw x;if(!d?.success||!d?.token_hash)throw new Error(d?.error||'Passkey verification failed.');
+  const {data:l,error:le}=await supabase.auth.verifyOtp({token_hash:d.token_hash,type:'magiclink'});if(le)throw le;if(!l?.session)throw new Error('Admin session was not created.');
+  if(String(l.session.user?.email||'').toLowerCase()!=='ryan@stancebound.com'){await supabase.auth.signOut();throw new Error('Account not authorised.')}
+  st.textContent='Unlocked ✓';applyAdminSession(l.session);setTimeout(loadAdminData,0);
+ }catch(e){st.textContent=e?.name==='NotAllowedError'?'Device verification cancelled.':(e?.message||'Could not unlock admin.')}finally{b.disabled=false}
+}
+document.querySelector('#adminPasskeyRegisterBtn')?.addEventListener('click',adminPasskeyRegister);
+document.querySelector('#adminPasskeyLoginBtn')?.addEventListener('click',adminPasskeyLogin);
 
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
