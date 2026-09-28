@@ -2188,14 +2188,17 @@ async function adminPasskeyLogin(){
 document.querySelector('#adminPasskeyRegisterBtn')?.addEventListener('click',adminPasskeyRegister);
 document.querySelector('#adminPasskeyLoginBtn')?.addEventListener('click',adminPasskeyLogin);
 async function handleSecureAdminEntry(){
-  const p=new URLSearchParams(location.search);
-  if(p.get('lock')!=='1')return;
+  const params=new URLSearchParams(location.search);
+  if(params.get('lock')!=='1')return;
+
   history.replaceState({},'',location.pathname);
-  try{await supabase.auth.signOut()}catch(e){}
+
+  try{ await supabase.auth.signOut(); }catch(_){}
+
   applyAdminSession(null);
-  const st=document.querySelector('#adminPasskeyLoginStatus');
-  if(st)st.textContent='Verify your identity to continue.';
-  setTimeout(()=>adminPasskeyLogin(),150);
+
+  const status=document.querySelector('#adminPasskeyLoginStatus');
+  if(status) status.textContent='Tap UNLOCK ADMIN to verify with your device.';
 }
 handleSecureAdminEntry();
 
