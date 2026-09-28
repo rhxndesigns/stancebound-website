@@ -3287,7 +3287,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     South Wales
 
     <div class="footer-admin-access">
-      <a href="/admin/" aria-label="Admin login">Admin</a>
+      <a href="/admin/?lock=1" aria-label="Admin login">Admin</a>
     </div>
 
   </footer>
@@ -4660,6 +4660,10 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 })();
 </script>
 
+<style id="admin-entry-position">
+.footer-admin-access{text-align:left!important;padding-left:8px!important;box-sizing:border-box}
+@media(max-width:700px){.footer-admin-access{padding-right:100px!important}}
+</style>
 </body>
 
 </html>
