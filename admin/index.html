@@ -305,6 +305,17 @@ body{padding-bottom:88px}
 .chat-attachment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}.chat-attachment-grid.single{grid-template-columns:1fr}.chat-attachment{display:block;width:100%;margin:0;padding:0;border:0;background:transparent;border-radius:10px;overflow:hidden}.chat-attachment img{display:block;width:100%;height:150px;object-fit:cover}.chat-attachment-grid.single img{height:auto;max-height:340px;object-fit:contain;background:#050505}.chat-image-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:18px}.chat-image-lightbox img{max-width:100%;max-height:92vh;object-fit:contain}.chat-image-lightbox button{position:absolute;top:14px;right:14px;width:44px;height:44px;margin:0;padding:0;border-radius:50%;background:#fff;color:#000;font-size:22px}
 .chat-actions .chat-delete-btn{margin-left:auto;background:transparent;color:#ff9f9f;border:1px solid rgba(255,92,92,.28);letter-spacing:1.4px}.chat-actions .chat-delete-btn:hover{background:rgba(255,70,70,.08);border-color:rgba(255,92,92,.48)}.chat-actions .chat-delete-btn:disabled{opacity:.45;cursor:wait}
 @media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:auto}.chat-actions [data-thread-send]{flex:1}.chat-upload-previews{grid-template-columns:repeat(3,minmax(0,1fr))}.chat-actions{flex-wrap:wrap}.chat-delete-btn{width:100%!important;margin-left:0!important}}
+
+/* Messenger-style chat media */
+.chat-attachment-grid{margin-top:8px}
+.chat-bubble .chat-attachment-grid:first-child{margin-top:0}
+.chat-attachment-grid.single{max-width:min(420px,78vw)}
+.chat-attachment-grid.single .chat-attachment{border-radius:16px;overflow:hidden}
+.chat-attachment-grid.single img{display:block;width:100%;height:auto;max-height:520px;object-fit:cover}
+.chat-bubble:has(> .chat-attachment-grid:first-child){padding:7px;background:transparent;border-color:transparent;box-shadow:none}
+.chat-bubble.stancebound:has(> .chat-attachment-grid:first-child){background:transparent}
+.chat-bubble:has(> .chat-attachment-grid:first-child) .chat-time{padding:0 5px;margin-top:7px}
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -1427,7 +1438,7 @@ async function loadChats(){
     host.innerHTML=`<div class="chat-thread-view">
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
       <div class="chat-head"><div><h3>${escapeHtml(r.name||((r.email||'').split('@')[0])||'Customer')}</h3><div class="chat-meta">${type==='booking'?(escapeHtml(r.vehicle||'')+(r.service?' · '+escapeHtml(r.service):'')+'<br>'):''}${escapeHtml(r.email||'')}</div></div>${t.unread?`<span class="chat-unread">${t.unread}</span>`:''}</div>
-      <div class="chat-thread">${t.messages.map(m=>{const at=Array.isArray(m.attachments)?m.attachments.filter(a=>a.url):[];const text=(at.length&&m.message==='Photo attachment')?'':(m.message||'');return `<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${text?`<div>${escapeHtml(text)}</div>`:''}${at.length?`<div class="chat-attachment-grid ${at.length===1?'single':''}">${at.map(a=>`<button type="button" class="chat-attachment" data-chat-image="${escapeHtml(a.url)}" aria-label="Open image"><img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.name||'Chat image')}" loading="lazy"></button>`).join('')}</div>`:''}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`;}).join('')}</div>
+      <div class="chat-thread">${t.messages.map(m=>{const at=Array.isArray(m.attachments)?m.attachments.filter(a=>a.url):[];const rawMessage=String(m.message||'').trim();const text=(at.length&&/^photo attachment$/i.test(rawMessage))?'':rawMessage;return `<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${text?`<div>${escapeHtml(text)}</div>`:''}${at.length?`<div class="chat-attachment-grid ${at.length===1?'single':''}">${at.map(a=>`<button type="button" class="chat-attachment" data-chat-image="${escapeHtml(a.url)}" aria-label="Open image"><img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.name||'Chat image')}" loading="lazy"></button>`).join('')}</div>`:''}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`;}).join('')}</div>
       <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><input class="chat-file-input" data-thread-files type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="chat-upload-previews" data-thread-previews></div><div class="chat-actions"><button type="button" class="secondary chat-attach-btn" data-thread-attach aria-label="Add photos">📎 Photos</button><button type="button" data-thread-send>Send</button><button type="button" class="chat-delete-btn" data-thread-delete>Delete Chat</button></div><div class="chat-upload-note">JPG, PNG or WebP · up to 5 images · 10 MB each</div><div class="status"></div></div>
     </div>`;
     host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
