@@ -1789,6 +1789,28 @@
 .conv-msg:has(.conv-image-grid):not(:has(.conv-body)) .conv-time,
 .conv-msg:has(.conv-image-grid):not(:has(.conv-body)) .conv-receipt{margin-left:5px;margin-right:5px}
 
+
+/* Discreet owner access */
+.footer-admin-access{
+  width:100%;
+  margin-top:14px;
+  text-align:center;
+}
+.footer-admin-access a{
+  color:inherit;
+  opacity:.22;
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  text-decoration:none;
+  transition:opacity .2s ease;
+}
+.footer-admin-access a:hover,
+.footer-admin-access a:focus-visible{
+  opacity:.65;
+}
+
 </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -3252,6 +3274,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     ·
 
     South Wales
+
+    <div class="footer-admin-access">
+      <a href="/admin/" aria-label="Admin login">Admin</a>
+    </div>
 
   </footer>
 
