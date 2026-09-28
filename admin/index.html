@@ -2174,34 +2174,63 @@ async function adminPasskeyRegister(){
  }catch(e){st.textContent=e?.name==='NotAllowedError'?'Passkey setup cancelled.':(e?.message||'Could not set up passkey.')}finally{b.disabled=false}
 }
 async function adminPasskeyLogin(){
- const b=document.querySelector('#adminPasskeyLoginBtn'),st=document.querySelector('#adminPasskeyLoginStatus');b.disabled=true;st.textContent='Waiting for device verification...';
+ const b=document.querySelector('#adminPasskeyLoginBtn'),st=document.querySelector('#adminPasskeyLoginStatus');
+ b.disabled=true;
  try{
   if(!window.PublicKeyCredential)throw new Error('Passkeys are not supported on this device.');
-  const {data:a,error:e}=await supabase.functions.invoke('admin-passkey',{body:{action:'authentication_options'}});if(e)throw e;if(!a?.success)throw new Error(a?.error||'No admin passkey registered yet.');
-  const cred=await navigator.credentials.get({publicKey:sbAuthOptions(a.options)});if(!cred)throw new Error('Passkey sign-in cancelled.');
-  const {data:d,error:x}=await supabase.functions.invoke('admin-passkey',{body:{action:'authentication_verify',challenge_id:a.challenge_id,credential:sbCredentialJSON(cred)}});if(x)throw x;if(!d?.success||!d?.token_hash)throw new Error(d?.error||'Passkey verification failed.');
-  const {data:l,error:le}=await supabase.auth.verifyOtp({token_hash:d.token_hash,type:'magiclink'});if(le)throw le;if(!l?.session)throw new Error('Admin session was not created.');
-  if(String(l.session.user?.email||'').toLowerCase()!=='ryan@stancebound.com'){await supabase.auth.signOut();throw new Error('Account not authorised.')}
-  st.textContent='Unlocked ✓';applyAdminSession(l.session);setTimeout(loadAdminData,0);
- }catch(e){st.textContent=e?.name==='NotAllowedError'?'Device verification cancelled.':(e?.message||'Could not unlock admin.')}finally{b.disabled=false}
+
+  st.textContent='Connecting to secure sign-in…';
+  const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('Secure sign-in server timed out.')),12000));
+  const invoke=supabase.functions.invoke('admin-passkey',{body:{action:'authentication_options'}});
+  const {data:a,error:e}=await Promise.race([invoke,timeout]);
+  if(e)throw e;
+  if(!a?.success)throw new Error(a?.error||'No admin passkey registered yet.');
+
+  st.textContent='Touch the fingerprint sensor or use your device PIN…';
+  let cred;
+  try{
+    cred=await navigator.credentials.get({publicKey:sbAuthOptions(a.options)});
+  }catch(err){
+    if(err?.name==='NotAllowedError')throw new Error('Device verification was cancelled or the saved passkey was not offered.');
+    throw err;
+  }
+  if(!cred)throw new Error('Your device did not return a passkey.');
+
+  st.textContent='Verifying passkey…';
+  const verifyInvoke=supabase.functions.invoke('admin-passkey',{body:{action:'authentication_verify',challenge_id:a.challenge_id,credential:sbCredentialJSON(cred)}});
+  const {data:d,error:x}=await Promise.race([verifyInvoke,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Passkey verification server timed out.')),12000))]);
+  if(x)throw x;
+  if(!d?.success||!d?.token_hash)throw new Error(d?.error||'Passkey verification failed.');
+
+  st.textContent='Opening admin…';
+  const {data:l,error:le}=await supabase.auth.verifyOtp({token_hash:d.token_hash,type:'magiclink'});
+  if(le)throw le;
+  if(!l?.session)throw new Error('Admin session was not created.');
+  if(String(l.session.user?.email||'').toLowerCase()!=='ryan@stancebound.com'){
+    await supabase.auth.signOut();
+    throw new Error('Account not authorised.');
+  }
+  st.textContent='Unlocked ✓';
+  applyAdminSession(l.session);
+  setTimeout(loadAdminData,0);
+ }catch(e){
+  st.textContent=e?.message||'Could not unlock admin.';
+ }finally{
+  b.disabled=false;
+ }
 }
 document.querySelector('#adminPasskeyRegisterBtn')?.addEventListener('click',adminPasskeyRegister);
 document.querySelector('#adminPasskeyLoginBtn')?.addEventListener('click',adminPasskeyLogin);
 async function handleSecureAdminEntry(){
-  const params=new URLSearchParams(location.search);
-  if(params.get('lock')!=='1')return;
-
-  history.replaceState({},'',location.pathname);
-
-  try{ await supabase.auth.signOut(); }catch(_){}
-
-  applyAdminSession(null);
-
-  const status=document.querySelector('#adminPasskeyLoginStatus');
-  if(status) status.textContent='Tap UNLOCK ADMIN to verify with your device.';
+ const p=new URLSearchParams(location.search);
+ if(p.get('lock')!=='1')return;
+ history.replaceState({},'',location.pathname);
+ try{await supabase.auth.signOut()}catch(_){}
+ applyAdminSession(null);
+ const st=document.querySelector('#adminPasskeyLoginStatus');
+ if(st)st.textContent='Tap UNLOCK ADMIN to verify with your device.';
 }
 handleSecureAdminEntry();
-
 
 async function adminLogin() {
   const status = document.querySelector('#loginStatus');
