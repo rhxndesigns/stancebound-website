@@ -1793,6 +1793,25 @@
       .order-confirmation-copy{padding:28px 22px 34px}
     }
 
+
+
+    /* ===== STANCEBOUND SIGNED CUSTOMER AGREEMENT ===== */
+    .signature-wrap{display:none;margin:16px 0 20px;padding:18px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+    .signature-wrap.show{display:block;animation:signatureReveal .32s cubic-bezier(.2,.8,.2,1)}
+    @keyframes signatureReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .signature-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-bottom:12px}
+    .signature-head strong{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .signature-head span{display:block;margin-top:4px;color:var(--grey);font-size:10px;line-height:1.5}
+    .signature-clear{border:0;background:transparent;color:var(--grey);font:inherit;font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-decoration:underline;cursor:pointer;padding:6px}
+    .signature-pad-shell{position:relative;border:1px solid var(--line);background:#f7f7f5;overflow:hidden;touch-action:none}
+    #agreementSignature{display:block;width:100%;height:180px;touch-action:none;cursor:crosshair}
+    .signature-line{position:absolute;left:7%;right:7%;bottom:34px;border-top:1px solid rgba(0,0,0,.28);pointer-events:none}
+    .signature-line-label{position:absolute;left:7%;bottom:12px;color:#666;font-size:8px;letter-spacing:.12em;text-transform:uppercase;pointer-events:none}
+    .signature-status{min-height:18px;margin-top:8px;color:var(--grey);font-size:9px;letter-spacing:.06em}
+    .signature-status.error{color:#d98b8b}
+    html[data-theme="light"] .signature-wrap{background:rgba(0,0,0,.025)}
+    @media(max-width:600px){#agreementSignature{height:160px}.signature-head{align-items:flex-start}.signature-head span{max-width:240px}}
+    @media(prefers-reduced-motion:reduce){.signature-wrap.show{animation:none}}
     .booking-notice,.agreement-panel{border:1px solid var(--line);background:rgba(255,255,255,.025);padding:18px;margin:18px 0}.booking-notice strong{display:block;margin-bottom:6px;letter-spacing:.08em}.agreement-panel{max-height:360px;overflow:auto}.agreement-panel h3{margin:0 0 12px}.agreement-panel h4{margin:18px 0 6px;font-size:.92rem;text-transform:uppercase;letter-spacing:.08em}.agreement-panel p{margin:0 0 10px;line-height:1.65}.consent-row{display:flex;gap:12px;align-items:flex-start;margin:14px 0;line-height:1.5}.consent-row input{width:18px;height:18px;flex:0 0 auto;margin-top:3px}.consent-row label{cursor:pointer}.request-received{font-weight:800;letter-spacing:.04em}
     .availability-calendar{margin:28px 0 34px;border:1px solid var(--line);background:var(--panel);padding:clamp(18px,4vw,30px)}.availability-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.availability-head h3{margin:7px 0 0;text-transform:uppercase;font-size:clamp(20px,4vw,32px)}.calendar-controls{display:flex;align-items:center;gap:12px}.calendar-controls button{width:38px;height:38px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:22px;cursor:pointer}.calendar-controls strong{min-width:120px;text-align:center;font-size:10px;letter-spacing:1.4px;text-transform:uppercase}.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.calendar-weekdays{margin-bottom:6px}.calendar-weekdays span{text-align:center;color:var(--grey);font-size:7px;letter-spacing:1px}.calendar-day{aspect-ratio:1;border:1px solid var(--line);background:transparent;color:var(--text);font-size:10px;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}.calendar-day:hover:not(:disabled){transform:translateY(-2px);border-color:var(--text)}.calendar-day.selected{background:var(--text);color:var(--bg);border-color:var(--text)}.calendar-day:disabled{opacity:.18;cursor:not-allowed}.calendar-day.blank{visibility:hidden}.calendar-key{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;color:var(--grey);font-size:8px;letter-spacing:.8px}.key-dot{display:inline-block;width:8px;height:8px;border:1px solid var(--grey);margin-right:6px}.key-dot.selected{background:var(--text);border-color:var(--text)}.calendar-note{margin:12px 0 0;color:var(--grey);font-size:9px;line-height:1.6}
     #navigation,.menu-button{display:none!important}.radial-nav{position:fixed;left:50%;bottom:20px;z-index:10010;width:0;height:0}.radial-toggle{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:#0a0a0a;color:#fff;font-size:34px;font-weight:200;line-height:1;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.45);transition:transform .55s cubic-bezier(.2,.8,.2,1),background .25s}.radial-nav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg);background:#fff;color:#050505}.radial-items{position:absolute;left:0;top:0;pointer-events:none}.radial-item{--a:0deg;position:absolute;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) rotate(calc(-1 * var(--a))) scale(.3);opacity:0;pointer-events:none;min-width:0;padding:6px 4px;border:0;border-radius:0;background:transparent;color:#fff;font-size:12px;font-weight:400;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:transform .52s cubic-bezier(.2,.9,.25,1),opacity .3s,border-color .2s;transition-delay:calc(var(--i) * 35ms)}.radial-nav.open .radial-item{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a))) scale(1);opacity:1;pointer-events:auto}.radial-item.active{background:#fff;color:#050505}.radial-theme{position:fixed;right:18px;bottom:18px;z-index:10009;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(10,10,10,.92);color:#fff;cursor:pointer}.radial-backdrop{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.42);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}.radial-backdrop.show{opacity:1;pointer-events:auto}body.light-theme .radial-item,body.light-theme .radial-toggle,body.light-theme .radial-theme{background:#f4f3ef;color:#111;border-color:#bbb}body.light-theme .radial-nav.open .radial-toggle,body.light-theme .radial-item.active{background:#111;color:#fff}
@@ -3024,6 +3043,19 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </div>
 
             <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I confirm that I am 18 or over, have authority to authorise work on this vehicle, and have read and agree to the STANCEBOUND Customer Agreement.</label></div>
+
+            <div id="signatureWrap" class="signature-wrap" aria-hidden="true">
+              <div class="signature-head">
+                <div><strong>Customer signature</strong><span>Sign below with your finger or pointer to confirm this agreement.</span></div>
+                <button class="signature-clear" id="clearAgreementSignature" type="button">Clear signature</button>
+              </div>
+              <div class="signature-pad-shell">
+                <canvas id="agreementSignature" aria-label="Customer signature pad"></canvas>
+                <div class="signature-line"></div>
+                <div class="signature-line-label">Sign here</div>
+              </div>
+              <div id="signatureStatus" class="signature-status" aria-live="polite"></div>
+            </div>
             <div class="consent-row"><input id="mediaConsent" name="media_consent" type="checkbox"><label for="mediaConsent">I'm happy for STANCEBOUND to photograph my vehicle and use the images for its website, portfolio and social media. <strong>Optional.</strong></label></div>
 
             <div class="enquiry-field full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div></div>
@@ -3449,12 +3481,77 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     if(bookingDateInput)bookingDateInput.min=minBookingDate;
     if(alternativeBookingDateInput)alternativeBookingDateInput.min=minBookingDate;
 
+
+
+    /* ========================================
+       CUSTOMER AGREEMENT SIGNATURE
+       ======================================== */
+    const agreementAccepted=document.getElementById("agreementAccepted");
+    const signatureWrap=document.getElementById("signatureWrap");
+    const signatureCanvas=document.getElementById("agreementSignature");
+    const signatureStatus=document.getElementById("signatureStatus");
+    const clearAgreementSignature=document.getElementById("clearAgreementSignature");
+    let agreementSignaturePresent=false;
+    let signatureDrawing=false;
+
+    function resizeSignatureCanvas(){
+      if(!signatureCanvas||!signatureWrap?.classList.contains("show"))return;
+      const rect=signatureCanvas.getBoundingClientRect();
+      if(!rect.width||!rect.height)return;
+      const previous=agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null;
+      const ratio=Math.max(1,Math.min(3,window.devicePixelRatio||1));
+      signatureCanvas.width=Math.round(rect.width*ratio);
+      signatureCanvas.height=Math.round(rect.height*ratio);
+      const ctx=signatureCanvas.getContext("2d");
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.lineCap="round";ctx.lineJoin="round";ctx.lineWidth=2.2;ctx.strokeStyle="#111";
+      if(previous){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,rect.width,rect.height);img.src=previous;}
+    }
+    function signaturePoint(event){
+      const rect=signatureCanvas.getBoundingClientRect();
+      return {x:event.clientX-rect.left,y:event.clientY-rect.top};
+    }
+    function startSignature(event){
+      if(!agreementAccepted?.checked)return;
+      event.preventDefault();signatureDrawing=true;
+      signatureCanvas.setPointerCapture?.(event.pointerId);
+      const p=signaturePoint(event),ctx=signatureCanvas.getContext("2d");
+      ctx.beginPath();ctx.moveTo(p.x,p.y);
+    }
+    function moveSignature(event){
+      if(!signatureDrawing)return;event.preventDefault();
+      const p=signaturePoint(event),ctx=signatureCanvas.getContext("2d");
+      ctx.lineTo(p.x,p.y);ctx.stroke();agreementSignaturePresent=true;
+      signatureStatus.textContent="Signature captured.";signatureStatus.classList.remove("error");
+    }
+    function endSignature(event){if(!signatureDrawing)return;event.preventDefault();signatureDrawing=false;signatureCanvas.releasePointerCapture?.(event.pointerId);}
+    function clearSignature(){
+      if(!signatureCanvas)return;const ctx=signatureCanvas.getContext("2d");ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
+      agreementSignaturePresent=false;signatureStatus.textContent="";signatureStatus.classList.remove("error");
+    }
+    agreementAccepted?.addEventListener("change",()=>{
+      const show=agreementAccepted.checked;signatureWrap?.classList.toggle("show",show);signatureWrap?.setAttribute("aria-hidden",String(!show));
+      if(show)requestAnimationFrame(resizeSignatureCanvas);else clearSignature();
+    });
+    signatureCanvas?.addEventListener("pointerdown",startSignature);
+    signatureCanvas?.addEventListener("pointermove",moveSignature);
+    signatureCanvas?.addEventListener("pointerup",endSignature);
+    signatureCanvas?.addEventListener("pointercancel",endSignature);
+    clearAgreementSignature?.addEventListener("click",clearSignature);
+    window.addEventListener("resize",()=>{if(signatureWrap?.classList.contains("show"))resizeSignatureCanvas();},{passive:true});
+
     if(enquiryForm){
       enquiryForm.addEventListener("submit",async(event)=>{
         event.preventDefault();
         enquiryStatus.classList.remove("success");
 
         if(!enquiryForm.reportValidity())return;
+        if(document.getElementById("agreementAccepted")?.checked && !agreementSignaturePresent){
+          signatureStatus.textContent="Please add your signature before requesting the booking.";
+          signatureStatus.classList.add("error");
+          signatureWrap?.scrollIntoView({behavior:"smooth",block:"center"});
+          return;
+        }
 
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
@@ -3482,6 +3579,8 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           alternative_booking_time:document.getElementById("alternativeBookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
+          agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
+          agreement_signed_at:new Date().toISOString(),
           media_consent:document.getElementById("mediaConsent").checked,
           website:document.getElementById("enquiryWebsite").value,
           turnstileToken
