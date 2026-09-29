@@ -3690,6 +3690,17 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           "active"
         );
 
+        // Hidden pages cannot intersect until they are opened. Re-check their
+        // reveal elements now so nothing remains visually shifted left/right.
+        requestAnimationFrame(() => {
+          selectedPage.querySelectorAll(".sb-scroll-reveal").forEach(el => {
+            const r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight * 1.08 && r.bottom > -20) {
+              el.classList.add("sb-in-view");
+            }
+          });
+        });
+
       }
 
 
@@ -4931,6 +4942,32 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     #booking input[type="date"],#booking input[type="time"]{min-height:50px;cursor:pointer;color-scheme:dark;}
     html[data-theme="light"] #booking input[type="date"],html[data-theme="light"] #booking input[type="time"],body.light-theme #booking input[type="date"],body.light-theme #booking input[type="time"]{color-scheme:light;}
     @media(max-width:760px){#booking .content{width:calc(100% - 20px);padding-left:0!important;padding-right:0!important;}#booking .availability-calendar,#booking .enquiry-shell{width:100%;}}
+
+    /* ===== GLOBAL PAGE CENTRING / REVEAL STABILITY FIX ===== */
+    .page > .content,
+    .page .content{
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    #bookingThanks > .content{
+      width:min(980px,calc(100% - 28px))!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    /* Confirmation content should never sit sideways while a hidden page is becoming active. */
+    #bookingThanks .sb-scroll-reveal{
+      transform:translate3d(0,28px,0)!important;
+    }
+    #bookingThanks .sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+    @media(max-width:760px){
+      .page > .content,.page .content{max-width:100%;}
+      #bookingThanks > .content{width:calc(100% - 20px)!important;padding-left:0!important;padding-right:0!important;}
+    }
+
 </style>
 </body>
 
