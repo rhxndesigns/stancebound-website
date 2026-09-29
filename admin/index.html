@@ -363,11 +363,14 @@ body{padding-bottom:88px}
 
 
 /* Traditional mobile sheets + deliberate page transitions */
+.admin-page.active{animation:none;}
+
 .more-sheet,.quick-sheet{display:flex!important;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .24s ease;}
 .more-sheet.show,.quick-sheet.show{visibility:visible;opacity:1;pointer-events:auto;}
 .more-sheet .sheet-card,.quick-sheet .sheet-card{transform:translateY(105%);opacity:1;animation:none!important;transition:transform .34s cubic-bezier(.22,.78,.2,1);touch-action:none;will-change:transform;}
 .more-sheet.show .sheet-card,.quick-sheet.show .sheet-card{transform:translateY(0);}
-.sheet-grab{width:46px;height:5px;border-radius:99px;background:#555;cursor:grab;touch-action:none;}
+.sheet-grab{width:46px;height:5px;border-radius:99px;background:#555;cursor:grab;touch-action:none;position:relative;z-index:4;}
+.sheet-grab::before{content:"";position:absolute;left:50%;top:-20px;width:min(82vw,440px);height:62px;transform:translateX(-50%);border-radius:0 0 24px 24px;touch-action:none;}
 .sheet-grab:active{cursor:grabbing;background:#777;}
 .admin-page.sb-page-leaving{opacity:0!important;transform:translateX(-14px)!important;pointer-events:none;}
 .admin-page.sb-page-entering{animation:sbTraditionalPageIn .34s cubic-bezier(.22,.78,.2,1) both!important;}
@@ -984,7 +987,7 @@ function openAdminPage(name, addToHistory=true) {
   adminPages.forEach(page => {
     const active=page.dataset.adminPage === name;
     page.classList.toggle('active',active);
-    if(active){page.classList.remove('page-flash');void page.offsetWidth;page.classList.add('page-flash');}
+    if(active) page.classList.remove('page-flash');
   });
   document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mobileTarget===name));
   document.querySelector('#moreSheet')?.classList.remove('show');
