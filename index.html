@@ -3578,6 +3578,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           booking_time:document.getElementById("bookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
+          agreement_text:Array.from(document.querySelectorAll(".agreement-panel h4,.agreement-panel p")).map(el=>el.textContent.trim()).filter(Boolean).join("\n\n"),
           agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
           agreement_signed_at:new Date().toISOString(),
           media_consent:document.getElementById("mediaConsent").checked,
