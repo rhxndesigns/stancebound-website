@@ -3021,8 +3021,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
-              <div class="enquiry-field"><label for="alternativeBookingDate">Alternative date</label><input id="alternativeBookingDate" name="alternative_booking_date" type="date"></div>
-              <div class="enquiry-field"><label for="alternativeBookingTime">Alternative time</label><input id="alternativeBookingTime" name="alternative_booking_time" type="time"></div>
               <div class="enquiry-field full"><label for="bookingLocation">Location / postcode</label><input id="bookingLocation" name="booking_location" type="text" maxlength="160" placeholder="Where will the vehicle be?" required></div>
               <div class="enquiry-field full"><label for="enquiryMessage">What would you like done?</label><textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea></div>
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
@@ -3474,12 +3472,15 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     let pendingEnquiryId=null;
 
     const bookingDateInput=document.getElementById("bookingDate");
-    const alternativeBookingDateInput=document.getElementById("alternativeBookingDate");
     const localToday=new Date();
     localToday.setMinutes(localToday.getMinutes()-localToday.getTimezoneOffset());
     const minBookingDate=localToday.toISOString().slice(0,10);
     if(bookingDateInput)bookingDateInput.min=minBookingDate;
-    if(alternativeBookingDateInput)alternativeBookingDateInput.min=minBookingDate;
+
+    // Android/Chromium: tapping anywhere on date/time fields opens the native picker.
+    [bookingDateInput,document.getElementById("bookingTime")].filter(Boolean).forEach(input=>{
+      input.addEventListener("click",()=>{ try{ input.showPicker?.(); }catch(_){} });
+    });
 
 
 
@@ -3575,8 +3576,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           ].filter(Boolean).join("\n\n"),
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
-          alternative_booking_date:document.getElementById("alternativeBookingDate").value||null,
-          alternative_booking_time:document.getElementById("alternativeBookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
           agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
@@ -4922,6 +4921,16 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       .radial-nav{bottom:72px!important;}
     }
 
+
+    /* ===== BOOKING LAYOUT + MOBILE PICKER FIX ===== */
+    #booking .content{width:min(1180px,calc(100% - 28px));margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;}
+    #booking .availability-calendar,#booking .enquiry-shell{width:min(820px,100%);margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;}
+    #booking .agreement-panel,#booking .booking-notice,#booking .signature-wrap{width:100%;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;transform-origin:center center;}
+    #booking .enquiry-shell.sb-scroll-reveal,#booking .availability-calendar.sb-scroll-reveal,#booking .agreement-panel.sb-scroll-reveal,#booking .signature-wrap.sb-scroll-reveal{transform:translate3d(0,28px,0)!important;}
+    #booking .enquiry-shell.sb-scroll-reveal.sb-in-view,#booking .availability-calendar.sb-scroll-reveal.sb-in-view,#booking .agreement-panel.sb-scroll-reveal.sb-in-view,#booking .signature-wrap.sb-scroll-reveal.sb-in-view{transform:translate3d(0,0,0)!important;}
+    #booking input[type="date"],#booking input[type="time"]{min-height:50px;cursor:pointer;color-scheme:dark;}
+    html[data-theme="light"] #booking input[type="date"],html[data-theme="light"] #booking input[type="time"],body.light-theme #booking input[type="date"],body.light-theme #booking input[type="time"]{color-scheme:light;}
+    @media(max-width:760px){#booking .content{width:calc(100% - 20px);padding-left:0!important;padding-right:0!important;}#booking .availability-calendar,#booking .enquiry-shell{width:100%;}}
 </style>
 </body>
 
