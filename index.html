@@ -1578,6 +1578,25 @@
     .home-final-compact{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:30px 32px;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 15% 0,rgba(255,255,255,.07),transparent 42%),#080808}
     .home-final-compact h2{margin:0 0 7px;font-size:clamp(28px,5vw,52px);line-height:.95;text-transform:uppercase;letter-spacing:-1.5px}.home-final-compact p{margin:0;color:#999;font-size:11px;line-height:1.65}
     .home-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}.home-reveal.visible{opacity:1;transform:none}
+
+    /* STANCEBOUND CINEMATIC SCROLL REVEAL — FEATURED DETAIL TEST */
+    .home-showcase .home-feature-video{
+      opacity:0;
+      transform:translateX(-58px) scale(.985);
+      transition:opacity .78s ease,transform .9s cubic-bezier(.16,1,.3,1);
+      will-change:transform,opacity;
+    }
+    .home-showcase .home-feature-compact>div:last-child{
+      opacity:0;
+      transform:translateX(58px);
+      transition:opacity .72s ease .10s,transform .9s cubic-bezier(.16,1,.3,1) .10s;
+      will-change:transform,opacity;
+    }
+    .home-showcase.visible .home-feature-video,
+    .home-showcase.visible .home-feature-compact>div:last-child{
+      opacity:1;
+      transform:none;
+    }
     @media(max-width:760px){
       .hero{min-height:calc(82svh - 66px);padding:24px 17px 54px}.hero-logo{width:min(560px,100%)}.hero-description{margin-top:17px;line-height:1.65}.hero-buttons{margin-top:24px}.home-scroll-cue{bottom:8px}
       .home-flow{width:100%;padding:10px 12px 34px}.home-choice-grid{gap:8px}.home-choice{min-height:285px}.home-choice-content{left:17px;right:17px;bottom:17px}.home-choice p{display:none}.home-choice h2{font-size:clamp(24px,7vw,34px)}
@@ -1585,7 +1604,7 @@
       .home-final-compact{grid-template-columns:1fr;padding:24px 20px;gap:18px}.home-final-compact .btn{width:100%}
     }
     @media(max-width:430px){.home-choice{min-height:250px}.home-choice-content{left:14px;right:14px}.home-choice-kicker{letter-spacing:2px}.home-choice h2{font-size:23px}.home-choice-link{font-size:7px;letter-spacing:1.5px}.home-feature-compact{grid-template-columns:96px 1fr}.home-feature-video{width:96px}.home-feature-compact h2{font-size:23px}}
-    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-choice img,.home-choice,.home-choice-content,.home-choice-index,.home-choice-link::after{transition:none!important}.page.page-enter-detail{animation:none}}
+    @media(prefers-reduced-motion:reduce){.home-reveal{opacity:1;transform:none}.home-showcase .home-feature-video,.home-showcase .home-feature-compact>div:last-child{opacity:1!important;transform:none!important;transition:none!important}.home-choice img,.home-choice,.home-choice-content,.home-choice-index,.home-choice-link::after{transition:none!important}.page.page-enter-detail{animation:none}}
 
 
     /* ===== THEME SWITCH + SHOP ===== */
@@ -1774,6 +1793,25 @@
       .order-confirmation-copy{padding:28px 22px 34px}
     }
 
+
+
+    /* ===== STANCEBOUND SIGNED CUSTOMER AGREEMENT ===== */
+    .signature-wrap{display:none;margin:16px 0 20px;padding:18px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+    .signature-wrap.show{display:block;animation:signatureReveal .32s cubic-bezier(.2,.8,.2,1)}
+    @keyframes signatureReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .signature-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-bottom:12px}
+    .signature-head strong{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .signature-head span{display:block;margin-top:4px;color:var(--grey);font-size:10px;line-height:1.5}
+    .signature-clear{border:0;background:transparent;color:var(--grey);font:inherit;font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-decoration:underline;cursor:pointer;padding:6px}
+    .signature-pad-shell{position:relative;border:1px solid var(--line);background:#f7f7f5;overflow:hidden;touch-action:none}
+    #agreementSignature{display:block;width:100%;height:180px;touch-action:none;cursor:crosshair}
+    .signature-line{position:absolute;left:7%;right:7%;bottom:34px;border-top:1px solid rgba(0,0,0,.28);pointer-events:none}
+    .signature-line-label{position:absolute;left:7%;bottom:12px;color:#666;font-size:8px;letter-spacing:.12em;text-transform:uppercase;pointer-events:none}
+    .signature-status{min-height:18px;margin-top:8px;color:var(--grey);font-size:9px;letter-spacing:.06em}
+    .signature-status.error{color:#d98b8b}
+    html[data-theme="light"] .signature-wrap{background:rgba(0,0,0,.025)}
+    @media(max-width:600px){#agreementSignature{height:160px}.signature-head{align-items:flex-start}.signature-head span{max-width:240px}}
+    @media(prefers-reduced-motion:reduce){.signature-wrap.show{animation:none}}
     .booking-notice,.agreement-panel{border:1px solid var(--line);background:rgba(255,255,255,.025);padding:18px;margin:18px 0}.booking-notice strong{display:block;margin-bottom:6px;letter-spacing:.08em}.agreement-panel{max-height:360px;overflow:auto}.agreement-panel h3{margin:0 0 12px}.agreement-panel h4{margin:18px 0 6px;font-size:.92rem;text-transform:uppercase;letter-spacing:.08em}.agreement-panel p{margin:0 0 10px;line-height:1.65}.consent-row{display:flex;gap:12px;align-items:flex-start;margin:14px 0;line-height:1.5}.consent-row input{width:18px;height:18px;flex:0 0 auto;margin-top:3px}.consent-row label{cursor:pointer}.request-received{font-weight:800;letter-spacing:.04em}
     .availability-calendar{margin:28px 0 34px;border:1px solid var(--line);background:var(--panel);padding:clamp(18px,4vw,30px)}.availability-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.availability-head h3{margin:7px 0 0;text-transform:uppercase;font-size:clamp(20px,4vw,32px)}.calendar-controls{display:flex;align-items:center;gap:12px}.calendar-controls button{width:38px;height:38px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:22px;cursor:pointer}.calendar-controls strong{min-width:120px;text-align:center;font-size:10px;letter-spacing:1.4px;text-transform:uppercase}.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.calendar-weekdays{margin-bottom:6px}.calendar-weekdays span{text-align:center;color:var(--grey);font-size:7px;letter-spacing:1px}.calendar-day{aspect-ratio:1;border:1px solid var(--line);background:transparent;color:var(--text);font-size:10px;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}.calendar-day:hover:not(:disabled){transform:translateY(-2px);border-color:var(--text)}.calendar-day.selected{background:var(--text);color:var(--bg);border-color:var(--text)}.calendar-day:disabled{opacity:.18;cursor:not-allowed}.calendar-day.blank{visibility:hidden}.calendar-key{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;color:var(--grey);font-size:8px;letter-spacing:.8px}.key-dot{display:inline-block;width:8px;height:8px;border:1px solid var(--grey);margin-right:6px}.key-dot.selected{background:var(--text);border-color:var(--text)}.calendar-note{margin:12px 0 0;color:var(--grey);font-size:9px;line-height:1.6}
     #navigation,.menu-button{display:none!important}.radial-nav{position:fixed;left:50%;bottom:20px;z-index:10010;width:0;height:0}.radial-toggle{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:#0a0a0a;color:#fff;font-size:34px;font-weight:200;line-height:1;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.45);transition:transform .55s cubic-bezier(.2,.8,.2,1),background .25s}.radial-nav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg);background:#fff;color:#050505}.radial-items{position:absolute;left:0;top:0;pointer-events:none}.radial-item{--a:0deg;position:absolute;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) rotate(calc(-1 * var(--a))) scale(.3);opacity:0;pointer-events:none;min-width:0;padding:6px 4px;border:0;border-radius:0;background:transparent;color:#fff;font-size:12px;font-weight:400;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:transform .52s cubic-bezier(.2,.9,.25,1),opacity .3s,border-color .2s;transition-delay:calc(var(--i) * 35ms)}.radial-nav.open .radial-item{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a))) scale(1);opacity:1;pointer-events:auto}.radial-item.active{background:#fff;color:#050505}.radial-theme{position:fixed;right:18px;bottom:18px;z-index:10009;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(10,10,10,.92);color:#fff;cursor:pointer}.radial-backdrop{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.42);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}.radial-backdrop.show{opacity:1;pointer-events:auto}body.light-theme .radial-item,body.light-theme .radial-toggle,body.light-theme .radial-theme{background:#f4f3ef;color:#111;border-color:#bbb}body.light-theme .radial-nav.open .radial-toggle,body.light-theme .radial-item.active{background:#111;color:#fff}
@@ -2523,7 +2561,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       <button class="radial-item" style="--i:5;--a:50deg" data-page="booking">Booking</button>
       <button class="radial-item" style="--i:6;--a:75deg" data-page="contact">Chat</button>
     </div>
-    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false">+</button>
+    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
   </div>
 
 
@@ -2983,8 +3021,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
-              <div class="enquiry-field"><label for="alternativeBookingDate">Alternative date</label><input id="alternativeBookingDate" name="alternative_booking_date" type="date"></div>
-              <div class="enquiry-field"><label for="alternativeBookingTime">Alternative time</label><input id="alternativeBookingTime" name="alternative_booking_time" type="time"></div>
               <div class="enquiry-field full"><label for="bookingLocation">Location / postcode</label><input id="bookingLocation" name="booking_location" type="text" maxlength="160" placeholder="Where will the vehicle be?" required></div>
               <div class="enquiry-field full"><label for="enquiryMessage">What would you like done?</label><textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea></div>
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
@@ -3005,6 +3041,19 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </div>
 
             <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I confirm that I am 18 or over, have authority to authorise work on this vehicle, and have read and agree to the STANCEBOUND Customer Agreement.</label></div>
+
+            <div id="signatureWrap" class="signature-wrap" aria-hidden="true">
+              <div class="signature-head">
+                <div><strong>Customer signature</strong><span>Sign below with your finger or pointer to confirm this agreement.</span></div>
+                <button class="signature-clear" id="clearAgreementSignature" type="button">Clear signature</button>
+              </div>
+              <div class="signature-pad-shell">
+                <canvas id="agreementSignature" aria-label="Customer signature pad"></canvas>
+                <div class="signature-line"></div>
+                <div class="signature-line-label">Sign here</div>
+              </div>
+              <div id="signatureStatus" class="signature-status" aria-live="polite"></div>
+            </div>
             <div class="consent-row"><input id="mediaConsent" name="media_consent" type="checkbox"><label for="mediaConsent">I'm happy for STANCEBOUND to photograph my vehicle and use the images for its website, portfolio and social media. <strong>Optional.</strong></label></div>
 
             <div class="enquiry-field full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div></div>
@@ -3423,12 +3472,74 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     let pendingEnquiryId=null;
 
     const bookingDateInput=document.getElementById("bookingDate");
-    const alternativeBookingDateInput=document.getElementById("alternativeBookingDate");
     const localToday=new Date();
     localToday.setMinutes(localToday.getMinutes()-localToday.getTimezoneOffset());
     const minBookingDate=localToday.toISOString().slice(0,10);
     if(bookingDateInput)bookingDateInput.min=minBookingDate;
-    if(alternativeBookingDateInput)alternativeBookingDateInput.min=minBookingDate;
+
+    // Android/Chromium: tapping anywhere on date/time fields opens the native picker.
+    [bookingDateInput,document.getElementById("bookingTime")].filter(Boolean).forEach(input=>{
+      input.addEventListener("click",()=>{ try{ input.showPicker?.(); }catch(_){} });
+    });
+
+
+
+    /* ========================================
+       CUSTOMER AGREEMENT SIGNATURE
+       ======================================== */
+    const agreementAccepted=document.getElementById("agreementAccepted");
+    const signatureWrap=document.getElementById("signatureWrap");
+    const signatureCanvas=document.getElementById("agreementSignature");
+    const signatureStatus=document.getElementById("signatureStatus");
+    const clearAgreementSignature=document.getElementById("clearAgreementSignature");
+    let agreementSignaturePresent=false;
+    let signatureDrawing=false;
+
+    function resizeSignatureCanvas(){
+      if(!signatureCanvas||!signatureWrap?.classList.contains("show"))return;
+      const rect=signatureCanvas.getBoundingClientRect();
+      if(!rect.width||!rect.height)return;
+      const previous=agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null;
+      const ratio=Math.max(1,Math.min(3,window.devicePixelRatio||1));
+      signatureCanvas.width=Math.round(rect.width*ratio);
+      signatureCanvas.height=Math.round(rect.height*ratio);
+      const ctx=signatureCanvas.getContext("2d");
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.lineCap="round";ctx.lineJoin="round";ctx.lineWidth=2.2;ctx.strokeStyle="#111";
+      if(previous){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,rect.width,rect.height);img.src=previous;}
+    }
+    function signaturePoint(event){
+      const rect=signatureCanvas.getBoundingClientRect();
+      return {x:event.clientX-rect.left,y:event.clientY-rect.top};
+    }
+    function startSignature(event){
+      if(!agreementAccepted?.checked)return;
+      event.preventDefault();signatureDrawing=true;
+      signatureCanvas.setPointerCapture?.(event.pointerId);
+      const p=signaturePoint(event),ctx=signatureCanvas.getContext("2d");
+      ctx.beginPath();ctx.moveTo(p.x,p.y);
+    }
+    function moveSignature(event){
+      if(!signatureDrawing)return;event.preventDefault();
+      const p=signaturePoint(event),ctx=signatureCanvas.getContext("2d");
+      ctx.lineTo(p.x,p.y);ctx.stroke();agreementSignaturePresent=true;
+      signatureStatus.textContent="Signature captured.";signatureStatus.classList.remove("error");
+    }
+    function endSignature(event){if(!signatureDrawing)return;event.preventDefault();signatureDrawing=false;signatureCanvas.releasePointerCapture?.(event.pointerId);}
+    function clearSignature(){
+      if(!signatureCanvas)return;const ctx=signatureCanvas.getContext("2d");ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
+      agreementSignaturePresent=false;signatureStatus.textContent="";signatureStatus.classList.remove("error");
+    }
+    agreementAccepted?.addEventListener("change",()=>{
+      const show=agreementAccepted.checked;signatureWrap?.classList.toggle("show",show);signatureWrap?.setAttribute("aria-hidden",String(!show));
+      if(show)requestAnimationFrame(resizeSignatureCanvas);else clearSignature();
+    });
+    signatureCanvas?.addEventListener("pointerdown",startSignature);
+    signatureCanvas?.addEventListener("pointermove",moveSignature);
+    signatureCanvas?.addEventListener("pointerup",endSignature);
+    signatureCanvas?.addEventListener("pointercancel",endSignature);
+    clearAgreementSignature?.addEventListener("click",clearSignature);
+    window.addEventListener("resize",()=>{if(signatureWrap?.classList.contains("show"))resizeSignatureCanvas();},{passive:true});
 
     if(enquiryForm){
       enquiryForm.addEventListener("submit",async(event)=>{
@@ -3436,6 +3547,12 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         enquiryStatus.classList.remove("success");
 
         if(!enquiryForm.reportValidity())return;
+        if(document.getElementById("agreementAccepted")?.checked && !agreementSignaturePresent){
+          signatureStatus.textContent="Please add your signature before requesting the booking.";
+          signatureStatus.classList.add("error");
+          signatureWrap?.scrollIntoView({behavior:"smooth",block:"center"});
+          return;
+        }
 
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
@@ -3459,10 +3576,11 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           ].filter(Boolean).join("\n\n"),
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
-          alternative_booking_date:document.getElementById("alternativeBookingDate").value||null,
-          alternative_booking_time:document.getElementById("alternativeBookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
+          agreement_text:Array.from(document.querySelectorAll(".agreement-panel h4,.agreement-panel p")).map(el=>el.textContent.trim()).filter(Boolean).join("\n\n"),
+          agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
+          agreement_signed_at:new Date().toISOString(),
           media_consent:document.getElementById("mediaConsent").checked,
           website:document.getElementById("enquiryWebsite").value,
           turnstileToken
@@ -3572,6 +3690,17 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         selectedPage.classList.add(
           "active"
         );
+
+        // Hidden pages cannot intersect until they are opened. Re-check their
+        // reveal elements now so nothing remains visually shifted left/right.
+        requestAnimationFrame(() => {
+          selectedPage.querySelectorAll(".sb-scroll-reveal").forEach(el => {
+            const r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight * 1.08 && r.bottom > -20) {
+              el.classList.add("sb-in-view");
+            }
+          });
+        });
 
       }
 
@@ -3761,6 +3890,43 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       const homeVideoObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){loadHomeMercVideo();homeVideoObserver.disconnect();}});},{rootMargin:"250px 0px"});
       homeVideoObserver.observe(homeMercVideo);
     }
+
+
+    // Site-wide cinematic scroll reveals. Applied automatically so future content inherits the motion system.
+    const sbRevealTargets = [];
+    document.querySelectorAll('.page').forEach(page => {
+      if (page.id === 'home') return;
+      const content = page.querySelector('.content') || page;
+      const candidates = Array.from(content.children).filter(el =>
+        !el.matches('script,style') && !el.classList.contains('sb-scroll-reveal')
+      );
+      candidates.forEach((el, index) => {
+        el.classList.add('sb-scroll-reveal');
+        // Keep full-width page blocks geometrically centred at all times.
+        // Horizontal motion belongs on smaller visual elements, not the containers themselves.
+        if (el.classList.contains('gallery') || el.classList.contains('swipe-gallery')) el.classList.add('sb-scale-in');
+        else el.classList.add('sb-from-up');
+        el.dataset.sbDelay = String(Math.min(index % 4, 3));
+        sbRevealTargets.push(el);
+      });
+    });
+
+    // Individual cards/photos/products get a staggered rise for a more layered reveal.
+    document.querySelectorAll('.product-card,.photo,.ba-card,.feature-stat').forEach((el,index) => {
+      if (el.classList.contains('sb-scroll-reveal')) return;
+      el.classList.add('sb-scroll-reveal','sb-from-up');
+      el.dataset.sbDelay = String(index % 4);
+      sbRevealTargets.push(el);
+    });
+
+    const sbScrollObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('sb-in-view');
+        sbScrollObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -45px 0px' });
+    sbRevealTargets.forEach(el => sbScrollObserver.observe(el));
 
     /* ========================================
        LOAD CORRECT PAGE FROM URL
@@ -4663,9 +4829,221 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 <style id="admin-entry-position">
 .footer-admin-access{text-align:left!important;padding-left:8px!important;box-sizing:border-box}
 @media(max-width:700px){.footer-admin-access{padding-right:100px!important}}
+
+
+    /* ===== STANCEBOUND SITE-WIDE SCROLL MOTION ===== */
+    .sb-scroll-reveal{
+      opacity:0;
+      filter:blur(2px);
+      transition:opacity .78s ease,transform .88s cubic-bezier(.16,1,.3,1),filter .72s ease;
+      will-change:transform,opacity;
+    }
+    .sb-scroll-reveal.sb-from-left{transform:translate3d(-52px,0,0)}
+    .sb-scroll-reveal.sb-from-right{transform:translate3d(52px,0,0)}
+    .sb-scroll-reveal.sb-from-up{transform:translate3d(0,38px,0)}
+    .sb-scroll-reveal.sb-scale-in{transform:translate3d(0,24px,0) scale(.975)}
+    .sb-scroll-reveal.sb-in-view{opacity:1;filter:none;transform:translate3d(0,0,0) scale(1)}
+    .sb-scroll-reveal[data-sb-delay="1"]{transition-delay:.08s}
+    .sb-scroll-reveal[data-sb-delay="2"]{transition-delay:.16s}
+    .sb-scroll-reveal[data-sb-delay="3"]{transition-delay:.24s}
+
+    /* The old + button is now the STANCEBOUND mark. Apparently even menus need stage lighting. */
+    .radial-toggle{
+      display:grid!important;
+      place-items:center;
+      overflow:visible;
+      font-size:0!important;
+      isolation:isolate;
+      animation:sbMenuFloat 3.2s ease-in-out infinite;
+      box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.18),0 10px 35px rgba(0,0,0,.5)!important;
+    }
+    .radial-toggle::before{
+      content:"";
+      position:absolute;
+      inset:-7px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.22);
+      opacity:.25;
+      z-index:-1;
+      animation:sbMenuPulse 2.4s ease-out infinite;
+    }
+    .radial-toggle::after{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.13),transparent 68%);
+      z-index:-1;
+      animation:sbMenuGlow 2.8s ease-in-out infinite;
+    }
+    .radial-toggle img{
+      width:40px;
+      height:40px;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 0 5px rgba(255,255,255,.45));
+      animation:sbLogoBreathe 2.8s ease-in-out infinite;
+      transition:transform .5s cubic-bezier(.16,1,.3,1),filter .3s ease;
+      pointer-events:none;
+    }
+    .radial-nav.open .radial-toggle{transform:translate(-50%,-50%) scale(1.08)!important;background:#111!important;color:#fff!important}
+    .radial-nav.open .radial-toggle img{transform:rotate(360deg) scale(.88);filter:drop-shadow(0 0 10px rgba(255,255,255,.75))}
+    body.light-theme .radial-toggle img{filter:drop-shadow(0 0 5px rgba(0,0,0,.28))}
+    body.light-theme .radial-toggle::before{border-color:rgba(0,0,0,.22)}
+    @keyframes sbMenuFloat{0%,100%{margin-top:0}50%{margin-top:-4px}}
+    @keyframes sbMenuPulse{0%{transform:scale(.88);opacity:.42}70%,100%{transform:scale(1.24);opacity:0}}
+    @keyframes sbMenuGlow{0%,100%{opacity:.35;transform:scale(.94)}50%{opacity:.9;transform:scale(1.08)}}
+    @keyframes sbLogoBreathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.04)}}
+
+    @media(max-width:760px){
+      .sb-scroll-reveal.sb-from-left{transform:translate3d(-34px,0,0)}
+      .sb-scroll-reveal.sb-from-right{transform:translate3d(34px,0,0)}
+      .sb-scroll-reveal.sb-from-up{transform:translate3d(0,28px,0)}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sb-scroll-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
+      .radial-toggle,.radial-toggle::before,.radial-toggle::after,.radial-toggle img{animation:none!important}
+    }
+
+
+    /* ===== STANCEBOUND MOBILE POSITION / ABOUT ALIGNMENT FIX ===== */
+    #about .content{
+      margin-left:auto!important;
+      margin-right:auto!important;
+    }
+    #about .profile-card{
+      width:100%;
+      max-width:1200px;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    /* About should settle centrally rather than entering sideways. */
+    #about .profile-card.sb-scroll-reveal{
+      transform:translate3d(0,30px,0)!important;
+    }
+    #about .profile-card.sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+
+    /* Keep the floating STANCEBOUND control fully above Android/browser chrome. */
+    .radial-nav{
+      bottom:64px!important;
+    }
+    @media(max-width:760px){
+      .radial-nav{bottom:72px!important;}
+    }
+
+
+    /* ===== BOOKING LAYOUT + MOBILE PICKER FIX ===== */
+    #booking .content{width:min(1180px,calc(100% - 28px));margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;}
+    #booking .availability-calendar,#booking .enquiry-shell{width:min(820px,100%);margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;}
+    #booking .agreement-panel,#booking .booking-notice,#booking .signature-wrap{width:100%;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box;transform-origin:center center;}
+    #booking .enquiry-shell.sb-scroll-reveal,#booking .availability-calendar.sb-scroll-reveal,#booking .agreement-panel.sb-scroll-reveal,#booking .signature-wrap.sb-scroll-reveal{transform:translate3d(0,28px,0)!important;}
+    #booking .enquiry-shell.sb-scroll-reveal.sb-in-view,#booking .availability-calendar.sb-scroll-reveal.sb-in-view,#booking .agreement-panel.sb-scroll-reveal.sb-in-view,#booking .signature-wrap.sb-scroll-reveal.sb-in-view{transform:translate3d(0,0,0)!important;}
+    #booking input[type="date"],#booking input[type="time"]{min-height:50px;cursor:pointer;color-scheme:dark;}
+    html[data-theme="light"] #booking input[type="date"],html[data-theme="light"] #booking input[type="time"],body.light-theme #booking input[type="date"],body.light-theme #booking input[type="time"]{color-scheme:light;}
+    @media(max-width:760px){#booking .content{width:calc(100% - 20px);padding-left:0!important;padding-right:0!important;}#booking .availability-calendar,#booking .enquiry-shell{width:100%;}}
+
+    /* ===== GLOBAL PAGE CENTRING / REVEAL STABILITY FIX ===== */
+    .page > .content,
+    .page .content{
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    #bookingThanks > .content{
+      width:min(980px,calc(100% - 28px))!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    /* Confirmation content should never sit sideways while a hidden page is becoming active. */
+    #bookingThanks .sb-scroll-reveal{
+      transform:translate3d(0,28px,0)!important;
+    }
+    #bookingThanks .sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+    @media(max-width:760px){
+      .page > .content,.page .content{max-width:100%;}
+      #bookingThanks > .content{width:calc(100% - 20px)!important;padding-left:0!important;padding-right:0!important;}
+    }
+
+
+
+    /* ===== DEFINITIVE MOBILE CENTRING + SAFE FLOATING MENU FIX ===== */
+    html,body{max-width:100%;overflow-x:hidden;}
+    .page{width:100%;max-width:100%;overflow-x:clip;}
+    .page > .content{
+      width:min(1200px,92%)!important;
+      max-width:1200px!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box!important;
+      transform:none;
+    }
+    /* Major page panels must never enter from the side. Side transforms made centred
+       cards look broken while their reveal was pending on hidden pages. */
+    .page .page-heading.sb-scroll-reveal,
+    .page .profile-card.sb-scroll-reveal,
+    .page .feature-detail.sb-scroll-reveal,
+    .page .enquiry-shell.sb-scroll-reveal,
+    .page .availability-calendar.sb-scroll-reveal,
+    .page .agreement-panel.sb-scroll-reveal,
+    .page .signature-wrap.sb-scroll-reveal,
+    .page .sb-chat-start.sb-scroll-reveal,
+    .page .sb-chat-socials.sb-scroll-reveal,
+    #bookingThanks .sb-scroll-reveal{
+      transform:translate3d(0,28px,0)!important;
+    }
+    .page .page-heading.sb-scroll-reveal.sb-in-view,
+    .page .profile-card.sb-scroll-reveal.sb-in-view,
+    .page .feature-detail.sb-scroll-reveal.sb-in-view,
+    .page .enquiry-shell.sb-scroll-reveal.sb-in-view,
+    .page .availability-calendar.sb-scroll-reveal.sb-in-view,
+    .page .agreement-panel.sb-scroll-reveal.sb-in-view,
+    .page .signature-wrap.sb-scroll-reveal.sb-in-view,
+    .page .sb-chat-start.sb-scroll-reveal.sb-in-view,
+    .page .sb-chat-socials.sb-scroll-reveal.sb-in-view,
+    #bookingThanks .sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+    #contact .content,
+    #bookingThanks .content{
+      width:min(1200px,92%)!important;
+      max-width:1200px!important;
+      margin-inline:auto!important;
+    }
+    #contact .sb-chat-start,
+    #contact .sb-chat-socials{
+      width:100%!important;
+      max-width:760px!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box!important;
+    }
+    #contact input,#contact button,#contact form,#contact label{box-sizing:border-box;max-width:100%;}
+    #contact .sb-chat-fields{width:100%;min-width:0;}
+    #contact .sb-chat-fields > *{min-width:0;}
+    #contact .btn{max-width:100%;}
+    .radial-nav{bottom:104px!important;}
+    @media(max-width:760px){
+      .page > .content,
+      #contact .content,
+      #bookingThanks .content{
+        width:calc(100% - 32px)!important;
+        max-width:calc(100% - 32px)!important;
+        padding-left:0!important;
+        padding-right:0!important;
+      }
+      #contact .sb-chat-start{width:100%!important;max-width:100%!important;margin-inline:auto!important;}
+      #contact .sb-chat-fields{grid-template-columns:minmax(0,1fr)!important;}
+      #contact .sb-chat-fields input{width:100%!important;min-width:0!important;}
+      .radial-nav{bottom:112px!important;}
+    }
+
 </style>
-
-
 <!-- STANCEBOUND SECURE FINAL BOOKING CONFIRMATION -->
 <style id="stancebound-final-confirmation-styles">
   #sbFinalConfirmation{position:fixed;inset:0;z-index:100000;background:#080808;color:#f5f5f5;overflow:auto;display:none;font-family:inherit}
@@ -4899,6 +5277,26 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   window.addEventListener('pagehide',()=>{if(timerHandle)clearInterval(timerHandle)});
 })();
 </script>
+
+
+
+<style id="stancebound-final-confirmation-motion">
+#sbFinalConfirmation.show{animation:sbfBackdropIn .42s cubic-bezier(.2,.8,.2,1) both}
+#sbFinalConfirmation .sbf-top{opacity:0;transform:translateY(-12px);animation:sbfTopIn .55s .08s cubic-bezier(.2,.8,.2,1) forwards}
+#sbFinalConfirmation .sbf-card{opacity:0;transform:translateY(26px) scale(.985);animation:sbfCardIn .62s .13s cubic-bezier(.16,1,.3,1) forwards}
+#sbfVerifyStage>*{opacity:0;transform:translateY(14px);animation:sbfItemIn .5s cubic-bezier(.2,.8,.2,1) forwards}
+#sbfVerifyStage>*:nth-child(1){animation-delay:.22s}#sbfVerifyStage>*:nth-child(2){animation-delay:.28s}#sbfVerifyStage>*:nth-child(3){animation-delay:.34s}#sbfVerifyStage>*:nth-child(4){animation-delay:.40s}#sbfVerifyStage>*:nth-child(5){animation-delay:.46s}
+#sbfSession.show .sbf-timer,#sbfSession.show .sbf-eyebrow,#sbfSession.show h1,#sbfSession.show .sbf-lead,#sbfSession.show .sbf-grid,#sbfSession.show .sbf-agreement,#sbfSession.show .sbf-sign-wrap{opacity:0;transform:translateY(18px);animation:sbfItemIn .52s cubic-bezier(.16,1,.3,1) forwards}
+#sbfSession.show .sbf-timer{animation-delay:.04s}#sbfSession.show .sbf-eyebrow{animation-delay:.10s}#sbfSession.show h1{animation-delay:.16s}#sbfSession.show .sbf-lead{animation-delay:.22s}#sbfSession.show .sbf-grid{animation-delay:.28s}#sbfSession.show .sbf-agreement{animation-delay:.34s}#sbfSession.show .sbf-sign-wrap{animation-delay:.40s}
+#sbfSession.show .sbf-field{opacity:0;transform:translateY(12px);animation:sbfItemIn .42s cubic-bezier(.2,.8,.2,1) forwards}
+#sbfSession.show .sbf-field:nth-child(1){animation-delay:.36s}#sbfSession.show .sbf-field:nth-child(2){animation-delay:.40s}#sbfSession.show .sbf-field:nth-child(3){animation-delay:.44s}#sbfSession.show .sbf-field:nth-child(4){animation-delay:.48s}#sbfSession.show .sbf-field:nth-child(5){animation-delay:.52s}#sbfSession.show .sbf-field:nth-child(6){animation-delay:.56s}#sbfSession.show .sbf-field:nth-child(7){animation-delay:.60s}#sbfSession.show .sbf-field:nth-child(8){animation-delay:.64s}#sbfSession.show .sbf-field:nth-child(9){animation-delay:.68s}
+.sbf-btn{transition:transform .22s cubic-bezier(.2,.8,.2,1),background-color .22s ease,color .22s ease,border-color .22s ease,opacity .22s ease}.sbf-btn:active{transform:scale(.97)}
+.sbf-canvas-wrap{transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}.sbf-canvas-wrap:focus-within{border-color:rgba(255,255,255,.75);box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.sbf-timer strong{transition:opacity .2s ease,transform .2s ease}
+#sbfComplete.show .sbf-check{animation:sbfCheck .65s cubic-bezier(.16,1,.3,1) both}#sbfComplete.show h2,#sbfComplete.show p,#sbfComplete.show .sbf-btn{animation:sbfItemIn .5s .12s cubic-bezier(.16,1,.3,1) both}
+@keyframes sbfBackdropIn{from{opacity:0}to{opacity:1}}@keyframes sbfTopIn{to{opacity:1;transform:none}}@keyframes sbfCardIn{to{opacity:1;transform:none}}@keyframes sbfItemIn{to{opacity:1;transform:none}}@keyframes sbfCheck{0%{opacity:0;transform:scale(.55) rotate(-12deg)}65%{opacity:1;transform:scale(1.12) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){#sbFinalConfirmation.show,#sbFinalConfirmation .sbf-top,#sbFinalConfirmation .sbf-card,#sbfVerifyStage>*,#sbfSession.show>*,#sbfSession.show .sbf-field,#sbfComplete.show .sbf-check,#sbfComplete.show h2,#sbfComplete.show p,#sbfComplete.show .sbf-btn{animation:none!important;opacity:1!important;transform:none!important;transition:none!important}}
+</style>
 
 </body>
 
