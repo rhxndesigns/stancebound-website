@@ -481,7 +481,7 @@ try{
 
 <body>
 <script>
-let bookingRequestFilter='new';
+let bookingRequestFilter='all';
 
 (function(){
   const KEY='stancebound_diagnostic_errors';
@@ -1664,16 +1664,7 @@ function renderBookingRequests(){
     const displayEnd=isPending&&pending?.proposed_booking_end_time?pending.proposed_booking_end_time:r.booking_end_time;
     const displayLocation=isPending&&pending?.proposed_booking_location!=null?pending.proposed_booking_location:r.booking_location;
     const displayService=isPending&&pending?.proposed_service!=null?pending.proposed_service:r.service;
-    let displayPrice=isPending&&pending?.proposed_price!=null?pending.proposed_price:r.quoted_price;
-
-    // Legacy pending confirmation display fix for Emily's booking. The pending
-    // confirmation was created before these fields were populated on the
-    // enquiry row, so keep the Admin summary aligned with the confirmed values.
-    if(isPending && String(r.id)==='dbb40e62-6512-4030-816d-dd3161146f32'){
-      displayEnd='18:00:00';
-      displayPrice=40.00;
-      displayLocation='6 Y Talar, SA31 2EA';
-    }
+    const displayPrice=isPending&&pending?.proposed_price!=null?pending.proposed_price:r.quoted_price;
     const requested=formatBookingDate(displayDate,displayTime);
     const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
     const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
