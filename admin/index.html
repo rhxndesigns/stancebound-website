@@ -347,6 +347,20 @@ body{padding-bottom:88px}
 .admin-passkey-login button{width:100%}
 .admin-login-divider{display:flex;align-items:center;gap:10px;color:#666;font-size:10px;letter-spacing:.15em;margin:4px 0 18px}
 .admin-login-divider:before,.admin-login-divider:after{content:"";height:1px;background:#292929;flex:1}
+
+/* 2026-09-29 mobile navigation + smooth admin refresh */
+.chat-choice-sheet .sheet-card{background:linear-gradient(180deg,rgba(18,18,18,.98),rgba(6,6,6,.99));border-top:1px solid rgba(255,255,255,.13);box-shadow:0 -24px 70px rgba(0,0,0,.5)}
+.chat-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chat-choice-card{position:relative;overflow:hidden;min-height:116px!important;border-radius:18px!important;padding:18px!important;background:linear-gradient(145deg,#111,#090909)!important;border:1px solid #2c2c2c!important;text-align:left!important;align-items:flex-start!important}
+.chat-choice-card:before{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-30px;top:-35px;background:rgba(255,255,255,.055);filter:blur(2px)}
+.chat-choice-card b{display:block;font-size:14px;letter-spacing:.04em;color:#f5f5f5;margin:9px 0 5px}.chat-choice-card small{display:block!important;line-height:1.5!important;color:#777!important;font-size:9px!important}.chat-choice-icon{font-size:20px;line-height:1}
+.mobile-nav .nav-plus{overflow:hidden}.mobile-nav .nav-plus img{width:27px;height:27px;object-fit:contain;display:block;filter:brightness(.08);transition:transform .28s cubic-bezier(.2,.8,.2,1)}.mobile-nav .nav-plus:active img{transform:scale(.88) rotate(-8deg)}
+.more-sheet .sheet-grid{grid-template-columns:1fr;gap:8px;max-height:68vh;overflow:auto;padding-right:2px}.more-sheet .sheet-grid button,.more-sheet .sheet-grid a{border-radius:13px;min-height:58px;display:flex;flex-direction:column;justify-content:center;text-decoration:none}.more-sheet .sheet-grid small{line-height:1.45}.more-tools-divider{font-size:8px;letter-spacing:1.8px;color:#555;text-transform:uppercase;padding:12px 4px 2px}.more-tool-action{width:100%;margin:0;background:#0d0d0d;border:1px solid #292929;color:#ddd;text-align:left;padding:16px;font:inherit}.more-tool-action strong{font-size:10px;letter-spacing:.08em}.more-tool-action small{display:block;color:#666;margin-top:4px;font-size:8px}.more-tool-action.danger{border-color:#3b2424;color:#e7b3b3}
+.admin-page{transition:opacity .2s ease,transform .28s cubic-bezier(.2,.8,.2,1)}.admin-page.active{animation:adminPageIn .28s cubic-bezier(.2,.8,.2,1)}@keyframes adminPageIn{from{opacity:.15;transform:translateY(8px)}to{opacity:1;transform:none}}
+#editor.admin-soft-refresh:after{content:"";position:fixed;inset:0;z-index:85;pointer-events:none;background:rgba(5,5,5,.14);backdrop-filter:blur(1.5px);animation:softRefresh .42s ease both}@keyframes softRefresh{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+.action-success-pop{animation:successPop .42s cubic-bezier(.2,.8,.2,1)}@keyframes successPop{0%{transform:translateY(4px);opacity:.35}100%{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.admin-page.active,.action-success-pop,#editor.admin-soft-refresh:after{animation:none!important}.admin-page{transition:none!important}}
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -884,13 +898,30 @@ Save Changes
 
   <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
-    <button type="button" data-mobile-target="enquiries"><span>✉</span>Chats</button>
-    <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions">+</button>
+    <button type="button" id="mobileChatsBtn"><span>✉</span>Chats</button>
+    <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions"><img src="/images/stanceboundlogo.png" alt=""></button>
     <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid"><button type="button" data-sheet-target="diagnostics">Diagnostics</button>
-    <button data-sheet-target="bookings">Bookings<small>Website booking requests</small></button><button data-sheet-target="chats">Booking Chats<small>Conversations attached to bookings</small></button><button data-sheet-target="orders">Orders<small>Paid shop orders</small></button><button data-sheet-target="pending">Pending<small>Enquiries without a date</small></button><button data-sheet-target="upcoming">Upcoming<small>Booked jobs ahead</small></button><button data-sheet-target="completed">Completed<small>Finished jobs & revenue</small></button><button data-sheet-target="photos">Photos<small>Website image manager</small></button><button data-sheet-target="text">Text<small>Edit website content</small></button><button data-sheet-target="tools">Tools<small>Refresh, live site & logout</small></button>
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
+    <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check the Admin and copy a diagnostic report</small></button>
+    <button type="button" data-sheet-target="bookings"><strong>Bookings</strong><small>Website booking requests</small></button>
+    <button type="button" data-sheet-target="orders"><strong>Orders</strong><small>Paid shop orders</small></button>
+    <button type="button" data-sheet-target="pending"><strong>Pending</strong><small>Enquiries without a date</small></button>
+    <button type="button" data-sheet-target="upcoming"><strong>Upcoming</strong><small>Booked jobs ahead</small></button>
+    <button type="button" data-sheet-target="completed"><strong>Completed</strong><small>Finished jobs & revenue</small></button>
+    <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website image manager</small></button>
+    <button type="button" data-sheet-target="text"><strong>Text</strong><small>Edit website content</small></button>
+    <div class="more-tools-divider">Site controls</div>
+    <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open STANCEBOUND exactly as customers see it</small></a>
+    <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Website Data</strong><small>Reload bookings, chats, orders and website content</small></button>
+    <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Set up secure biometric or device-PIN Admin access</small></button>
+    <button type="button" class="more-tool-action danger" id="moreLogoutBtn"><strong>Log Out</strong><small>End this Admin session</small></button>
+    <div id="moreToolStatus" class="status"></div>
+  </div></div></div>
+  <div class="more-sheet chat-choice-sheet hidden" id="chatChoiceSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Chats</div><div class="chat-choice-grid">
+    <button type="button" class="chat-choice-card" data-chat-choice="chats"><span class="chat-choice-icon">▣</span><b>Booking</b><small>Chats attached to customers and booked work</small></button>
+    <button type="button" class="chat-choice-card" data-chat-choice="enquiries"><span class="chat-choice-icon">✉</span><b>Enquiries</b><small>Chat With Us conversations before a booking</small></button>
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
@@ -944,6 +975,7 @@ function openAdminPage(name, addToHistory=true) {
   document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mobileTarget===name));
   document.querySelector('#moreSheet')?.classList.remove('show');
   document.querySelector('#quickSheet')?.classList.remove('show');
+  document.querySelector('#chatChoiceSheet')?.classList.remove('show');
   if(name==='completed') renderCompleted();
   if(name==='orders') renderOrders();
   if(name==='pending') renderPending();
@@ -959,8 +991,29 @@ function openAdminPage(name, addToHistory=true) {
   }else if(location.hash!==nextHash){
     history.replaceState({stanceboundAdmin:name},'',nextHash);
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if(!document.documentElement.dataset.keepAdminScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+async function smoothAdminRefresh(anchorEl){
+  const activeName=document.querySelector('.admin-page.active')?.dataset.adminPage||'dashboard';
+  const anchorId=anchorEl?.closest?.('[data-booking-request-id]')?.dataset.bookingRequestId||'';
+  const y=window.scrollY;
+  editor?.classList.add('admin-soft-refresh');
+  document.documentElement.dataset.keepAdminScroll='1';
+  try{
+    await loadEnquiries();
+    openAdminPage(activeName,false);
+    requestAnimationFrame(()=>{
+      const replacement=anchorId?document.querySelector(`[data-booking-request-id="${CSS.escape(anchorId)}"]`):null;
+      if(replacement) replacement.scrollIntoView({block:'center',behavior:'instant'});
+      else window.scrollTo({top:y,behavior:'instant'});
+    });
+  }finally{
+    setTimeout(()=>editor?.classList.remove('admin-soft-refresh'),420);
+    setTimeout(()=>delete document.documentElement.dataset.keepAdminScroll,80);
+  }
+}
+
 
 adminTabs.forEach(tab => tab.addEventListener('click', () => openAdminPage(tab.dataset.adminTarget)));
 document.querySelectorAll('[data-open-admin]').forEach(card => {
@@ -968,11 +1021,18 @@ document.querySelectorAll('[data-open-admin]').forEach(card => {
 });
 
 document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.mobileTarget)));
-const moreSheet=document.querySelector('#moreSheet'), quickSheet=document.querySelector('#quickSheet');
+const moreSheet=document.querySelector('#moreSheet'), quickSheet=document.querySelector('#quickSheet'), chatChoiceSheet=document.querySelector('#chatChoiceSheet');
 document.querySelector('#moreBtn')?.addEventListener('click',()=>moreSheet.classList.add('show'));
 document.querySelector('#quickAddBtn')?.addEventListener('click',()=>quickSheet.classList.add('show'));
+document.querySelector('#mobileChatsBtn')?.addEventListener('click',()=>chatChoiceSheet?.classList.add('show'));
+document.querySelectorAll('[data-chat-choice]').forEach(btn=>btn.addEventListener('click',()=>{chatChoiceSheet?.classList.remove('show');openAdminPage(btn.dataset.chatChoice);}));
 document.querySelectorAll('[data-sheet-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.sheetTarget)));
-[moreSheet,quickSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show')}));
+[moreSheet,quickSheet,chatChoiceSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show')}));
+
+// Keep the useful Tools actions inside More on mobile instead of hiding them behind another page.
+document.querySelector('#moreRefreshAdminBtn')?.addEventListener('click',()=>{moreSheet?.classList.remove('show');document.querySelector('#refreshAdminBtn')?.click();});
+document.querySelector('#morePasskeyBtn')?.addEventListener('click',()=>{moreSheet?.classList.remove('show');document.querySelector('#adminPasskeyRegisterBtn')?.click();});
+document.querySelector('#moreLogoutBtn')?.addEventListener('click',()=>{moreSheet?.classList.remove('show');document.querySelector('#logoutBtn')?.click();});
 
 const ADMIN_PAGE_NAMES=adminPages.map(p=>p.dataset.adminPage);
 window.addEventListener('popstate',()=>{
@@ -1808,8 +1868,10 @@ function renderBookingRequests(){
       if(!data?.success)throw new Error(data?.error||'Could not send chat message.');
       textarea.value='';
       st.textContent='CHAT MESSAGE SENT ✓';
-      await loadEnquiries();
-      await loadChats();
+      st.classList.remove('action-success-pop');void st.offsetWidth;st.classList.add('action-success-pop');
+      const counter=box.querySelector('.booking-chat-hint span:last-child');if(counter)counter.textContent='0 / 4000';
+      // Keep this booking card exactly where it is. The thread reloads when Booking Chats is opened.
+      setTimeout(()=>box.classList.remove('show'),650);
     }catch(e){st.textContent=e?.message||'Could not start chat.';}finally{btn.disabled=false;}
   });
 
@@ -1891,7 +1953,8 @@ function renderBookingRequests(){
       if(error)throw error;
       if(!data?.success)throw new Error(data?.error||'Could not send secure confirmation.');
       st.textContent='CHANGES SENT · AWAITING CUSTOMER SIGNATURE ✓';
-      await loadEnquiries();
+      st.classList.add('action-success-pop');
+      await smoothAdminRefresh(btn);
     }catch(e){st.textContent=e?.message||'Could not send changes for confirmation.'}
     finally{btn.disabled=false}
   });
@@ -1974,7 +2037,8 @@ function renderBookingRequests(){
       if(error)throw error;
       if(!data?.success)throw new Error(data?.error||'Secure confirmation email failed.');
       st.textContent='SENT · AWAITING CUSTOMER SIGNATURE ✓';
-      await loadEnquiries();
+      st.classList.add('action-success-pop');
+      await smoothAdminRefresh(btn);
     }catch(e){st.textContent=e?.message||'Could not send final confirmation.'}
     finally{btn.disabled=false}
   });
@@ -2246,8 +2310,8 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
   if(error){status.textContent='Could not create booking: '+error.message;return;}
   status.textContent='Booking created ✓';
   manualBookingForm.reset();
-  await loadEnquiries();
-  setTimeout(()=>openAdminPage('upcoming'),350);
+  await smoothAdminRefresh(btn);
+  status.textContent='Booking created ✓';
 });
 
 
@@ -2259,6 +2323,7 @@ function applyAdminSession(session) {
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#chatChoiceSheet')?.classList.toggle('hidden', !loggedIn);
 
   if (loggedIn) {
     const adminToday = document.querySelector('#adminToday');
@@ -2302,6 +2367,7 @@ async function showCorrectScreen() {
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#moreSheet')?.classList.toggle('hidden', !loggedIn);
   document.querySelector('#quickSheet')?.classList.toggle('hidden', !loggedIn);
+  document.querySelector('#chatChoiceSheet')?.classList.toggle('hidden', !loggedIn);
 
   if (loggedIn) {
     const adminToday = document.querySelector('#adminToday');
