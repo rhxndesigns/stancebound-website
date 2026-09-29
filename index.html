@@ -5313,13 +5313,14 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   .page.sb-page-entering{display:block!important;animation:sbPageEnter var(--sb-page) var(--sb-ease) both}
   @keyframes sbPageEnter{from{opacity:0;transform:translateY(14px) scale(.994);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
 
-  button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"]{
+  button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.size-option,[role="button"]{
     -webkit-tap-highlight-color:transparent;
     transition-property:transform,opacity,background-color,border-color,box-shadow,filter!important;
     transition-duration:180ms!important;
     transition-timing-function:var(--sb-ease)!important;
   }
   .sb-tap-feedback{transform:scale(.975)!important;filter:brightness(1.12)}
+  .radial-item.sb-tap-feedback,.radial-toggle.sb-tap-feedback{filter:brightness(1.18)!important}
   .sb-click-glow{position:fixed;width:18px;height:18px;border:1px solid rgba(255,255,255,.52);border-radius:50%;pointer-events:none;z-index:2147483646;transform:translate(-50%,-50%) scale(.35);opacity:.8;animation:sbClickGlow 420ms var(--sb-ease) forwards}
   body.light-theme .sb-click-glow{border-color:rgba(0,0,0,.38)}
   @keyframes sbClickGlow{to{transform:translate(-50%,-50%) scale(2.8);opacity:0}}
@@ -5336,7 +5337,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     .page.sb-page-leaving,.page.sb-page-entering{animation:none!important;transition:none!important;filter:none!important;transform:none!important}
     .sb-click-glow{display:none!important}
     #sbRouteVeil{transition:none!important}
-    button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"],input,textarea,select{transition:none!important}
+    button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.size-option,[role="button"],input,textarea,select{transition:none!important}
   }
 </style>
 <script id="stancebound-global-interaction-motion-script">
@@ -5394,7 +5395,8 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     if(e.pointerType==='mouse'&&e.button!==0)return;
     const el=e.target.closest('button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"]');
     if(!el||el.disabled)return;
-    el.classList.add('sb-tap-feedback');
+    const radialControl=el.classList.contains('radial-item')||el.classList.contains('radial-toggle');
+    if(!radialControl)el.classList.add('sb-tap-feedback');
     if(!reduce&&e.clientX&&e.clientY){
       const glow=document.createElement('span');
       glow.className='sb-click-glow';
