@@ -277,6 +277,24 @@ body{padding-bottom:88px}
 @media(max-width:720px){.chat-bubble{max-width:92%}.chat-actions button{width:100%}}
 
 
+/* MODERN BOOKING CHAT COMPOSER */
+.booking-chat-composer{position:relative;overflow:hidden;margin-top:14px!important;padding:0!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(18,18,18,.98),rgba(7,7,7,.98))!important;box-shadow:0 22px 60px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.045);transform-origin:top center}
+.booking-chat-composer::before{content:"";position:absolute;inset:-90px -50px auto auto;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.09),rgba(255,255,255,0) 68%);pointer-events:none;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s ease}
+.booking-chat-composer:not(.show){display:block!important;max-height:0;opacity:0;transform:translateY(-10px) scale(.985);margin-top:0!important;border-width:0!important;pointer-events:none}
+.booking-chat-composer.show{max-height:620px;opacity:1;transform:translateY(0) scale(1);transition:max-height .55s cubic-bezier(.22,1,.36,1),opacity .28s ease,transform .5s cubic-bezier(.22,1,.36,1),margin .35s ease,border-width .1s ease}
+.booking-chat-composer.show::before{transform:translate(-18px,18px) scale(1.12)}
+.booking-chat-head{position:relative;display:flex;align-items:center;gap:12px;padding:17px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.booking-chat-avatar{position:relative;display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:#f1f1ee;color:#080808;font-family:Arial,sans-serif;font-size:13px;font-weight:900;letter-spacing:.04em;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 7px 22px rgba(0,0,0,.3)}
+.booking-chat-avatar::after{content:"";position:absolute;right:1px;bottom:1px;width:9px;height:9px;border-radius:50%;background:#8cff9b;border:2px solid #0a0a0a;box-shadow:0 0 10px rgba(140,255,155,.45)}
+.booking-chat-title{min-width:0;flex:1}.booking-chat-title strong{display:block;color:#f4f4f1;font-family:Arial,sans-serif;font-size:14px;font-weight:750;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.booking-chat-title span{display:block;margin-top:3px;color:#777;font-family:Arial,sans-serif;font-size:10px;letter-spacing:.09em;text-transform:uppercase}
+.booking-chat-secure{display:flex;align-items:center;gap:6px;color:#8b8b8b;font-family:Arial,sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase}.booking-chat-secure i{display:block;width:6px;height:6px;border-radius:50%;background:#8cff9b;box-shadow:0 0 9px rgba(140,255,155,.5)}
+.booking-chat-body{position:relative;padding:16px 17px 17px}.booking-chat-body textarea{display:block;width:100%;min-height:118px!important;resize:vertical;margin:0!important;padding:15px 15px 42px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:16px!important;outline:none;background:rgba(255,255,255,.035)!important;color:#f5f5f2!important;font-family:Arial,sans-serif!important;font-size:14px!important;font-weight:400;line-height:1.55;letter-spacing:-.01em;box-shadow:inset 0 1px 10px rgba(0,0,0,.16);transition:border-color .2s ease,background .2s ease,box-shadow .2s ease,transform .2s ease}.booking-chat-body textarea::placeholder{color:#626262}.booking-chat-body textarea:focus{border-color:rgba(255,255,255,.27)!important;background:rgba(255,255,255,.052)!important;box-shadow:0 0 0 4px rgba(255,255,255,.035),inset 0 1px 10px rgba(0,0,0,.14);transform:translateY(-1px)}
+.booking-chat-hint{display:flex;justify-content:space-between;gap:10px;margin:9px 2px 13px;color:#626262;font-family:Arial,sans-serif;font-size:9px;letter-spacing:.04em}.booking-chat-hint span:last-child{white-space:nowrap}
+.booking-chat-send{position:relative;display:flex!important;align-items:center;justify-content:center;gap:9px;width:100%!important;min-height:47px;border:0!important;border-radius:14px!important;background:#f1f1ee!important;color:#090909!important;font-family:Arial,sans-serif!important;font-size:10px!important;font-weight:850!important;letter-spacing:.13em!important;text-transform:uppercase;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.24);transition:transform .18s ease,box-shadow .18s ease,background .18s ease!important}.booking-chat-send::after{content:"→";font-size:17px;line-height:1;transition:transform .22s cubic-bezier(.22,1,.36,1)}.booking-chat-send:hover{background:#fff!important;transform:translateY(-1px);box-shadow:0 14px 34px rgba(0,0,0,.34)}.booking-chat-send:hover::after{transform:translateX(4px)}.booking-chat-send:active{transform:scale(.985)}.booking-chat-send:disabled{opacity:.55;transform:none;cursor:wait}
+.booking-chat-composer .status{min-height:0;margin:10px 2px 0;font-family:Arial,sans-serif;font-size:10px;letter-spacing:.06em;color:#9b9b9b}.booking-chat-composer .status:empty{display:none}
+@media(max-width:600px){.booking-chat-composer{border-radius:18px!important}.booking-chat-head{padding:15px 14px 13px}.booking-chat-body{padding:14px}.booking-chat-secure{font-size:8px}.booking-chat-body textarea{min-height:108px!important;font-size:16px!important}.booking-chat-hint{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.booking-chat-composer,.booking-chat-composer::before,.booking-chat-body textarea,.booking-chat-send,.booking-chat-send::after{transition:none!important}}
+
 /* BOOKING MOBILE CLEANUP */
 @media (max-width:720px){
   main{width:100%;padding-left:0;padding-right:0}
@@ -1717,11 +1735,18 @@ function renderBookingRequests(){
           ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`:''}
           <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
         </div>
-        <div class="enquiry-reply" id="booking-chat-compose-${r.id}">
-          <label>Start chat with ${escapeHtml(r.name)}</label>
-          <textarea maxlength="4000" placeholder="Write your first chat message..."></textarea>
-          <button type="button" data-send-first-chat="${r.id}">SEND CHAT MESSAGE</button>
-          <div class="status"></div>
+        <div class="enquiry-reply booking-chat-composer" id="booking-chat-compose-${r.id}">
+          <div class="booking-chat-head">
+            <div class="booking-chat-avatar">${escapeHtml((r.name||'C').trim().charAt(0).toUpperCase())}</div>
+            <div class="booking-chat-title"><strong>${escapeHtml(r.name||'Customer')}</strong><span>STANCEBOUND private chat</span></div>
+            <div class="booking-chat-secure"><i></i>Secure</div>
+          </div>
+          <div class="booking-chat-body">
+            <textarea maxlength="4000" placeholder="Write your first message to ${escapeHtml((r.name||'the customer').split(' ')[0])}..."></textarea>
+            <div class="booking-chat-hint"><span>They’ll receive a secure link to continue the conversation.</span><span>0 / 4000</span></div>
+            <button type="button" class="booking-chat-send" data-send-first-chat="${r.id}">SEND MESSAGE</button>
+            <div class="status"></div>
+          </div>
         </div>
         <div class="status" data-request-status></div>
       </div>
@@ -1751,7 +1776,12 @@ function renderBookingRequests(){
     box.classList.toggle('show');
     if(box.classList.contains('show')){
       const textarea=box.querySelector('textarea');
-      textarea?.focus();
+      const counter=box.querySelector('.booking-chat-hint span:last-child');
+      if(textarea&&counter){
+        const updateCount=()=>counter.textContent=`${textarea.value.length} / 4000`;
+        textarea.oninput=updateCount; updateCount();
+      }
+      setTimeout(()=>textarea?.focus(),180);
       box.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   });
