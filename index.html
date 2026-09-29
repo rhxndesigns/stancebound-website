@@ -4098,7 +4098,14 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   const closeMenu=()=>{nav?.classList.remove('open');backdrop?.classList.remove('show');toggle?.setAttribute('aria-expanded','false')};
   toggle?.addEventListener('click',()=>{const open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop?.classList.toggle('show',open);toggle.setAttribute('aria-expanded',String(open))});
   backdrop?.addEventListener('click',closeMenu);
-  document.querySelectorAll('.radial-item').forEach(btn=>btn.addEventListener('click',()=>{showPage(btn.dataset.page);closeMenu()}));
+  document.querySelectorAll('.radial-item').forEach(btn=>btn.addEventListener('click',(e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    closeMenu();
+    // Always use the latest navigation controller. Calling the original lexical
+    // showPage here bypassed the transition wrapper and could fight with history.
+    requestAnimationFrame(()=>window.showPage(btn.dataset.page));
+  }));
   const oldShow=window.showPage; if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
 
   const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
@@ -5341,31 +5348,43 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   // The original function still owns history, active nav state, scrolling and reveal logic.
   const instantShow=window.showPage;
   let navBusy=false;
+  let queuedNavigation=null;
   if(typeof instantShow==='function'){
     window.showPage=async function(pageName,addToHistory=true){
       const target=document.getElementById(pageName);
       const current=document.querySelector('.page.active');
       if(!target)return instantShow(pageName,addToHistory);
       if(current===target){
+        document.getElementById('radialNav')?.classList.remove('open');
+        document.getElementById('radialBackdrop')?.classList.remove('show');
+        document.getElementById('radialToggle')?.setAttribute('aria-expanded','false');
         window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
         return;
       }
-      if(navBusy)return;
+      if(navBusy){queuedNavigation={pageName,addToHistory};return;}
       navBusy=true;
-      if(current&&!reduce){
-        current.classList.add('sb-page-leaving');
-        await wait(175);
-        current.classList.remove('sb-page-leaving');
+      try{
+        if(current&&!reduce){
+          current.classList.add('sb-page-leaving');
+          await wait(175);
+          current.classList.remove('sb-page-leaving');
+        }
+        instantShow(pageName,addToHistory);
+        const next=document.getElementById(pageName);
+        if(next&&!reduce){
+          next.classList.remove('sb-page-entering');
+          void next.offsetWidth;
+          next.classList.add('sb-page-entering');
+          await wait(360);
+          next.classList.remove('sb-page-entering');
+        }
+      }finally{
+        navBusy=false;
+        if(queuedNavigation){
+          const q=queuedNavigation;queuedNavigation=null;
+          if(document.querySelector('.page.active')?.id!==q.pageName) window.showPage(q.pageName,q.addToHistory);
+        }
       }
-      instantShow(pageName,addToHistory);
-      const next=document.getElementById(pageName);
-      if(next&&!reduce){
-        next.classList.remove('sb-page-entering');
-        void next.offsetWidth;
-        next.classList.add('sb-page-entering');
-        setTimeout(()=>next.classList.remove('sb-page-entering'),380);
-      }
-      navBusy=false;
     };
   }
 
