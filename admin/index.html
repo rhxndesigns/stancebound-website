@@ -361,6 +361,20 @@ body{padding-bottom:88px}
 .action-success-pop{animation:successPop .42s cubic-bezier(.2,.8,.2,1)}@keyframes successPop{0%{transform:translateY(4px);opacity:.35}100%{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){.admin-page.active,.action-success-pop,#editor.admin-soft-refresh:after{animation:none!important}.admin-page{transition:none!important}}
 
+
+/* Traditional mobile sheets + deliberate page transitions */
+.more-sheet,.quick-sheet{display:flex!important;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .24s ease;}
+.more-sheet.show,.quick-sheet.show{visibility:visible;opacity:1;pointer-events:auto;}
+.more-sheet .sheet-card,.quick-sheet .sheet-card{transform:translateY(105%);opacity:1;animation:none!important;transition:transform .34s cubic-bezier(.22,.78,.2,1);touch-action:none;will-change:transform;}
+.more-sheet.show .sheet-card,.quick-sheet.show .sheet-card{transform:translateY(0);}
+.sheet-grab{width:46px;height:5px;border-radius:99px;background:#555;cursor:grab;touch-action:none;}
+.sheet-grab:active{cursor:grabbing;background:#777;}
+.admin-page.sb-page-leaving{opacity:0!important;transform:translateX(-14px)!important;pointer-events:none;}
+.admin-page.sb-page-entering{animation:sbTraditionalPageIn .34s cubic-bezier(.22,.78,.2,1) both!important;}
+@keyframes sbTraditionalPageIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+.sheet-card.sb-sheet-closing{transition:transform .26s cubic-bezier(.4,0,1,1)!important;transform:translateY(105%)!important;}
+@media(prefers-reduced-motion:reduce){.more-sheet,.quick-sheet,.more-sheet .sheet-card,.quick-sheet .sheet-card{transition:none!important}.admin-page.sb-page-entering{animation:none!important}}
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -1015,19 +1029,53 @@ async function smoothAdminRefresh(anchorEl){
 }
 
 
-adminTabs.forEach(tab => tab.addEventListener('click', () => openAdminPage(tab.dataset.adminTarget)));
+adminTabs.forEach(tab => tab.addEventListener('click', () => transitionAdminPage(tab.dataset.adminTarget)));
 document.querySelectorAll('[data-open-admin]').forEach(card => {
-  card.addEventListener('click', () => openAdminPage(card.dataset.openAdmin));
+  card.addEventListener('click', () => transitionAdminPage(card.dataset.openAdmin));
 });
 
-document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.mobileTarget)));
+document.querySelectorAll('[data-mobile-target]').forEach(btn=>btn.addEventListener('click',()=>transitionAdminPage(btn.dataset.mobileTarget)));
 const moreSheet=document.querySelector('#moreSheet'), quickSheet=document.querySelector('#quickSheet'), chatChoiceSheet=document.querySelector('#chatChoiceSheet');
-document.querySelector('#moreBtn')?.addEventListener('click',()=>moreSheet.classList.add('show'));
-document.querySelector('#quickAddBtn')?.addEventListener('click',()=>quickSheet.classList.add('show'));
-document.querySelector('#mobileChatsBtn')?.addEventListener('click',()=>chatChoiceSheet?.classList.add('show'));
-document.querySelectorAll('[data-chat-choice]').forEach(btn=>btn.addEventListener('click',()=>{chatChoiceSheet?.classList.remove('show');openAdminPage(btn.dataset.chatChoice);}));
-document.querySelectorAll('[data-sheet-target]').forEach(btn=>btn.addEventListener('click',()=>openAdminPage(btn.dataset.sheetTarget)));
-[moreSheet,quickSheet,chatChoiceSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show')}));
+
+function openSheet(sheet){
+  if(!sheet)return;
+  sheet.querySelector('.sheet-card')?.classList.remove('sb-sheet-closing');
+  sheet.classList.add('show');
+}
+function closeSheet(sheet,after){
+  if(!sheet){after?.();return;}
+  const card=sheet.querySelector('.sheet-card');
+  card?.classList.add('sb-sheet-closing');
+  setTimeout(()=>{sheet.classList.remove('show');card?.classList.remove('sb-sheet-closing');after?.();},250);
+}
+async function transitionAdminPage(name){
+  const current=document.querySelector('.admin-page.active');
+  if(current?.dataset.adminPage===name)return;
+  if(current){current.classList.add('sb-page-leaving');await new Promise(r=>setTimeout(r,170));}
+  openAdminPage(name);
+  current?.classList.remove('sb-page-leaving');
+  const next=document.querySelector(`.admin-page[data-admin-page="${CSS.escape(name)}"]`);
+  next?.classList.add('sb-page-entering');
+  setTimeout(()=>next?.classList.remove('sb-page-entering'),380);
+}
+function enableSheetDrag(sheet){
+  if(!sheet)return;
+  const card=sheet.querySelector('.sheet-card'), grab=sheet.querySelector('.sheet-grab');
+  if(!card||!grab)return;
+  let startY=0,dy=0,dragging=false;
+  const start=e=>{if(!sheet.classList.contains('show'))return;dragging=true;startY=e.clientY;dy=0;card.style.transition='none';grab.setPointerCapture?.(e.pointerId);};
+  const move=e=>{if(!dragging)return;dy=Math.max(0,e.clientY-startY);card.style.transform=`translateY(${dy}px)`;sheet.style.opacity=String(Math.max(.35,1-dy/500));};
+  const end=()=>{if(!dragging)return;dragging=false;card.style.transition='';sheet.style.opacity='';card.style.transform='';if(dy>90)closeSheet(sheet);};
+  grab.addEventListener('pointerdown',start);grab.addEventListener('pointermove',move);grab.addEventListener('pointerup',end);grab.addEventListener('pointercancel',end);
+}
+[moreSheet,quickSheet,chatChoiceSheet].forEach(enableSheetDrag);
+
+document.querySelector('#moreBtn')?.addEventListener('click',()=>openSheet(moreSheet));
+document.querySelector('#quickAddBtn')?.addEventListener('click',()=>openSheet(quickSheet));
+document.querySelector('#mobileChatsBtn')?.addEventListener('click',()=>openSheet(chatChoiceSheet));
+document.querySelectorAll('[data-chat-choice]').forEach(btn=>btn.addEventListener('click',()=>closeSheet(chatChoiceSheet,()=>transitionAdminPage(btn.dataset.chatChoice))));
+document.querySelectorAll('[data-sheet-target]').forEach(btn=>btn.addEventListener('click',()=>{const sheet=btn.closest('.more-sheet,.quick-sheet');closeSheet(sheet,()=>transitionAdminPage(btn.dataset.sheetTarget));}));
+[moreSheet,quickSheet,chatChoiceSheet].forEach(sheet=>sheet?.addEventListener('click',e=>{if(e.target===sheet)closeSheet(sheet);}));
 
 // Keep the useful Tools actions inside More on mobile instead of hiding them behind another page.
 document.querySelector('#moreRefreshAdminBtn')?.addEventListener('click',()=>{moreSheet?.classList.remove('show');document.querySelector('#refreshAdminBtn')?.click();});
