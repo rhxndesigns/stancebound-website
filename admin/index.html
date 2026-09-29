@@ -164,7 +164,9 @@ select, input[type="file"] {
 .enquiry-reply{display:none;margin-top:12px}
 .enquiry-reply.show{display:block}
 .enquiry-reply textarea{width:100%;box-sizing:border-box;min-height:120px;background:#050505;border:1px solid #333;color:#fff;padding:12px;font:inherit}
-.status-pill{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid #333;padding:5px 7px;color:#aaa}
+.status-pill{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid #333;padding:5px 7px;color:#aaa;transition:color .28s ease,border-color .28s ease,background .28s ease,box-shadow .28s ease,transform .28s ease}
+.status-pill.signature-pending{color:#ff6868;border-color:rgba(255,70,70,.58);background:rgba(255,45,45,.10);box-shadow:0 0 0 1px rgba(255,45,45,.04),0 0 18px rgba(255,45,45,.10)}
+.status-pill.signature-signed{color:#62e79a;border-color:rgba(60,220,125,.58);background:rgba(35,190,100,.10);box-shadow:0 0 0 1px rgba(35,190,100,.04),0 0 18px rgba(35,190,100,.10)}
 #enquiryBadge:not(:empty){display:inline-block;margin-left:3px;min-width:15px;padding:2px 4px;background:#fff;color:#000;font-size:8px}
 .empty-state{padding:25px;border:1px dashed #333;color:#777;text-align:center;font-size:11px;line-height:1.7}
 
@@ -1646,7 +1648,8 @@ function renderBookingRequests(){
     const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
     const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
     const workflow=bookingWorkflowStatus(r);
-    const label=r.final_confirmation_status==='pending'?'AWAITING SIGNATURE':r.final_confirmation_status==='signed'?'FINAL AGREEMENT SIGNED ✓':workflow==='booked'?'BOOKED':workflow==='cancelled'?'CANCELLED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
+    const label=r.final_confirmation_status==='pending'?'AWAITING CUSTOMER SIGNATURE':r.final_confirmation_status==='signed'?'SIGNED & ACCEPTED ✓':workflow==='booked'?'BOOKED':workflow==='cancelled'?'CANCELLED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
+    const confirmationPillClass=r.final_confirmation_status==='pending'?' signature-pending':r.final_confirmation_status==='signed'?' signature-signed':'';
 
     return `<article class="enquiry-card ${workflow==='new'?'new':''}" data-booking-request-id="${r.id}">
       <div class="enquiry-card-head">
@@ -1656,7 +1659,7 @@ function renderBookingRequests(){
           ${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>
           Submitted ${escapeHtml(submitted)}</div>
         </div>
-        <span class="status-pill">${label}</span>
+        <span class="status-pill${confirmationPillClass}">${label}</span>
       </div>
 
       <div class="job-details" style="margin-top:12px">
