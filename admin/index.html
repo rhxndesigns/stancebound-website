@@ -1532,7 +1532,7 @@ function bookingWorkflowStatus(r){
 }
 
 function updateBookingMetrics(){
-  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
+  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted || ['booked','completed'].includes(r.status) || r.final_confirmation_status || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new').length;
   const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='awaiting').length;
   const a=document.querySelector('#metricBookingRequests');
@@ -1541,6 +1541,66 @@ function updateBookingMetrics(){
   if(a)a.textContent=needs;
   if(b)b.textContent=awaiting;
   if(badge)badge.textContent=needs||'';
+}
+
+function pdfSafeFilename(value='agreement'){
+  return String(value||'agreement').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()||'agreement';
+}
+
+async function downloadSignedAgreementPdf(enquiryId, button){
+  const card=button.closest('[data-booking-request-id]');
+  const st=card?.querySelector('[data-request-status]');
+  button.disabled=true;
+  if(st)st.textContent='Preparing signed agreement PDF...';
+  try{
+    const {data,error}=await supabase.functions.invoke('get-final-agreement',{body:{enquiry_id:enquiryId}});
+    if(error)throw error;
+    if(!data?.success||!data?.agreement)throw new Error(data?.error||'Signed agreement could not be loaded.');
+    const a=data.agreement;
+    const {jsPDF}=await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/+esm');
+    const doc=new jsPDF({unit:'mm',format:'a4'});
+    const W=210,H=297,M=16,CW=W-M*2;
+    let y=18;
+    const page=()=>{doc.addPage();y=18;};
+    const need=h=>{if(y+h>H-16)page();};
+    const line=(label,value)=>{need(8);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text(label,M,y);doc.setFont('helvetica','normal');const x=M+42;const lines=doc.splitTextToSize(String(value??'Not supplied'),CW-42);doc.text(lines,x,y);y+=Math.max(6,lines.length*4.5);};
+    const heading=t=>{need(12);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(t,M,y);y+=7;};
+    doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text('STANCEBOUND',M,y);y+=7;
+    doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('SIGNED CUSTOMER BOOKING AGREEMENT',M,y);y+=10;
+    doc.setDrawColor(170);doc.line(M,y,W-M,y);y+=8;
+    line('Reference',a.reference||a.id);
+    line('Agreement version',a.agreement_version);
+    line('Signed',a.customer_confirmed_at?new Date(a.customer_confirmed_at).toLocaleString('en-GB',{dateStyle:'long',timeStyle:'short'}):'Not supplied');
+    line('Customer',a.customer_name);
+    line('Email',a.customer_email);
+    line('Phone',a.customer_phone);
+    line('Vehicle',a.vehicle);
+    line('Service',a.proposed_service);
+    line('Price',a.proposed_price==null?'Not supplied':'£'+Number(a.proposed_price).toFixed(2));
+    line('Date',a.proposed_booking_date||'Not supplied');
+    line('Start time',a.proposed_booking_time?String(a.proposed_booking_time).slice(0,5):'Not supplied');
+    line('End time',a.proposed_booking_end_time?String(a.proposed_booking_end_time).slice(0,5):'Not supplied');
+    line('Location',a.proposed_booking_location);
+    y+=4;heading('AGREEMENT TERMS');
+    doc.setFont('helvetica','normal');doc.setFontSize(9);
+    const paras=String(a.final_agreement_text||'').split(/\n{2,}/).filter(Boolean);
+    for(const para of paras){const lines=doc.splitTextToSize(para,CW);for(const l of lines){need(5);doc.text(l,M,y);y+=4.4;}y+=2;}
+    heading('CUSTOMER ACCEPTANCE');
+    line('Printed name',a.customer_printed_name);
+    line('Signed timestamp',a.customer_confirmed_at?new Date(a.customer_confirmed_at).toLocaleString('en-GB',{dateStyle:'long',timeStyle:'medium'}):'Not supplied');
+    if(a.customer_signature){need(42);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('Drawn signature',M,y);y+=4;try{doc.addImage(a.customer_signature,'PNG',M,y,70,30,'signature','FAST');y+=34;}catch(e){doc.setFont('helvetica','normal');doc.text('[Stored signature could not be rendered]',M,y);y+=7;}}
+    heading('AUDIT RECORD');
+    line('Confirmation ID',a.id);
+    line('Confirmation number',a.amendment_number);
+    line('Verified',a.verified_at?new Date(a.verified_at).toLocaleString('en-GB'):'Not recorded');
+    line('IP address',a.customer_ip||'Not recorded');
+    line('User agent',a.customer_user_agent||'Not recorded');
+    need(14);doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.text('This PDF is generated from the frozen signed STANCEBOUND confirmation record. Later booking edits do not alter this signed record.',M,y,{maxWidth:CW});
+    const filename=`stancebound-${pdfSafeFilename(a.customer_name)}-${pdfSafeFilename(a.proposed_booking_date||'agreement')}-signed-agreement.pdf`;
+    doc.save(filename);
+    if(st)st.textContent='SIGNED AGREEMENT PDF DOWNLOADED ✓';
+  }catch(e){if(st)st.textContent=e?.message||'Could not download signed agreement.';}
+  finally{button.disabled=false;}
 }
 
 function renderBookingRequests(){
@@ -1552,7 +1612,7 @@ function renderBookingRequests(){
   updateBookingMetrics();
 
   let rows=cachedEnquiries
-    .filter(r=>r.agreement_accepted || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'))
+    .filter(r=>r.agreement_accepted || ['booked','completed'].includes(r.status) || r.final_confirmation_status || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'))
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
   if(bookingRequestFilter!=='all'){
@@ -1623,7 +1683,8 @@ function renderBookingRequests(){
         <div class="booking-email-choice"><span>${r.final_confirmation_status==='pending'?'Secure confirmation already sent. Sending again will replace the pending confirmation.':'Customer approval is required before these booking details become final.'}</span></div>
         <div class="enquiry-actions-admin">
           ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">${r.final_confirmation_status==='pending'?'RESEND / REPLACE CONFIRMATION':'SEND FOR CONFIRMATION'}</button>`:
-    `<button type="button" data-save-booked="${r.id}">SEND CHANGES FOR CONFIRMATION</button>
+    `<button type="button" data-save-booked="${r.id}">${r.final_confirmation_status==='signed'?'SEND CHANGES FOR CONFIRMATION':r.final_confirmation_status==='pending'?'RESEND / REPLACE CONFIRMATION':'SEND FOR FINAL SIGNATURE'}</button>
+     ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
      <button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`}
           ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Move to Awaiting Customer</button>`:''}
           ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Needs Attention Again</button>`:''}
@@ -1692,6 +1753,8 @@ function renderBookingRequests(){
     finally{btn.disabled=false}
   });
 
+  list.querySelectorAll('[data-download-agreement]').forEach(btn=>btn.onclick=()=>downloadSignedAgreementPdf(btn.dataset.downloadAgreement,btn));
+
   list.querySelectorAll('[data-save-booked]').forEach(btn=>btn.onclick=async()=>{
     const card=btn.closest('[data-booking-request-id]');
     const st=card.querySelector('[data-request-status]');
@@ -1704,7 +1767,9 @@ function renderBookingRequests(){
     const priceRaw=card.querySelector('[data-request-price]').value;
     const notes=card.querySelector('[data-request-notes]').value.trim();
     if(!date||!time||!location||!service||priceRaw===''){st.textContent='Set the final date, start time, service, price and location first.';return;}
-    if(!confirm('Send these changed booking details to the customer for a new secure signature? The current signed booking stays unchanged until they accept.'))return;
+    const row=cachedEnquiries.find(r=>String(r.id)===String(id));
+    const promptText=row?.final_confirmation_status==='signed'?'Send these changed booking details to the customer for a new secure signature? The current signed booking stays unchanged until they accept.':'Send this existing booking to the customer for final secure confirmation and signature? The current booking details stay in place until they sign.';
+    if(!confirm(promptText))return;
     btn.disabled=true;st.textContent='Creating secure confirmation...';
     try{
       const {error:noteError}=await supabase.from('enquiries').update({admin_notes:notes}).eq('id',id);
