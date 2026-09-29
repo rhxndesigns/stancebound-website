@@ -872,6 +872,8 @@ Save Changes
     <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
   </div></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+
 <script type="module">
 
 import { createClient }
@@ -1178,7 +1180,7 @@ async function loadEnquiries(){
 
   const {data,error}=await supabase
     .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,agreement_signature,agreement_signed_at,agreement_text,media_consent,alternative_booking_date,alternative_booking_time,conversation_token')
     .eq('email_verified',true)
     .order('created_at',{ascending:false});
 
@@ -1543,6 +1545,57 @@ function updateBookingMetrics(){
   if(badge)badge.textContent=needs||'';
 }
 
+function downloadSignedAgreementPdf(id){
+  const r=cachedEnquiries.find(x=>String(x.id)===String(id));
+  if(!r)return alert('Booking record could not be found.');
+  if(!window.jspdf?.jsPDF)return alert('PDF library has not loaded. Please refresh and try again.');
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  const left=18, right=192, width=right-left;
+  let y=20;
+  const addLine=(label,value)=>{
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text(label.toUpperCase(),left,y);
+    doc.setFont('helvetica','normal');doc.setFontSize(10);
+    const lines=doc.splitTextToSize(String(value||'Not supplied'),width-42);
+    doc.text(lines,left+42,y);y+=Math.max(7,lines.length*5.2);
+    if(y>270){doc.addPage();y=20;}
+  };
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text('STANCEBOUND',left,y);y+=8;
+  doc.setFontSize(12);doc.text('SIGNED CUSTOMER AGREEMENT',left,y);y+=5;
+  doc.setDrawColor(60);doc.line(left,y,right,y);y+=10;
+  addLine('Agreement',r.agreement_version||'STANCEBOUND-CUSTOMER-AGREEMENT-V1');
+  addLine('Booking reference',r.id);
+  addLine('Customer',r.name);
+  addLine('Email',r.email);
+  addLine('Phone',r.phone);
+  addLine('Vehicle',r.vehicle);
+  addLine('Service',r.service);
+  addLine('Preferred date',r.booking_date);
+  addLine('Preferred time',r.booking_time?String(r.booking_time).slice(0,5):'Not supplied');
+  addLine('Location',r.booking_location||'See booking notes');
+  addLine('Submitted',r.created_at?new Date(r.created_at).toLocaleString('en-GB'):'Not recorded');
+  addLine('Signed',r.agreement_signed_at?new Date(r.agreement_signed_at).toLocaleString('en-GB'):(r.agreement_accepted_at?new Date(r.agreement_accepted_at).toLocaleString('en-GB'):'Not recorded'));
+  addLine('Media consent',r.media_consent?'Yes':'No');
+  y+=4;doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('BOOKING DETAILS',left,y);y+=7;
+  doc.setFont('helvetica','normal');doc.setFontSize(9.5);
+  const msg=doc.splitTextToSize(String(r.message||'No additional booking notes.'),width);doc.text(msg,left,y);y+=msg.length*4.8+8;
+  if(y>245){doc.addPage();y=20;}
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('TERMS ACCEPTED',left,y);y+=7;
+  doc.setFont('helvetica','normal');doc.setFontSize(8.8);
+  const fallback=`Customer & booking\nThe person making and accepting the booking must be 18 or over and have authority to authorise work on the vehicle.\n\nVehicle condition\nPlease disclose known damage, faults, loose trim, paint defects, electrical issues or modifications that may affect the work. Existing defects may be photographed before work begins.\n\nAccess & working area\nYou must provide safe, reasonable access to the vehicle and an appropriate working area. STANCEBOUND does not require access to your home unless separately agreed and necessary for the service.\n\nChildren & pets\nChildren and pets must be kept clear of the working area while work is taking place because electrical equipment, cables, pressure washing, chemicals and machine-polishing equipment may be in use. The customer is responsible for helping keep the area clear and safe.\n\nResults & limitations\nSTANCEBOUND will use reasonable care but cannot guarantee that every stain, scratch, mark, odour or existing defect can be removed or corrected.\n\nPersonal belongings\nPlease remove valuables and personal belongings from areas being worked on. STANCEBOUND will take reasonable care while carrying out the agreed service.\n\nPrice & additional work\nAny additional work or price changes will be discussed with you before that extra work is carried out.\n\nCancellation & access\nWeather, unsuitable access, vehicle condition or other circumstances may mean work needs to stop or be rearranged. Any communicated cancellation or deposit terms also apply.\n\nPhotography & media\nPromotional photography is only used where you separately agree. STANCEBOUND will not intentionally include personal, address or identifying information in promotional material.`;
+  const terms=doc.splitTextToSize(String(r.agreement_text||fallback),width);
+  for(const line of terms){if(y>275){doc.addPage();y=20;}doc.text(line,left,y);y+=4.2;}
+  y+=7;if(y>230){doc.addPage();y=20;}
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('ELECTRONIC SIGNATURE',left,y);y+=7;
+  if(r.agreement_signature){try{doc.addImage(r.agreement_signature,'PNG',left,y,78,30);y+=35;}catch(e){doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Signature image could not be rendered.',left,y);y+=8;}}
+  else{doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Signature image not stored on this record.',left,y);y+=8;}
+  doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+  const proof=doc.splitTextToSize('The customer confirmed that they were 18 or over, had authority to authorise work on the vehicle, and had read and agreed to the STANCEBOUND Customer Agreement before submitting this booking request. This document records the booking data and electronic acceptance held by STANCEBOUND.',width);
+  doc.text(proof,left,y);
+  const safe=String(r.name||'customer').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase();
+  doc.save(`STANCEBOUND-agreement-${safe||'customer'}-${String(r.id).slice(0,8)}.pdf`);
+}
+
 function renderBookingRequests(){
   const list=document.querySelector('#bookingRequestList');
   const status=document.querySelector('#bookingRequestStatus');
@@ -1609,6 +1662,8 @@ function renderBookingRequests(){
 
       <div class="enquiry-message">${escapeHtml(r.message||'No additional message')}</div>
 
+      ${r.agreement_accepted?`<div class="signed-agreement-admin" style="margin:12px 0;padding:14px;border:1px solid #303030;background:#0a0a0a"><div style="font-size:9px;letter-spacing:1.7px;color:#888;margin-bottom:9px">SIGNED CUSTOMER AGREEMENT</div><button type="button" class="secondary" data-download-agreement="${r.id}" style="margin:0;width:100%">DOWNLOAD SIGNED AGREEMENT PDF</button></div>`:''}
+
       <div class="booking-editor show">
         <div class="booking-grid">
           <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(r.booking_date||'')}"></div>
@@ -1650,6 +1705,8 @@ function renderBookingRequests(){
   });
 
   list.querySelectorAll('[data-open-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
+
+  list.querySelectorAll('[data-download-agreement]').forEach(btn=>btn.onclick=()=>downloadSignedAgreementPdf(btn.dataset.downloadAgreement));
 
   list.querySelectorAll('[data-awaiting-request]').forEach(btn=>btn.onclick=async()=>{
     const st=btn.closest('[data-booking-request-id]').querySelector('[data-request-status]');
