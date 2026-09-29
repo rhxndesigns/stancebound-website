@@ -2542,7 +2542,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       <button class="radial-item" style="--i:5;--a:50deg" data-page="booking">Booking</button>
       <button class="radial-item" style="--i:6;--a:75deg" data-page="contact">Chat</button>
     </div>
-    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false">+</button>
+    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
   </div>
 
 
@@ -3781,6 +3781,42 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       homeVideoObserver.observe(homeMercVideo);
     }
 
+
+    // Site-wide cinematic scroll reveals. Applied automatically so future content inherits the motion system.
+    const sbRevealTargets = [];
+    document.querySelectorAll('.page').forEach(page => {
+      if (page.id === 'home') return;
+      const content = page.querySelector('.content') || page;
+      const candidates = Array.from(content.children).filter(el =>
+        !el.matches('script,style') && !el.classList.contains('sb-scroll-reveal')
+      );
+      candidates.forEach((el, index) => {
+        el.classList.add('sb-scroll-reveal');
+        if (el.classList.contains('page-heading')) el.classList.add('sb-from-up');
+        else if (el.classList.contains('gallery') || el.classList.contains('swipe-gallery')) el.classList.add('sb-scale-in');
+        else el.classList.add(index % 2 ? 'sb-from-right' : 'sb-from-left');
+        el.dataset.sbDelay = String(Math.min(index % 4, 3));
+        sbRevealTargets.push(el);
+      });
+    });
+
+    // Individual cards/photos/products get a staggered rise for a more layered reveal.
+    document.querySelectorAll('.product-card,.photo,.ba-card,.feature-stat').forEach((el,index) => {
+      if (el.classList.contains('sb-scroll-reveal')) return;
+      el.classList.add('sb-scroll-reveal','sb-from-up');
+      el.dataset.sbDelay = String(index % 4);
+      sbRevealTargets.push(el);
+    });
+
+    const sbScrollObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('sb-in-view');
+        sbScrollObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -45px 0px' });
+    sbRevealTargets.forEach(el => sbScrollObserver.observe(el));
+
     /* ========================================
        LOAD CORRECT PAGE FROM URL
        ======================================== */
@@ -4682,6 +4718,81 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 <style id="admin-entry-position">
 .footer-admin-access{text-align:left!important;padding-left:8px!important;box-sizing:border-box}
 @media(max-width:700px){.footer-admin-access{padding-right:100px!important}}
+
+
+    /* ===== STANCEBOUND SITE-WIDE SCROLL MOTION ===== */
+    .sb-scroll-reveal{
+      opacity:0;
+      filter:blur(2px);
+      transition:opacity .78s ease,transform .88s cubic-bezier(.16,1,.3,1),filter .72s ease;
+      will-change:transform,opacity;
+    }
+    .sb-scroll-reveal.sb-from-left{transform:translate3d(-52px,0,0)}
+    .sb-scroll-reveal.sb-from-right{transform:translate3d(52px,0,0)}
+    .sb-scroll-reveal.sb-from-up{transform:translate3d(0,38px,0)}
+    .sb-scroll-reveal.sb-scale-in{transform:translate3d(0,24px,0) scale(.975)}
+    .sb-scroll-reveal.sb-in-view{opacity:1;filter:none;transform:translate3d(0,0,0) scale(1)}
+    .sb-scroll-reveal[data-sb-delay="1"]{transition-delay:.08s}
+    .sb-scroll-reveal[data-sb-delay="2"]{transition-delay:.16s}
+    .sb-scroll-reveal[data-sb-delay="3"]{transition-delay:.24s}
+
+    /* The old + button is now the STANCEBOUND mark. Apparently even menus need stage lighting. */
+    .radial-toggle{
+      display:grid!important;
+      place-items:center;
+      overflow:visible;
+      font-size:0!important;
+      isolation:isolate;
+      animation:sbMenuFloat 3.2s ease-in-out infinite;
+      box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.18),0 10px 35px rgba(0,0,0,.5)!important;
+    }
+    .radial-toggle::before{
+      content:"";
+      position:absolute;
+      inset:-7px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.22);
+      opacity:.25;
+      z-index:-1;
+      animation:sbMenuPulse 2.4s ease-out infinite;
+    }
+    .radial-toggle::after{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.13),transparent 68%);
+      z-index:-1;
+      animation:sbMenuGlow 2.8s ease-in-out infinite;
+    }
+    .radial-toggle img{
+      width:40px;
+      height:40px;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 0 5px rgba(255,255,255,.45));
+      animation:sbLogoBreathe 2.8s ease-in-out infinite;
+      transition:transform .5s cubic-bezier(.16,1,.3,1),filter .3s ease;
+      pointer-events:none;
+    }
+    .radial-nav.open .radial-toggle{transform:translate(-50%,-50%) scale(1.08)!important;background:#111!important;color:#fff!important}
+    .radial-nav.open .radial-toggle img{transform:rotate(360deg) scale(.88);filter:drop-shadow(0 0 10px rgba(255,255,255,.75))}
+    body.light-theme .radial-toggle img{filter:drop-shadow(0 0 5px rgba(0,0,0,.28))}
+    body.light-theme .radial-toggle::before{border-color:rgba(0,0,0,.22)}
+    @keyframes sbMenuFloat{0%,100%{margin-top:0}50%{margin-top:-4px}}
+    @keyframes sbMenuPulse{0%{transform:scale(.88);opacity:.42}70%,100%{transform:scale(1.24);opacity:0}}
+    @keyframes sbMenuGlow{0%,100%{opacity:.35;transform:scale(.94)}50%{opacity:.9;transform:scale(1.08)}}
+    @keyframes sbLogoBreathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.04)}}
+
+    @media(max-width:760px){
+      .sb-scroll-reveal.sb-from-left{transform:translate3d(-34px,0,0)}
+      .sb-scroll-reveal.sb-from-right{transform:translate3d(34px,0,0)}
+      .sb-scroll-reveal.sb-from-up{transform:translate3d(0,28px,0)}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sb-scroll-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
+      .radial-toggle,.radial-toggle::before,.radial-toggle::after,.radial-toggle img{animation:none!important}
+    }
 </style>
 </body>
 
