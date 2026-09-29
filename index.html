@@ -3901,9 +3901,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       );
       candidates.forEach((el, index) => {
         el.classList.add('sb-scroll-reveal');
-        if (el.classList.contains('page-heading')) el.classList.add('sb-from-up');
-        else if (el.classList.contains('gallery') || el.classList.contains('swipe-gallery')) el.classList.add('sb-scale-in');
-        else el.classList.add(index % 2 ? 'sb-from-right' : 'sb-from-left');
+        // Keep full-width page blocks geometrically centred at all times.
+        // Horizontal motion belongs on smaller visual elements, not the containers themselves.
+        if (el.classList.contains('gallery') || el.classList.contains('swipe-gallery')) el.classList.add('sb-scale-in');
+        else el.classList.add('sb-from-up');
         el.dataset.sbDelay = String(Math.min(index % 4, 3));
         sbRevealTargets.push(el);
       });
@@ -4966,6 +4967,79 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     @media(max-width:760px){
       .page > .content,.page .content{max-width:100%;}
       #bookingThanks > .content{width:calc(100% - 20px)!important;padding-left:0!important;padding-right:0!important;}
+    }
+
+
+
+    /* ===== DEFINITIVE MOBILE CENTRING + SAFE FLOATING MENU FIX ===== */
+    html,body{max-width:100%;overflow-x:hidden;}
+    .page{width:100%;max-width:100%;overflow-x:clip;}
+    .page > .content{
+      width:min(1200px,92%)!important;
+      max-width:1200px!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box!important;
+      transform:none;
+    }
+    /* Major page panels must never enter from the side. Side transforms made centred
+       cards look broken while their reveal was pending on hidden pages. */
+    .page .page-heading.sb-scroll-reveal,
+    .page .profile-card.sb-scroll-reveal,
+    .page .feature-detail.sb-scroll-reveal,
+    .page .enquiry-shell.sb-scroll-reveal,
+    .page .availability-calendar.sb-scroll-reveal,
+    .page .agreement-panel.sb-scroll-reveal,
+    .page .signature-wrap.sb-scroll-reveal,
+    .page .sb-chat-start.sb-scroll-reveal,
+    .page .sb-chat-socials.sb-scroll-reveal,
+    #bookingThanks .sb-scroll-reveal{
+      transform:translate3d(0,28px,0)!important;
+    }
+    .page .page-heading.sb-scroll-reveal.sb-in-view,
+    .page .profile-card.sb-scroll-reveal.sb-in-view,
+    .page .feature-detail.sb-scroll-reveal.sb-in-view,
+    .page .enquiry-shell.sb-scroll-reveal.sb-in-view,
+    .page .availability-calendar.sb-scroll-reveal.sb-in-view,
+    .page .agreement-panel.sb-scroll-reveal.sb-in-view,
+    .page .signature-wrap.sb-scroll-reveal.sb-in-view,
+    .page .sb-chat-start.sb-scroll-reveal.sb-in-view,
+    .page .sb-chat-socials.sb-scroll-reveal.sb-in-view,
+    #bookingThanks .sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+    #contact .content,
+    #bookingThanks .content{
+      width:min(1200px,92%)!important;
+      max-width:1200px!important;
+      margin-inline:auto!important;
+    }
+    #contact .sb-chat-start,
+    #contact .sb-chat-socials{
+      width:100%!important;
+      max-width:760px!important;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box!important;
+    }
+    #contact input,#contact button,#contact form,#contact label{box-sizing:border-box;max-width:100%;}
+    #contact .sb-chat-fields{width:100%;min-width:0;}
+    #contact .sb-chat-fields > *{min-width:0;}
+    #contact .btn{max-width:100%;}
+    .radial-nav{bottom:104px!important;}
+    @media(max-width:760px){
+      .page > .content,
+      #contact .content,
+      #bookingThanks .content{
+        width:calc(100% - 32px)!important;
+        max-width:calc(100% - 32px)!important;
+        padding-left:0!important;
+        padding-right:0!important;
+      }
+      #contact .sb-chat-start{width:100%!important;max-width:100%!important;margin-inline:auto!important;}
+      #contact .sb-chat-fields{grid-template-columns:minmax(0,1fr)!important;}
+      #contact .sb-chat-fields input{width:100%!important;min-width:0!important;}
+      .radial-nav{bottom:112px!important;}
     }
 
 </style>
