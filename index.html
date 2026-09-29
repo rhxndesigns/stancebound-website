@@ -5298,6 +5298,115 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 @media(prefers-reduced-motion:reduce){#sbFinalConfirmation.show,#sbFinalConfirmation .sbf-top,#sbFinalConfirmation .sbf-card,#sbfVerifyStage>*,#sbfSession.show>*,#sbfSession.show .sbf-field,#sbfComplete.show .sbf-check,#sbfComplete.show h2,#sbfComplete.show p,#sbfComplete.show .sbf-btn{animation:none!important;opacity:1!important;transform:none!important;transition:none!important}}
 </style>
 
+
+<style id="stancebound-global-interaction-motion">
+  :root{--sb-ease:cubic-bezier(.22,.8,.22,1);--sb-fast:180ms;--sb-page:340ms}
+  .page{will-change:opacity,transform,filter}
+  .page.sb-page-leaving{display:block!important;opacity:0!important;transform:translateY(10px) scale(.995)!important;filter:blur(2px);pointer-events:none;transition:opacity 180ms ease,transform 220ms var(--sb-ease),filter 180ms ease!important}
+  .page.sb-page-entering{display:block!important;animation:sbPageEnter var(--sb-page) var(--sb-ease) both}
+  @keyframes sbPageEnter{from{opacity:0;transform:translateY(14px) scale(.994);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+
+  button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"]{
+    -webkit-tap-highlight-color:transparent;
+    transition-property:transform,opacity,background-color,border-color,box-shadow,filter!important;
+    transition-duration:180ms!important;
+    transition-timing-function:var(--sb-ease)!important;
+  }
+  .sb-tap-feedback{transform:scale(.975)!important;filter:brightness(1.12)}
+  .sb-click-glow{position:fixed;width:18px;height:18px;border:1px solid rgba(255,255,255,.52);border-radius:50%;pointer-events:none;z-index:2147483646;transform:translate(-50%,-50%) scale(.35);opacity:.8;animation:sbClickGlow 420ms var(--sb-ease) forwards}
+  body.light-theme .sb-click-glow{border-color:rgba(0,0,0,.38)}
+  @keyframes sbClickGlow{to{transform:translate(-50%,-50%) scale(2.8);opacity:0}}
+
+  #sbRouteVeil{position:fixed;inset:0;z-index:2147483645;pointer-events:none;background:var(--black,#050505);opacity:0;transition:opacity 220ms ease}
+  body.light-theme #sbRouteVeil{background:#f4f3ef}
+  #sbRouteVeil.show{opacity:.72}
+
+  .lightbox,.product-modal,.radial-backdrop{transition-timing-function:var(--sb-ease)!important}
+  input,textarea,select{transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease,transform 180ms var(--sb-ease)!important}
+  input:focus,textarea:focus,select:focus{transform:translateY(-1px)}
+
+  @media (prefers-reduced-motion:reduce){
+    .page.sb-page-leaving,.page.sb-page-entering{animation:none!important;transition:none!important;filter:none!important;transform:none!important}
+    .sb-click-glow{display:none!important}
+    #sbRouteVeil{transition:none!important}
+    button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"],input,textarea,select{transition:none!important}
+  }
+</style>
+<script id="stancebound-global-interaction-motion-script">
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+  // Replace the existing instant page swap with an out -> swap -> in sequence.
+  // The original function still owns history, active nav state, scrolling and reveal logic.
+  const instantShow=window.showPage;
+  let navBusy=false;
+  if(typeof instantShow==='function'){
+    window.showPage=async function(pageName,addToHistory=true){
+      const target=document.getElementById(pageName);
+      const current=document.querySelector('.page.active');
+      if(!target)return instantShow(pageName,addToHistory);
+      if(current===target){
+        window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+        return;
+      }
+      if(navBusy)return;
+      navBusy=true;
+      if(current&&!reduce){
+        current.classList.add('sb-page-leaving');
+        await wait(175);
+        current.classList.remove('sb-page-leaving');
+      }
+      instantShow(pageName,addToHistory);
+      const next=document.getElementById(pageName);
+      if(next&&!reduce){
+        next.classList.remove('sb-page-entering');
+        void next.offsetWidth;
+        next.classList.add('sb-page-entering');
+        setTimeout(()=>next.classList.remove('sb-page-entering'),380);
+      }
+      navBusy=false;
+    };
+  }
+
+  // Consistent tactile response for clickable controls without interfering with
+  // signature canvases, scrolling, form typing, gallery swipes or calendar logic.
+  document.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    const el=e.target.closest('button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.radial-item,.radial-toggle,.size-option,[role="button"]');
+    if(!el||el.disabled)return;
+    el.classList.add('sb-tap-feedback');
+    if(!reduce&&e.clientX&&e.clientY){
+      const glow=document.createElement('span');
+      glow.className='sb-click-glow';
+      glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';
+      document.body.appendChild(glow);
+      setTimeout(()=>glow.remove(),450);
+    }
+  },{passive:true});
+  const clearTap=e=>{const el=e.target.closest?.('.sb-tap-feedback');if(el)setTimeout(()=>el.classList.remove('sb-tap-feedback'),70)};
+  document.addEventListener('pointerup',clearTap,{passive:true});
+  document.addEventListener('pointercancel',clearTap,{passive:true});
+
+  // Smooth full-document departures, such as the Admin link. New-tab social
+  // links are deliberately left alone.
+  const veil=document.createElement('div');veil.id='sbRouteVeil';document.body.appendChild(veil);
+  document.addEventListener('click',async e=>{
+    const a=e.target.closest('a[href]');
+    if(!a||e.defaultPrevented||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    const raw=a.getAttribute('href')||'';
+    if(!raw||raw.startsWith('#')||raw.startsWith('mailto:')||raw.startsWith('tel:')||raw.startsWith('javascript:'))return;
+    let url;try{url=new URL(a.href,location.href)}catch(_){return}
+    if(url.origin!==location.origin)return;
+    // Conversation/confirmation routes and /admin are genuine document navigations.
+    if(url.pathname===location.pathname&&url.search===location.search)return;
+    e.preventDefault();
+    if(!reduce){veil.classList.add('show');await wait(180)}
+    location.href=url.href;
+  },true);
+})();
+</script>
+
 </body>
 
 </html>
