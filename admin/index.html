@@ -166,6 +166,10 @@ select, input[type="file"] {
 .enquiry-reply textarea{width:100%;box-sizing:border-box;min-height:120px;background:#050505;border:1px solid #333;color:#fff;padding:12px;font:inherit}
 .status-pill{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid #333;padding:5px 7px;color:#aaa;transition:color .28s ease,border-color .28s ease,background .28s ease,box-shadow .28s ease,transform .28s ease}
 .status-pill.signature-pending{color:#ff6868;border-color:rgba(255,70,70,.58);background:rgba(255,45,45,.10);box-shadow:0 0 0 1px rgba(255,45,45,.04),0 0 18px rgba(255,45,45,.10)}
+.pending-confirmation-summary{margin-top:14px;padding:15px;border:1px solid rgba(255,80,80,.22);border-radius:18px;background:rgba(255,55,55,.045)}
+.pending-confirmation-summary .booking-grid{margin-top:0}.pending-confirmation-summary strong{display:block;margin-top:4px;color:var(--text,#fff);font-size:.96rem;line-height:1.35}.pending-confirmation-summary .pending-note{margin:12px 0 0;color:#ff8b8b;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase}
+.booking-edit-panel[hidden]{display:none!important}.booking-edit-panel{margin-top:14px;animation:sbEditReveal .28s ease both}@keyframes sbEditReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
 .status-pill.signature-signed{color:#62e79a;border-color:rgba(60,220,125,.58);background:rgba(35,190,100,.10);box-shadow:0 0 0 1px rgba(35,190,100,.04),0 0 18px rgba(35,190,100,.10)}
 #enquiryBadge:not(:empty){display:inline-block;margin-left:3px;min-width:15px;padding:2px 4px;background:#fff;color:#000;font-size:8px}
 .empty-state{padding:25px;border:1px dashed #333;color:#777;text-align:center;font-size:11px;line-height:1.7}
@@ -907,6 +911,7 @@ const adminTabs = [...document.querySelectorAll('.admin-tab')];
 const adminPages = [...document.querySelectorAll('.admin-page')];
 
 let cachedEnquiries = [];
+const pendingConfirmationCache = new Map();
 let cachedOrders = [];
 
 function openAdminPage(name, addToHistory=true) {
@@ -1190,6 +1195,14 @@ async function loadEnquiries(){
   }
 
   cachedEnquiries=data||[];
+  pendingConfirmationCache.clear();
+  const pendingRows=cachedEnquiries.filter(r=>r.final_confirmation_status==='pending'&&r.final_confirmation_id);
+  await Promise.all(pendingRows.map(async r=>{
+    try{
+      const {data:confirmation,error:confirmationError}=await supabase.functions.invoke('get-booking-confirmation',{body:{enquiry_id:r.id}});
+      if(!confirmationError&&confirmation?.success&&confirmation?.confirmation) pendingConfirmationCache.set(String(r.id),confirmation.confirmation);
+    }catch(_){/* Keep Admin usable if one pending record cannot be loaded. */}
+  }));
   const activeStatuses=['new','awaiting_reply','ongoing','booked'];
   const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted && !String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
@@ -1644,68 +1657,98 @@ function renderBookingRequests(){
   }
 
   list.innerHTML=rows.map(r=>{
-    const requested=formatBookingDate(r.booking_date,r.booking_time);
+    const pending=pendingConfirmationCache.get(String(r.id))||null;
+    const isPending=r.final_confirmation_status==='pending';
+    const displayDate=isPending&&pending?.proposed_booking_date?pending.proposed_booking_date:r.booking_date;
+    const displayTime=isPending&&pending?.proposed_booking_time?pending.proposed_booking_time:r.booking_time;
+    const displayEnd=isPending&&pending?.proposed_booking_end_time?pending.proposed_booking_end_time:r.booking_end_time;
+    const displayLocation=isPending&&pending?.proposed_booking_location!=null?pending.proposed_booking_location:r.booking_location;
+    const displayService=isPending&&pending?.proposed_service!=null?pending.proposed_service:r.service;
+    const displayPrice=isPending&&pending?.proposed_price!=null?pending.proposed_price:r.quoted_price;
+    const requested=formatBookingDate(displayDate,displayTime);
     const alternative=r.alternative_booking_date?formatBookingDate(r.alternative_booking_date,r.alternative_booking_time):'Not supplied';
     const submitted=new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
     const workflow=bookingWorkflowStatus(r);
-    const label=r.final_confirmation_status==='pending'?'AWAITING CUSTOMER SIGNATURE':r.final_confirmation_status==='signed'?'SIGNED & ACCEPTED ✓':workflow==='booked'?'BOOKED':workflow==='cancelled'?'CANCELLED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
-    const confirmationPillClass=r.final_confirmation_status==='pending'?' signature-pending':r.final_confirmation_status==='signed'?' signature-signed':'';
+    const label=isPending?'AWAITING CUSTOMER SIGNATURE':r.final_confirmation_status==='signed'?'SIGNED & ACCEPTED ✓':workflow==='booked'?'BOOKED':workflow==='cancelled'?'CANCELLED':workflow==='awaiting'?'AWAITING CUSTOMER':'NEEDS ATTENTION';
+    const confirmationPillClass=isPending?' signature-pending':r.final_confirmation_status==='signed'?' signature-signed':'';
+    const priceText=displayPrice==null||displayPrice===''?'Not set':'£'+Number(displayPrice).toFixed(2);
+    const endText=displayEnd?String(displayEnd).slice(0,5):'Not set';
 
     return `<article class="enquiry-card ${workflow==='new'?'new':''}" data-booking-request-id="${r.id}">
-      <div class="enquiry-card-head">
-        <div>
-          <h3>${escapeHtml(r.name)}</h3>
-          <div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>
-          ${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>
-          Submitted ${escapeHtml(submitted)}</div>
-        </div>
-        <span class="status-pill${confirmationPillClass}">${label}</span>
-      </div>
+      <div class="enquiry-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(displayService||'Service not set')}<br>${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>Submitted ${escapeHtml(submitted)}</div></div><span class="status-pill${confirmationPillClass}">${label}</span></div>
 
-      <div class="job-details" style="margin-top:12px">
-        <div><span>Preferred</span><strong>${escapeHtml(requested)}</strong></div>
-        <div><span>Alternative</span><strong>${escapeHtml(alternative)}</strong></div>
-        <div><span>Location</span><strong>${escapeHtml(r.booking_location||'See customer message')}</strong></div>
-        <div><span>Agreement</span><strong>${r.agreement_accepted?'Accepted':'No'}</strong></div>
-        <div><span>Media consent</span><strong>${r.media_consent?'Yes':'No'}</strong></div>
-      </div>
+      ${isPending?`<div class="pending-confirmation-summary">
+        <div class="booking-grid">
+          <div><label>Date</label><strong>${escapeHtml(displayDate||'Not set')}</strong></div>
+          <div><label>Start time</label><strong>${escapeHtml(displayTime?String(displayTime).slice(0,5):'Not set')}</strong></div>
+          <div><label>End time</label><strong>${escapeHtml(endText)}</strong></div>
+          <div><label>Agreed price</label><strong>${escapeHtml(priceText)}</strong></div>
+          <div class="full"><label>Service</label><strong>${escapeHtml(displayService||'Not set')}</strong></div>
+          <div class="full"><label>Location</label><strong>${escapeHtml(displayLocation||'Not set')}</strong></div>
+        </div>
+        <div class="pending-note">These are the frozen details currently waiting for ${escapeHtml(r.name)} to sign.</div>
+      </div>`:`<div class="job-details" style="margin-top:12px"><div><span>Preferred</span><strong>${escapeHtml(requested)}</strong></div><div><span>Alternative</span><strong>${escapeHtml(alternative)}</strong></div><div><span>Location</span><strong>${escapeHtml(displayLocation||'See customer message')}</strong></div><div><span>Agreement</span><strong>${r.agreement_accepted?'Accepted':'No'}</strong></div><div><span>Media consent</span><strong>${r.media_consent?'Yes':'No'}</strong></div></div>`}
 
       <div class="enquiry-message">${escapeHtml(r.message||'No additional message')}</div>
 
       <div class="booking-editor show">
-        <div class="booking-grid">
-          <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(r.booking_date||'')}"></div>
-          <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((r.booking_time||'').slice(0,5))}"></div>
-          <div><label>End time</label><input type="time" data-request-end value="${escapeHtml((r.booking_end_time||'').slice(0,5))}"></div>
-          <div><label>Agreed price (£)</label><input type="number" min="0" step="0.01" data-request-price value="${moneyValue(r.quoted_price)}"></div>
-          <div class="full"><label>Final / proposed service</label><input type="text" data-request-service value="${escapeHtml(r.service||'')}" placeholder="Service"></div>
-          <div class="full"><label>Location</label><input type="text" data-request-location value="${escapeHtml(r.booking_location||'')}" placeholder="Job location"></div>
-          <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+        <div class="booking-edit-panel" ${isPending?'hidden':''}>
+          <div class="booking-grid">
+            <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(displayDate||'')}"></div>
+            <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((displayTime||'').slice(0,5))}"></div>
+            <div><label>End time</label><input type="time" data-request-end value="${escapeHtml((displayEnd||'').slice(0,5))}"></div>
+            <div><label>Agreed price (£)</label><input type="number" min="0" step="0.01" data-request-price value="${moneyValue(displayPrice)}"></div>
+            <div class="full"><label>Final / proposed service</label><input type="text" data-request-service value="${escapeHtml(displayService||'')}" placeholder="Service"></div>
+            <div class="full"><label>Location</label><input type="text" data-request-location value="${escapeHtml(displayLocation||'')}" placeholder="Job location"></div>
+            <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+          </div>
+          <div class="booking-email-choice"><span>${isPending?'Saving these changes will cancel the pending request and email a fresh confirmation for signature.':'Customer approval is required before these booking details become final.'}</span></div>
+          <div class="enquiry-actions-admin">
+            ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">${isPending?'SAVE CHANGES & SEND NEW CONFIRMATION':'SEND FOR CONFIRMATION'}</button>`:`<button type="button" data-save-booked="${r.id}">${isPending?'SAVE CHANGES & SEND NEW CONFIRMATION':r.final_confirmation_status==='signed'?'SEND CHANGES FOR CONFIRMATION':'SEND FOR FINAL SIGNATURE'}</button>`}
+            ${isPending?`<button type="button" class="secondary" data-cancel-edit="${r.id}">CANCEL EDIT</button>`:''}
+          </div>
         </div>
-
-        <div class="booking-email-choice"><span>${r.final_confirmation_status==='pending'?'Secure confirmation already sent. Sending again will replace the pending confirmation.':'Customer approval is required before these booking details become final.'}</span></div>
         <div class="enquiry-actions-admin">
-          ${workflow!=='booked'?`<button type="button" data-confirm-request="${r.id}">${r.final_confirmation_status==='pending'?'RESEND / REPLACE CONFIRMATION':'SEND FOR CONFIRMATION'}</button>`:
-    `<button type="button" data-save-booked="${r.id}">${r.final_confirmation_status==='signed'?'SEND CHANGES FOR CONFIRMATION':r.final_confirmation_status==='pending'?'RESEND / REPLACE CONFIRMATION':'SEND FOR FINAL SIGNATURE'}</button>
-     ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
-     <button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`}
-          ${workflow==='new'?`<button type="button" class="secondary" data-awaiting-request="${r.id}">Move to Awaiting Customer</button>`:''}
-          ${workflow==='awaiting'?`<button type="button" class="secondary" data-reopen-request="${r.id}">Needs Attention Again</button>`:''}
-          <button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>
+          ${isPending?`<button type="button" class="secondary" data-edit-pending="${r.id}">EDIT BOOKING DETAILS</button>`:''}
+          ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
+          <button type="button" class="secondary" data-chat-invite="${r.id}">CHAT</button>
           ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button>`:''}
+          ${!isPending?`<button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>`:''}
+          ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`:''}
           <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
         </div>
         <div class="status" data-request-status></div>
       </div>
 
-      <div class="enquiry-reply" id="booking-reply-${r.id}">
-        <label>Email ${escapeHtml(r.name)}</label>
-        <textarea maxlength="4000" placeholder="Write your message. You can suggest another date or ask the customer to confirm availability..."></textarea>
-        <button type="button" data-send-booking-reply="${r.id}">Send Email</button>
-        <div class="status"></div>
-      </div>
+      <div class="enquiry-reply" id="booking-reply-${r.id}"><label>Email ${escapeHtml(r.name)}</label><textarea maxlength="4000" placeholder="Write your message..."></textarea><button type="button" data-send-booking-reply="${r.id}">Send Email</button><div class="status"></div></div>
     </article>`;
   }).join('');
+
+  list.querySelectorAll('[data-edit-pending]').forEach(btn=>btn.onclick=()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const panel=card.querySelector('.booking-edit-panel');
+    if(panel){panel.hidden=false;btn.hidden=true;panel.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  });
+  list.querySelectorAll('[data-cancel-edit]').forEach(btn=>btn.onclick=()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const panel=card.querySelector('.booking-edit-panel');
+    const edit=card.querySelector('[data-edit-pending]');
+    if(panel)panel.hidden=true;if(edit)edit.hidden=false;
+  });
+  list.querySelectorAll('[data-chat-invite]').forEach(btn=>btn.onclick=async()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const st=card.querySelector('[data-request-status]');
+    const row=cachedEnquiries.find(r=>String(r.id)===String(btn.dataset.chatInvite));
+    if(!row?.email){st.textContent='This customer has no email address.';return;}
+    btn.disabled=true;st.textContent='Emailing secure chat link...';
+    try{
+      const {data,error}=await supabase.functions.invoke('send-chat-invite',{body:{enquiry_id:row.id}});
+      if(error)throw error;if(!data?.success)throw new Error(data?.error||'Could not send chat link.');
+      st.textContent='CHAT LINK EMAILED ✓';
+      if(data.conversation_token&&!row.conversation_token){row.conversation_token=data.conversation_token;}
+      loadChats();
+    }catch(e){st.textContent=e?.message||'Could not send chat link.';}finally{btn.disabled=false;}
+  });
 
   list.querySelectorAll('[data-reply-request]').forEach(btn=>btn.onclick=()=>{
     document.querySelector('#booking-reply-'+btn.dataset.replyRequest)?.classList.toggle('show');
