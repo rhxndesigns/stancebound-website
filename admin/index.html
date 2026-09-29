@@ -1717,6 +1717,12 @@ function renderBookingRequests(){
           ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`:''}
           <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
         </div>
+        <div class="enquiry-reply" id="booking-chat-compose-${r.id}">
+          <label>Start chat with ${escapeHtml(r.name)}</label>
+          <textarea maxlength="4000" placeholder="Write your first chat message..."></textarea>
+          <button type="button" data-send-first-chat="${r.id}">SEND CHAT MESSAGE</button>
+          <div class="status"></div>
+        </div>
         <div class="status" data-request-status></div>
       </div>
 
@@ -1735,19 +1741,46 @@ function renderBookingRequests(){
     const edit=card.querySelector('[data-edit-pending]');
     if(panel)panel.hidden=true;if(edit)edit.hidden=false;
   });
-  list.querySelectorAll('[data-chat-invite]').forEach(btn=>btn.onclick=async()=>{
+  list.querySelectorAll('[data-chat-invite]').forEach(btn=>btn.onclick=()=>{
     const card=btn.closest('[data-booking-request-id]');
-    const st=card.querySelector('[data-request-status]');
     const row=cachedEnquiries.find(r=>String(r.id)===String(btn.dataset.chatInvite));
+    const st=card.querySelector('[data-request-status]');
     if(!row?.email){st.textContent='This customer has no email address.';return;}
-    btn.disabled=true;st.textContent='Emailing secure chat link...';
+    const box=document.querySelector('#booking-chat-compose-'+btn.dataset.chatInvite);
+    if(!box)return;
+    box.classList.toggle('show');
+    if(box.classList.contains('show')){
+      const textarea=box.querySelector('textarea');
+      textarea?.focus();
+      box.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  });
+
+  list.querySelectorAll('[data-send-first-chat]').forEach(btn=>btn.onclick=async()=>{
+    const id=btn.dataset.sendFirstChat;
+    const row=cachedEnquiries.find(r=>String(r.id)===String(id));
+    const box=btn.closest('.enquiry-reply');
+    const textarea=box.querySelector('textarea');
+    const st=box.querySelector('.status');
+    const reply=textarea.value.trim();
+    if(!reply){st.textContent='Write a message first.';textarea.focus();return;}
+    if(!row?.email){st.textContent='This customer has no email address.';return;}
+    btn.disabled=true;st.textContent='Starting chat & sending message...';
     try{
-      const {data,error}=await supabase.functions.invoke('send-chat-invite',{body:{enquiry_id:row.id}});
-      if(error)throw error;if(!data?.success)throw new Error(data?.error||'Could not send chat link.');
-      st.textContent='CHAT LINK EMAILED ✓';
-      if(data.conversation_token&&!row.conversation_token){row.conversation_token=data.conversation_token;}
-      loadChats();
-    }catch(e){st.textContent=e?.message||'Could not send chat link.';}finally{btn.disabled=false;}
+      if(!row.conversation_token){
+        const {data:inviteData,error:inviteError}=await supabase.functions.invoke('send-chat-invite',{body:{enquiry_id:row.id}});
+        if(inviteError)throw inviteError;
+        if(!inviteData?.success)throw new Error(inviteData?.error||'Could not create secure chat.');
+        if(inviteData.conversation_token)row.conversation_token=inviteData.conversation_token;
+      }
+      const {data,error}=await supabase.functions.invoke('reply-enquiry',{body:{enquiry_id:row.id,reply}});
+      if(error)throw error;
+      if(!data?.success)throw new Error(data?.error||'Could not send chat message.');
+      textarea.value='';
+      st.textContent='CHAT MESSAGE SENT ✓';
+      await loadEnquiries();
+      await loadChats();
+    }catch(e){st.textContent=e?.message||'Could not start chat.';}finally{btn.disabled=false;}
   });
 
   list.querySelectorAll('[data-reply-request]').forEach(btn=>btn.onclick=()=>{
