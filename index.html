@@ -4793,6 +4793,36 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       .sb-scroll-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
       .radial-toggle,.radial-toggle::before,.radial-toggle::after,.radial-toggle img{animation:none!important}
     }
+
+
+    /* ===== STANCEBOUND MOBILE POSITION / ABOUT ALIGNMENT FIX ===== */
+    #about .content{
+      margin-left:auto!important;
+      margin-right:auto!important;
+    }
+    #about .profile-card{
+      width:100%;
+      max-width:1200px;
+      margin-left:auto!important;
+      margin-right:auto!important;
+      box-sizing:border-box;
+    }
+    /* About should settle centrally rather than entering sideways. */
+    #about .profile-card.sb-scroll-reveal{
+      transform:translate3d(0,30px,0)!important;
+    }
+    #about .profile-card.sb-scroll-reveal.sb-in-view{
+      transform:translate3d(0,0,0)!important;
+    }
+
+    /* Keep the floating STANCEBOUND control fully above Android/browser chrome. */
+    .radial-nav{
+      bottom:64px!important;
+    }
+    @media(max-width:760px){
+      .radial-nav{bottom:72px!important;}
+    }
+
 </style>
 </body>
 
