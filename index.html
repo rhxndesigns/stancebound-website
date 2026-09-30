@@ -2715,6 +2715,22 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-pricing-visibility-fix">
+  #pricing.page.active .future-services,
+  #pricing.page.active .one-car-statement{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    filter:none !important;
+    transform:none !important;
+  }
+  #pricing.page.active .future-service{
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+</style>
+
 </head>
 
 
@@ -3184,7 +3200,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         </div>
 
 
-        <section class="future-services sb-scroll-reveal">
+        <section class="future-services">
           <div class="future-services-head">
             <div>
               <div class="pricing-kicker">Where STANCEBOUND is going</div>
@@ -3250,7 +3266,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           </div>
         </section>
 
-        <section class="one-car-statement sb-scroll-reveal">
+        <section class="one-car-statement">
           <div class="eyebrow">THE STANCEBOUND APPROACH</div>
           <h2>One car.<br>Properly done.</h2>
           <p>
@@ -5980,6 +5996,34 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     if(!reduce){veil.classList.add('show');await wait(180)}
     location.href=url.href;
   },true);
+})();
+</script>
+
+
+<script id="stancebound-hidden-page-reveal-fix">
+(function(){
+  const install = () => {
+    if (typeof window.showPage !== 'function' || window.showPage.__sbRevealFixed) return;
+    const original = window.showPage;
+    function fixedShowPage(page, ...args){
+      const result = original.call(this, page, ...args);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const active = document.getElementById(page);
+          if (!active) return;
+          active.querySelectorAll('.sb-scroll-reveal').forEach(el => el.classList.add('sb-in-view'));
+        });
+      });
+      return result;
+    }
+    fixedShowPage.__sbRevealFixed = true;
+    window.showPage = fixedShowPage;
+  };
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => setTimeout(install,0));
+  } else {
+    setTimeout(install,0);
+  }
 })();
 </script>
 
