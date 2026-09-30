@@ -2671,6 +2671,50 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-future-services-styles">
+  .future-services{margin-top:22px}
+  .future-services-head{display:flex;justify-content:space-between;gap:22px;align-items:end;margin-bottom:16px}
+  .future-services-head h2{margin:5px 0 0;font-size:clamp(30px,6vw,58px);line-height:.95;text-transform:uppercase;letter-spacing:-.045em}
+  .future-services-head p{max-width:520px;margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+  .future-service-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .future-service{
+    position:relative;overflow:hidden;min-height:230px;padding:26px;border:1px solid var(--line);
+    background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  }
+  .future-service:after{
+    content:"COMING SOON";position:absolute;right:-35px;top:25px;transform:rotate(38deg);
+    padding:7px 42px;border:1px solid var(--line);background:var(--bg);color:var(--muted);
+    font-size:8px;font-weight:900;letter-spacing:.18em;
+  }
+  .future-service .num{font-size:9px;color:var(--muted);letter-spacing:.18em;margin-bottom:34px}
+  .future-service h3{margin:0 0 10px;max-width:80%;font-size:clamp(22px,4vw,34px);line-height:1;text-transform:uppercase;letter-spacing:-.025em}
+  .future-service p{margin:0;max-width:88%;color:var(--muted);font-size:12px;line-height:1.65}
+  .future-service .future-tag{position:absolute;left:26px;bottom:22px;font-size:8px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .sale-prep-feature{
+    grid-column:1/-1;min-height:280px;
+    background:
+      radial-gradient(circle at 80% 20%,rgba(255,255,255,.07),transparent 25%),
+      linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.01));
+  }
+  .sale-prep-feature h3{font-size:clamp(30px,6vw,58px);max-width:700px}
+  .sale-prep-flow{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .sale-prep-flow span{border:1px solid var(--line);padding:9px 11px;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  .one-car-statement{margin-top:16px;padding:clamp(28px,6vw,60px);border:1px solid var(--line);text-align:center;background:var(--panel)}
+  .one-car-statement .eyebrow{margin-bottom:12px}
+  .one-car-statement h2{margin:0 auto 16px;max-width:900px;font-size:clamp(38px,8vw,82px);line-height:.9;text-transform:uppercase;letter-spacing:-.055em}
+  .one-car-statement p{max-width:650px;margin:0 auto;color:var(--muted);line-height:1.75}
+  .calendar-day.open-day{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.06);opacity:1}
+  .calendar-day.closed-day{opacity:.16}
+  .calendar-day.booked-day{opacity:.18}
+  .key-dot.requestable{background:rgba(255,255,255,.18);border-color:var(--text)}
+  .key-dot.closed{opacity:.3}
+  @media(max-width:760px){
+    .future-services-head{display:block}.future-services-head p{margin-top:14px}
+    .future-service-grid{grid-template-columns:1fr}.sale-prep-feature{grid-column:auto}
+  }
+</style>
+
 </head>
 
 
@@ -3082,7 +3126,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             <div class="pricing-kicker">Portfolio rate · Limited period</div>
             <h2>STANCEBOUND<br>Detail</h2>
             <p class="lead">
-              A full interior and exterior detail at the current STANCEBOUND
+              A full in-depth interior and exterior detail at the current STANCEBOUND
               introductory rate. The exact process is adapted to the vehicle and its
               condition rather than rushed through a generic checklist.
             </p>
@@ -3091,8 +3135,8 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="price-include">Wheels &amp; exterior pre-clean</div>
               <div class="price-include">Snow foam &amp; safe contact wash</div>
               <div class="price-include">Careful drying &amp; finishing touches</div>
-              <div class="price-include">Interior vacuum</div>
-              <div class="price-include">Interior surfaces &amp; detailed areas</div>
+              <div class="price-include">In-depth interior vacuum &amp; detailed clean</div>
+              <div class="price-include">Interior surfaces, trims, crevices &amp; detailed areas</div>
               <div class="price-include">Interior &amp; exterior glass</div>
             </div>
           </div>
@@ -3138,6 +3182,83 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </p>
           </article>
         </div>
+
+
+        <section class="future-services sb-scroll-reveal">
+          <div class="future-services-head">
+            <div>
+              <div class="pricing-kicker">Where STANCEBOUND is going</div>
+              <h2>Future services.</h2>
+            </div>
+            <p>
+              STANCEBOUND is being built around one vehicle at a time, not a conveyor belt.
+              These services will become available as the equipment, training and experience
+              are in place to offer them properly.
+            </p>
+          </div>
+
+          <div class="future-service-grid">
+            <article class="future-service">
+              <div class="num">01 · RESTORATION</div>
+              <h3>Scratch Removal</h3>
+              <p>Targeted improvement of suitable paint defects and scratches, assessed vehicle by vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">02 · RESTORATION</div>
+              <h3>Headlight Restoration</h3>
+              <p>Restoring tired, oxidised headlights to improve their clarity and overall presentation.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">03 · PAINT</div>
+              <h3>Paint Correction</h3>
+              <p>Machine polishing and corrective work aimed at improving swirls, haze and paint clarity.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">04 · PROTECTION</div>
+              <h3>Ceramic Coating</h3>
+              <p>Preparation-led ceramic protection designed to preserve the finish after the paint is properly prepared.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">05 · MEDIA</div>
+              <h3>Detail + Photography</h3>
+              <p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service sale-prep-feature">
+              <div class="num">06 · SALE PREPARATION</div>
+              <h3>Prepare it. Shoot it. Advertise it.</h3>
+              <p>
+                A future service for owners selling their vehicle: STANCEBOUND prepares the car,
+                photographs it professionally and builds a polished factual advert from information
+                supplied by the owner. Selected cars could also have their own shareable STANCEBOUND
+                listing page, clearly advertised on behalf of the owner.
+              </p>
+              <div class="sale-prep-flow">
+                <span>Deep Detail</span><span>Sale Preparation</span><span>Photography</span><span>Listing Creation</span>
+              </div>
+              <div class="future-tag">Not available yet</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="one-car-statement sb-scroll-reveal">
+          <div class="eyebrow">THE STANCEBOUND APPROACH</div>
+          <h2>One car.<br>Properly done.</h2>
+          <p>
+            STANCEBOUND is not being built around rushing multiple vehicles through in a day.
+            Availability is deliberately limited so the vehicle booked in gets the time and
+            attention needed for an in-depth result.
+          </p>
+        </section>
 
         <div class="pricing-disclaimer sb-scroll-reveal">
           The £40 price is the current introductory detailing rate and may change as
@@ -3352,8 +3473,8 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </div>
             <div class="calendar-weekdays"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
             <div class="calendar-grid" id="calendarGrid"></div>
-            <div class="calendar-key"><span><i class="key-dot requestable"></i> Available to request</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
-            <p class="calendar-note">Dates shown can be requested. Your booking is only confirmed once STANCEBOUND approves it.</p>
+            <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
+            <p class="calendar-note">Only dates manually opened by STANCEBOUND can be requested. All other dates are unavailable by default.</p>
           </div>
 
 
@@ -4459,30 +4580,104 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   toggle?.addEventListener('click',()=>{const open=!nav.classList.contains('open');nav.classList.toggle('open',open);backdrop?.classList.toggle('show',open);toggle.setAttribute('aria-expanded',String(open))});
   backdrop?.addEventListener('click',closeMenu);
   document.querySelectorAll('.radial-item').forEach(btn=>btn.addEventListener('click',(e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    closeMenu();
-    // Always use the latest navigation controller. Calling the original lexical
-    // showPage here bypassed the transition wrapper and could fight with history.
+    e.preventDefault(); e.stopPropagation(); closeMenu();
     requestAnimationFrame(()=>window.showPage(btn.dataset.page));
   }));
-  const oldShow=window.showPage; if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
+  const oldShow=window.showPage;
+  if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
 
   const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
   if(!grid||!label||!dateInput)return;
-  const now=new Date(); now.setHours(0,0,0,0); let view=new Date(now.getFullYear(),now.getMonth(),1);
-  const iso=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
+
+  const now=new Date(); now.setHours(0,0,0,0);
+  let view=new Date(now.getFullYear(),now.getMonth(),1);
+  let openDates=new Map();
+
+  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+  async function loadAvailability(){
+    const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
+    const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
+    const {data,error}=await supabase
+      .from('booking_availability')
+      .select('availability_date,is_available,start_time,end_time')
+      .gte('availability_date',start)
+      .lte('availability_date',end)
+      .eq('is_available',true);
+    if(error){
+      console.error('Availability calendar:',error);
+      openDates=new Map();
+    }else{
+      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
+    }
+    render();
+  }
+
   function render(){
-    grid.innerHTML=''; label.textContent=view.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    grid.innerHTML='';
+    label.textContent=view.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
     const first=(new Date(view.getFullYear(),view.getMonth(),1).getDay()+6)%7;
     const days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
-    for(let i=0;i<first;i++){const b=document.createElement('button');b.className='calendar-day blank';b.disabled=true;grid.appendChild(b)}
-    for(let n=1;n<=days;n++){const d=new Date(view.getFullYear(),view.getMonth(),n);const b=document.createElement('button');b.type='button';b.className='calendar-day';b.textContent=n;const val=iso(d);if(d<now)b.disabled=true;if(dateInput.value===val)b.classList.add('selected');b.addEventListener('click',()=>{dateInput.value=val;dateInput.dispatchEvent(new Event('change',{bubbles:true}));render()});grid.appendChild(b)}
+
+    for(let i=0;i<first;i++){
+      const b=document.createElement('button'); b.className='calendar-day blank'; b.disabled=true; grid.appendChild(b);
+    }
+
+    for(let n=1;n<=days;n++){
+      const d=new Date(view.getFullYear(),view.getMonth(),n);
+      const val=iso(d);
+      const slot=openDates.get(val);
+      const b=document.createElement('button');
+      b.type='button'; b.className='calendar-day'; b.textContent=n;
+
+      const unavailable=d<now || !slot;
+      b.disabled=unavailable;
+      b.classList.add(unavailable?'closed-day':'open-day');
+      if(dateInput.value===val)b.classList.add('selected');
+
+      if(slot){
+        const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
+        b.title=[s,e].filter(Boolean).join('–') || 'Open for booking request';
+      }else{
+        b.title='Unavailable';
+      }
+
+      b.addEventListener('click',()=>{
+        if(b.disabled)return;
+        dateInput.value=val;
+        dateInput.dispatchEvent(new Event('change',{bubbles:true}));
+        render();
+      });
+      grid.appendChild(b);
+    }
   }
-  document.getElementById('calendarPrev')?.addEventListener('click',()=>{const p=new Date(view.getFullYear(),view.getMonth()-1,1);if(p>=new Date(now.getFullYear(),now.getMonth(),1)){view=p;render()}});
-  document.getElementById('calendarNext')?.addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);render()});
-  dateInput.addEventListener('change',()=>{if(dateInput.value){const [y,m]=dateInput.value.split('-').map(Number);view=new Date(y,m-1,1)}render()});
-  render();
+
+  document.getElementById('calendarPrev')?.addEventListener('click',()=>{
+    const p=new Date(view.getFullYear(),view.getMonth()-1,1);
+    if(p>=new Date(now.getFullYear(),now.getMonth(),1)){view=p;loadAvailability()}
+  });
+  document.getElementById('calendarNext')?.addEventListener('click',()=>{
+    view=new Date(view.getFullYear(),view.getMonth()+1,1); loadAvailability();
+  });
+  dateInput.addEventListener('change',()=>{
+    if(dateInput.value && !openDates.has(dateInput.value)){
+      dateInput.value='';
+      dateInput.setCustomValidity('That date is not currently available.');
+      dateInput.reportValidity();
+      setTimeout(()=>dateInput.setCustomValidity(''),1200);
+      render();
+      return;
+    }
+    if(dateInput.value){const [y,m]=dateInput.value.split('-').map(Number);view=new Date(y,m-1,1)}
+    render();
+  });
+
+  // Keep the native date input from silently accepting a closed day.
+  dateInput.addEventListener('input',()=>{
+    if(dateInput.value && !openDates.has(dateInput.value)) dateInput.value='';
+  });
+
+  loadAvailability();
 })();
 </script>
 
