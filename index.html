@@ -5277,20 +5277,33 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
+  async function getSupabaseClient(){
+    for(let i=0;i<100;i++){
+      if(window.stanceboundSupabase)return window.stanceboundSupabase;
+      await new Promise(resolve=>setTimeout(resolve,50));
+    }
+    throw new Error('STANCEBOUND booking service did not initialise.');
+  }
+
   async function loadAvailability(){
-    const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
-    const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
-    const {data,error}=await supabase
-      .from('booking_availability')
-      .select('availability_date,is_available,start_time,end_time')
-      .gte('availability_date',start)
-      .lte('availability_date',end)
-      .eq('is_available',true);
-    if(error){
+    // Render the month immediately so the calendar never appears blank while
+    // Supabase is loading. Availability is applied as soon as it arrives.
+    render();
+    try{
+      const client=await getSupabaseClient();
+      const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
+      const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
+      const {data,error}=await client
+        .from('booking_availability')
+        .select('availability_date,is_available,start_time,end_time')
+        .gte('availability_date',start)
+        .lte('availability_date',end)
+        .eq('is_available',true);
+      if(error)throw error;
+      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
+    }catch(error){
       console.error('Availability calendar:',error);
       openDates=new Map();
-    }else{
-      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
     }
     render();
   }
