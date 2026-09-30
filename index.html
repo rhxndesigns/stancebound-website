@@ -3263,6 +3263,105 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 }
 </style>
 
+
+<style id="stancebound-service-grid-neaten">
+  /* Static service cards: cleaner typography and a deliberately finished grid. */
+  .service-box{cursor:default !important}
+  .service-box:hover{transform:none !important}
+  .service-box.open{background:rgba(255,255,255,.018) !important;border-color:var(--line) !important}
+  .service-box-featured{
+    background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.012)) !important;
+  }
+  .service-box-wide{
+    grid-column:1 / -1 !important;
+    min-height:145px !important;
+    background:linear-gradient(105deg,rgba(255,255,255,.035),rgba(255,255,255,.01)) !important;
+  }
+  .service-box-wide .service-box-title{
+    max-width:72%;
+  }
+  .service-box-wide .service-box-short{
+    max-width:72%;
+  }
+
+  @media(max-width:760px){
+    .boxed-services-head h2{
+      font-size:clamp(30px,9vw,42px) !important;
+      line-height:.94 !important;
+    }
+    .boxed-services-head p{
+      font-size:11px !important;
+      line-height:1.55 !important;
+      max-width:92%;
+    }
+
+    .service-box{
+      display:flex !important;
+      flex-direction:column !important;
+      justify-content:space-between !important;
+      min-height:166px !important;
+      padding:15px 14px !important;
+    }
+    .service-box-featured{
+      min-height:160px !important;
+    }
+    .service-box-wide{
+      min-height:142px !important;
+    }
+
+    .service-box-top{
+      align-items:center;
+      min-height:16px;
+      margin-bottom:18px;
+      font-size:6.5px !important;
+      line-height:1.2;
+    }
+    .service-box-top b{
+      flex:0 0 auto;
+    }
+
+    .service-box-title{
+      width:100% !important;
+      max-width:100% !important;
+      margin:auto 0 12px !important;
+      font-size:clamp(18px,5.25vw,25px) !important;
+      line-height:.96 !important;
+      letter-spacing:-.035em !important;
+      overflow-wrap:normal !important;
+      word-break:normal !important;
+      hyphens:none !important;
+    }
+    .service-box-featured .service-box-title{
+      max-width:88% !important;
+      font-size:clamp(27px,7.7vw,36px) !important;
+      line-height:.93 !important;
+    }
+    .service-box-wide .service-box-title{
+      max-width:72% !important;
+      font-size:clamp(25px,7.2vw,34px) !important;
+    }
+
+    .service-box-short{
+      width:100% !important;
+      max-width:100% !important;
+      padding-right:0 !important;
+      font-size:6.8px !important;
+      line-height:1.35 !important;
+      letter-spacing:.075em !important;
+      overflow-wrap:normal !important;
+    }
+    .service-box-wide .service-box-short{
+      max-width:72% !important;
+    }
+  }
+
+  @media(max-width:390px){
+    .service-box-title{font-size:5vw !important}
+    .service-box-featured .service-box-title{font-size:7.2vw !important}
+    .service-box-wide .service-box-title{font-size:6.8vw !important}
+  }
+</style>
+
 </head>
 
 
@@ -3703,7 +3802,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="pricing-kicker">Where STANCEBOUND is going</div>
               <h2>Built next.</h2>
             </div>
-            <p>Tap a service to expand it. Everything stays compact until you actually want the detail.</p>
+            <p>Services being developed for the next stage of STANCEBOUND.</p>
           </div>
 
           <div class="service-box-grid">
@@ -3711,63 +3810,40 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <span class="service-box-top"><span>01 · SALE PREP</span><b>COMING SOON</b></span>
               <span class="service-box-title">Sell your car.<br>Properly.</span>
               <span class="service-box-short">Detail · Photography · Advert</span>
-              <span class="service-box-plus">×</span>
             </button>
 
             <button class="service-box" type="button" data-box="scratch">
               <span class="service-box-top"><span>02 · RESTORE</span><b>SOON</b></span>
               <span class="service-box-title">Scratch<br>Removal.</span>
               <span class="service-box-short">Targeted paint improvement</span>
-              <span class="service-box-plus">+</span>
             </button>
 
             <button class="service-box" type="button" data-box="headlights">
               <span class="service-box-top"><span>03 · RESTORE</span><b>SOON</b></span>
               <span class="service-box-title">Headlight<br>Restoration.</span>
               <span class="service-box-short">Clarity · Finish · Presentation</span>
-              <span class="service-box-plus">+</span>
             </button>
 
             <button class="service-box" type="button" data-box="paint">
               <span class="service-box-top"><span>04 · PAINT</span><b>SOON</b></span>
               <span class="service-box-title">Paint<br>Correction.</span>
               <span class="service-box-short">Swirls · Haze · Clarity</span>
-              <span class="service-box-plus">+</span>
             </button>
 
             <button class="service-box" type="button" data-box="ceramic">
               <span class="service-box-top"><span>05 · PROTECT</span><b>SOON</b></span>
               <span class="service-box-title">Ceramic<br>Coating.</span>
               <span class="service-box-short">Preparation-led protection</span>
-              <span class="service-box-plus">+</span>
             </button>
 
-            <button class="service-box" type="button" data-box="photo">
+            <button class="service-box service-box-wide" type="button" data-box="photo">
               <span class="service-box-top"><span>06 · MEDIA</span><b>SOON</b></span>
               <span class="service-box-title">Detail +<br>Photography.</span>
               <span class="service-box-short">Finished car · Properly captured</span>
-              <span class="service-box-plus">+</span>
             </button>
           </div>
 
-          <div class="service-box-detail open" data-detail="sale">
-            <div class="box-detail-index">01 / SALE PREPARATION</div>
-            <div class="box-detail-layout">
-              <h3>Prepare it.<br>Shoot it.<br>Advertise it.</h3>
-              <div>
-                <p>STANCEBOUND prepares the vehicle, photographs it professionally and creates a polished factual advert using information supplied by the owner.</p>
-                <div class="sale-prep-flow"><span>Deep Detail</span><span>Sale Prep</span><span>Photography</span><span>Listing</span></div>
-                <small>Selected cars could also receive a shareable STANCEBOUND listing page, clearly advertised on behalf of the owner.</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="service-box-detail" data-detail="scratch"><div class="box-detail-index">02 / SCRATCH REMOVAL</div><div class="box-detail-layout"><h3>Targeted.<br>Not disguised.</h3><p>Suitable scratches and paint defects assessed individually, with corrective work aimed at genuine improvement rather than promising the impossible.</p></div></div>
-          <div class="service-box-detail" data-detail="headlights"><div class="box-detail-index">03 / HEADLIGHT RESTORATION</div><div class="box-detail-layout"><h3>Bring back<br>the clarity.</h3><p>Restoration of tired and oxidised headlights to improve clarity and sharpen the overall presentation of the vehicle.</p></div></div>
-          <div class="service-box-detail" data-detail="paint"><div class="box-detail-index">04 / PAINT CORRECTION</div><div class="box-detail-layout"><h3>Correct.<br>Refine.</h3><p>Machine polishing and corrective work focused on improving swirls, haze and paint clarity after proper preparation.</p></div></div>
-          <div class="service-box-detail" data-detail="ceramic"><div class="box-detail-index">05 / CERAMIC COATING</div><div class="box-detail-layout"><h3>Prepare.<br>Then protect.</h3><p>Preparation-led ceramic protection designed to preserve the finish after the paint has been properly prepared.</p></div></div>
-          <div class="service-box-detail" data-detail="photo"><div class="box-detail-index">06 / DETAIL + PHOTOGRAPHY</div><div class="box-detail-layout"><h3>Finished.<br>Then captured.</h3><p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p></div></div>
-        </section>
+          </section>
 
 <section class="one-car-statement compact-philosophy">
           <div><div class="eyebrow">THE STANCEBOUND APPROACH</div><h2>One car. Properly done.</h2></div>
@@ -6509,25 +6585,6 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 </script>
 
 
-
-
-<script id="stancebound-service-boxes">
-document.addEventListener('click',function(e){
-  const box=e.target.closest('.service-box');
-  if(!box)return;
-  const section=box.closest('.boxed-services');
-  const key=box.dataset.box;
-  const wasOpen=box.classList.contains('open');
-  section.querySelectorAll('.service-box').forEach(x=>{x.classList.remove('open');const p=x.querySelector('.service-box-plus');if(p)p.textContent='+'});
-  section.querySelectorAll('.service-box-detail').forEach(x=>x.classList.remove('open'));
-  if(!wasOpen){
-    box.classList.add('open');
-    const plus=box.querySelector('.service-box-plus');if(plus)plus.textContent='×';
-    const detail=section.querySelector('[data-detail="'+key+'"]');
-    if(detail)detail.classList.add('open');
-  }
-});
-</script>
 
 
 <script id="stancebound-current-service-interaction">
