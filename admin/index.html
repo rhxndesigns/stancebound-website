@@ -526,6 +526,25 @@ try{
 <style id="stancebound-chat-inbox-upgrade">
 .chat-search{width:100%;box-sizing:border-box;margin:14px 0 18px;padding:14px 15px;background:#0e0e0e;color:#fff;border:1px solid #333;border-radius:10px;font:inherit}.chat-inbox-row{display:flex;justify-content:space-between;gap:14px;padding:16px 4px;border-bottom:1px solid #292929;cursor:pointer}.chat-inbox-row:hover{background:#111}.chat-inbox-main{min-width:0;flex:1}.chat-inbox-name{font-weight:800;font-size:15px}.chat-inbox-meta,.chat-inbox-preview,.chat-inbox-side{color:#888;font-size:11px;margin-top:5px}.chat-inbox-preview{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:720px}.chat-inbox-side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto}.chat-thread-view{max-width:860px;margin:0 auto}.chat-back{margin-bottom:18px}.chat-thread-view .chat-thread{max-height:58vh;overflow:auto;padding-right:4px}@media(max-width:600px){.chat-inbox-row{padding:15px 0}.chat-inbox-preview{max-width:62vw}.chat-thread-view .chat-thread{max-height:52vh}}
 </style>
+
+<style id="availability-admin-styles">
+  .calendar-day.is-open{border-color:#8b8b8b;background:#121212}
+  .calendar-day.is-closed{opacity:.48}
+  .calendar-availability-dot{display:block;margin-top:5px;font-size:7px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .calendar-day.is-open .calendar-availability-dot{color:#fff}
+  .calendar-day.is-closed .calendar-availability-dot{color:#666}
+  .availability-editor{margin:12px 0 22px;border:1px solid #292929;background:#080808;padding:16px}
+  .availability-editor-head{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:14px}
+  .availability-editor-head strong{font-size:13px;text-transform:uppercase}
+  .availability-state{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#777}
+  .availability-state.open{color:#fff}
+  .availability-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .availability-time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+  .availability-time-grid label{font-size:8px;color:#777;letter-spacing:.1em;text-transform:uppercase}
+  .availability-time-grid input{margin-top:6px;width:100%;box-sizing:border-box}
+  @media(max-width:560px){.availability-actions{grid-template-columns:1fr}}
+</style>
+
 </head>
 
 <body>
@@ -758,6 +777,21 @@ Log In
         <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
       </div>
       <div id="bookingCalendar" class="booking-calendar"></div>
+      <div id="availabilityEditor" class="availability-editor">
+        <div class="availability-editor-head">
+          <div><div class="admin-kicker">DAY AVAILABILITY</div><strong id="availabilityEditorDate">Select a date</strong></div>
+          <span id="availabilityEditorState" class="availability-state">CLOSED</span>
+        </div>
+        <div class="availability-time-grid">
+          <label>Available from<input id="availabilityStart" type="time" value="09:00"></label>
+          <label>Available until<input id="availabilityEnd" type="time" value="18:00"></label>
+        </div>
+        <div class="availability-actions">
+          <button type="button" id="openAvailabilityDay">MAKE DAY AVAILABLE</button>
+          <button type="button" class="secondary" id="closeAvailabilityDay">CLOSE DAY</button>
+        </div>
+        <div id="availabilityStatus" class="status"></div>
+      </div>
       <div id="selectedDayJobs" class="day-jobs"></div>
       <div class="admin-kicker schedule-kicker">Upcoming</div>
       <div id="scheduleStatus" class="status"></div>
@@ -1294,8 +1328,10 @@ const ENQUIRY_STATUSES = [
 
 let enquiryFilter = 'active';
 let selectedScheduleDate = null;
+let bookingAvailability = new Map();
 let calendarCursor = new Date();
 calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth(), 1);
+setTimeout(()=>refreshScheduleCalendar(),0);
 
 function statusOptions(current){
   return ENQUIRY_STATUSES.map(([value,label]) =>
@@ -2242,6 +2278,56 @@ function renderCompleted(){
 
 document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const btn=e.target.closest('[data-filter]');if(!btn)return;enquiryFilter=btn.dataset.filter;document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x===btn));loadEnquiries();});
 
+
+async function loadBookingAvailability(){
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  const start=`${y}-${String(m+1).padStart(2,'0')}-01`;
+  const last=new Date(y,m+1,0).getDate();
+  const end=`${y}-${String(m+1).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+  const {data,error}=await supabase
+    .from('booking_availability')
+    .select('availability_date,is_available,start_time,end_time')
+    .gte('availability_date',start)
+    .lte('availability_date',end);
+  if(error){
+    console.error('Availability load:',error);
+    bookingAvailability=new Map();
+  }else{
+    bookingAvailability=new Map((data||[]).map(x=>[x.availability_date,x]));
+  }
+}
+
+async function refreshScheduleCalendar(){
+  await loadBookingAvailability();
+  renderSchedule();
+}
+
+async function setDayAvailability(isAvailable){
+  if(!selectedScheduleDate)return;
+  const status=document.querySelector('#availabilityStatus');
+  const start=document.querySelector('#availabilityStart')?.value||null;
+  const end=document.querySelector('#availabilityEnd')?.value||null;
+  status.textContent=isAvailable?'Opening day...':'Closing day...';
+
+  const payload={
+    availability_date:selectedScheduleDate,
+    is_available:isAvailable,
+    start_time:isAvailable?start:null,
+    end_time:isAvailable?end:null,
+    updated_at:new Date().toISOString()
+  };
+
+  const {error}=await supabase
+    .from('booking_availability')
+    .upsert(payload,{onConflict:'availability_date'});
+
+  if(error){status.textContent=error.message;return;}
+  status.textContent=isAvailable?'DAY AVAILABLE ✓':'DAY CLOSED ✓';
+  await refreshScheduleCalendar();
+  selectScheduleDay(selectedScheduleDate);
+  setTimeout(()=>status.textContent='',1600);
+}
+
 function renderSchedule(){
   const calendar=document.querySelector('#bookingCalendar');
   const list=document.querySelector('#scheduleList');
@@ -2267,7 +2353,10 @@ function renderSchedule(){
     if(d.getMonth()!==m)classes.push('muted');
     if(key===todayKey)classes.push('today');
     if(dayBookings.length)classes.push('has-booking');
-    cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
+    const availability=bookingAvailability.get(key);
+    const isOpen=availability?.is_available===true;
+    classes.push(isOpen?'is-open':'is-closed');
+    cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span><span class="calendar-availability-dot">${isOpen?'OPEN':'CLOSED'}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
   }
   calendar.innerHTML=cells;
   calendar.querySelectorAll('[data-date]').forEach(day=>day.onclick=()=>selectScheduleDay(day.dataset.date));
@@ -2298,19 +2387,30 @@ function selectScheduleDay(dateKey){
   selectedScheduleDate=dateKey;
   document.querySelectorAll('.calendar-day').forEach(el=>el.classList.toggle('selected',el.dataset.date===dateKey));
   const host=document.querySelector('#selectedDayJobs'); if(!host)return;
+  const availability=bookingAvailability.get(dateKey);
+  const editorDate=document.querySelector('#availabilityEditorDate');
+  const editorState=document.querySelector('#availabilityEditorState');
+  const startInput=document.querySelector('#availabilityStart');
+  const endInput=document.querySelector('#availabilityEnd');
+  if(editorDate)editorDate.textContent=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  if(editorState){editorState.textContent=availability?.is_available?'OPEN':'CLOSED';editorState.classList.toggle('open',!!availability?.is_available)}
+  if(startInput)startInput.value=(availability?.start_time||'09:00').slice(0,5);
+  if(endInput)endInput.value=(availability?.end_time||'18:00').slice(0,5);
   const rows=cachedEnquiries.filter(r=>r.booking_date===dateKey && !['cancelled','spam'].includes(r.status));
   const label=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   host.innerHTML=rows.length?`<div class="admin-kicker">${escapeHtml(label)}</div>`+rows.map(r=>`<div class="day-job"><strong>${escapeHtml((r.booking_time||'').slice(0,5)||'Time TBC')} · ${escapeHtml(r.name)}</strong><br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}${r.quoted_price!=null?' · £'+Number(r.quoted_price).toFixed(2):''}</div>`).join(''):`<div class="day-job"><strong>${escapeHtml(label)}</strong><br>No jobs booked.</div>`;
 }
 
-document.querySelector('#calendarPrev')?.addEventListener('click',()=>{
+document.querySelector('#calendarPrev')?.addEventListener('click',async()=>{
   calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
-  renderSchedule();
+  await refreshScheduleCalendar();
 });
-document.querySelector('#calendarNext')?.addEventListener('click',()=>{
+document.querySelector('#calendarNext')?.addEventListener('click',async()=>{
   calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
-  renderSchedule();
+  await refreshScheduleCalendar();
 });
+document.querySelector('#openAvailabilityDay')?.addEventListener('click',()=>setDayAvailability(true));
+document.querySelector('#closeAvailabilityDay')?.addEventListener('click',()=>setDayAvailability(false));
 
 document.querySelector('#refreshAdminBtn').onclick = async () => {
   const status = document.querySelector('#toolStatus');
