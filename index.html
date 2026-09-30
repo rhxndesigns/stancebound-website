@@ -3846,6 +3846,20 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 }
 </style>
 
+<style id="stancebound-cinema-swipe-v2">
+.sbp-cinema-frame{touch-action:pan-y}
+.sbp-swipe-cue{position:absolute;z-index:6;right:12px;bottom:12px;height:29px;padding:0 9px;display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.46);backdrop-filter:blur(8px);color:#fff;font-size:5.5px;font-weight:900;letter-spacing:.16em;pointer-events:none;transition:.35s}
+.sbp-swipe-cue i{font-style:normal;font-size:11px;animation:sbSwipeCue 1.45s ease-in-out infinite}.sbp-swipe-cue i:last-child{animation-direction:reverse}
+@keyframes sbSwipeCue{50%{transform:translateX(-3px);opacity:.4}}
+.sbp-cinema.has-swiped .sbp-swipe-cue{opacity:.35}
+.sbp-cinema-edge{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:30px;height:56px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.32);backdrop-filter:blur(7px);color:#fff;font-size:17px;pointer-events:none}
+.sbp-cinema-edge.left{left:0;border-left:0}.sbp-cinema-edge.right{right:0;border-right:0}
+.sbp-cinema-frame.swiping-left .sbp-cinema-image{transform:translateX(-14px) scale(1.045)}
+.sbp-cinema-frame.swiping-right .sbp-cinema-image{transform:translateX(14px) scale(1.045)}
+.sbp-cinema-frame.swiping-left .sbp-cinema-copy{transform:translateX(-7px)}
+.sbp-cinema-frame.swiping-right .sbp-cinema-copy{transform:translateX(7px)}
+@media(max-width:600px){.sbp-swipe-cue{right:8px;bottom:8px;height:27px;font-size:5px}.sbp-cinema-edge{width:27px;height:52px}}
+</style>
 </head>
 
 
@@ -4269,6 +4283,9 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             <button class="sbp-hit sbp-hit-left" type="button" data-cinema-prev aria-label="Previous service"></button>
             <button class="sbp-hit sbp-hit-right" type="button" data-cinema-next aria-label="Next service"></button>
 
+            <div class="sbp-swipe-cue" aria-hidden="true"><i>←</i><span>SWIPE SERVICES</span><i>→</i></div>
+            <div class="sbp-cinema-edge left" aria-hidden="true">‹</div>
+            <div class="sbp-cinema-edge right" aria-hidden="true">›</div>
             <div class="sbp-cinema-copy">
               <div class="sbp-cinema-status">COMING SOON <i></i></div>
               <div class="sbp-cinema-index" id="sbpCinemaIndex">02</div>
@@ -7317,11 +7334,12 @@ document.addEventListener('click',function(e){
   ['ceramic','06','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
   ['photo','07','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
  ];
- let index=0,busy=false;
+ let index=0,busy=false,startX=null,startY=null,dragging=false;
  function render(next){
   if(busy)return;busy=true;
   const frame=document.getElementById('sbpCinemaFrame');if(!frame){busy=false;return}
-  frame.classList.add('cinema-changing');
+  frame.classList.remove('swiping-left','swiping-right');frame.classList.add('cinema-changing');
+  document.getElementById('sbpCinema')?.classList.add('has-swiped');
   setTimeout(()=>{
    index=(next+data.length)%data.length;
    const [key,num,title,text]=data[index];
@@ -7340,6 +7358,28 @@ document.addEventListener('click',function(e){
   if(e.target.closest('[data-cinema-prev]')){e.preventDefault();render(index-1)}
   else if(e.target.closest('[data-cinema-next]')){e.preventDefault();render(index+1)}
  });
+ const frame=document.getElementById('sbpCinemaFrame');
+ if(frame){
+  frame.addEventListener('touchstart',e=>{
+   if(e.target.closest('.sbp-explore-btn'))return;
+   const t=e.touches[0];startX=t.clientX;startY=t.clientY;dragging=true;
+  },{passive:true});
+  frame.addEventListener('touchmove',e=>{
+   if(!dragging||startX===null)return;
+   const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+   const horizontal=Math.abs(dx)>18&&Math.abs(dx)>Math.abs(dy)*1.25;
+   frame.classList.toggle('swiping-left',horizontal&&dx<0);
+   frame.classList.toggle('swiping-right',horizontal&&dx>0);
+  },{passive:true});
+  frame.addEventListener('touchend',e=>{
+   if(!dragging||startX===null)return;
+   const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+   dragging=false;startX=startY=null;
+   frame.classList.remove('swiping-left','swiping-right');
+   if(Math.abs(dx)>=52&&Math.abs(dx)>Math.abs(dy)*1.25)render(index+(dx<0?1:-1));
+  },{passive:true});
+  frame.addEventListener('touchcancel',()=>{dragging=false;startX=startY=null;frame.classList.remove('swiping-left','swiping-right')},{passive:true});
+ }
 })();
 </script>
 
