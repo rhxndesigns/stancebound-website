@@ -3362,6 +3362,82 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-clean-pricing-top">
+  .current-service-top-clean{
+    grid-template-columns:minmax(0,1.1fr) minmax(260px,.65fr) !important;
+    align-items:center !important;
+  }
+  .current-service-top-clean .current-service-summary{
+    min-width:0;
+    max-width:680px;
+  }
+  .current-service-top-clean h1{
+    margin:10px 0 13px !important;
+    font-size:clamp(44px,7vw,78px) !important;
+    line-height:.88 !important;
+    letter-spacing:-.055em !important;
+    text-transform:uppercase;
+  }
+  .current-service-top-clean .current-service-summary>p{
+    max-width:520px !important;
+    margin:0 !important;
+    font-size:12px !important;
+    line-height:1.6 !important;
+  }
+  .current-service-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:18px;
+  }
+  .current-service-tags span{
+    border:1px solid var(--line);
+    padding:7px 9px;
+    font-size:7px;
+    font-weight:900;
+    letter-spacing:.14em;
+  }
+  .current-service-top-clean .current-price-module{
+    align-self:stretch;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  @media(max-width:760px){
+    .current-service-console{
+      padding:20px 16px 17px !important;
+    }
+    .current-service-top-clean{
+      grid-template-columns:1fr !important;
+      gap:16px !important;
+    }
+    .current-service-top-clean h1{
+      font-size:clamp(38px,11vw,54px) !important;
+      line-height:.9 !important;
+      margin:9px 0 10px !important;
+    }
+    .current-service-top-clean .current-service-summary>p{
+      font-size:11px !important;
+      line-height:1.55 !important;
+    }
+    .current-service-tags{
+      margin-top:13px;
+    }
+    .current-service-top-clean .current-price-module{
+      padding:15px !important;
+    }
+    .current-service-top-clean .current-price-module strong{
+      font-size:clamp(62px,19vw,86px) !important;
+      margin:6px 0 4px !important;
+    }
+    .current-service-top-clean .price-info-toggle{
+      margin-top:15px !important;
+    }
+  }
+</style>
+
 </head>
 
 
@@ -3758,19 +3834,24 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           <div class="service-corner bl" aria-hidden="true"></div>
           <div class="service-corner br" aria-hidden="true"></div>
 
-          <div class="current-service-top">
-            <div>
-              <div class="pricing-kicker"><span class="live-pulse"></span> CURRENT SERVICE · INTRODUCTORY RATE</div>
-              <h1>STANCEBOUND<br>Detail.</h1>
-              <p>A proper in-depth interior and exterior detail. One vehicle at a time, with the process adapted to the car rather than rushed through a generic checklist.</p>
+          <div class="current-service-top current-service-top-clean">
+            <div class="current-service-summary">
+              <div class="pricing-kicker"><span class="live-pulse"></span> AVAILABLE NOW · INTRODUCTORY RATE</div>
+              <h1>Full Deep Detail.</h1>
+              <p>In-depth interior + exterior detailing, tailored to the vehicle.</p>
+              <div class="current-service-tags" aria-label="Detail overview">
+                <span>EXTERIOR</span>
+                <span>INTERIOR</span>
+                <span>FINISH</span>
+              </div>
             </div>
 
             <div class="current-price-module">
-              <span>Current price</span>
+              <span>Introductory price</span>
               <strong>£40</strong>
-              <small>Portfolio-building rate</small>
+              <small>Limited portfolio-building rate</small>
               <button type="button" class="price-info-toggle" id="priceInfoToggle" aria-expanded="false">
-                <span>EXPLORE THE DETAIL</span><i>+</i>
+                <span>WHAT'S INCLUDED?</span><i>+</i>
               </button>
             </div>
           </div>
