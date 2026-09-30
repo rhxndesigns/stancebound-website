@@ -6589,6 +6589,74 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     #sbRouteVeil{transition:none!important}
     button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.size-option,[role="button"],input,textarea,select{transition:none!important}
   }
+
+
+/* ===== STANCEBOUND MOBILE WIDTH / OVERFLOW FIX ===== */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.page, .content, .enquiry-shell, .availability-calendar {
+  min-width: 0;
+  max-width: 100%;
+}
+.calendar-weekdays,
+.calendar-grid {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.calendar-day {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .enquiry-shell {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .availability-calendar {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 16px 12px;
+  }
+  .availability-head {
+    min-width: 0;
+    gap: 10px;
+  }
+  .availability-head > * {
+    min-width: 0;
+  }
+  .calendar-controls {
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+  .calendar-controls strong {
+    min-width: 82px;
+  }
+  .calendar-weekdays,
+  .calendar-grid {
+    gap: 4px;
+  }
+  .calendar-day {
+    aspect-ratio: 1;
+    padding: 0;
+    font-size: 9px;
+  }
+}
+
 </style>
 <script id="stancebound-global-interaction-motion-script">
 (function(){
