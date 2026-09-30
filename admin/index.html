@@ -2387,6 +2387,7 @@ async function setDayAvailability(isAvailable){
   const status=document.querySelector('#availabilityStatus');
   const start=document.querySelector('#availabilityStart')?.value||null;
   const end=document.querySelector('#availabilityEnd')?.value||null;
+
   status.textContent=isAvailable
     ? `Opening ${dates.length} ${dates.length===1?'day':'days'}...`
     : `Closing ${dates.length} ${dates.length===1?'day':'days'}...`;
@@ -2400,20 +2401,57 @@ async function setDayAvailability(isAvailable){
     updated_at:now
   }));
 
-  const {error}=await supabase
+  // Write and ask Supabase to return the rows it actually saved.
+  const {data:savedRows,error:saveError}=await supabase
     .from('booking_availability')
-    .upsert(payload,{onConflict:'availability_date'});
+    .upsert(payload,{onConflict:'availability_date'})
+    .select('availability_date,is_available,start_time,end_time');
 
-  if(error){status.textContent=error.message;return;}
+  if(saveError){
+    status.textContent=saveError.message;
+    return;
+  }
+
+  // Read the same dates back independently. A successful request is not
+  // considered a successful availability change until the stored values agree.
+  const {data:verifiedRows,error:verifyError}=await supabase
+    .from('booking_availability')
+    .select('availability_date,is_available,start_time,end_time')
+    .in('availability_date',dates);
+
+  if(verifyError){
+    status.textContent=`Saved, but verification failed: ${verifyError.message}`;
+    return;
+  }
+
+  const verified=new Map((verifiedRows||[]).map(row=>[row.availability_date,row]));
+  const failed=dates.filter(date=>{
+    const row=verified.get(date);
+    return !row || row.is_available!==isAvailable;
+  });
+
+  if(failed.length){
+    status.textContent=`NOT SAVED CORRECTLY: ${failed.join(', ')}`;
+    await loadBookingAvailability();
+    renderSchedule();
+    updateAvailabilitySelectionUI();
+    return;
+  }
+
+  // Update the local map from the verified database rows before repainting.
+  dates.forEach(date=>{
+    const row=verified.get(date);
+    bookingAvailability.set(date,row);
+  });
+
+  renderSchedule();
+  updateAvailabilitySelectionUI();
 
   status.textContent=isAvailable
     ? `${dates.length} ${dates.length===1?'DAY':'DAYS'} AVAILABLE ✓`
     : `${dates.length} ${dates.length===1?'DAY':'DAYS'} CLOSED ✓`;
 
-  await loadBookingAvailability();
-  renderSchedule();
-  updateAvailabilitySelectionUI();
-  setTimeout(()=>status.textContent='',1800);
+  setTimeout(()=>status.textContent='',2200);
 }
 
 function renderSchedule(){
