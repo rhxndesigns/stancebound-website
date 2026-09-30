@@ -5275,6 +5275,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   const now=new Date(); now.setHours(0,0,0,0);
   let view=new Date(now.getFullYear(),now.getMonth(),1);
   let openDates=new Map();
+  let confirmedBookingDates=new Set();
 
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
@@ -5301,10 +5302,43 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         .lte('availability_date',end)
         .eq('is_available',true);
       if(error)throw error;
-      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
+      openDates=new Map((data||[]).map(x=>[String(x.availability_date).slice(0,10),x]));
+
+      // Confirmed bookings override availability, even if an old availability
+      // row is still marked true.
+      confirmedBookingDates=new Set();
+      const {data:bookedRows,error:bookedError}=await client
+        .from('enquiries')
+        .select('booking_date,status,final_confirmation_status')
+        .gte('booking_date',start)
+        .lte('booking_date',end);
+
+      if(!bookedError){
+        (bookedRows||[]).forEach(row=>{
+          const confirmed=
+            row?.status==='booked' ||
+            row?.status==='completed' ||
+            row?.final_confirmation_status==='signed';
+          if(confirmed && row?.booking_date){
+            const key=String(row.booking_date).slice(0,10);
+            confirmedBookingDates.add(key);
+            openDates.delete(key);
+          }
+        });
+      }else{
+        console.warn('Confirmed booking cross-check:',bookedError);
+      }
     }catch(error){
       console.error('Availability calendar:',error);
       openDates=new Map();
+      confirmedBookingDates=new Set();
+    }
+    if(dateInput.value && confirmedBookingDates.has(dateInput.value)){
+      dateInput.value='';
+      if(selectionFeedback){
+        selectionFeedback.textContent='That date is already booked. Choose another OPEN date.';
+        selectionFeedback.classList.remove('active');
+      }
     }
     render();
   }
@@ -5323,13 +5357,14 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       const d=new Date(view.getFullYear(),view.getMonth(),n);
       const val=iso(d);
       const slot=openDates.get(val);
+      const isBooked=confirmedBookingDates.has(val);
       const b=document.createElement('button');
       b.type='button'; b.className='calendar-day'; b.textContent=n;
 
-      const unavailable=d<now || !slot;
+      const unavailable=d<now || !slot || isBooked;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
-      if(dateInput.value===val)b.classList.add('selected');
+      if(dateInput.value===val && !unavailable)b.classList.add('selected');
 
       if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
