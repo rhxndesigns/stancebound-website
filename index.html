@@ -3505,6 +3505,30 @@ body.light-theme .minimal-service-row.active{background:rgba(0,0,0,.025)}
 }
 </style>
 
+
+<style id="stancebound-pricing-process-carousel-fix">
+/* Deliberate carousel controls replace the old vertical swipe gesture. */
+.process-rail-wrap{position:relative}
+.process-nav{
+  position:absolute;z-index:4;top:50%;transform:translateY(-50%);
+  width:34px;height:34px;border:1px solid var(--line);border-radius:50%;
+  background:rgba(7,7,7,.88);color:var(--text);font-size:20px;line-height:1;
+  display:grid;place-items:center;backdrop-filter:blur(8px)
+}
+.process-nav.prev{left:7px}.process-nav.next{right:7px}
+#pricing .detail-process-strip{padding-left:48px;padding-right:48px;scroll-behavior:smooth}
+.process-dots{display:flex;justify-content:center;gap:5px;margin:7px 0 2px}
+.process-dots i{display:block;width:15px;height:2px;background:var(--line);transition:width .25s ease,background .25s ease}
+.process-dots i.active{width:28px;background:var(--text)}
+.current-service-console.expanded .pricing-pull-handle i{transform:rotate(45deg)}
+body.light-theme .process-nav{background:rgba(248,248,248,.9)}
+@media(max-width:600px){
+  .process-nav{width:30px;height:30px}
+  .process-nav.prev{left:4px}.process-nav.next{right:4px}
+  #pricing .detail-process-strip{padding-left:40px;padding-right:40px}
+}
+</style>
+
 </head>
 
 
@@ -3914,18 +3938,25 @@ body.light-theme .minimal-service-row.active{background:rgba(0,0,0,.025)}
           </div>
 
           <button type="button" class="pricing-pull-handle" id="priceInfoToggle" aria-expanded="false">
-            <span>SWIPE UP / EXPLORE</span><i>↑</i>
+            <span>WHAT’S INCLUDED?</span><i>+</i>
           </button>
 
           <div class="current-service-details pricing-drawer" id="currentServiceDetails">
-            <div class="detail-tech-line"><span>DETAIL PROCESS</span><span>01 / CURRENT</span></div>
-            <div class="detail-process-strip">
+            <div class="detail-tech-line"><span>WHAT’S INCLUDED · 6 STEP PROCESS</span><span id="processCounter">01 / 06</span></div>
+            <div class="process-rail-wrap">
+              <button class="process-nav prev" type="button" id="processPrev" aria-label="Previous step">‹</button>
+              <div class="detail-process-strip" id="detailProcessStrip">
               <div class="process-box"><b>01</b><strong>Wheels + Pre-clean</strong></div>
               <div class="process-box"><b>02</b><strong>Snow Foam + Wash</strong></div>
               <div class="process-box"><b>03</b><strong>Dry + Finish</strong></div>
               <div class="process-box"><b>04</b><strong>Interior Deep Clean</strong></div>
               <div class="process-box"><b>05</b><strong>Glass</strong></div>
               <div class="process-box"><b>06</b><strong>Final Inspection</strong></div>
+              </div>
+              <button class="process-nav next" type="button" id="processNext" aria-label="Next step">›</button>
+            </div>
+            <div class="process-dots" id="processDots" aria-hidden="true">
+              <i class="active"></i><i></i><i></i><i></i><i></i><i></i>
             </div>
             <div class="pricing-drawer-foot">
               <p>£40 is the current portfolio-building introductory rate. Any additional work is agreed before it is carried out.</p>
@@ -6897,45 +6928,61 @@ html, body {
     consoleEl.classList.toggle('expanded',open);
     toggle.setAttribute('aria-expanded',String(open));
     const label=toggle.querySelector('span');
-    if(label)label.textContent=open?'SWIPE DOWN / CLOSE':'SWIPE UP / EXPLORE';
+    if(label)label.textContent=open?'CLOSE DETAILS':'WHAT’S INCLUDED?';
+  }
+
+  function updateProcessUI(){
+    const strip=document.getElementById('detailProcessStrip');
+    if(!strip)return;
+    const boxes=[...strip.querySelectorAll('.process-box')];
+    if(!boxes.length)return;
+    const centre=strip.scrollLeft+(strip.clientWidth/2);
+    let active=0,dist=Infinity;
+    boxes.forEach((box,i)=>{
+      const c=box.offsetLeft+(box.offsetWidth/2);
+      const d=Math.abs(c-centre);
+      if(d<dist){dist=d;active=i}
+    });
+    const counter=document.getElementById('processCounter');
+    if(counter)counter.textContent=String(active+1).padStart(2,'0')+' / '+String(boxes.length).padStart(2,'0');
+    document.querySelectorAll('#processDots i').forEach((dot,i)=>dot.classList.toggle('active',i===active));
+  }
+
+  function moveProcess(direction){
+    const strip=document.getElementById('detailProcessStrip');
+    const box=strip?.querySelector('.process-box');
+    if(!strip||!box)return;
+    strip.scrollBy({left:direction*(box.offsetWidth+8),behavior:'smooth'});
+    setTimeout(updateProcessUI,320);
   }
 
   document.addEventListener('click',function(e){
-    const toggle=e.target.closest('#priceInfoToggle');
-    if(toggle){
+    if(e.target.closest('#priceInfoToggle')){
       const consoleEl=document.getElementById('currentServiceConsole');
       setDetailOpen(!consoleEl.classList.contains('expanded'));
       return;
     }
+    if(e.target.closest('#processPrev')){moveProcess(-1);return}
+    if(e.target.closest('#processNext')){moveProcess(1);return}
 
     const row=e.target.closest('[data-service-drawer]');
     if(!row)return;
     const key=row.dataset.serviceDrawer;
     const panel=document.querySelector(`[data-service-panel="${key}"]`);
     const wasOpen=row.classList.contains('active');
-
     document.querySelectorAll('[data-service-drawer]').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('[data-service-panel]').forEach(x=>x.classList.remove('open'));
-
-    if(!wasOpen){
-      row.classList.add('active');
-      panel?.classList.add('open');
-    }
+    if(!wasOpen){row.classList.add('active');panel?.classList.add('open')}
   });
 
-  let touchY=null;
-  document.addEventListener('touchstart',function(e){
-    if(e.target.closest('#currentServiceConsole'))touchY=e.touches[0].clientY;
-  },{passive:true});
-  document.addEventListener('touchend',function(e){
-    if(touchY===null)return;
-    const endY=e.changedTouches[0].clientY;
-    const delta=endY-touchY;
-    touchY=null;
-    if(Math.abs(delta)<42)return;
-    if(delta<0)setDetailOpen(true);
-    else setDetailOpen(false);
-  },{passive:true});
+  document.addEventListener('scroll',function(e){
+    if(e.target?.id==='detailProcessStrip')updateProcessUI();
+  },true);
+
+  // Horizontal native swiping remains available inside the six-step rail.
+  // No vertical touch gesture is registered, so normal page scrolling can
+  // never accidentally open or close the details panel.
+  updateProcessUI();
 })();
 </script>
 
