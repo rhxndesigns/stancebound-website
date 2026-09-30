@@ -3048,6 +3048,221 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-mobile-placement-fix">
+/* Keep the Prices interface comfortably inside narrow Android viewports. */
+@media(max-width:760px){
+  #pricing > .content{
+    width:calc(100% - 24px) !important;
+    max-width:calc(100% - 24px) !important;
+    overflow:visible !important;
+  }
+
+  .current-service-console{
+    width:100%;
+    box-sizing:border-box;
+    padding:22px 16px 18px !important;
+    overflow:hidden;
+  }
+
+  .current-service-top,
+  .current-service-top > *,
+  .current-price-module,
+  .current-service-details,
+  .detail-process-grid,
+  .detail-bottom-row{
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+
+  .current-service-top h1{
+    max-width:100%;
+    margin:8px 0 16px;
+    font-size:clamp(42px,13.2vw,64px) !important;
+    line-height:.86 !important;
+    letter-spacing:-.06em !important;
+    overflow-wrap:normal;
+  }
+
+  .current-service-top p{
+    max-width:100%;
+    font-size:12px;
+    line-height:1.65;
+  }
+
+  .current-service-console .pricing-kicker{
+    max-width:100%;
+    white-space:normal;
+    line-height:1.5;
+    letter-spacing:.13em;
+  }
+
+  .current-price-module{
+    width:100%;
+    padding:17px 15px !important;
+  }
+
+  .current-price-module strong{
+    font-size:clamp(68px,22vw,96px) !important;
+  }
+
+  .price-info-toggle{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  .detail-process-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px;
+  }
+
+  .process-box{
+    min-width:0;
+    width:auto;
+    min-height:132px;
+    padding:13px 11px;
+  }
+
+  .process-box strong{
+    font-size:10px;
+    line-height:1.25;
+    overflow-wrap:anywhere;
+  }
+
+  .process-box small{
+    font-size:8px;
+    line-height:1.35;
+  }
+
+  .boxed-services{
+    width:100%;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+
+  .boxed-services-head{
+    padding:0 2px;
+  }
+
+  .service-box-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+    width:100%;
+  }
+
+  .service-box,
+  .service-box-featured{
+    min-width:0;
+    width:auto;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+
+  .service-box{
+    min-height:158px !important;
+    padding:14px 13px 13px !important;
+  }
+
+  .service-box-featured{
+    grid-column:1 / -1 !important;
+    min-height:155px !important;
+  }
+
+  .service-box-top{
+    gap:6px;
+    white-space:nowrap;
+    font-size:6.5px;
+    letter-spacing:.11em;
+  }
+
+  .service-box-title{
+    width:calc(100% - 6px);
+    max-width:100%;
+    margin:auto 0 10px;
+    font-size:clamp(19px,5.8vw,27px) !important;
+    line-height:.94 !important;
+    letter-spacing:-.035em;
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+
+  .service-box-featured .service-box-title{
+    font-size:clamp(26px,8vw,38px) !important;
+    width:90%;
+  }
+
+  .service-box-short{
+    width:calc(100% - 26px);
+    font-size:7px;
+    line-height:1.35;
+    letter-spacing:.08em;
+    overflow-wrap:anywhere;
+  }
+
+  .service-box-plus{
+    right:11px;
+    bottom:10px;
+  }
+
+  .service-box-detail{
+    width:100%;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+
+  .box-detail-layout,
+  .box-detail-layout > *{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .box-detail-layout h3{
+    font-size:clamp(32px,10vw,48px) !important;
+    overflow-wrap:anywhere;
+  }
+
+  .compact-philosophy{
+    width:100%;
+    box-sizing:border-box;
+    padding:20px 17px !important;
+    overflow:hidden;
+  }
+
+  .compact-philosophy h2{
+    max-width:100%;
+    font-size:clamp(29px,9vw,42px) !important;
+    line-height:.95 !important;
+    letter-spacing:-.045em;
+    overflow-wrap:normal;
+  }
+
+  .compact-philosophy p{
+    max-width:100%;
+    font-size:11px !important;
+    line-height:1.6;
+  }
+
+  .compact-philosophy .eyebrow{
+    max-width:100%;
+    font-size:7px;
+    letter-spacing:.13em;
+    white-space:normal;
+  }
+}
+
+@media(max-width:390px){
+  #pricing > .content{
+    width:calc(100% - 18px) !important;
+    max-width:calc(100% - 18px) !important;
+  }
+  .current-service-top h1{font-size:12.5vw !important}
+  .service-box-title{font-size:5.5vw !important}
+  .service-box-featured .service-box-title{font-size:7.5vw !important}
+  .service-box-top{font-size:6px}
+}
+</style>
+
 </head>
 
 
