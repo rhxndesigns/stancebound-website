@@ -2444,6 +2444,233 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 }
 </style>
 
+
+<style id="stancebound-pricing-styles">
+  .pricing-hero{
+    position:relative;
+    overflow:hidden;
+    padding:clamp(32px,7vw,72px);
+    border:1px solid var(--line);
+    background:
+      radial-gradient(circle at 82% 16%,rgba(255,255,255,.08),transparent 26%),
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+    margin-bottom:24px;
+  }
+  .pricing-hero:after{
+    content:"40";
+    position:absolute;
+    right:-.04em;
+    bottom:-.28em;
+    font-size:clamp(150px,34vw,430px);
+    line-height:1;
+    font-weight:900;
+    letter-spacing:-.08em;
+    color:rgba(255,255,255,.025);
+    pointer-events:none;
+  }
+  .pricing-hero .eyebrow{margin-bottom:16px}
+  .pricing-hero h1{
+    margin:0;
+    max-width:850px;
+    font-size:clamp(48px,10vw,118px);
+    line-height:.84;
+    letter-spacing:-.065em;
+    text-transform:uppercase;
+  }
+  .pricing-hero-copy{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:minmax(0,1.1fr) minmax(220px,.55fr);
+    gap:28px;
+    align-items:end;
+    margin-top:32px;
+  }
+  .pricing-hero-copy p{
+    margin:0;
+    max-width:690px;
+    color:var(--muted);
+    font-size:clamp(15px,2vw,18px);
+    line-height:1.75;
+  }
+  .pricing-price-lockup{text-align:right}
+  .pricing-price-lockup span{
+    display:block;
+    margin-bottom:5px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+  }
+  .pricing-price-lockup strong{
+    display:block;
+    font-size:clamp(62px,10vw,104px);
+    line-height:.85;
+    letter-spacing:-.07em;
+  }
+
+  .intro-price-card{
+    position:relative;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:minmax(0,1.05fr) minmax(260px,.65fr);
+    gap:36px;
+    padding:clamp(28px,5vw,54px);
+    border:1px solid var(--line);
+    background:var(--panel);
+  }
+  .intro-price-card:before{
+    content:"";
+    position:absolute;
+    width:260px;height:260px;
+    right:-120px;top:-150px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:50%;
+    box-shadow:0 0 0 34px rgba(255,255,255,.018),0 0 0 70px rgba(255,255,255,.012);
+    pointer-events:none;
+  }
+  .pricing-kicker{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .pricing-kicker:before{
+    content:"";
+    width:28px;height:1px;background:currentColor;
+  }
+  .intro-price-card h2{
+    margin:0 0 14px;
+    font-size:clamp(34px,6vw,64px);
+    line-height:.95;
+    letter-spacing:-.045em;
+    text-transform:uppercase;
+  }
+  .intro-price-card .lead{
+    max-width:680px;
+    margin:0;
+    color:var(--muted);
+    line-height:1.75;
+  }
+  .price-includes{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:0;
+    margin-top:30px;
+    border-top:1px solid var(--line);
+  }
+  .price-include{
+    position:relative;
+    padding:15px 10px 15px 22px;
+    border-bottom:1px solid var(--line);
+    color:var(--text);
+    font-size:13px;
+  }
+  .price-include:before{
+    content:"";
+    position:absolute;
+    left:0;top:21px;
+    width:7px;height:7px;
+    border:1px solid currentColor;
+    transform:rotate(45deg);
+    opacity:.7;
+  }
+  .price-side{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:100%;
+    padding:26px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .price-side .price-label{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .price-side .price{
+    margin:12px 0 4px;
+    font-size:clamp(70px,12vw,112px);
+    font-weight:900;
+    line-height:.86;
+    letter-spacing:-.075em;
+  }
+  .price-side .price-note{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+    margin-bottom:28px;
+  }
+  .price-side .btn{width:100%}
+
+  .pricing-note-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+    margin-top:16px;
+  }
+  .pricing-note{
+    padding:22px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.018);
+  }
+  .pricing-note strong{
+    display:block;
+    margin-bottom:8px;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .pricing-note p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.65;
+  }
+  .pricing-disclaimer{
+    margin-top:16px;
+    padding:18px 20px;
+    border-left:2px solid currentColor;
+    background:rgba(255,255,255,.025);
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.65;
+  }
+
+  body.light-theme .pricing-hero{
+    background:
+      radial-gradient(circle at 82% 16%,rgba(0,0,0,.06),transparent 26%),
+      linear-gradient(145deg,rgba(0,0,0,.035),rgba(255,255,255,.15));
+  }
+  body.light-theme .pricing-hero:after{color:rgba(0,0,0,.035)}
+  body.light-theme .intro-price-card:before{border-color:rgba(0,0,0,.08);box-shadow:0 0 0 34px rgba(0,0,0,.018),0 0 0 70px rgba(0,0,0,.012)}
+  body.light-theme .price-side,
+  body.light-theme .pricing-note,
+  body.light-theme .pricing-disclaimer{background:rgba(0,0,0,.02)}
+
+  @media(max-width:760px){
+    .pricing-hero{padding:30px 22px 34px}
+    .pricing-hero-copy,.intro-price-card{grid-template-columns:1fr}
+    .pricing-price-lockup{text-align:left}
+    .pricing-price-lockup strong{font-size:74px}
+    .intro-price-card{gap:24px;padding:26px 20px}
+    .price-includes{grid-template-columns:1fr}
+    .pricing-note-grid{grid-template-columns:1fr}
+    .price-side{padding:22px}
+  }
+</style>
+
 </head>
 
 
@@ -2506,6 +2733,15 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
       <button
         class="nav-link"
+        data-page="pricing"
+        onclick="showPage('pricing')"
+      >
+        Prices
+      </button>
+
+
+      <button
+        class="nav-link"
         data-page="photography"
         onclick="showPage('photography')"
       >
@@ -2553,13 +2789,14 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   <div class="radial-backdrop" id="radialBackdrop"></div>
   <div class="radial-nav" id="radialNav" aria-label="Site menu">
     <div class="radial-items">
-      <button class="radial-item active" style="--i:0;--a:-75deg" data-page="home">Home</button>
-      <button class="radial-item" style="--i:1;--a:-50deg" data-page="detailing">Detailing</button>
-      <button class="radial-item" style="--i:2;--a:-25deg" data-page="photography">Photo</button>
-      <button class="radial-item" style="--i:3;--a:0deg" data-page="about">About</button>
-      <button class="radial-item" style="--i:4;--a:25deg" data-page="shop">Shop</button>
-      <button class="radial-item" style="--i:5;--a:50deg" data-page="booking">Booking</button>
-      <button class="radial-item" style="--i:6;--a:75deg" data-page="contact">Chat</button>
+      <button class="radial-item active" style="--i:0;--a:-87deg" data-page="home">Home</button>
+      <button class="radial-item" style="--i:1;--a:-62deg" data-page="detailing">Detailing</button>
+      <button class="radial-item" style="--i:2;--a:-37deg" data-page="pricing">Prices</button>
+      <button class="radial-item" style="--i:3;--a:-12deg" data-page="photography">Photo</button>
+      <button class="radial-item" style="--i:4;--a:12deg" data-page="about">About</button>
+      <button class="radial-item" style="--i:5;--a:37deg" data-page="shop">Shop</button>
+      <button class="radial-item" style="--i:6;--a:62deg" data-page="booking">Booking</button>
+      <button class="radial-item" style="--i:7;--a:87deg" data-page="contact">Chat</button>
     </div>
     <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
   </div>
@@ -2653,7 +2890,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
         <section class="home-final-compact home-reveal">
           <div><div class="home-kicker">Detailing · Photography · Both</div><h2>Your car is next.</h2><p>Tell STANCEBOUND about your car and what you're looking for.</p></div>
-          <button class="btn" onclick="showPage('booking')">Request a Booking</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" type="button" onclick="showPage('pricing')">View Prices</button>
+            <button class="btn" onclick="showPage('booking')">Request a Booking</button>
+          </div>
         </section>
       </div>
     </section>
@@ -2808,6 +3048,111 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
     </section>
 
+
+
+
+    <!-- ========================================
+         PRICING
+         ======================================== -->
+
+    <section id="pricing" class="page">
+      <div class="content">
+
+        <div class="pricing-hero sb-scroll-reveal">
+          <div class="eyebrow">STANCEBOUND · CURRENT PRICING</div>
+          <h1>Simple.<br>For now.</h1>
+
+          <div class="pricing-hero-copy">
+            <p>
+              STANCEBOUND is currently offering detailing at an introductory rate
+              while the portfolio and service offering continue to grow. No confusing
+              package ladder. No pretending every car needs the same thing. Just proper
+              attention to the vehicle at a deliberately accessible starting price.
+            </p>
+
+            <div class="pricing-price-lockup">
+              <span>Introductory detail</span>
+              <strong>£40</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-price-card sb-scroll-reveal">
+          <div>
+            <div class="pricing-kicker">Portfolio rate · Limited period</div>
+            <h2>STANCEBOUND<br>Detail</h2>
+            <p class="lead">
+              A full interior and exterior detail at the current STANCEBOUND
+              introductory rate. The exact process is adapted to the vehicle and its
+              condition rather than rushed through a generic checklist.
+            </p>
+
+            <div class="price-includes" aria-label="What is included">
+              <div class="price-include">Wheels &amp; exterior pre-clean</div>
+              <div class="price-include">Snow foam &amp; safe contact wash</div>
+              <div class="price-include">Careful drying &amp; finishing touches</div>
+              <div class="price-include">Interior vacuum</div>
+              <div class="price-include">Interior surfaces &amp; detailed areas</div>
+              <div class="price-include">Interior &amp; exterior glass</div>
+            </div>
+          </div>
+
+          <aside class="price-side">
+            <div>
+              <div class="price-label">Current detailing price</div>
+              <div class="price">£40</div>
+              <div class="price-note">
+                Introductory portfolio-building rate. Vehicle condition and any work
+                outside the standard detail can be discussed before the booking is confirmed.
+              </div>
+            </div>
+
+            <button class="btn" type="button" onclick="bookIntroDetail()">
+              BOOK THE £40 DETAIL
+            </button>
+          </aside>
+        </div>
+
+        <div class="pricing-note-grid">
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Why £40?</strong>
+            <p>
+              STANCEBOUND is currently building its detailing portfolio and experience,
+              so the service is being offered at an introductory rate for a limited period.
+            </p>
+          </article>
+
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Your vehicle matters</strong>
+            <p>
+              Every car is different. Heavy soiling, unusual requirements or additional
+              work can be discussed with you before anything outside the agreed service is done.
+            </p>
+          </article>
+
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Photography</strong>
+            <p>
+              Automotive photography and combined detailing + photography work are available
+              separately. Get in touch with STANCEBOUND for the right option for your car.
+            </p>
+          </article>
+        </div>
+
+        <div class="pricing-disclaimer sb-scroll-reveal">
+          The £40 price is the current introductory detailing rate and may change as
+          STANCEBOUND's service offering develops. Any different or additional price
+          will be agreed with you before the work is carried out.
+        </div>
+
+        <div class="cta sb-scroll-reveal">
+          <h2>Ready to get your car booked in?</h2>
+          <p>Choose detailing on the booking form and tell STANCEBOUND about the vehicle.</p>
+          <button class="btn" type="button" onclick="bookIntroDetail()">REQUEST A BOOKING</button>
+        </div>
+
+      </div>
+    </section>
 
 
     <!-- ========================================
@@ -3641,6 +3986,20 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     }
 
 
+
+    function bookIntroDetail(){
+      showPage("booking");
+      window.setTimeout(() => {
+        const service = document.getElementById("enquiryService");
+        if(service){
+          service.value = "Detailing";
+          service.dispatchEvent(new Event("change", { bubbles:true }));
+        }
+        const vehicle = document.getElementById("enquiryVehicle");
+        if(vehicle) vehicle.focus({preventScroll:true});
+      }, 520);
+    }
+
     /* ========================================
        PAGE NAVIGATION
        ======================================== */
@@ -3940,6 +4299,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     const allowedPages = [
       "home",
       "detailing",
+      "pricing",
       "photography",
       "about",
       "shop",
