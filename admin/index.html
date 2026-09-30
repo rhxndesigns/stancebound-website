@@ -543,6 +543,78 @@ try{
   .availability-time-grid label{font-size:8px;color:#777;letter-spacing:.1em;text-transform:uppercase}
   .availability-time-grid input{margin-top:6px;width:100%;box-sizing:border-box}
   @media(max-width:560px){.availability-actions{grid-template-columns:1fr}}
+
+
+/* ===== STANCEBOUND MOBILE WIDTH / OVERFLOW FIX ===== */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+main, .admin-page, .panel {
+  min-width: 0;
+  max-width: 100%;
+}
+.booking-calendar,
+.calendar-weekdays {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.calendar-day {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.calendar-day .day-num,
+.calendar-availability-dot,
+.calendar-dot {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 600px) {
+  main {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .admin-page > .panel {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .calendar-toolbar {
+    width: 100%;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+  }
+  .calendar-toolbar strong {
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .calendar-weekdays,
+  .booking-calendar {
+    gap: 3px;
+  }
+  .calendar-day {
+    min-height: 56px;
+    padding: 5px 3px;
+    font-size: 9px;
+  }
+  .calendar-availability-dot {
+    font-size: 7px;
+  }
+  .calendar-dot {
+    font-size: 6px;
+    white-space: nowrap;
+  }
+}
+
 </style>
 
 </head>
