@@ -70,7 +70,7 @@
           rgba(0, 0, 0, 0.28),
           rgba(0, 0, 0, 0.28)
         ),
-        url("images/texture.png");
+        url("/images/texture.png");
 
       background-repeat: repeat;
       background-size: 700px auto;
@@ -1614,7 +1614,7 @@
     .theme-wipe.to-dark{background:#050505}
     .theme-wipe.run{animation:themeCurtain .72s cubic-bezier(.77,0,.18,1) forwards}
     @keyframes themeCurtain{0%{transform:translateY(-101%)}52%{transform:translateY(0)}100%{transform:translateY(101%)}}
-    body.light-theme{--black:#f4f3ef;--panel:rgba(255,255,255,.82);--white:#101010;--silver:#303030;--grey:#666;--dark-grey:#888;--line:rgba(0,0,0,.14);background-color:#f4f3ef;background-image:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)),url("images/texture.png")}
+    body.light-theme{--black:#f4f3ef;--panel:rgba(255,255,255,.82);--white:#101010;--silver:#303030;--grey:#666;--dark-grey:#888;--line:rgba(0,0,0,.14);background-color:#f4f3ef;background-image:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)),url("/images/texture.png")}
     body.light-theme header{background:rgba(244,243,239,.93)}
     body.light-theme .header-logo img,body.light-theme .contact-logo{filter:invert(1)}
     body.light-theme .service,body.light-theme .feature-detail,body.light-theme .cta,body.light-theme .contact-card,body.light-theme .enquiry-shell{background:rgba(255,255,255,.62);border-color:rgba(0,0,0,.12)}
@@ -1703,7 +1703,7 @@
       inset: 0;
       z-index: -1;
       pointer-events: none;
-      background-image: url("images/backgroundsb.png");
+      background-image: url("/images/backgroundsb.png");
       background-repeat: no-repeat;
       background-position: center 14%;
       background-size: min(1500px, 125vw) auto;
@@ -1712,7 +1712,7 @@
     body.light-theme #detailing::before,
     body.light-theme #photography::before,
     body.light-theme #shop::before {
-      background-image: url("images/backgroundsbwhite.png");
+      background-image: url("/images/backgroundsbwhite.png");
       opacity: .10;
     }
     @media (max-width: 760px) {
@@ -3867,7 +3867,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 <body class="intro-running">
   <div id="site-intro" class="site-intro" aria-hidden="true">
     <div class="intro-inner">
-      <img src="images/stanceboundlogo.png?v=30" alt="STANCEBOUND Detailing" class="intro-logo">
+      <img src="/images/stanceboundlogo.png?v=30" alt="STANCEBOUND Detailing" class="intro-logo">
     </div>
   </div>
 
@@ -3884,7 +3884,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
     >
 
       <img
-        src="images/stanceboundlogo.png?v=30"
+        src="/images/stanceboundlogo.png?v=30"
         alt="STANCEBOUND"
       >
 
@@ -3987,7 +3987,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       <button class="radial-item" style="--i:6;--a:62deg" data-page="booking">Booking</button>
       <button class="radial-item" style="--i:7;--a:87deg" data-page="contact">Chat</button>
     </div>
-    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
+    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="/images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
   </div>
 
 
@@ -4006,7 +4006,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
     >
       <div class="hero">
         <div class="hero-content">
-          <img class="hero-logo" src="images/logo(1).png?v=30" alt="STANCEBOUND Detailing">
+          <img class="hero-logo" src="/images/logo(1).png?v=30" alt="STANCEBOUND Detailing">
           <div class="tagline" id="home-tagline">Cleaner · Higher · Further</div>
           <div class="hero-subtitle" id="home-subtitle">Automotive Detailing &amp; Photography</div>
           <div class="hero-socials" aria-label="STANCEBOUND social media">
@@ -4026,7 +4026,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       <div class="home-flow" id="home-discover">
         <div class="home-choice-grid home-reveal">
           <button class="home-choice" onclick="animateHomeChoice(this, 'detailing')" aria-label="Explore STANCEBOUND detailing">
-            <img src="images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async">
+            <img src="/images/STANCEBOUND4.jpg" alt="STANCEBOUND automotive detailing" loading="lazy" decoding="async">
             <span class="home-choice-index">01</span>
             <span class="home-choice-content">
               <span class="home-choice-kicker">Detailing</span>
@@ -4036,7 +4036,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             </span>
           </button>
           <button class="home-choice" onclick="animateHomeChoice(this, 'photography')" aria-label="Explore STANCEBOUND automotive photography">
-            <img src="images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async">
+            <img src="/images/STANCEBOUND3.jpg" alt="STANCEBOUND automotive photography" loading="lazy" decoding="async">
             <span class="home-choice-index">02</span>
             <span class="home-choice-content">
               <span class="home-choice-kicker">Photography</span>
@@ -4066,7 +4066,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 
         <section class="home-shop-teaser home-reveal">
           <div class="home-shop-image">
-            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001" loading="lazy">
+            <img src="/images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001" loading="lazy">
           </div>
           <div class="home-shop-copy">
             <div class="home-kicker">STANCEBOUND STORE · DROP 001</div>
@@ -4174,14 +4174,14 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
           </div>
 
           <div class="gallery swipe-gallery" id="detailing-process-gallery">
-            <div class="photo large" onclick="openLightbox('images/STANCEBOUND4.jpg')">
-              <img loading="lazy" decoding="async" src="images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
+            <div class="photo large" onclick="openLightbox('/images/STANCEBOUND4.jpg')">
+              <img loading="lazy" decoding="async" src="/images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
             </div>
-            <div class="photo" onclick="openLightbox('images/STANCEBOUND5.jpg')">
-              <img loading="lazy" decoding="async" src="images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
+            <div class="photo" onclick="openLightbox('/images/STANCEBOUND5.jpg')">
+              <img loading="lazy" decoding="async" src="/images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
             </div>
-            <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')">
-              <img loading="lazy" decoding="async" src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
+            <div class="photo" onclick="openLightbox('/images/STANCEBOUND6.jpg')">
+              <img loading="lazy" decoding="async" src="/images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
             </div>
           </div>
 
@@ -4195,12 +4195,12 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
           </p>
 
           <div class="before-after swipe-gallery" id="before-after-gallery">
-            <div class="ba-card" onclick="openLightbox('images/STANCEBOUND2.jpg')">
-              <img loading="lazy" decoding="async" src="images/STANCEBOUND2.jpg" alt="Mercedes interior before detailing">
+            <div class="ba-card" onclick="openLightbox('/images/STANCEBOUND2.jpg')">
+              <img loading="lazy" decoding="async" src="/images/STANCEBOUND2.jpg" alt="Mercedes interior before detailing">
               <div class="ba-label">BEFORE</div>
             </div>
-            <div class="ba-card" onclick="openLightbox('images/STANCEBOUND1.jpg')">
-              <img loading="lazy" decoding="async" src="images/STANCEBOUND1.jpg" alt="Mercedes interior after detailing">
+            <div class="ba-card" onclick="openLightbox('/images/STANCEBOUND1.jpg')">
+              <img loading="lazy" decoding="async" src="/images/STANCEBOUND1.jpg" alt="Mercedes interior after detailing">
               <div class="ba-label">AFTER</div>
             </div>
           </div>
@@ -4377,14 +4377,14 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             class="photo large"
             onclick="
               openLightbox(
-                'images/STANCEBOUND3.jpg'
+                '/images/STANCEBOUND3.jpg'
               )
             "
           >
 
             <img
               loading="lazy" decoding="async"
-              src="images/STANCEBOUND3.jpg"
+              src="/images/STANCEBOUND3.jpg"
               alt="STANCEBOUND automotive photography"
             >
 
@@ -4396,14 +4396,14 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             class="photo"
             onclick="
               openLightbox(
-                'images/STANCEBOUND8.jpg'
+                '/images/STANCEBOUND8.jpg'
               )
             "
           >
 
             <img
               loading="lazy" decoding="async"
-              src="images/STANCEBOUND8.jpg"
+              src="/images/STANCEBOUND8.jpg"
               alt="Car show photography"
             >
 
@@ -4415,14 +4415,14 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             class="photo"
             onclick="
               openLightbox(
-                'images/STANCEBOUND9.jpg'
+                '/images/STANCEBOUND9.jpg'
               )
             "
           >
 
             <img
               loading="lazy" decoding="async"
-              src="images/STANCEBOUND9.jpg"
+              src="/images/STANCEBOUND9.jpg"
               alt="Modified car photography"
             >
 
@@ -4480,7 +4480,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 
         <div class="profile-card">
           <div class="profile-image-wrap">
-            <img src="images/profilepicture.png" alt="Ryan Thomas, founder of STANCEBOUND" loading="lazy" decoding="async">
+            <img src="/images/profilepicture.png" alt="Ryan Thomas, founder of STANCEBOUND" loading="lazy" decoding="async">
           </div>
           <div class="profile-copy">
             <div class="eyebrow">FOUNDER · AUTOMOTIVE PHOTOGRAPHER · DETAILER</div>
@@ -4760,7 +4760,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
         <div class="shop-grid">
           <article class="product-card is-live" data-printful-product-id="474862785" role="button" tabindex="0" onclick="openHoodieProduct(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHoodieProduct(event)}">
             <div class="product-visual product-image">
-              <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" loading="lazy">
+              <img src="/images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" loading="lazy">
             </div>
             <div class="product-info">
               <div>
@@ -4794,7 +4794,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       <div class="content order-confirmation-page">
         <div class="order-confirmation-shell">
           <div class="order-confirmation-image">
-            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001">
+            <img src="/images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001">
           </div>
           <div class="order-confirmation-copy">
             <div class="order-confirmation-tick">✓</div>
@@ -5350,7 +5350,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
         overlay.className="sb-viewfinder";
         overlay.setAttribute("aria-hidden","true");
         overlay.innerHTML=`
-          <img class="sb-viewfinder-art" src="images/viewfinder.png" alt="" draggable="false">
+          <img class="sb-viewfinder-art" src="/images/viewfinder.png" alt="" draggable="false">
           <span class="sb-vf-meta sb-vf-frame">SB / FRAME ${String(index+1).padStart(3,"0")}</span>
           <span class="sb-vf-meta sb-vf-camera">STANCEBOUND // CAPTURE</span>
           <span class="sb-vf-meta sb-vf-brand">CLEANER // HIGHER // FURTHER</span>`;
@@ -5582,7 +5582,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
   <div id="hoodieProductModal" class="product-modal" aria-hidden="true" onclick="productModalBackdrop(event)">
     <div class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="hoodieProductTitle">
       <button class="product-modal-close" type="button" aria-label="Close product" onclick="closeHoodieProduct()">×</button>
-      <div class="product-modal-image"><img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back"></div>
+      <div class="product-modal-image"><img src="/images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back"></div>
       <div class="product-modal-copy">
         <span class="drop-label">STANCEBOUND · DROP 001</span>
         <h2 id="hoodieProductTitle">Signature Hoodie</h2>
@@ -5994,7 +5994,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     <div class="conv-topbar">
       <div>
         <a class="conv-back" href="/">← Back to STANCEBOUND</a>
-        <img class="conv-logo" src="images/logo(1).png" alt="STANCEBOUND" style="margin-top:18px">
+        <img class="conv-logo" src="/images/logo(1).png" alt="STANCEBOUND" style="margin-top:18px">
       </div>
       <div class="conv-secure-pill"><span class="conv-secure-dot"></span> PRIVATE CHAT</div>
     </div>
