@@ -618,6 +618,35 @@ main, .admin-page, .panel {
   }
 }
 
+
+/* ===== OPEN AVAILABILITY VISUAL PRIORITY =====
+   An explicitly open date stays visually OPEN even when it is a
+   previous/next-month spillover cell in the current calendar grid. */
+.calendar-day.other-month.is-open,
+.calendar-day.outside-month.is-open,
+.calendar-day.muted.is-open,
+.calendar-day.is-open {
+  opacity: 1 !important;
+  color: #f5f5f5 !important;
+  border-color: #686868 !important;
+  background: #151515 !important;
+}
+.calendar-day.other-month.is-open .day-num,
+.calendar-day.outside-month.is-open .day-num,
+.calendar-day.muted.is-open .day-num,
+.calendar-day.is-open .day-num {
+  color: #f5f5f5 !important;
+  opacity: 1 !important;
+}
+.calendar-day.other-month.is-open .calendar-availability-dot,
+.calendar-day.outside-month.is-open .calendar-availability-dot,
+.calendar-day.muted.is-open .calendar-availability-dot,
+.calendar-day.is-open .calendar-availability-dot {
+  color: #f5f5f5 !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
 </style>
 
 </head>
