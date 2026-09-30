@@ -2739,6 +2739,76 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   #pricing .future-services{margin-top:18px !important;padding-top:0 !important;}
 </style>
 
+
+<style id="stancebound-pricing-spacing-hard-fix">
+  /* Prices is a normal flowing page. No artificial viewport-height sections. */
+  #pricing,
+  #pricing.page,
+  #pricing.page.active{
+    min-height:0 !important;
+    height:auto !important;
+  }
+
+  #pricing > .content{
+    min-height:0 !important;
+    height:auto !important;
+    padding-bottom:28px !important;
+  }
+
+  #pricing .pricing-hero,
+  #pricing .intro-price-card,
+  #pricing .future-services,
+  #pricing .future-service-grid,
+  #pricing .future-service,
+  #pricing .sale-prep-feature,
+  #pricing .one-car-statement,
+  #pricing .pricing-disclaimer{
+    min-height:0 !important;
+  }
+
+  #pricing .intro-price-card{
+    margin-bottom:18px !important;
+  }
+
+  #pricing .future-services{
+    margin-top:18px !important;
+    margin-bottom:18px !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+  }
+
+  #pricing .one-car-statement{
+    margin-top:18px !important;
+    margin-bottom:18px !important;
+  }
+
+  #pricing .pricing-disclaimer{
+    margin-top:0 !important;
+    margin-bottom:18px !important;
+  }
+
+  #pricing .content > :last-child{
+    margin-bottom:0 !important;
+  }
+
+  /* The global reveal system must never reserve a fake viewport on this page. */
+  #pricing .sb-scroll-reveal,
+  #pricing .sb-in-view{
+    min-height:0 !important;
+  }
+
+  @media(max-width:760px){
+    #pricing > .content{padding-bottom:18px !important;}
+    #pricing .pricing-hero,
+    #pricing .intro-price-card,
+    #pricing .future-services,
+    #pricing .one-car-statement,
+    #pricing .pricing-disclaimer{
+      margin-bottom:14px !important;
+    }
+  }
+</style>
+
 </head>
 
 
