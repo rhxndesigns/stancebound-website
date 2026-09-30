@@ -3795,6 +3795,57 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 }
 </style>
 
+
+<style id="stancebound-cinematic-service-browser">
+.sbp-cinema{margin-top:10px;border:1px solid var(--line);overflow:hidden;background:#070707}
+.sbp-cinema-head{height:42px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.17em}
+.sbp-cinema-head small{font-size:6px;color:var(--muted)}
+.sbp-cinema-frame{position:relative;min-height:430px;overflow:hidden;isolation:isolate;background:#0a0a0a}
+.sbp-cinema-image{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.02);transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .45s ease,opacity .28s ease}
+.sbp-cinema-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.6) 46%,rgba(0,0,0,.16) 100%),linear-gradient(0deg,rgba(0,0,0,.72),transparent 58%)}
+.sbp-cinema-tech{position:absolute;right:5%;top:10%;width:44%;height:55%;opacity:.62;transition:opacity .25s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
+.sbp-cinema-tech:before,.sbp-cinema-tech:after{content:"";position:absolute}
+.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-tech:before{inset:10%;border:1px solid rgba(255,255,255,.3);clip-path:polygon(0 18%,30% 18%,30% 0,70% 0,70% 18%,100% 18%,100% 82%,70% 82%,70% 100%,30% 100%,30% 82%,0 82%)}
+.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-tech:after{left:10%;right:10%;top:50%;height:1px;background:#fff;box-shadow:0 -40px 0 rgba(255,255,255,.18),0 40px 0 rgba(255,255,255,.18)}
+.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-tech:before{left:-10%;top:48%;width:120%;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);transform:rotate(-12deg);box-shadow:0 12px 0 rgba(255,255,255,.3),0 -15px 0 rgba(255,255,255,.15)}
+.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-tech:after{right:-10%;top:5%;width:160px;height:160px;border:1px solid rgba(255,255,255,.28);border-radius:50%}
+.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-tech:before{right:0;top:0;width:170px;height:170px;border:1px solid rgba(255,255,255,.3);border-radius:50%;box-shadow:inset 0 0 0 36px rgba(255,255,255,.025),inset 0 0 0 68px rgba(255,255,255,.025)}
+.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-tech:after{right:-20%;top:85px;width:220px;height:1px;background:linear-gradient(90deg,#fff,transparent);animation:cinemaBeam 2.5s ease-in-out infinite}
+@keyframes cinemaBeam{50%{opacity:.25;transform:scaleX(.78)}}
+.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-tech:before{right:-10%;top:-5%;width:190px;height:190px;border:1px solid rgba(255,255,255,.28);border-radius:50%}
+.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-tech:after{right:72px;top:-5%;width:1px;height:220px;background:linear-gradient(transparent,#fff,transparent);transform:rotate(27deg);box-shadow:38px 0 0 rgba(255,255,255,.15)}
+.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-tech:before{right:50px;top:45px;width:72px;height:72px;border:1px solid rgba(255,255,255,.3);transform:rotate(45deg);box-shadow:52px 52px 0 -1px #090909,52px 52px 0 0 rgba(255,255,255,.2),-52px 52px 0 -1px #090909,-52px 52px 0 0 rgba(255,255,255,.2)}
+.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-tech:after{right:0;top:0;width:180px;height:180px;border:1px dashed rgba(255,255,255,.24);border-radius:50%;animation:sbpSpin 16s linear infinite}
+.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-tech:before{inset:8%;border:1px solid rgba(255,255,255,.28);background:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3)) 50% 50%/65px 1px no-repeat,linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3)) 50% 50%/1px 65px no-repeat}
+.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-tech:after{left:50%;top:50%;width:38px;height:38px;border:1px solid #fff;border-radius:50%;transform:translate(-50%,-50%)}
+.sbp-cinema-copy{position:relative;z-index:3;width:58%;padding:42px 0 24px 22px}
+.sbp-cinema-status{font-size:6px;font-weight:900;letter-spacing:.17em;color:#aaa;display:flex;align-items:center;gap:8px}.sbp-cinema-status i{width:24px;height:1px;background:#777}
+.sbp-cinema-index{margin-top:55px;font-size:8px;letter-spacing:.18em;color:#777;font-weight:900}
+.sbp-cinema-copy h2{margin:10px 0 11px;font-size:clamp(42px,7vw,72px);line-height:.82;letter-spacing:-.055em;color:#fff}
+.sbp-cinema-copy p{margin:0;color:#aaa;font-size:9px;letter-spacing:.02em}
+.sbp-explore-btn{margin-top:30px;width:min(290px,100%);height:52px;border:1px solid rgba(255,255,255,.35);background:rgba(5,5,5,.3);color:#fff;padding:0 15px;display:flex;align-items:center;justify-content:space-between;font:900 7px/1 inherit;letter-spacing:.16em;backdrop-filter:blur(8px);transition:background .25s ease,border-color .25s ease}
+.sbp-explore-btn i{font-style:normal;font-size:14px;transition:transform .3s cubic-bezier(.2,.8,.2,1)}.sbp-explore-btn:active i{transform:translate(4px,-4px)}
+.sbp-hit{position:absolute!important;z-index:2;top:0;bottom:0;width:21%;border:0!important;background:transparent!important;opacity:0}.sbp-hit-left{left:0}.sbp-hit-right{right:0}
+.sbp-cinema-nav{height:62px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:0 14px;border-top:1px solid var(--line)}
+.sbp-cinema-nav>button{height:38px;border:0;background:transparent;color:var(--text);display:flex;gap:7px;align-items:center;font:900 6px/1 inherit;letter-spacing:.14em}.sbp-cinema-nav>button i{font-style:normal;font-size:13px}
+.sbp-cinema-progress{display:flex;align-items:center;justify-content:center;min-width:0}.sbp-cinema-progress b{font-size:5px;color:#666;transition:.25s}.sbp-cinema-progress i{width:10px;height:1px;background:#333;transition:width .35s ease,background .35s ease}.sbp-cinema-progress b.active{font-size:7px;color:#fff}.sbp-cinema-progress b.active+i{width:27px;background:#fff}
+.sbp-cinema-frame.cinema-changing .sbp-cinema-image{filter:blur(8px);opacity:.4;transform:scale(1.07)}
+.sbp-cinema-frame.cinema-changing .sbp-cinema-tech{opacity:0;transform:translateX(22px) scale(.95)}
+.sbp-cinema-frame.cinema-changing .sbp-cinema-copy{opacity:0;transform:translateX(-12px)}
+.sbp-cinema-copy{transition:opacity .2s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+/* Temporary photographic treatment. These can be replaced with Ryan's own STANCEBOUND images later. */
+.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-image{background-image:radial-gradient(circle at 78% 34%,rgba(255,255,255,.13),transparent 18%),linear-gradient(125deg,#080808 18%,#171717 56%,#050505)}
+.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-image{background-image:linear-gradient(145deg,#050505,#1b1b1b 48%,#070707)}
+.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-image{background-image:radial-gradient(circle at 78% 38%,rgba(255,255,255,.22),transparent 8%,rgba(255,255,255,.04) 17%,transparent 28%),linear-gradient(135deg,#050505,#161616)}
+.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-image{background-image:linear-gradient(112deg,#050505 20%,#202020 54%,#090909 55%,#151515)}
+.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-image{background-image:radial-gradient(circle at 75% 30%,rgba(255,255,255,.1) 0 2px,transparent 3px),radial-gradient(circle at 86% 45%,rgba(255,255,255,.1) 0 2px,transparent 3px),linear-gradient(140deg,#050505,#191919)}
+.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-image{background-image:linear-gradient(125deg,#050505 20%,#1c1c1c 62%,#060606)}
+@media(max-width:600px){
+ .sbp-cinema-frame{min-height:390px}.sbp-cinema-copy{width:68%;padding:34px 0 20px 15px}.sbp-cinema-index{margin-top:48px}.sbp-cinema-copy h2{font-size:10vw}.sbp-cinema-tech{right:-2%;width:48%;top:13%}.sbp-explore-btn{height:50px;width:220px;margin-top:25px}
+ .sbp-cinema-nav{grid-template-columns:52px 1fr 42px;gap:6px;padding:0 9px}.sbp-cinema-nav>button span{display:none}.sbp-cinema-progress i{width:7px}.sbp-cinema-progress b.active+i{width:19px}
+}
+</style>
+
 </head>
 
 
@@ -4205,34 +4256,36 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
           </div>
         </section>
 
-        <section class="sbp-explorer">
-          <div class="sbp-explorer-head">
-            <span>SERVICES IN DEVELOPMENT</span>
-            <small id="sbpCount">02 / 07</small>
+        <section class="sbp-cinema" id="sbpCinema">
+          <div class="sbp-cinema-head">
+            <span>SERVICES / <b id="sbpCinemaNum">02</b>—07</span>
+            <small>EXPLORE</small>
           </div>
 
-          <div class="sbp-tabs" role="tablist">
-            <button class="active" type="button" data-sbp-service="sale">SALE PREP</button>
-            <button type="button" data-sbp-service="scratch">SCRATCH</button>
-            <button type="button" data-sbp-service="headlight">HEADLIGHTS</button>
-            <button type="button" data-sbp-service="paint">PAINT</button>
-            <button type="button" data-sbp-service="ceramic">CERAMIC</button>
-            <button type="button" data-sbp-service="photo">PHOTO</button>
-          </div>
+          <article class="sbp-cinema-frame" id="sbpCinemaFrame" data-mode="sale">
+            <div class="sbp-cinema-image" id="sbpCinemaImage" aria-hidden="true"></div>
+            <div class="sbp-cinema-shade" aria-hidden="true"></div>
+            <div class="sbp-cinema-tech" id="sbpCinemaTech" aria-hidden="true"></div>
+            <button class="sbp-hit sbp-hit-left" type="button" data-cinema-prev aria-label="Previous service"></button>
+            <button class="sbp-hit sbp-hit-right" type="button" data-cinema-next aria-label="Next service"></button>
 
-          <article class="sbp-stage" id="sbpStage">
-            <div class="sbp-stage-grid" aria-hidden="true"></div>
-            <div class="sbp-stage-graphic" id="sbpGraphic" aria-hidden="true"></div>
-            <div class="sbp-stage-copy">
-              <div class="sbp-status">COMING SOON</div>
-              <h2 id="sbpTitle">SALE<br>PREPARATION.</h2>
-              <p id="sbpText">Deep detail, professional photography and help creating the vehicle listing.</p>
-              <button type="button" id="sbpMore" data-sbp-open="sale">VIEW SERVICE <span>↗</span></button>
+            <div class="sbp-cinema-copy">
+              <div class="sbp-cinema-status">COMING SOON <i></i></div>
+              <div class="sbp-cinema-index" id="sbpCinemaIndex">02</div>
+              <h2 id="sbpCinemaTitle">SALE<br>PREPARATION.</h2>
+              <p id="sbpCinemaText">Detail · Photography · Listing creation</p>
+              <button type="button" class="sbp-explore-btn" id="sbpCinemaMore" data-sbp-open="sale">
+                <span>EXPLORE SERVICE</span><i>↗</i>
+              </button>
             </div>
           </article>
 
-          <div class="sbp-dots" aria-hidden="true">
-            <i class="active"></i><i></i><i></i><i></i><i></i><i></i>
+          <div class="sbp-cinema-nav">
+            <button type="button" data-cinema-prev><i>←</i><span>PREVIOUS</span></button>
+            <div class="sbp-cinema-progress" id="sbpCinemaProgress">
+              <b class="active">02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b><i></i><b>06</b><i></i><b>07</b>
+            </div>
+            <button type="button" data-cinema-next><span>NEXT</span><i>→</i></button>
           </div>
         </section>
 
@@ -7253,6 +7306,43 @@ document.addEventListener('click',function(e){
  selectService('sale');
 })();
 </script>
+
+<script id="stancebound-cinema-browser-js">
+(function(){
+ const data=[
+  ['sale','02','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
+  ['scratch','03','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
+  ['headlight','04','HEADLIGHT<br>RESTORATION.','Restore clarity to tired or oxidised lenses'],
+  ['paint','05','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
+  ['ceramic','06','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
+  ['photo','07','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
+ ];
+ let index=0,busy=false;
+ function render(next){
+  if(busy)return;busy=true;
+  const frame=document.getElementById('sbpCinemaFrame');if(!frame){busy=false;return}
+  frame.classList.add('cinema-changing');
+  setTimeout(()=>{
+   index=(next+data.length)%data.length;
+   const [key,num,title,text]=data[index];
+   frame.dataset.mode=key;
+   document.getElementById('sbpCinemaNum').textContent=num;
+   document.getElementById('sbpCinemaIndex').textContent=num;
+   document.getElementById('sbpCinemaTitle').innerHTML=title;
+   document.getElementById('sbpCinemaText').textContent=text;
+   document.getElementById('sbpCinemaMore').dataset.sbpOpen=key;
+   document.querySelectorAll('#sbpCinemaProgress b').forEach((b,i)=>b.classList.toggle('active',i===index));
+   requestAnimationFrame(()=>frame.classList.remove('cinema-changing'));
+   setTimeout(()=>busy=false,390);
+  },180);
+ }
+ document.addEventListener('click',e=>{
+  if(e.target.closest('[data-cinema-prev]')){e.preventDefault();render(index-1)}
+  else if(e.target.closest('[data-cinema-next]')){e.preventDefault();render(index+1)}
+ });
+})();
+</script>
+
 </body>
 
 </html>
