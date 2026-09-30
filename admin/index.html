@@ -2357,21 +2357,34 @@ document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const bt
 const selectedAvailabilityDates=new Set();
 
 async function loadBookingAvailability(){
-  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
-  const start=`${y}-${String(m+1).padStart(2,'0')}-01`;
-  const last=new Date(y,m+1,0).getDate();
-  const end=`${y}-${String(m+1).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
   const {data,error}=await supabase
     .from('booking_availability')
-    .select('availability_date,is_available,start_time,end_time')
-    .gte('availability_date',start)
-    .lte('availability_date',end);
+    .select('availability_date,is_available,start_time,end_time,updated_at')
+    .order('availability_date',{ascending:true});
+
   if(error){
-    console.error('Availability load:',error);
-    bookingAvailability=new Map();
-  }else{
-    bookingAvailability=new Map((data||[]).map(x=>[x.availability_date,x]));
+    console.error('Could not load booking availability:',error);
+    return;
   }
+
+  bookingAvailability.clear();
+
+  (data||[]).forEach(row=>{
+    // Supabase DATE should already be YYYY-MM-DD, but normalize defensively
+    // so the calendar's data-date key always matches after a full refresh.
+    const raw=row.availability_date;
+    const dateKey=typeof raw==='string' ? raw.slice(0,10) : '';
+    if(!dateKey)return;
+
+    bookingAvailability.set(dateKey,{
+      ...row,
+      availability_date:dateKey,
+      // Accept the real boolean and defensively handle serialized values.
+      is_available:row.is_available===true || row.is_available==='true' || row.is_available===1
+    });
+  });
+
+  return bookingAvailability;
 }
 
 async function refreshScheduleCalendar(){
