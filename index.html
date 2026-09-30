@@ -2809,6 +2809,35 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-pricing-no-ghost-space">
+  #pricing *{
+    transition-delay:0s;
+  }
+  #pricing .pricing-hero,
+  #pricing .intro-price-card,
+  #pricing .pricing-note-grid,
+  #pricing .pricing-note,
+  #pricing .future-services,
+  #pricing .future-services-head,
+  #pricing .future-service-grid,
+  #pricing .future-service,
+  #pricing .one-car-statement,
+  #pricing .pricing-disclaimer,
+  #pricing .cta{
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+    filter:none !important;
+  }
+  #pricing .pricing-note-grid{margin:14px 0 !important;}
+  #pricing .future-services{margin:18px 0 !important;}
+  #pricing .one-car-statement{margin:18px 0 !important;}
+  #pricing .pricing-disclaimer{margin:18px 0 !important;}
+  #pricing .cta{margin:18px 0 0 !important;}
+  #pricing > .content{padding-bottom:24px !important;}
+</style>
+
 </head>
 
 
@@ -3196,7 +3225,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     <section id="pricing" class="page">
       <div class="content">
 
-        <div class="pricing-hero sb-scroll-reveal">
+        <div class="pricing-hero">
           <div class="eyebrow">STANCEBOUND · CURRENT PRICING</div>
           <h1>Simple.<br>For now.</h1>
 
@@ -3215,7 +3244,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           </div>
         </div>
 
-        <div class="intro-price-card sb-scroll-reveal">
+        <div class="intro-price-card">
           <div>
             <div class="pricing-kicker">Portfolio rate · Limited period</div>
             <h2>STANCEBOUND<br>Detail</h2>
@@ -3252,7 +3281,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         </div>
 
         <div class="pricing-note-grid">
-          <article class="pricing-note sb-scroll-reveal">
+          <article class="pricing-note">
             <strong>Why £40?</strong>
             <p>
               STANCEBOUND is currently building its detailing portfolio and experience,
@@ -3260,7 +3289,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </p>
           </article>
 
-          <article class="pricing-note sb-scroll-reveal">
+          <article class="pricing-note">
             <strong>Your vehicle matters</strong>
             <p>
               Every car is different. Heavy soiling, unusual requirements or additional
@@ -3268,7 +3297,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </p>
           </article>
 
-          <article class="pricing-note sb-scroll-reveal">
+          <article class="pricing-note">
             <strong>Photography</strong>
             <p>
               Automotive photography and combined detailing + photography work are available
@@ -3353,13 +3382,13 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           </p>
         </section>
 
-        <div class="pricing-disclaimer sb-scroll-reveal">
+        <div class="pricing-disclaimer">
           The £40 price is the current introductory detailing rate and may change as
           STANCEBOUND's service offering develops. Any different or additional price
           will be agreed with you before the work is carried out.
         </div>
 
-        <div class="cta sb-scroll-reveal">
+        <div class="cta">
           <h2>Ready to get your car booked in?</h2>
           <p>Choose detailing on the booking form and tell STANCEBOUND about the vehicle.</p>
           <button class="btn" type="button" onclick="bookIntroDetail()">REQUEST A BOOKING</button>
@@ -4479,7 +4508,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     // Site-wide cinematic scroll reveals. Applied automatically so future content inherits the motion system.
     const sbRevealTargets = [];
     document.querySelectorAll('.page').forEach(page => {
-      if (page.id === 'home') return;
+      if (page.id === 'home' || page.id === 'pricing') return;
       const content = page.querySelector('.content') || page;
       const candidates = Array.from(content.children).filter(el =>
         !el.matches('script,style') && !el.classList.contains('sb-scroll-reveal')
@@ -6087,33 +6116,6 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 })();
 </script>
 
-
-<script id="stancebound-hidden-page-reveal-fix">
-(function(){
-  const install = () => {
-    if (typeof window.showPage !== 'function' || window.showPage.__sbRevealFixed) return;
-    const original = window.showPage;
-    function fixedShowPage(page, ...args){
-      const result = original.call(this, page, ...args);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const active = document.getElementById(page);
-          if (!active) return;
-          active.querySelectorAll('.sb-scroll-reveal').forEach(el => el.classList.add('sb-in-view'));
-        });
-      });
-      return result;
-    }
-    fixedShowPage.__sbRevealFixed = true;
-    window.showPage = fixedShowPage;
-  };
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', () => setTimeout(install,0));
-  } else {
-    setTimeout(install,0);
-  }
-})();
-</script>
 
 </body>
 
