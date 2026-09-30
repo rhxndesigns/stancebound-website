@@ -2908,6 +2908,47 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-boxed-services">
+  .boxed-services{margin:18px 0 !important}
+  .boxed-services-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:14px}
+  .boxed-services-head h2{margin:4px 0 0;font-size:clamp(32px,6vw,58px);line-height:.9;text-transform:uppercase;letter-spacing:-.05em}
+  .boxed-services-head p{max-width:420px;margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+  .service-box-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .service-box{
+    position:relative;min-height:190px;padding:18px;text-align:left;color:var(--text);
+    border:1px solid var(--line);background:rgba(255,255,255,.018);font:inherit;cursor:pointer;
+    display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s,border-color .25s;
+    overflow:hidden;
+  }
+  .service-box:hover,.service-box.open{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.4)}
+  .service-box:active{transform:scale(.985)}
+  .service-box-featured{grid-column:span 2;background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.018))}
+  .service-box-top{display:flex;justify-content:space-between;gap:12px;font-size:7px;font-weight:900;letter-spacing:.14em;color:var(--muted)}
+  .service-box-top b{font:inherit;color:inherit}
+  .service-box-title{margin:auto 0 12px;font-size:clamp(22px,3.5vw,36px);font-weight:900;line-height:.92;letter-spacing:-.035em;text-transform:uppercase}
+  .service-box-short{font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .service-box-plus{position:absolute;right:15px;bottom:12px;font-size:20px;font-weight:300;color:var(--muted)}
+  .service-box-detail{display:none;margin-top:8px;padding:clamp(22px,4vw,38px);border:1px solid var(--line);background:var(--panel)}
+  .service-box-detail.open{display:block;animation:boxDetailIn .38s cubic-bezier(.16,1,.3,1)}
+  @keyframes boxDetailIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .box-detail-index{margin-bottom:20px;font-size:8px;font-weight:900;letter-spacing:.16em;color:var(--muted)}
+  .box-detail-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px;align-items:end}
+  .box-detail-layout h3{margin:0;font-size:clamp(34px,6vw,64px);line-height:.9;letter-spacing:-.05em;text-transform:uppercase}
+  .box-detail-layout p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+  .box-detail-layout small{display:block;margin-top:12px;color:var(--muted);font-size:10px;line-height:1.6}
+  @media(max-width:760px){
+    .boxed-services-head{display:block}.boxed-services-head p{margin-top:10px}
+    .service-box-grid{grid-template-columns:repeat(2,1fr)}
+    .service-box-featured{grid-column:span 2}
+    .service-box{min-height:150px;padding:15px}
+    .service-box-featured{min-height:165px}
+    .service-box-title{font-size:clamp(20px,6vw,29px)}
+    .box-detail-layout{grid-template-columns:1fr;gap:16px}
+    .service-box-detail{padding:20px 17px}
+  }
+</style>
+
 </head>
 
 
@@ -3378,65 +3419,77 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
 
         
-        <section class="future-services modern-service-browser">
-          <div class="future-services-head">
+        
+        <section class="future-services boxed-services">
+          <div class="boxed-services-head">
             <div>
               <div class="pricing-kicker">Where STANCEBOUND is going</div>
-              <h2>Future services.</h2>
+              <h2>Built next.</h2>
             </div>
-            <p>Explore what's being built next. Tap a service for the details instead of scrolling through six enormous cards like it's 2014.</p>
+            <p>Tap a service to expand it. Everything stays compact until you actually want the detail.</p>
           </div>
 
-          <div class="service-tabs" role="tablist" aria-label="Future STANCEBOUND services">
-            <button class="service-tab active" type="button" data-service-panel="sale">Sale Prep</button>
-            <button class="service-tab" type="button" data-service-panel="scratch">Scratch</button>
-            <button class="service-tab" type="button" data-service-panel="headlights">Headlights</button>
-            <button class="service-tab" type="button" data-service-panel="paint">Paint</button>
-            <button class="service-tab" type="button" data-service-panel="ceramic">Ceramic</button>
-            <button class="service-tab" type="button" data-service-panel="photo">Photo</button>
+          <div class="service-box-grid">
+            <button class="service-box service-box-featured open" type="button" data-box="sale">
+              <span class="service-box-top"><span>01 · SALE PREP</span><b>COMING SOON</b></span>
+              <span class="service-box-title">Sell your car.<br>Properly.</span>
+              <span class="service-box-short">Detail · Photography · Advert</span>
+              <span class="service-box-plus">×</span>
+            </button>
+
+            <button class="service-box" type="button" data-box="scratch">
+              <span class="service-box-top"><span>02 · RESTORE</span><b>SOON</b></span>
+              <span class="service-box-title">Scratch<br>Removal.</span>
+              <span class="service-box-short">Targeted paint improvement</span>
+              <span class="service-box-plus">+</span>
+            </button>
+
+            <button class="service-box" type="button" data-box="headlights">
+              <span class="service-box-top"><span>03 · RESTORE</span><b>SOON</b></span>
+              <span class="service-box-title">Headlight<br>Restoration.</span>
+              <span class="service-box-short">Clarity · Finish · Presentation</span>
+              <span class="service-box-plus">+</span>
+            </button>
+
+            <button class="service-box" type="button" data-box="paint">
+              <span class="service-box-top"><span>04 · PAINT</span><b>SOON</b></span>
+              <span class="service-box-title">Paint<br>Correction.</span>
+              <span class="service-box-short">Swirls · Haze · Clarity</span>
+              <span class="service-box-plus">+</span>
+            </button>
+
+            <button class="service-box" type="button" data-box="ceramic">
+              <span class="service-box-top"><span>05 · PROTECT</span><b>SOON</b></span>
+              <span class="service-box-title">Ceramic<br>Coating.</span>
+              <span class="service-box-short">Preparation-led protection</span>
+              <span class="service-box-plus">+</span>
+            </button>
+
+            <button class="service-box" type="button" data-box="photo">
+              <span class="service-box-top"><span>06 · MEDIA</span><b>SOON</b></span>
+              <span class="service-box-title">Detail +<br>Photography.</span>
+              <span class="service-box-short">Finished car · Properly captured</span>
+              <span class="service-box-plus">+</span>
+            </button>
           </div>
 
-          <div class="service-stage">
-            <article class="service-panel active" data-panel="sale">
-              <div class="service-panel-index">01 · SALE PREPARATION</div>
-              <div class="service-panel-grid">
-                <div>
-                  <span class="service-status">COMING SOON</span>
-                  <h3>Prepare it.<br>Shoot it.<br>Advertise it.</h3>
-                </div>
-                <div class="service-panel-copy">
-                  <p>STANCEBOUND prepares the vehicle, photographs it professionally and builds a polished factual advert from information supplied by the owner.</p>
-                  <div class="sale-prep-flow"><span>Deep Detail</span><span>Sale Preparation</span><span>Photography</span><span>Listing Creation</span></div>
-                  <small>Selected cars could also receive a shareable STANCEBOUND listing page, clearly advertised on behalf of the owner.</small>
-                </div>
+          <div class="service-box-detail open" data-detail="sale">
+            <div class="box-detail-index">01 / SALE PREPARATION</div>
+            <div class="box-detail-layout">
+              <h3>Prepare it.<br>Shoot it.<br>Advertise it.</h3>
+              <div>
+                <p>STANCEBOUND prepares the vehicle, photographs it professionally and creates a polished factual advert using information supplied by the owner.</p>
+                <div class="sale-prep-flow"><span>Deep Detail</span><span>Sale Prep</span><span>Photography</span><span>Listing</span></div>
+                <small>Selected cars could also receive a shareable STANCEBOUND listing page, clearly advertised on behalf of the owner.</small>
               </div>
-            </article>
-
-            <article class="service-panel" data-panel="scratch">
-              <div class="service-panel-index">02 · RESTORATION</div>
-              <div class="service-panel-grid"><div><span class="service-status">COMING SOON</span><h3>Scratch<br>Removal.</h3></div><div class="service-panel-copy"><p>Targeted improvement of suitable paint defects and scratches, assessed vehicle by vehicle rather than sold as a miracle cure for every mark.</p></div></div>
-            </article>
-
-            <article class="service-panel" data-panel="headlights">
-              <div class="service-panel-index">03 · RESTORATION</div>
-              <div class="service-panel-grid"><div><span class="service-status">COMING SOON</span><h3>Headlight<br>Restoration.</h3></div><div class="service-panel-copy"><p>Restoring tired and oxidised headlights to improve clarity and the overall presentation of the vehicle.</p></div></div>
-            </article>
-
-            <article class="service-panel" data-panel="paint">
-              <div class="service-panel-index">04 · PAINT</div>
-              <div class="service-panel-grid"><div><span class="service-status">COMING SOON</span><h3>Paint<br>Correction.</h3></div><div class="service-panel-copy"><p>Machine polishing and corrective work aimed at improving swirls, haze and paint clarity after proper preparation.</p></div></div>
-            </article>
-
-            <article class="service-panel" data-panel="ceramic">
-              <div class="service-panel-index">05 · PROTECTION</div>
-              <div class="service-panel-grid"><div><span class="service-status">COMING SOON</span><h3>Ceramic<br>Coating.</h3></div><div class="service-panel-copy"><p>Preparation-led ceramic protection designed to preserve and protect the finish after the paint has been properly prepared.</p></div></div>
-            </article>
-
-            <article class="service-panel" data-panel="photo">
-              <div class="service-panel-index">06 · MEDIA</div>
-              <div class="service-panel-grid"><div><span class="service-status">COMING SOON</span><h3>Detail +<br>Photography.</h3></div><div class="service-panel-copy"><p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p></div></div>
-            </article>
+            </div>
           </div>
+
+          <div class="service-box-detail" data-detail="scratch"><div class="box-detail-index">02 / SCRATCH REMOVAL</div><div class="box-detail-layout"><h3>Targeted.<br>Not disguised.</h3><p>Suitable scratches and paint defects assessed individually, with corrective work aimed at genuine improvement rather than promising the impossible.</p></div></div>
+          <div class="service-box-detail" data-detail="headlights"><div class="box-detail-index">03 / HEADLIGHT RESTORATION</div><div class="box-detail-layout"><h3>Bring back<br>the clarity.</h3><p>Restoration of tired and oxidised headlights to improve clarity and sharpen the overall presentation of the vehicle.</p></div></div>
+          <div class="service-box-detail" data-detail="paint"><div class="box-detail-index">04 / PAINT CORRECTION</div><div class="box-detail-layout"><h3>Correct.<br>Refine.</h3><p>Machine polishing and corrective work focused on improving swirls, haze and paint clarity after proper preparation.</p></div></div>
+          <div class="service-box-detail" data-detail="ceramic"><div class="box-detail-index">05 / CERAMIC COATING</div><div class="box-detail-layout"><h3>Prepare.<br>Then protect.</h3><p>Preparation-led ceramic protection designed to preserve the finish after the paint has been properly prepared.</p></div></div>
+          <div class="service-box-detail" data-detail="photo"><div class="box-detail-index">06 / DETAIL + PHOTOGRAPHY</div><div class="box-detail-layout"><h3>Finished.<br>Then captured.</h3><p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p></div></div>
         </section>
 
 <section class="one-car-statement compact-philosophy">
@@ -6180,16 +6233,22 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 
 
 
-<script id="stancebound-service-tabs">
+
+<script id="stancebound-service-boxes">
 document.addEventListener('click',function(e){
-  const tab=e.target.closest('.service-tab');
-  if(!tab)return;
-  const browser=tab.closest('.modern-service-browser');
-  if(!browser)return;
-  const key=tab.dataset.servicePanel;
-  browser.querySelectorAll('.service-tab').forEach(x=>x.classList.toggle('active',x===tab));
-  browser.querySelectorAll('.service-panel').forEach(x=>x.classList.toggle('active',x.dataset.panel===key));
-  tab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  const box=e.target.closest('.service-box');
+  if(!box)return;
+  const section=box.closest('.boxed-services');
+  const key=box.dataset.box;
+  const wasOpen=box.classList.contains('open');
+  section.querySelectorAll('.service-box').forEach(x=>{x.classList.remove('open');const p=x.querySelector('.service-box-plus');if(p)p.textContent='+'});
+  section.querySelectorAll('.service-box-detail').forEach(x=>x.classList.remove('open'));
+  if(!wasOpen){
+    box.classList.add('open');
+    const plus=box.querySelector('.service-box-plus');if(plus)plus.textContent='×';
+    const detail=section.querySelector('[data-detail="'+key+'"]');
+    if(detail)detail.classList.add('open');
+  }
 });
 </script>
 
