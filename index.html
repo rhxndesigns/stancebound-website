@@ -2731,6 +2731,14 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-pricing-gap-fix">
+  #pricing .intro-price-card{margin-bottom:18px !important;}
+  #pricing .pricing-notes,
+  #pricing .pricing-note-grid{margin-top:0 !important;margin-bottom:18px !important;}
+  #pricing .future-services{margin-top:18px !important;padding-top:0 !important;}
+</style>
+
 </head>
 
 
@@ -3214,43 +3222,9 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           </div>
 
           <div class="future-service-grid">
-            <article class="future-service">
-              <div class="num">01 · RESTORATION</div>
-              <h3>Scratch Removal</h3>
-              <p>Targeted improvement of suitable paint defects and scratches, assessed vehicle by vehicle.</p>
-              <div class="future-tag">Not available yet</div>
-            </article>
-
-            <article class="future-service">
-              <div class="num">02 · RESTORATION</div>
-              <h3>Headlight Restoration</h3>
-              <p>Restoring tired, oxidised headlights to improve their clarity and overall presentation.</p>
-              <div class="future-tag">Not available yet</div>
-            </article>
-
-            <article class="future-service">
-              <div class="num">03 · PAINT</div>
-              <h3>Paint Correction</h3>
-              <p>Machine polishing and corrective work aimed at improving swirls, haze and paint clarity.</p>
-              <div class="future-tag">Not available yet</div>
-            </article>
-
-            <article class="future-service">
-              <div class="num">04 · PROTECTION</div>
-              <h3>Ceramic Coating</h3>
-              <p>Preparation-led ceramic protection designed to preserve the finish after the paint is properly prepared.</p>
-              <div class="future-tag">Not available yet</div>
-            </article>
-
-            <article class="future-service">
-              <div class="num">05 · MEDIA</div>
-              <h3>Detail + Photography</h3>
-              <p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p>
-              <div class="future-tag">Not available yet</div>
-            </article>
 
             <article class="future-service sale-prep-feature">
-              <div class="num">06 · SALE PREPARATION</div>
+              <div class="num">01 · SALE PREPARATION</div>
               <h3>Prepare it. Shoot it. Advertise it.</h3>
               <p>
                 A future service for owners selling their vehicle: STANCEBOUND prepares the car,
@@ -3263,7 +3237,40 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               </div>
               <div class="future-tag">Not available yet</div>
             </article>
-          </div>
+            <article class="future-service">
+              <div class="num">02 · RESTORATION</div>
+              <h3>Scratch Removal</h3>
+              <p>Targeted improvement of suitable paint defects and scratches, assessed vehicle by vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">03 · RESTORATION</div>
+              <h3>Headlight Restoration</h3>
+              <p>Restoring tired, oxidised headlights to improve their clarity and overall presentation.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">04 · PAINT</div>
+              <h3>Paint Correction</h3>
+              <p>Machine polishing and corrective work aimed at improving swirls, haze and paint clarity.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">05 · PROTECTION</div>
+              <h3>Ceramic Coating</h3>
+              <p>Preparation-led ceramic protection designed to preserve the finish after the paint is properly prepared.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">06 · MEDIA</div>
+              <h3>Detail + Photography</h3>
+              <p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article></div>
         </section>
 
         <section class="one-car-statement">
@@ -3499,7 +3506,18 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="enquiry-field"><label for="enquiryName">Full name</label><input id="enquiryName" name="name" type="text" maxlength="80" autocomplete="name" required></div>
               <div class="enquiry-field"><label for="enquiryEmail">Email address</label><input id="enquiryEmail" name="email" type="email" maxlength="160" autocomplete="email" required></div>
               <div class="enquiry-field"><label for="enquiryPhone">Phone number</label><input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional"></div>
-              <div class="enquiry-field"><label for="enquiryService">Service</label><select id="enquiryService" name="service" required><option value="">Choose a service</option><option>Detailing</option><option>Automotive Photography</option><option>Detailing + Photography</option><option>Collaboration / Other</option></select></div>
+              <div class="enquiry-field"><label for="enquiryService">Service</label><select id="enquiryService" name="service" required>
+                <option value="">Choose the service you want</option>
+                <option value="Detailing">Full Deep Detail — £40 introductory rate</option>
+                <option value="Sale Preparation" disabled>Sale Preparation / Car Sale Service — Coming Soon</option>
+                <option value="Automotive Photography">Automotive Photography</option>
+                <option value="Detailing + Photography" disabled>Detailing + Photography — Coming Soon</option>
+                <option value="Scratch Removal" disabled>Scratch Removal — Coming Soon</option>
+                <option value="Headlight Restoration" disabled>Headlight Restoration — Coming Soon</option>
+                <option value="Paint Correction" disabled>Paint Correction — Coming Soon</option>
+                <option value="Ceramic Coating" disabled>Ceramic Coating — Coming Soon</option>
+                <option value="Collaboration / Other">Collaboration / Other</option>
+              </select></div>
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
