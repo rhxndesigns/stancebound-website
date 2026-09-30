@@ -542,6 +542,9 @@ try{
   .availability-time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
   .availability-time-grid label{font-size:8px;color:#777;letter-spacing:.1em;text-transform:uppercase}
   .availability-time-grid input{margin-top:6px;width:100%;box-sizing:border-box}
+  .calendar-day.selected{outline:2px solid #fff;outline-offset:-2px;background:#111}
+  .calendar-day.selected.is-open{box-shadow:inset 0 0 0 1px #777}
+  .availability-selection-note{margin-top:8px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#888}
   @media(max-width:560px){.availability-actions{grid-template-columns:1fr}}
 
 
@@ -2351,6 +2354,8 @@ function renderCompleted(){
 document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const btn=e.target.closest('[data-filter]');if(!btn)return;enquiryFilter=btn.dataset.filter;document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x===btn));loadEnquiries();});
 
 
+const selectedAvailabilityDates=new Set();
+
 async function loadBookingAvailability(){
   const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
   const start=`${y}-${String(m+1).padStart(2,'0')}-01`;
@@ -2375,29 +2380,40 @@ async function refreshScheduleCalendar(){
 }
 
 async function setDayAvailability(isAvailable){
-  if(!selectedScheduleDate)return;
+  const dates=[...selectedAvailabilityDates].sort();
+  if(!dates.length && selectedScheduleDate)dates.push(selectedScheduleDate);
+  if(!dates.length)return;
+
   const status=document.querySelector('#availabilityStatus');
   const start=document.querySelector('#availabilityStart')?.value||null;
   const end=document.querySelector('#availabilityEnd')?.value||null;
-  status.textContent=isAvailable?'Opening day...':'Closing day...';
+  status.textContent=isAvailable
+    ? `Opening ${dates.length} ${dates.length===1?'day':'days'}...`
+    : `Closing ${dates.length} ${dates.length===1?'day':'days'}...`;
 
-  const payload={
-    availability_date:selectedScheduleDate,
+  const now=new Date().toISOString();
+  const payload=dates.map(date=>({
+    availability_date:date,
     is_available:isAvailable,
     start_time:isAvailable?start:null,
     end_time:isAvailable?end:null,
-    updated_at:new Date().toISOString()
-  };
+    updated_at:now
+  }));
 
   const {error}=await supabase
     .from('booking_availability')
     .upsert(payload,{onConflict:'availability_date'});
 
   if(error){status.textContent=error.message;return;}
-  status.textContent=isAvailable?'DAY AVAILABLE ✓':'DAY CLOSED ✓';
-  await refreshScheduleCalendar();
-  selectScheduleDay(selectedScheduleDate);
-  setTimeout(()=>status.textContent='',1600);
+
+  status.textContent=isAvailable
+    ? `${dates.length} ${dates.length===1?'DAY':'DAYS'} AVAILABLE ✓`
+    : `${dates.length} ${dates.length===1?'DAY':'DAYS'} CLOSED ✓`;
+
+  await loadBookingAvailability();
+  renderSchedule();
+  updateAvailabilitySelectionUI();
+  setTimeout(()=>status.textContent='',1800);
 }
 
 function renderSchedule(){
@@ -2431,8 +2447,9 @@ function renderSchedule(){
     cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span><span class="calendar-availability-dot">${isOpen?'OPEN':'CLOSED'}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
   }
   calendar.innerHTML=cells;
-  calendar.querySelectorAll('[data-date]').forEach(day=>day.onclick=()=>selectScheduleDay(day.dataset.date));
-  if(selectedScheduleDate) selectScheduleDay(selectedScheduleDate);
+  calendar.querySelectorAll('[data-date]').forEach(day=>day.onclick=()=>toggleScheduleDay(day.dataset.date));
+  calendar.querySelectorAll('[data-date]').forEach(day=>day.classList.toggle('selected',selectedAvailabilityDates.has(day.dataset.date)));
+  updateAvailabilitySelectionUI();
 
   const nowKey=new Date().toISOString().slice(0,10);
   const upcoming=bookings
@@ -2455,30 +2472,89 @@ function renderSchedule(){
 }
 
 
-function selectScheduleDay(dateKey){
-  selectedScheduleDate=dateKey;
-  document.querySelectorAll('.calendar-day').forEach(el=>el.classList.toggle('selected',el.dataset.date===dateKey));
-  const host=document.querySelector('#selectedDayJobs'); if(!host)return;
-  const availability=bookingAvailability.get(dateKey);
+function renderSelectedDayJobs(dateKey){
+  const host=document.querySelector('#selectedDayJobs'); if(!host||!dateKey)return;
+  const rows=cachedEnquiries.filter(r=>r.booking_date===dateKey && !['cancelled','spam'].includes(r.status));
+  const label=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  host.innerHTML=rows.length
+    ? `<div class="admin-kicker">${escapeHtml(label)}</div>`+rows.map(r=>`<div class="day-job"><strong>${escapeHtml((r.booking_time||'').slice(0,5)||'Time TBC')} · ${escapeHtml(r.name)}</strong><br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}${r.quoted_price!=null?' · £'+Number(r.quoted_price).toFixed(2):''}</div>`).join('')
+    : `<div class="day-job"><strong>${escapeHtml(label)}</strong><br>No jobs booked.</div>`;
+}
+
+function updateAvailabilitySelectionUI(){
+  const dates=[...selectedAvailabilityDates].sort();
   const editorDate=document.querySelector('#availabilityEditorDate');
   const editorState=document.querySelector('#availabilityEditorState');
   const startInput=document.querySelector('#availabilityStart');
   const endInput=document.querySelector('#availabilityEnd');
-  if(editorDate)editorDate.textContent=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  if(editorState){editorState.textContent=availability?.is_available?'OPEN':'CLOSED';editorState.classList.toggle('open',!!availability?.is_available)}
-  if(startInput)startInput.value=(availability?.start_time||'09:00').slice(0,5);
-  if(endInput)endInput.value=(availability?.end_time||'18:00').slice(0,5);
-  const rows=cachedEnquiries.filter(r=>r.booking_date===dateKey && !['cancelled','spam'].includes(r.status));
-  const label=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
-  host.innerHTML=rows.length?`<div class="admin-kicker">${escapeHtml(label)}</div>`+rows.map(r=>`<div class="day-job"><strong>${escapeHtml((r.booking_time||'').slice(0,5)||'Time TBC')} · ${escapeHtml(r.name)}</strong><br>${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}${r.quoted_price!=null?' · £'+Number(r.quoted_price).toFixed(2):''}</div>`).join(''):`<div class="day-job"><strong>${escapeHtml(label)}</strong><br>No jobs booked.</div>`;
+  const openBtn=document.querySelector('#openAvailabilityDay');
+  const closeBtn=document.querySelector('#closeAvailabilityDay');
+
+  document.querySelectorAll('.calendar-day[data-date]').forEach(el=>{
+    el.classList.toggle('selected',selectedAvailabilityDates.has(el.dataset.date));
+  });
+
+  if(!dates.length){
+    if(editorDate)editorDate.textContent='Select one or more dates';
+    if(editorState){editorState.textContent='NO DAYS SELECTED';editorState.classList.remove('open')}
+    if(openBtn)openBtn.textContent='MAKE SELECTED DAYS AVAILABLE';
+    if(closeBtn)closeBtn.textContent='CLOSE SELECTED DAYS';
+    return;
+  }
+
+  if(dates.length===1){
+    const dateKey=dates[0];
+    const availability=bookingAvailability.get(dateKey);
+    if(editorDate)editorDate.textContent=new Date(dateKey+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    if(editorState){
+      editorState.textContent=availability?.is_available?'OPEN':'CLOSED';
+      editorState.classList.toggle('open',!!availability?.is_available);
+    }
+    if(startInput)startInput.value=(availability?.start_time||'09:00').slice(0,5);
+    if(endInput)endInput.value=(availability?.end_time||'18:00').slice(0,5);
+  }else{
+    if(editorDate)editorDate.textContent=`${dates.length} DAYS SELECTED`;
+    const openCount=dates.filter(d=>bookingAvailability.get(d)?.is_available===true).length;
+    if(editorState){
+      editorState.textContent=openCount===dates.length?'ALL OPEN':openCount===0?'ALL CLOSED':`${openCount} OPEN · ${dates.length-openCount} CLOSED`;
+      editorState.classList.toggle('open',openCount>0);
+    }
+  }
+
+  if(openBtn)openBtn.textContent=dates.length===1?'MAKE DAY AVAILABLE':`MAKE ${dates.length} DAYS AVAILABLE`;
+  if(closeBtn)closeBtn.textContent=dates.length===1?'CLOSE DAY':`CLOSE ${dates.length} DAYS`;
+}
+
+function toggleScheduleDay(dateKey){
+  selectedScheduleDate=dateKey;
+  if(selectedAvailabilityDates.has(dateKey)){
+    selectedAvailabilityDates.delete(dateKey);
+  }else{
+    selectedAvailabilityDates.add(dateKey);
+  }
+  renderSelectedDayJobs(dateKey);
+  updateAvailabilitySelectionUI();
+}
+
+// Kept for other Admin actions that jump directly to a particular date.
+function selectScheduleDay(dateKey){
+  selectedScheduleDate=dateKey;
+  selectedAvailabilityDates.clear();
+  selectedAvailabilityDates.add(dateKey);
+  renderSelectedDayJobs(dateKey);
+  updateAvailabilitySelectionUI();
 }
 
 document.querySelector('#calendarPrev')?.addEventListener('click',async()=>{
   calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
+  selectedAvailabilityDates.clear();
+  selectedScheduleDate=null;
   await refreshScheduleCalendar();
 });
 document.querySelector('#calendarNext')?.addEventListener('click',async()=>{
   calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
+  selectedAvailabilityDates.clear();
+  selectedScheduleDate=null;
   await refreshScheduleCalendar();
 });
 document.querySelector('#openAvailabilityDay')?.addEventListener('click',()=>setDayAvailability(true));
