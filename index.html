@@ -2949,6 +2949,105 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
+
+<style id="stancebound-current-service-motion">
+  .current-service-console{
+    position:relative;overflow:hidden;margin:0 0 18px;padding:clamp(24px,5vw,52px);
+    border:1px solid var(--line);
+    background:
+      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
+      radial-gradient(circle at 82% 18%,rgba(255,255,255,.09),transparent 25%),
+      linear-gradient(145deg,#0d0d0d,#050505);
+    background-size:38px 38px,38px 38px,auto,auto;
+    isolation:isolate;
+  }
+  body.light-theme .current-service-console{
+    background:
+      linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px),
+      radial-gradient(circle at 82% 18%,rgba(0,0,0,.07),transparent 25%),
+      linear-gradient(145deg,#fafafa,#ededeb);
+    background-size:38px 38px,38px 38px,auto,auto;
+  }
+  .service-light-orbit{
+    position:absolute;width:380px;height:380px;right:-180px;top:-190px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.11);box-shadow:0 0 0 44px rgba(255,255,255,.018),0 0 0 92px rgba(255,255,255,.01);
+    animation:serviceOrbit 9s linear infinite;pointer-events:none;z-index:-1;
+  }
+  .service-light-orbit:after{
+    content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;
+    left:50%;top:-4px;box-shadow:0 0 14px 4px rgba(255,255,255,.65);
+  }
+  @keyframes serviceOrbit{to{transform:rotate(360deg)}}
+  .service-scanline{
+    position:absolute;left:0;right:0;height:1px;top:15%;opacity:.22;
+    background:linear-gradient(90deg,transparent,#fff,transparent);
+    animation:serviceScan 5.5s ease-in-out infinite;pointer-events:none;
+  }
+  @keyframes serviceScan{0%,100%{top:14%;opacity:0}15%{opacity:.25}75%{opacity:.12}90%{top:88%;opacity:0}}
+  .service-corner{position:absolute;width:20px;height:20px;opacity:.45;pointer-events:none}
+  .service-corner.tl{left:12px;top:12px;border-left:1px solid currentColor;border-top:1px solid currentColor}
+  .service-corner.tr{right:12px;top:12px;border-right:1px solid currentColor;border-top:1px solid currentColor}
+  .service-corner.bl{left:12px;bottom:12px;border-left:1px solid currentColor;border-bottom:1px solid currentColor}
+  .service-corner.br{right:12px;bottom:12px;border-right:1px solid currentColor;border-bottom:1px solid currentColor}
+  .live-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;animation:livePulse 2s infinite}
+  @keyframes livePulse{50%{box-shadow:0 0 0 6px transparent;opacity:.65}}
+  .current-service-top{display:grid;grid-template-columns:1.25fr .75fr;gap:36px;align-items:end}
+  .current-service-top h1{margin:7px 0 18px;font-size:clamp(48px,9vw,100px);line-height:.82;letter-spacing:-.065em;text-transform:uppercase}
+  .current-service-top p{max-width:660px;margin:0;color:var(--muted);font-size:13px;line-height:1.75}
+  .current-price-module{border:1px solid var(--line);padding:22px;background:rgba(255,255,255,.025)}
+  .current-price-module>span,.current-price-module>small{display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .current-price-module strong{display:block;margin:8px 0 5px;font-size:clamp(66px,12vw,112px);line-height:.82;letter-spacing:-.075em}
+  .price-info-toggle{
+    width:100%;margin-top:22px;min-height:46px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;
+    border:1px solid var(--line);background:transparent;color:var(--text);font:inherit;font-size:8px;font-weight:900;letter-spacing:.14em;cursor:pointer;
+    transition:background .25s,color .25s,border-color .25s;
+  }
+  .price-info-toggle:hover,.price-info-toggle[aria-expanded="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .price-info-toggle i{font-style:normal;font-size:18px;font-weight:300;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+  .price-info-toggle[aria-expanded="true"] i{transform:rotate(45deg)}
+  .current-service-details{
+    display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .55s cubic-bezier(.16,1,.3,1),opacity .3s ease;
+    overflow:hidden;
+  }
+  .current-service-details>*{min-height:0}
+  .current-service-console.expanded .current-service-details{grid-template-rows:1fr;opacity:1;margin-top:30px;overflow:visible}
+  /* grid animation wrapper fallback: details use max-height for browsers that don't animate grid children cleanly */
+  .current-service-details{max-height:0}
+  .current-service-console.expanded .current-service-details{max-height:1200px;transition:max-height .7s cubic-bezier(.16,1,.3,1),opacity .3s ease}
+  .detail-tech-line{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.16em;color:var(--muted)}
+  .detail-process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}
+  .process-box{position:relative;min-height:135px;padding:15px;border:1px solid var(--line);background:rgba(255,255,255,.018);overflow:hidden}
+  .process-box b{position:absolute;right:12px;top:10px;color:var(--muted);font-size:8px;letter-spacing:.1em}
+  .process-box strong,.process-box small{display:block}
+  .process-box strong{margin-top:20px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .process-box small{margin-top:5px;color:var(--muted);font-size:9px}
+  .process-icon{display:block;position:relative;width:34px;height:34px;opacity:.72}
+  .wheel-icon{border:2px solid currentColor;border-radius:50%}.wheel-icon:before,.wheel-icon:after{content:"";position:absolute;left:15px;top:3px;width:2px;height:24px;background:currentColor}.wheel-icon:after{transform:rotate(90deg)}
+  .foam-icon:before{content:"";position:absolute;left:4px;top:8px;width:24px;height:17px;border:1px solid currentColor;border-radius:50% 50% 55% 45%}.foam-icon:after{content:"";position:absolute;right:0;top:0;width:6px;height:6px;border:1px solid currentColor;border-radius:50%;box-shadow:-27px 5px 0 -1px currentColor}
+  .dry-icon:before{content:"";position:absolute;inset:5px;border:1px solid currentColor;transform:rotate(12deg)}.dry-icon:after{content:"";position:absolute;left:1px;right:1px;top:16px;border-top:1px solid currentColor;transform:rotate(-12deg)}
+  .cabin-icon:before{content:"";position:absolute;left:3px;right:3px;bottom:5px;height:16px;border:1px solid currentColor;border-radius:12px 12px 3px 3px}.cabin-icon:after{content:"";position:absolute;left:10px;top:2px;width:13px;height:13px;border:1px solid currentColor;border-radius:50%}
+  .glass-icon:before{content:"";position:absolute;inset:3px 6px;border:1px solid currentColor;transform:skew(-8deg)}.glass-icon:after{content:"";position:absolute;left:16px;top:1px;height:32px;border-left:1px solid currentColor;transform:rotate(28deg)}
+  .inspect-icon:before{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border:2px solid currentColor;border-radius:50%}.inspect-icon:after{content:"";position:absolute;width:14px;border-top:2px solid currentColor;transform:rotate(45deg);right:1px;bottom:5px}
+  .detail-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+  .detail-fact{padding:15px;border:1px solid var(--line)}.detail-fact span{font-size:8px;font-weight:900;letter-spacing:.14em}.detail-fact p{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
+  .current-book-btn{width:100%;margin-top:8px}
+  @media(max-width:760px){
+    .current-service-console{padding:22px 17px}
+    .current-service-top{grid-template-columns:1fr;gap:20px}
+    .current-service-top h1{font-size:clamp(48px,15vw,72px)}
+    .current-price-module{padding:17px}
+    .detail-process-grid{grid-template-columns:repeat(2,1fr)}
+    .process-box{min-height:120px;padding:13px}
+    .detail-bottom-row{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .service-light-orbit,.service-scanline,.live-pulse{animation:none!important}
+    .current-service-details,.price-info-toggle i{transition:none!important}
+  }
+</style>
+
 </head>
 
 
@@ -3336,91 +3435,54 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     <section id="pricing" class="page">
       <div class="content">
 
-        <div class="pricing-hero">
-          <div class="eyebrow">STANCEBOUND · CURRENT PRICING</div>
-          <h1>Simple.<br>For now.</h1>
+        
+        <section class="current-service-console" id="currentServiceConsole">
+          <div class="service-light-orbit" aria-hidden="true"></div>
+          <div class="service-scanline" aria-hidden="true"></div>
+          <div class="service-corner tl" aria-hidden="true"></div>
+          <div class="service-corner tr" aria-hidden="true"></div>
+          <div class="service-corner bl" aria-hidden="true"></div>
+          <div class="service-corner br" aria-hidden="true"></div>
 
-          <div class="pricing-hero-copy">
-            <p>
-              STANCEBOUND is currently offering detailing at an introductory rate
-              while the portfolio and service offering continue to grow. No confusing
-              package ladder. No pretending every car needs the same thing. Just proper
-              attention to the vehicle at a deliberately accessible starting price.
-            </p>
-
-            <div class="pricing-price-lockup">
-              <span>Introductory detail</span>
-              <strong>£40</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="intro-price-card">
-          <div>
-            <div class="pricing-kicker">Portfolio rate · Limited period</div>
-            <h2>STANCEBOUND<br>Detail</h2>
-            <p class="lead">
-              A full in-depth interior and exterior detail at the current STANCEBOUND
-              introductory rate. The exact process is adapted to the vehicle and its
-              condition rather than rushed through a generic checklist.
-            </p>
-
-            <div class="price-includes" aria-label="What is included">
-              <div class="price-include">Wheels &amp; exterior pre-clean</div>
-              <div class="price-include">Snow foam &amp; safe contact wash</div>
-              <div class="price-include">Careful drying &amp; finishing touches</div>
-              <div class="price-include">In-depth interior vacuum &amp; detailed clean</div>
-              <div class="price-include">Interior surfaces, trims, crevices &amp; detailed areas</div>
-              <div class="price-include">Interior &amp; exterior glass</div>
-            </div>
-          </div>
-
-          <aside class="price-side">
+          <div class="current-service-top">
             <div>
-              <div class="price-label">Current detailing price</div>
-              <div class="price">£40</div>
-              <div class="price-note">
-                Introductory portfolio-building rate. Vehicle condition and any work
-                outside the standard detail can be discussed before the booking is confirmed.
-              </div>
+              <div class="pricing-kicker"><span class="live-pulse"></span> CURRENT SERVICE · INTRODUCTORY RATE</div>
+              <h1>STANCEBOUND<br>Detail.</h1>
+              <p>A proper in-depth interior and exterior detail. One vehicle at a time, with the process adapted to the car rather than rushed through a generic checklist.</p>
             </div>
 
-            <button class="btn" type="button" onclick="bookIntroDetail()">
-              BOOK THE £40 DETAIL
-            </button>
-          </aside>
-        </div>
+            <div class="current-price-module">
+              <span>Current price</span>
+              <strong>£40</strong>
+              <small>Portfolio-building rate</small>
+              <button type="button" class="price-info-toggle" id="priceInfoToggle" aria-expanded="false">
+                <span>EXPLORE THE DETAIL</span><i>+</i>
+              </button>
+            </div>
+          </div>
 
-        <div class="pricing-note-grid">
-          <article class="pricing-note">
-            <strong>Why £40?</strong>
-            <p>
-              STANCEBOUND is currently building its detailing portfolio and experience,
-              so the service is being offered at an introductory rate for a limited period.
-            </p>
-          </article>
+          <div class="current-service-details" id="currentServiceDetails">
+            <div class="detail-tech-line"><span>DETAIL PROCESS</span><span>01 / CURRENT</span></div>
 
-          <article class="pricing-note">
-            <strong>Your vehicle matters</strong>
-            <p>
-              Every car is different. Heavy soiling, unusual requirements or additional
-              work can be discussed with you before anything outside the agreed service is done.
-            </p>
-          </article>
+            <div class="detail-process-grid">
+              <div class="process-box"><span class="process-icon wheel-icon" aria-hidden="true"></span><b>01</b><strong>Wheels + Pre-clean</strong><small>Initial exterior preparation</small></div>
+              <div class="process-box"><span class="process-icon foam-icon" aria-hidden="true"></span><b>02</b><strong>Snow Foam + Wash</strong><small>Safe contact wash process</small></div>
+              <div class="process-box"><span class="process-icon dry-icon" aria-hidden="true"></span><b>03</b><strong>Dry + Finish</strong><small>Careful finishing touches</small></div>
+              <div class="process-box"><span class="process-icon cabin-icon" aria-hidden="true"></span><b>04</b><strong>Interior Deep Clean</strong><small>Vacuum, trims + crevices</small></div>
+              <div class="process-box"><span class="process-icon glass-icon" aria-hidden="true"></span><b>05</b><strong>Glass</strong><small>Interior + exterior glass</small></div>
+              <div class="process-box"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
+            </div>
 
-          <article class="pricing-note">
-            <strong>Photography</strong>
-            <p>
-              Automotive photography and combined detailing + photography work are available
-              separately. Get in touch with STANCEBOUND for the right option for your car.
-            </p>
-          </article>
-        </div>
+            <div class="detail-bottom-row">
+              <div class="detail-fact"><span>WHY £40?</span><p>STANCEBOUND is building its detailing portfolio and experience, so the current service is offered at an introductory rate for a limited period.</p></div>
+              <div class="detail-fact"><span>VEHICLE CONDITION</span><p>Heavy soiling or additional work is discussed before anything outside the agreed service is carried out.</p></div>
+            </div>
 
+            <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
+          </div>
+        </section>
 
-        
-        
-        <section class="future-services boxed-services">
+<section class="future-services boxed-services">
           <div class="boxed-services-head">
             <div>
               <div class="pricing-kicker">Where STANCEBOUND is going</div>
@@ -6249,6 +6311,20 @@ document.addEventListener('click',function(e){
     const detail=section.querySelector('[data-detail="'+key+'"]');
     if(detail)detail.classList.add('open');
   }
+});
+</script>
+
+
+<script id="stancebound-current-service-interaction">
+document.addEventListener('click',function(e){
+  const toggle=e.target.closest('#priceInfoToggle');
+  if(!toggle)return;
+  const consoleEl=document.getElementById('currentServiceConsole');
+  const open=!consoleEl.classList.contains('expanded');
+  consoleEl.classList.toggle('expanded',open);
+  toggle.setAttribute('aria-expanded',String(open));
+  const label=toggle.querySelector('span');
+  if(label)label.textContent=open?'CLOSE DETAIL':'EXPLORE THE DETAIL';
 });
 </script>
 
