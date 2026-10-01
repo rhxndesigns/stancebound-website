@@ -2726,7 +2726,65 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 .booking-email-warning span{display:block;color:var(--grey);font-size:11px;line-height:1.65}
 .booking-email-warning span b{color:var(--text)}
 .booking-email-warning-thanks{max-width:650px;margin:20px auto!important}
-</style></head>
+</style>
+
+<style id="sb-calendar-selection-feedback">
+  .calendar-day{
+    -webkit-tap-highlight-color:transparent;
+    position:relative;
+  }
+  .calendar-day.open-day:active{
+    transform:scale(.90);
+  }
+  .calendar-day.selected,
+  .calendar-day.open-day.selected{
+    background:var(--text)!important;
+    color:var(--bg)!important;
+    border-color:var(--text)!important;
+    opacity:1!important;
+    transform:scale(.92);
+    box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--text);
+    font-weight:900;
+  }
+  .calendar-day.selected::after{
+    content:"✓";
+    position:absolute;
+    right:3px;
+    top:1px;
+    font-size:7px;
+    font-weight:900;
+  }
+  .calendar-selection{
+    margin-top:14px;
+    padding:13px 15px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    transition:border-color .2s ease,background .2s ease,transform .2s ease;
+  }
+  .calendar-selection-label{
+    color:var(--grey);
+    font-size:7px;
+    font-weight:800;
+    letter-spacing:1.4px;
+  }
+  .calendar-selection strong{
+    font-size:11px;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .calendar-selection.has-selection{
+    border-color:var(--text);
+    background:rgba(255,255,255,.07);
+    transform:translateY(-1px);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .calendar-day,.calendar-selection{transition:none!important}
+  }
+</style>
+</head>
 
 
 
@@ -3484,6 +3542,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             </div>
             <div class="calendar-weekdays"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
             <div class="calendar-grid" id="calendarGrid"></div>
+            <div id="calendarSelection" class="calendar-selection" aria-live="polite">
+              <span class="calendar-selection-label">YOUR PREFERRED DATE</span>
+              <strong id="calendarSelectionText">Tap an available date above</strong>
+            </div>
             <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
             <p class="calendar-note">Only dates manually opened by STANCEBOUND can be requested. All other dates are unavailable by default.</p>
           </div>
@@ -4579,7 +4641,21 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='booking')setTimeout(()=>window.sbReloadBookingAvailability?.(),80);return out}}
 
   const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
+  const selectionBox=document.getElementById('calendarSelection'),selectionText=document.getElementById('calendarSelectionText');
   if(!grid||!label||!dateInput)return;
+
+  function updateSelectionFeedback(){
+    if(!selectionBox||!selectionText)return;
+    if(!dateInput.value){
+      selectionBox.classList.remove('has-selection');
+      selectionText.textContent='Tap an available date above';
+      return;
+    }
+    const [y,m,d]=dateInput.value.split('-').map(Number);
+    const chosen=new Date(y,m-1,d);
+    selectionText.textContent='Selected: '+chosen.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    selectionBox.classList.add('has-selection');
+  }
 
   const now=new Date(); now.setHours(0,0,0,0);
   let view=new Date(now.getFullYear(),now.getMonth(),1);
@@ -4610,6 +4686,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
   function render(){
     grid.innerHTML='';
+    updateSelectionFeedback();
     label.textContent=view.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
     const first=(new Date(view.getFullYear(),view.getMonth(),1).getDay()+6)%7;
     const days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
@@ -4628,7 +4705,13 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       const unavailable=d<now || !slot;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
-      if(dateInput.value===val)b.classList.add('selected');
+      if(dateInput.value===val){
+        b.classList.add('selected');
+        b.setAttribute('aria-pressed','true');
+        b.setAttribute('aria-label',`${n}, selected preferred date`);
+      }else{
+        b.setAttribute('aria-pressed','false');
+      }
 
       if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
