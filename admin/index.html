@@ -704,6 +704,8 @@ main, .admin-page, .panel {
 .sb-payment-sheet.sb-dragging{transition:none!important}
 .sb-payment-sheet .sb-payment-grab{cursor:grab}
 @media(max-width:420px){.sb-work-grid{grid-template-columns:1fr 1fr!important}}
+ .finance-row-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.finance-row-actions button{min-width:72px}
 </style></head>
 
 <body>
@@ -1844,7 +1846,7 @@ async function loadChats(){
   const allThreads=[...groups.entries()].map(([id,messages])=>{
     const enquiry=cachedEnquiries.find(r=>String(r.id)===id)||{};
     const last=messages[messages.length-1];
-    const unread=messages.filter(m=>m.sender==='customer'&&!m.read_at).length;
+    const unread=messages.filter(m=>m.sender==='customer'&&!m.read_at&&String(m.message||'').trim()&&String(m.message||'').trim()!=='Booking request created').length;
     const isGeneral=String(enquiry.service||'').toLowerCase()==='private chat';
     return {id,messages,enquiry,last,unread,isGeneral};
   }).sort((a,b)=>new Date(b.last?.created_at||0)-new Date(a.last?.created_at||0));
@@ -3783,8 +3785,29 @@ async function loadFinance(){
     const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
     const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
     set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
-    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
-    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
+    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="secondary" type="button" data-edit-finance="${x.id}">EDIT</button><button class="secondary danger" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
+    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="secondary" type="button" data-edit-expense="${x.id}">EDIT</button><button class="secondary danger" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
+    document.querySelectorAll('[data-edit-finance]').forEach(b=>b.onclick=async()=>{
+      const row=t.data.find(x=>String(x.id)===String(b.dataset.editFinance));if(!row)return;
+      const amount=prompt('Income amount (£)',Number(row.amount).toFixed(2));if(amount===null)return;
+      const n=Number(amount);if(!Number.isFinite(n)||n<0){alert('Enter a valid amount.');return;}
+      const desc=prompt('Description',row.description||'STANCEBOUND payment');if(desc===null)return;
+      const method=prompt('Payment method: cash, stripe, bank_transfer or other',row.payment_method||'other');if(method===null)return;
+      const allowed=['cash','stripe','bank_transfer','other'];if(!allowed.includes(method)){alert('Use cash, stripe, bank_transfer or other.');return;}
+      b.disabled=true;
+      const {error}=await window.sbAdminSupabase.from('finance_transactions').update({amount:n,description:desc.trim()||'STANCEBOUND payment',payment_method:method}).eq('id',row.id);
+      if(error){alert(error.message);b.disabled=false}else await loadFinance();
+    });
+    document.querySelectorAll('[data-edit-expense]').forEach(b=>b.onclick=async()=>{
+      const row=e.data.find(x=>String(x.id)===String(b.dataset.editExpense));if(!row)return;
+      const amount=prompt('Spending amount (£)',Number(row.amount).toFixed(2));if(amount===null)return;
+      const n=Number(amount);if(!Number.isFinite(n)||n<=0){alert('Enter a valid amount.');return;}
+      const desc=prompt('What was it?',row.description||'');if(desc===null||!desc.trim())return;
+      const supplier=prompt('Supplier / shop',row.supplier||'');if(supplier===null)return;
+      b.disabled=true;
+      const {error}=await window.sbAdminSupabase.from('business_expenses').update({amount:n,description:desc.trim(),supplier:supplier.trim()||null}).eq('id',row.id);
+      if(error){alert(error.message);b.disabled=false}else await loadFinance();
+    });
     document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     if(st)st.textContent='';
