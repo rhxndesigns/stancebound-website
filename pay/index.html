@@ -35,6 +35,18 @@ h1{font-size:clamp(38px,11vw,64px);line-height:.92;letter-spacing:-.055em;text-t
 .total{display:flex;align-items:end;justify-content:space-between;margin-top:27px}.total span{font-size:9px;font-weight:900;letter-spacing:.18em;color:var(--muted)}.total strong{font-size:clamp(34px,10vw,52px);letter-spacing:-.05em}
 .pending{margin-top:25px;border:1px solid var(--line);padding:14px;text-align:center;color:#aaa;font-size:9px;letter-spacing:.12em;line-height:1.6;text-transform:uppercase}
 footer{text-align:center;color:#555;font-size:8px;font-weight:800;letter-spacing:.16em;padding-top:16px}
+
+.payment-area{margin-top:25px;border-top:1px solid var(--line);padding-top:24px}
+.pay-label{font-size:9px;font-weight:900;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+#payment-element{min-height:48px}
+.pay-status{min-height:20px;margin-top:13px;color:var(--muted);font-size:10px;line-height:1.55;letter-spacing:.05em;text-align:center}
+.pay-status.error{color:var(--bad)}
+.pay-btn{margin-top:18px}
+.success{display:none;text-align:center;padding:18px 0}.success.show{display:block}
+.success-mark{width:66px;height:66px;border:1px solid #72e49a;border-radius:50%;margin:0 auto 24px;display:grid;place-items:center;color:#72e49a;font-size:30px;animation:pop .45s ease both}
+.success h1{margin-bottom:14px}.success .received{margin:26px 0 8px;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}.success .success-amount{font-size:clamp(38px,11vw,58px);font-weight:900;letter-spacing:-.05em}
+@keyframes pop{0%{transform:scale(.65);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+
 @media(max-width:420px){.shell{width:calc(100% - 24px)}.card{padding:24px 18px}.pin{gap:6px}.pin input{height:64px}}
 </style>
 </head>
@@ -67,13 +79,27 @@ footer{text-align:center;color:#555;font-size:8px;font-weight:800;letter-spacing
           <div class="row"><span>Service</span><strong id="service">—</strong></div>
         </div>
         <div class="total"><span>TOTAL</span><strong id="amount">£0.00</strong></div>
-        <div class="pending">Payment verified // Secure card &amp; wallet checkout is the next connection step</div>
+        <div id="paymentArea" class="payment-area">
+          <div class="pay-label">SECURE CHECKOUT</div>
+          <div id="payment-element"></div>
+          <button id="payBtn" class="btn pay-btn" type="button" disabled>LOADING SECURE PAYMENT…</button>
+          <div id="payStatus" class="pay-status" aria-live="polite"></div>
+        </div>
+      </div>
+      <div id="successView" class="success">
+        <div class="success-mark">✓</div>
+        <div class="eyebrow">PAYMENT COMPLETE</div>
+        <h1 id="successHello">THANK YOU.</h1>
+        <p class="thanks">Your payment has been securely received by STANCEBOUND.</p>
+        <div class="received">AMOUNT RECEIVED</div>
+        <div id="successAmount" class="success-amount">£0.00</div>
       </div>
     </section>
   </main>
   <footer>CLEANER · HIGHER · FURTHER</footer>
 </div>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -87,6 +113,75 @@ const inputs=[...document.querySelectorAll(".pin input")];
 const form=document.getElementById("pinForm");
 const btn=document.getElementById("verifyBtn");
 const status=document.getElementById("status");
+const STRIPE_PUBLISHABLE_KEY="pk_live_51UIxZRGSyw34b3iW7tEgVWZ4Jl1n0smOgWPWpNPnHTkG3HrpCHoBNX4jtyd0zltvHA0YQkgj7c6LWiwcJzEafyMF00LTy0YWRI";
+const stripe=window.Stripe(STRIPE_PUBLISHABLE_KEY);
+const payBtn=document.getElementById("payBtn");
+const payStatus=document.getElementById("payStatus");
+let stripeElements=null;
+let verifiedPayment=null;
+let verifiedAccessToken="";
+let verifiedPaymentRequestId="";
+
+function setPayStatus(message,error=false){
+  payStatus.textContent=message||"";
+  payStatus.classList.toggle("error",error);
+}
+
+async function initialiseStripePayment(data){
+  const p=data.payment||{};
+  verifiedPayment=p;
+  verifiedAccessToken=
+    data.access_token||
+    data.session_token||
+    p.access_token||
+    p.session_token||
+    "";
+  verifiedPaymentRequestId=
+    data.payment_request_id||
+    p.payment_request_id||
+    p.id||
+    "";
+
+  if(!verifiedAccessToken||!verifiedPaymentRequestId){
+    throw new Error("Verified payment credentials were not returned.");
+  }
+
+  const {data:sessionData,error:sessionError}=await supabase.functions.invoke(
+    "create-stripe-payment-session",
+    {body:{
+      payment_request_id:verifiedPaymentRequestId,
+      access_token:verifiedAccessToken
+    }}
+  );
+
+  if(sessionError||!sessionData?.success||!sessionData?.client_secret){
+    throw new Error(sessionData?.error||"Secure checkout could not be started.");
+  }
+
+  stripeElements=stripe.elements({
+    clientSecret:sessionData.client_secret,
+    appearance:{
+      theme:"night",
+      variables:{
+        colorPrimary:"#ffffff",
+        colorBackground:"#070707",
+        colorText:"#ffffff",
+        colorDanger:"#ff7d7d",
+        borderRadius:"0px",
+        fontFamily:"Arial, Helvetica, sans-serif"
+      }
+    }
+  });
+
+  const paymentElement=stripeElements.create("payment",{
+    layout:"tabs",
+    wallets:{applePay:"auto",googlePay:"auto"}
+  });
+  paymentElement.mount("#payment-element");
+
+  payBtn.disabled=false;
+  payBtn.textContent=`PAY ${new Intl.NumberFormat("en-GB",{style:"currency",currency:(p.currency||"GBP").toUpperCase()}).format(Number(p.amount||0))}`;
+}
 
 function redirectHome(){ window.location.replace(HOME); }
 function setStatus(message,error=false){
@@ -95,7 +190,62 @@ function setStatus(message,error=false){
 }
 function clearPin(){
   inputs.forEach(i=>i.value="");
-  inputs[0].focus();
+  
+payBtn.addEventListener("click",async()=>{
+  if(!stripeElements||!verifiedPayment)return;
+
+  payBtn.disabled=true;
+  payBtn.textContent="PROCESSING…";
+  setPayStatus("");
+
+  try{
+    const {error:submitError}=await stripeElements.submit();
+    if(submitError){
+      setPayStatus(submitError.message||"Please check your payment details.",true);
+      return;
+    }
+
+    const {error,paymentIntent}=await stripe.confirmPayment({
+      elements:stripeElements,
+      confirmParams:{
+        return_url:"https://www.stancebound.com/pay/"
+      },
+      redirect:"if_required"
+    });
+
+    if(error){
+      setPayStatus(error.message||"Payment could not be completed. Please try again.",true);
+      return;
+    }
+
+    if(paymentIntent?.status==="succeeded"){
+      const first=(verifiedPayment.customer?.first_name||"CUSTOMER").toUpperCase();
+      const formatted=new Intl.NumberFormat("en-GB",{
+        style:"currency",
+        currency:(verifiedPayment.currency||"GBP").toUpperCase()
+      }).format(Number(verifiedPayment.amount||0));
+
+      document.getElementById("detailsView").classList.remove("show");
+      document.getElementById("successHello").textContent=`THANK YOU, ${first}.`;
+      document.getElementById("successAmount").textContent=formatted;
+      document.getElementById("successView").classList.add("show");
+      return;
+    }
+
+    setPayStatus("Payment is being confirmed. Please keep this page open.",false);
+  }catch(err){
+    console.error(err);
+    setPayStatus("Payment could not be completed. Please try again.",true);
+  }finally{
+    if(!document.getElementById("successView").classList.contains("show")){
+      payBtn.disabled=false;
+      const p=verifiedPayment||{};
+      payBtn.textContent=`PAY ${new Intl.NumberFormat("en-GB",{style:"currency",currency:(p.currency||"GBP").toUpperCase()}).format(Number(p.amount||0))}`;
+    }
+  }
+});
+
+inputs[0].focus();
 }
 inputs.forEach((input,index)=>{
   input.addEventListener("input",()=>{
@@ -144,6 +294,14 @@ form.addEventListener("submit",async e=>{
     document.getElementById("amount").textContent=new Intl.NumberFormat("en-GB",{style:"currency",currency:(p.currency||"GBP").toUpperCase()}).format(Number(p.amount||0));
     document.getElementById("pinView").style.display="none";
     document.getElementById("detailsView").classList.add("show");
+    try{
+      await initialiseStripePayment(data);
+    }catch(paymentErr){
+      console.error(paymentErr);
+      setPayStatus(paymentErr?.message||"Secure checkout could not be loaded. Please speak to STANCEBOUND.",true);
+      payBtn.disabled=true;
+      payBtn.textContent="PAYMENT UNAVAILABLE";
+    }
   }catch(err){
     console.error(err);
     setStatus("Payment verification could not be completed. Please try again.",true);
