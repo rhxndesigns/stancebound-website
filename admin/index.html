@@ -3615,8 +3615,8 @@ document.addEventListener('DOMContentLoaded', function () {
 .sb-payment-qr-wrap{display:none;margin:18px auto 4px;padding:16px;width:min(280px,100%);box-sizing:border-box;border:1px solid #242424;border-radius:22px;background:#fff}
 .sb-payment-qr-wrap.show{display:block;animation:sbPaymentReveal .25s ease both}
 .sb-payment-qr{position:relative;width:100%;aspect-ratio:1;display:grid;place-items:center}
-.sb-payment-qr img,.sb-payment-qr canvas{display:block!important;width:100%!important;height:100%!important}
-.sb-payment-qr-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;object-fit:contain;background:#050505;border:7px solid #fff;border-radius:14px;padding:5px;box-sizing:border-box;pointer-events:none}
+.sb-payment-qr > img:not(.sb-payment-qr-logo),.sb-payment-qr > canvas{display:block!important;width:100%!important;height:100%!important}
+.sb-payment-qr-logo{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:46px!important;height:46px!important;max-width:46px!important;max-height:46px!important;object-fit:contain!important;background:#050505!important;border:6px solid #fff!important;border-radius:12px!important;padding:5px!important;box-sizing:border-box!important;pointer-events:none!important;z-index:3!important}
 .sb-payment-qr-caption{display:none;font-size:9px;letter-spacing:1.5px;color:#777;text-align:center;text-transform:uppercase;margin-top:10px}
 .sb-payment-qr-caption.show{display:block}
 @media(max-width:560px){
