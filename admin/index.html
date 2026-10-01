@@ -1203,6 +1203,7 @@ const supabase = createClient(
     }
   }
 );
+window.sbAdminSupabase = supabase;
 
 
 const login =
@@ -3732,7 +3733,10 @@ document.addEventListener('DOMContentLoaded', function () {
     status.textContent='Creating secure payment request…';
 
     try{
-      const {data,error} = await supabase.functions.invoke('create-payment-request',{
+      const sbClient = window.sbAdminSupabase;
+      if(!sbClient) throw new Error('Admin Supabase client is not ready.');
+
+      const {data,error} = await sbClient.functions.invoke('create-payment-request',{
         body:{enquiry_id:paymentEnquiryId,amount}
       });
 
