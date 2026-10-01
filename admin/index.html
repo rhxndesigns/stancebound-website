@@ -3793,8 +3793,8 @@ function sbExpenseLabel(v){return ({chemicals_consumables:'Chemicals / consumabl
 async function loadFinance(){
   const st=document.querySelector('#financeStatus');if(st)st.textContent='Loading finance…';
   try{
-    const [s,t,e]=await Promise.all([window.sbAdminSupabase.from('finance_summary').select('*').single(),window.sbAdminSupabase.from('finance_transactions').select('*').order('transaction_date',{ascending:false}).limit(200),window.sbAdminSupabase.from('business_expenses').select('*').order('expense_date',{ascending:false}).limit(200)]);
-    if(s.error)throw s.error;if(t.error)throw t.error;if(e.error)throw e.error;
+    const [s,tRpc,e]=await Promise.all([window.sbAdminSupabase.from('finance_summary').select('*').single(),window.sbAdminSupabase.rpc('sb_finance_list'),window.sbAdminSupabase.from('business_expenses').select('*').order('expense_date',{ascending:false}).limit(200)]);const t={data:tRpc.data||[],error:tRpc.error};
+    if(s.error)throw s.error;if(t.error)throw new Error('Income list: '+t.error.message);if(e.error)throw e.error;
     const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
     const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
     set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
@@ -3819,7 +3819,7 @@ async function loadFinance(){
         if(!Number.isFinite(amount)||amount<0){st.textContent='Enter a valid amount.';return;}
         if(!description){st.textContent='Add a description.';return;}
         save.disabled=true;st.textContent='Saving…';
-        const {error}=await window.sbAdminSupabase.from('finance_transactions').update({amount,description,payment_method}).eq('id',row.id);
+        const {error}=await window.sbAdminSupabase.rpc('sb_finance_update',{p_id:row.id,p_amount:amount,p_description:description,p_payment_method:payment_method});
         if(error){st.textContent=error.message;save.disabled=false;return;}
         await loadFinance();
       };
@@ -3848,7 +3848,7 @@ async function loadFinance(){
         await loadFinance();
       };
     });
-    document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
+    document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.rpc('sb_finance_delete',{p_id:b.dataset.deleteFinance});if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     if(st)st.textContent='';
   }catch(err){console.error(err);if(st)st.textContent=err?.message||'Could not load finance.'}
