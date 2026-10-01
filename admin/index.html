@@ -690,7 +690,9 @@ main, .admin-page, .panel {
 }
 </style>
 
-</head>
+<style id="sb-finance-cleanup">
+.finance-overview{margin-top:18px}.finance-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.finance-mini{padding:14px;border:1px solid #252525;border-radius:16px;background:#0b0b0b}.finance-mini span{display:block;font-size:9px;letter-spacing:1.5px;color:#777;margin-bottom:6px}.finance-mini strong{font-size:18px}.finance-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.finance-toolbar button{flex:1;min-width:130px}.finance-expense-form{padding:16px;margin:14px 0 22px;border:1px solid #292929;border-radius:20px;background:#090909}.finance-section-head{margin:24px 0 10px}.finance-section-head h3{margin:2px 0 0}.finance-list{display:grid;gap:9px}.finance-row{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:14px;border:1px solid #242424;border-radius:16px;background:#0a0a0a}.finance-row-main{min-width:0}.finance-row-main strong{display:block;font-size:12px;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.finance-row-main span{display:block;margin-top:4px;font-size:10px;color:#777}.finance-row-side{text-align:right;flex:none}.finance-row-side strong{display:block;font-size:14px}.finance-row-side button{margin-top:7px;padding:7px 9px;font-size:9px}.finance-tax-note{margin-top:22px;padding:15px;border:1px solid #242424;border-radius:16px;background:#090909}.finance-tax-note strong{display:block;font-size:10px;letter-spacing:1.5px;margin-bottom:5px}.finance-tax-note span{font-size:10px;line-height:1.5;color:#777}.booking-edit-panel[hidden]{display:none!important}.booking-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.booking-quick-actions .sb-take-payment{grid-column:1/-1}.booking-management{margin-top:8px}.completed-actions-clean{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.completed-more{display:none;margin-top:8px}.completed-more.show{display:block}
+</style></head>
 
 <body>
 <script>
@@ -1015,6 +1017,45 @@ Log In
     </div>
   </div>
 
+  <div class="admin-page" data-admin-page="finance">
+    <div class="panel">
+      <div class="admin-kicker">Business Money</div>
+      <div class="section-title-row"><h2>Finance</h2><span class="status-pill">STANCEBOUND</span></div>
+      <p class="help">Track money in, business spending and actual profit. Payments and expenses stay separate from booking editing.</p>
+      <div class="overview-grid finance-overview">
+        <div class="metric-card"><div class="metric-label">Revenue</div><div class="metric-value" id="financeRevenue">£0.00</div><div class="metric-sub">Recorded income</div></div>
+        <div class="metric-card"><div class="metric-label">Spending</div><div class="metric-value" id="financeSpending">£0.00</div><div class="metric-sub">Business expenses</div></div>
+        <div class="metric-card"><div class="metric-label">Net profit</div><div class="metric-value" id="financeProfit">£0.00</div><div class="metric-sub">Income − refunds − spending</div></div>
+        <div class="metric-card"><div class="metric-label">Profit margin</div><div class="metric-value" id="financeMargin">0%</div><div class="metric-sub">Net profit ÷ revenue</div></div>
+      </div>
+      <div class="finance-split">
+        <div class="finance-mini"><span>CASH</span><strong id="financeCash">£0.00</strong></div>
+        <div class="finance-mini"><span>STRIPE / DIGITAL</span><strong id="financeStripe">£0.00</strong></div>
+      </div>
+      <div class="finance-toolbar"><button type="button" id="financeAddExpense">+ ADD SPENDING</button><button type="button" class="secondary" id="financeRefresh">REFRESH</button></div>
+      <div class="finance-expense-form" id="financeExpenseForm" hidden>
+        <div class="admin-kicker">New Business Expense</div>
+        <div class="booking-grid">
+          <div><label>Amount (£)</label><input id="expenseAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00"></div>
+          <div><label>Date</label><input id="expenseDate" type="date"></div>
+          <div><label>Category</label><select id="expenseCategory"><option value="chemicals_consumables">Chemicals / consumables</option><option value="equipment_tools">Equipment / tools</option><option value="fuel_mileage">Fuel / mileage</option><option value="advertising_marketing">Advertising / marketing</option><option value="website_software">Website / software</option><option value="clothing_ppe">Clothing / PPE</option><option value="insurance">Insurance</option><option value="training">Training</option><option value="vehicle">Vehicle</option><option value="printing_merchandise">Printing / merchandise</option><option value="bank_payment_fees">Bank / payment fees</option><option value="other">Other</option></select></div>
+          <div><label>Paid by</label><select id="expensePaymentMethod"><option value="">Not specified</option><option value="card">Card</option><option value="cash">Cash</option><option value="bank_transfer">Bank transfer</option><option value="other">Other</option></select></div>
+          <div class="full"><label>What was it?</label><input id="expenseDescription" maxlength="180" placeholder="e.g. Snow foam and wheel cleaner"></div>
+          <div class="full"><label>Supplier / shop</label><input id="expenseSupplier" maxlength="120" placeholder="Optional"></div>
+          <div class="full"><label>Notes</label><textarea id="expenseNotes" maxlength="1000" placeholder="Optional"></textarea></div>
+        </div>
+        <div class="finance-toolbar"><button type="button" id="expenseSave">SAVE SPENDING</button><button type="button" class="secondary" id="expenseCancel">CANCEL</button></div>
+        <div class="status" id="expenseStatus"></div>
+      </div>
+      <div class="finance-section-head"><div><div class="admin-kicker">Money In</div><h3>Income</h3></div></div>
+      <div id="financeTransactions" class="finance-list"></div>
+      <div class="finance-section-head"><div><div class="admin-kicker">Money Out</div><h3>Spending</h3></div></div>
+      <div id="financeExpenses" class="finance-list"></div>
+      <div class="finance-tax-note"><strong>TAX ESTIMATE</strong><span>Next stage: tax-year-aware estimates using reviewed allowable expenses, rather than blindly treating every purchase as deductible.</span></div>
+      <div id="financeStatus" class="status"></div>
+    </div>
+  </div>
+
   <div class="admin-page" data-admin-page="orders">
     <div class="panel">
       <div class="admin-kicker">STANCEBOUND Shop</div>
@@ -1167,6 +1208,7 @@ Save Changes
     <button type="button" data-sheet-target="pending"><strong>Pending</strong><small>Enquiries without a date</small></button>
     <button type="button" data-sheet-target="upcoming"><strong>Upcoming</strong><small>Booked jobs ahead</small></button>
     <button type="button" data-sheet-target="completed"><strong>Completed</strong><small>Finished jobs & revenue</small></button>
+    <button type="button" data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
     <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Visitors, traffic & conversion</small></button>
     <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website image manager</small></button>
     <button type="button" data-sheet-target="text"><strong>Text</strong><small>Edit website content</small></button>
@@ -1236,6 +1278,7 @@ function openAdminPage(name, addToHistory=true) {
   document.querySelector('#quickSheet')?.classList.remove('show');
   document.querySelector('#chatChoiceSheet')?.classList.remove('show');
   if(name==='completed') renderCompleted();
+  if(name==='finance') loadFinance();
   if(name==='orders') renderOrders();
   if(name==='pending') renderPending();
   if(name==='upcoming') renderUpcoming();
@@ -2066,7 +2109,7 @@ function renderBookingRequests(){
       <div class="enquiry-message">${escapeHtml(r.message||'No additional message')}</div>
 
       <div class="booking-editor show">
-        <div class="booking-edit-panel" ${isPending?'hidden':''}>
+        <div class="booking-edit-panel" hidden>
           <div class="booking-grid">
             <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(displayDate||'')}"></div>
             <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((displayTime||'').slice(0,5))}"></div>
@@ -2082,14 +2125,19 @@ function renderBookingRequests(){
             ${isPending?`<button type="button" class="secondary" data-cancel-edit="${r.id}">CANCEL EDIT</button>`:''}
           </div>
         </div>
-        <div class="enquiry-actions-admin">
-          ${isPending?`<button type="button" class="secondary" data-edit-pending="${r.id}">EDIT BOOKING DETAILS</button>`:''}
-          ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
-          <button type="button" class="secondary" data-chat-invite="${r.id}">CHAT</button>
-          ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button><button type="button" class="secondary sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`:''}
-          ${!isPending?`<button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>`:''}
-          ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`:''}
-          <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
+        <div class="booking-quick-actions">
+          ${workflow==='booked'?`<button type="button" class="sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`:''}
+          <button type="button" class="secondary" data-chat-invite="${r.id}">CONTACT</button>
+          <button type="button" class="secondary" data-toggle-booking-edit="${r.id}">EDIT BOOKING</button>
+        </div>
+        <div class="booking-edit-panel booking-management" id="booking-management-${r.id}" hidden>
+          <div class="enquiry-actions-admin">
+            ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
+            ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">OPEN SCHEDULE</button>`:''}
+            ${!isPending?`<button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'EMAIL CUSTOMER':'REPLY / SUGGEST DATE'}</button>`:''}
+            ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">CANCEL BOOKING</button>`:''}
+            <button type="button" class="secondary danger" data-delete-booking="${r.id}">DELETE BOOKING</button>
+          </div>
         </div>
         <div class="enquiry-reply booking-chat-composer" id="booking-chat-compose-${r.id}">
           <div class="booking-chat-head">
@@ -2111,6 +2159,16 @@ function renderBookingRequests(){
     </article>`;
   }).join('');
 
+  list.querySelectorAll('[data-toggle-booking-edit]').forEach(btn=>btn.onclick=()=>{
+    const card=btn.closest('[data-booking-request-id]');
+    const detail=card?.querySelector('.booking-edit-panel:not(.booking-management)');
+    const management=card?.querySelector('.booking-management');
+    const opening=(detail?.hidden ?? true)&&(management?.hidden ?? true);
+    if(detail)detail.hidden=!opening;
+    if(management)management.hidden=!opening;
+    btn.textContent=opening?'CLOSE EDITING':'EDIT BOOKING';
+    if(opening)detail?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
   list.querySelectorAll('[data-edit-pending]').forEach(btn=>btn.onclick=()=>{
     const card=btn.closest('[data-booking-request-id]');
     const panel=card.querySelector('.booking-edit-panel');
@@ -2475,14 +2533,14 @@ function renderCompleted(){
   const rows=cachedEnquiries.filter(r=>r.status==='completed').sort((a,b)=>(b.booking_date||b.created_at).localeCompare(a.booking_date||a.created_at));
   const count=document.querySelector('#completedCount'); if(count)count.textContent=`${rows.length} job${rows.length===1?'':'s'}`;
   const total=rows.reduce((s,r)=>s+Number(r.quoted_price||0),0);
-  const priced=rows.filter(r=>r.quoted_price!=null);
-  const avg=priced.length?total/priced.length:0;
   const summary=document.querySelector('#completedSummary');
-  if(summary)summary.innerHTML=`<div class="metric-card"><div class="metric-label">Completed value</div><div class="metric-value">£${total.toFixed(0)}</div><div class="metric-sub">All completed jobs</div></div><div class="metric-card"><div class="metric-label">Average job</div><div class="metric-value">£${avg.toFixed(0)}</div><div class="metric-sub">Priced jobs</div></div>`;
+  if(summary)summary.innerHTML=`<div class="metric-card"><div class="metric-label">Completed jobs</div><div class="metric-value">${rows.length}</div><div class="metric-sub">Finished work</div></div><div class="metric-card"><div class="metric-label">Completed value</div><div class="metric-value">£${total.toFixed(0)}</div><div class="metric-sub">Booking values</div></div>`;
   if(!rows.length){list.innerHTML='<div class="empty-state">No completed jobs yet.</div>';return;}
-  list.innerHTML=rows.map(r=>{const d=r.booking_date?new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'No booking date';return `<article class="completed-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)}${r.booking_location?' · '+escapeHtml(r.booking_location):''}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div>${r.admin_notes?`<div class="enquiry-message">${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" class="secondary" data-reopen="${r.id}">Move to ongoing</button><button type="button" data-complete-schedule="${r.id}">View schedule</button></div></article>`}).join('');
-  list.querySelectorAll('[data-reopen]').forEach(btn=>btn.onclick=async()=>{btn.disabled=true;const {error}=await supabase.from('enquiries').update({status:'ongoing'}).eq('id',btn.dataset.reopen);if(!error){await loadEnquiries();openAdminPage('enquiries')}else btn.disabled=false;});
+  list.innerHTML=rows.map(r=>{const d=r.booking_date?new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Completed job';return `<article class="completed-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="completed-actions-clean"><button type="button" data-completed-contact="${r.id}">CONTACT CUSTOMER</button><button type="button" class="secondary" data-completed-more="${r.id}">MORE</button></div><div class="completed-more" id="completed-more-${r.id}">${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="enquiry-actions-admin"><button type="button" class="secondary" data-complete-schedule="${r.id}">VIEW SCHEDULE</button><button type="button" class="secondary danger" data-delete-completed="${r.id}">DELETE BOOKING</button></div></div></article>`}).join('');
+  list.querySelectorAll('[data-completed-more]').forEach(btn=>btn.onclick=()=>document.querySelector('#completed-more-'+btn.dataset.completedMore)?.classList.toggle('show'));
+  list.querySelectorAll('[data-completed-contact]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.completedContact));if(r?.email){location.href='mailto:'+r.email}else if(r?.phone){location.href='tel:'+r.phone}else alert('No contact details are stored for this customer.');});
   list.querySelectorAll('[data-complete-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
+  list.querySelectorAll('[data-delete-completed]').forEach(btn=>btn.onclick=async()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteCompleted));if(!r||!confirm(`Delete ${r.name}'s completed booking? Financial records are kept separately.`))return;btn.disabled=true;const {error}=await supabase.from('enquiries').delete().eq('id',r.id);if(error){alert(error.message||'Could not delete booking.');btn.disabled=false;return;}await loadEnquiries();});
 }
 
 document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const btn=e.target.closest('[data-filter]');if(!btn)return;enquiryFilter=btn.dataset.filter;document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x===btn));loadEnquiries();});
@@ -3698,6 +3756,30 @@ document.addEventListener('DOMContentLoaded', function () {
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script id="stancebound-finance-admin">
+function sbMoney(v){return '£'+Number(v||0).toFixed(2)}
+function sbFinanceDate(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function sbExpenseLabel(v){return ({chemicals_consumables:'Chemicals / consumables',equipment_tools:'Equipment / tools',fuel_mileage:'Fuel / mileage',advertising_marketing:'Advertising / marketing',website_software:'Website / software',clothing_ppe:'Clothing / PPE',insurance:'Insurance',training:'Training',vehicle:'Vehicle',printing_merchandise:'Printing / merchandise',bank_payment_fees:'Bank / payment fees',other:'Other'})[v]||String(v||'Expense').replaceAll('_',' ')}
+async function loadFinance(){
+  const st=document.querySelector('#financeStatus');if(st)st.textContent='Loading finance…';
+  try{
+    const [s,t,e]=await Promise.all([supabase.from('finance_summary').select('*').single(),supabase.from('finance_transactions').select('*').order('transaction_date',{ascending:false}).limit(200),supabase.from('business_expenses').select('*').order('expense_date',{ascending:false}).limit(200)]);
+    if(s.error)throw s.error;if(t.error)throw t.error;if(e.error)throw e.error;
+    const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
+    const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
+    set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
+    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
+    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
+    document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await supabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
+    document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await supabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
+    if(st)st.textContent='';
+  }catch(err){console.error(err);if(st)st.textContent=err?.message||'Could not load finance.'}
+}
+document.querySelector('#financeAddExpense')?.addEventListener('click',()=>{const f=document.querySelector('#financeExpenseForm');f.hidden=!f.hidden;if(!f.hidden){const d=document.querySelector('#expenseDate');if(d&&!d.value)d.value=new Date().toISOString().slice(0,10)}});
+document.querySelector('#expenseCancel')?.addEventListener('click',()=>document.querySelector('#financeExpenseForm').hidden=true);
+document.querySelector('#financeRefresh')?.addEventListener('click',loadFinance);
+document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const b=document.querySelector('#expenseSave'),st=document.querySelector('#expenseStatus'),amount=Number(document.querySelector('#expenseAmount').value||0),description=document.querySelector('#expenseDescription').value.trim();if(!(amount>0)){st.textContent='Enter the amount spent.';return}if(!description){st.textContent='Add a short description.';return}b.disabled=true;st.textContent='Saving spending…';const {error}=await supabase.from('business_expenses').insert({amount,expense_date:document.querySelector('#expenseDate').value||new Date().toISOString().slice(0,10),category:document.querySelector('#expenseCategory').value,payment_method:document.querySelector('#expensePaymentMethod').value||null,description,supplier:document.querySelector('#expenseSupplier').value.trim()||null,notes:document.querySelector('#expenseNotes').value.trim()||null});if(error){st.textContent=error.message;b.disabled=false;return}['#expenseAmount','#expenseDescription','#expenseSupplier','#expenseNotes'].forEach(q=>document.querySelector(q).value='');st.textContent='SPENDING SAVED ✓';b.disabled=false;document.querySelector('#financeExpenseForm').hidden=true;await loadFinance()});
+</script>
 <script id="stancebound-payment-admin">
 (() => {
   let paymentEnquiryId = null;
