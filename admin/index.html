@@ -692,6 +692,18 @@ main, .admin-page, .panel {
 
 <style id="sb-finance-cleanup">
 .finance-overview{margin-top:18px}.finance-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.finance-mini{padding:14px;border:1px solid #252525;border-radius:16px;background:#0b0b0b}.finance-mini span{display:block;font-size:9px;letter-spacing:1.5px;color:#777;margin-bottom:6px}.finance-mini strong{font-size:18px}.finance-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.finance-toolbar button{flex:1;min-width:130px}.finance-expense-form{padding:16px;margin:14px 0 22px;border:1px solid #292929;border-radius:20px;background:#090909}.finance-section-head{margin:24px 0 10px}.finance-section-head h3{margin:2px 0 0}.finance-list{display:grid;gap:9px}.finance-row{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:14px;border:1px solid #242424;border-radius:16px;background:#0a0a0a}.finance-row-main{min-width:0}.finance-row-main strong{display:block;font-size:12px;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.finance-row-main span{display:block;margin-top:4px;font-size:10px;color:#777}.finance-row-side{text-align:right;flex:none}.finance-row-side strong{display:block;font-size:14px}.finance-row-side button{margin-top:7px;padding:7px 9px;font-size:9px}.finance-tax-note{margin-top:22px;padding:15px;border:1px solid #242424;border-radius:16px;background:#090909}.finance-tax-note strong{display:block;font-size:10px;letter-spacing:1.5px;margin-bottom:5px}.finance-tax-note span{font-size:10px;line-height:1.5;color:#777}.booking-edit-panel[hidden]{display:none!important}.booking-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.booking-quick-actions .sb-take-payment{grid-column:1/-1}.booking-management{margin-top:8px}.completed-actions-clean{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.completed-more{display:none;margin-top:8px}.completed-more.show{display:block}
+</style><style id="sb-admin-organised-v2">
+.sheet-section-label{font-size:9px;letter-spacing:1.8px;color:#666;margin:10px 2px 8px;font-weight:800}
+.sb-work-grid{grid-template-columns:1fr 1fr!important}
+.sb-work-grid button{min-height:78px;text-align:left}
+.sb-work-grid button strong{display:block;font-size:12px;margin-bottom:4px}
+.sb-work-grid button small{display:block;line-height:1.35}
+#moreSheet .sheet-grid{grid-template-columns:1fr 1fr}
+#moreSheet .more-tools-divider,#moreSheet .more-tool-action,#moreSheet #moreToolStatus{grid-column:1/-1}
+.sb-payment-sheet{touch-action:pan-y;will-change:transform}
+.sb-payment-sheet.sb-dragging{transition:none!important}
+.sb-payment-sheet .sb-payment-grab{cursor:grab}
+@media(max-width:420px){.sb-work-grid{grid-template-columns:1fr 1fr!important}}
 </style></head>
 
 <body>
@@ -1201,17 +1213,13 @@ Save Changes
     <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-grid">
-    <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check the Admin and copy a diagnostic report</small></button>
-    <button type="button" data-sheet-target="bookings"><strong>Bookings</strong><small>Website booking requests</small></button>
-    <button type="button" data-sheet-target="orders"><strong>Orders</strong><small>Paid shop orders</small></button>
-    <button type="button" data-sheet-target="pending"><strong>Pending</strong><small>Enquiries without a date</small></button>
-    <button type="button" data-sheet-target="upcoming"><strong>Upcoming</strong><small>Booked jobs ahead</small></button>
-    <button type="button" data-sheet-target="completed"><strong>Completed</strong><small>Finished jobs & revenue</small></button>
-    <button type="button" data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
-    <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Visitors, traffic & conversion</small></button>
-    <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website image manager</small></button>
-    <button type="button" data-sheet-target="text"><strong>Text</strong><small>Edit website content</small></button>
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
+    <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Visitors & conversion</small></button>
+    <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website images</small></button>
+    <button type="button" data-sheet-target="text"><strong>Text</strong><small>Website content</small></button>
+    <button type="button" data-sheet-target="orders"><strong>Shop Orders</strong><small>Paid merchandise orders</small></button>
+    <div class="more-tools-divider">Admin & site</div>
+    <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health</small></button>
     <div class="more-tools-divider">Site controls</div>
     <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open STANCEBOUND exactly as customers see it</small></a>
     <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Website Data</strong><small>Reload bookings, chats, orders and website content</small></button>
@@ -1223,8 +1231,13 @@ Save Changes
     <button type="button" class="chat-choice-card" data-chat-choice="chats"><span class="chat-choice-icon">▣</span><b>Booking</b><small>Chats attached to customers and booked work</small></button>
     <button type="button" class="chat-choice-card" data-chat-choice="enquiries"><span class="chat-choice-icon">✉</span><b>Enquiries</b><small>Chat With Us conversations before a booking</small></button>
   </div></div></div>
-  <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Quick actions</div><div class="sheet-grid">
-    <button data-sheet-target="manual-booking"><strong>＋ New booking</strong><small>Add a client manually</small></button><button data-sheet-target="enquiries">Open enquiries<small>Reply, book or update a customer</small></button><button data-sheet-target="schedule">Open schedule<small>View and manage booked jobs</small></button>
+  <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">STANCEBOUND</div><div class="sheet-section-label">WORK</div><div class="sheet-grid sb-work-grid">
+    <button data-sheet-target="manual-booking"><strong>＋ New Booking</strong><small>Add a customer manually</small></button>
+    <button data-sheet-target="bookings"><strong>Bookings</strong><small>Booking requests</small></button>
+    <button data-sheet-target="upcoming"><strong>Upcoming</strong><small>Jobs still to do</small></button>
+    <button data-sheet-target="completed"><strong>Completed</strong><small>Finished & paid jobs</small></button>
+    <button data-sheet-target="enquiries"><strong>Enquiries</strong><small>Customer conversations</small></button>
+    <button data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
   </div></div></div>
 
 <script type="module">
@@ -1246,6 +1259,8 @@ const supabase = createClient(
   }
 );
 window.sbAdminSupabase = supabase;
+window.sbRefreshAdminEnquiries = async () => { await loadEnquiries(); };
+
 
 
 const login =
@@ -3763,28 +3778,32 @@ function sbExpenseLabel(v){return ({chemicals_consumables:'Chemicals / consumabl
 async function loadFinance(){
   const st=document.querySelector('#financeStatus');if(st)st.textContent='Loading finance…';
   try{
-    const [s,t,e]=await Promise.all([supabase.from('finance_summary').select('*').single(),supabase.from('finance_transactions').select('*').order('transaction_date',{ascending:false}).limit(200),supabase.from('business_expenses').select('*').order('expense_date',{ascending:false}).limit(200)]);
+    const [s,t,e]=await Promise.all([window.sbAdminSupabase.from('finance_summary').select('*').single(),window.sbAdminSupabase.from('finance_transactions').select('*').order('transaction_date',{ascending:false}).limit(200),window.sbAdminSupabase.from('business_expenses').select('*').order('expense_date',{ascending:false}).limit(200)]);
     if(s.error)throw s.error;if(t.error)throw t.error;if(e.error)throw e.error;
     const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
     const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
     set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
     const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
     const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><button class="secondary danger" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
-    document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await supabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
-    document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await supabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
+    document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
+    document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     if(st)st.textContent='';
   }catch(err){console.error(err);if(st)st.textContent=err?.message||'Could not load finance.'}
 }
 document.querySelector('#financeAddExpense')?.addEventListener('click',()=>{const f=document.querySelector('#financeExpenseForm');f.hidden=!f.hidden;if(!f.hidden){const d=document.querySelector('#expenseDate');if(d&&!d.value)d.value=new Date().toISOString().slice(0,10)}});
 document.querySelector('#expenseCancel')?.addEventListener('click',()=>document.querySelector('#financeExpenseForm').hidden=true);
 document.querySelector('#financeRefresh')?.addEventListener('click',loadFinance);
-document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const b=document.querySelector('#expenseSave'),st=document.querySelector('#expenseStatus'),amount=Number(document.querySelector('#expenseAmount').value||0),description=document.querySelector('#expenseDescription').value.trim();if(!(amount>0)){st.textContent='Enter the amount spent.';return}if(!description){st.textContent='Add a short description.';return}b.disabled=true;st.textContent='Saving spending…';const {error}=await supabase.from('business_expenses').insert({amount,expense_date:document.querySelector('#expenseDate').value||new Date().toISOString().slice(0,10),category:document.querySelector('#expenseCategory').value,payment_method:document.querySelector('#expensePaymentMethod').value||null,description,supplier:document.querySelector('#expenseSupplier').value.trim()||null,notes:document.querySelector('#expenseNotes').value.trim()||null});if(error){st.textContent=error.message;b.disabled=false;return}['#expenseAmount','#expenseDescription','#expenseSupplier','#expenseNotes'].forEach(q=>document.querySelector(q).value='');st.textContent='SPENDING SAVED ✓';b.disabled=false;document.querySelector('#financeExpenseForm').hidden=true;await loadFinance()});
+document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const b=document.querySelector('#expenseSave'),st=document.querySelector('#expenseStatus'),amount=Number(document.querySelector('#expenseAmount').value||0),description=document.querySelector('#expenseDescription').value.trim();if(!(amount>0)){st.textContent='Enter the amount spent.';return}if(!description){st.textContent='Add a short description.';return}b.disabled=true;st.textContent='Saving spending…';const {error}=await window.sbAdminSupabase.from('business_expenses').insert({amount,expense_date:document.querySelector('#expenseDate').value||new Date().toISOString().slice(0,10),category:document.querySelector('#expenseCategory').value,payment_method:document.querySelector('#expensePaymentMethod').value||null,description,supplier:document.querySelector('#expenseSupplier').value.trim()||null,notes:document.querySelector('#expenseNotes').value.trim()||null});if(error){st.textContent=error.message;b.disabled=false;return}['#expenseAmount','#expenseDescription','#expenseSupplier','#expenseNotes'].forEach(q=>document.querySelector(q).value='');st.textContent='SPENDING SAVED ✓';b.disabled=false;document.querySelector('#financeExpenseForm').hidden=true;await loadFinance()});
 </script>
 <script id="stancebound-payment-admin">
 (() => {
   let paymentEnquiryId = null;
   let activePaymentUrl = '';
   let activePaymentRequestId = null;
+  let paymentHistoryOpen = false;
+  let paymentPoll = null;
+  let dragStartY = null;
+  let dragCurrentY = 0;
 
   const $ = q => document.querySelector(q);
   const backdrop = $('#sbPaymentBackdrop');
@@ -3794,7 +3813,16 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
   const status = $('#sbPaymentStatus');
   const activate = $('#sbPaymentActivate');
 
-  function closePaymentSheet(){
+  function closePaymentSheet(fromHistory=false){
+    if(paymentPoll){ clearInterval(paymentPoll); paymentPoll=null; }
+    if(paymentHistoryOpen && !fromHistory){
+      paymentHistoryOpen=false;
+      if(history.state?.sbPaymentSheet) history.back();
+    }else{
+      paymentHistoryOpen=false;
+    }
+    sheet?.style.removeProperty('transform');
+    sheet?.classList.remove('sb-dragging');
     backdrop?.classList.remove('show');
     sheet?.classList.remove('show');
     backdrop?.setAttribute('aria-hidden','true');
@@ -3838,10 +3866,68 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
     if(status){status.textContent='';status.classList.remove('error');}
     backdrop?.classList.add('show');
     sheet?.classList.add('show');
+    if(!history.state?.sbPaymentSheet){
+      history.pushState({...history.state,sbPaymentSheet:true},'',location.href);
+    }
+    paymentHistoryOpen=true;
     backdrop?.setAttribute('aria-hidden','false');
     sheet?.setAttribute('aria-hidden','false');
     setTimeout(()=>$('#sbPayAmount')?.focus(),300);
   }
+
+  async function refreshAfterPaid(){
+    try{ await window.sbRefreshAdminEnquiries?.(); }catch(e){ console.warn('Admin refresh after payment failed',e); }
+    closePaymentSheet();
+    setTimeout(()=>location.reload(),120);
+  }
+
+  function startPaymentPolling(){
+    if(paymentPoll) clearInterval(paymentPoll);
+    if(!activePaymentRequestId) return;
+    paymentPoll=setInterval(async()=>{
+      try{
+        const client=window.sbAdminSupabase;
+        if(!client || !activePaymentRequestId) return;
+        const {data}=await client.from('payment_requests').select('status,payment_method').eq('id',activePaymentRequestId).maybeSingle();
+        if(data?.status==='paid'){
+          clearInterval(paymentPoll); paymentPoll=null;
+          await refreshAfterPaid();
+        }
+      }catch(e){}
+    },2500);
+  }
+
+  window.addEventListener('popstate',()=>{
+    if(paymentHistoryOpen || sheet?.classList.contains('show')){
+      paymentHistoryOpen=false;
+      closePaymentSheet(true);
+    }
+  });
+
+  const paymentGrab=sheet?.querySelector('.sb-payment-grab');
+  const swipeStart=e=>{
+    if(!sheet?.classList.contains('show')) return;
+    dragStartY=e.touches?.[0]?.clientY ?? e.clientY;
+    dragCurrentY=0;
+    sheet.classList.add('sb-dragging');
+  };
+  const swipeMove=e=>{
+    if(dragStartY==null) return;
+    const y=e.touches?.[0]?.clientY ?? e.clientY;
+    dragCurrentY=Math.max(0,y-dragStartY);
+    if(dragCurrentY>0) sheet.style.transform=`translateY(${Math.min(dragCurrentY,260)}px)`;
+  };
+  const swipeEnd=()=>{
+    if(dragStartY==null) return;
+    const shouldClose=dragCurrentY>85;
+    dragStartY=null;dragCurrentY=0;
+    sheet.classList.remove('sb-dragging');
+    if(shouldClose) closePaymentSheet();
+    else sheet.style.removeProperty('transform');
+  };
+  paymentGrab?.addEventListener('touchstart',swipeStart,{passive:true});
+  paymentGrab?.addEventListener('touchmove',swipeMove,{passive:true});
+  paymentGrab?.addEventListener('touchend',swipeEnd,{passive:true});
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-take-payment]');
@@ -3962,6 +4048,7 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
       const ready=document.querySelector('.sb-payment-ready');
       if(ready) ready.textContent='✓ PAID · CASH';
       activePaymentUrl='';
+      setTimeout(refreshAfterPaid,650);
     }catch(err){
       console.error('STANCEBOUND cash payment failed:',err);
       cashStatus.textContent=err?.message || 'Could not record cash payment.';
@@ -4005,6 +4092,7 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
 
       const p=data.payment_request;
       activePaymentRequestId=p.id || p.payment_request_id || null;
+      startPaymentPolling();
       activePaymentUrl=p.payment_url || 'https://www.stancebound.com/pay/';
       const qrTarget=$('#sbPaymentQr');
       if(qrTarget){ qrTarget.innerHTML=''; delete qrTarget.dataset.rendered; }
