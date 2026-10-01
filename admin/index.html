@@ -3618,6 +3618,17 @@ document.addEventListener('DOMContentLoaded', function () {
 .sb-payment-qr > img:not(.sb-payment-qr-logo),.sb-payment-qr > canvas{display:block!important;width:100%!important;height:100%!important}
 .sb-payment-qr-logo{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:46px!important;height:46px!important;max-width:46px!important;max-height:46px!important;object-fit:contain!important;background:#050505!important;border:6px solid #fff!important;border-radius:12px!important;padding:5px!important;box-sizing:border-box!important;pointer-events:none!important;z-index:3!important}
 .sb-payment-qr-caption{display:none;font-size:9px;letter-spacing:1.5px;color:#777;text-align:center;text-transform:uppercase;margin-top:10px}
+.sb-payment-cash-btn{width:100%;margin-top:10px!important;background:#101010!important;border:1px solid #343434!important;color:#fff!important;font-weight:800}
+.sb-cash-confirm{display:none;margin-top:14px;padding:16px;border:1px solid #2c2c2c;border-radius:18px;background:#090909;text-align:left}
+.sb-cash-confirm.show{display:block;animation:sbPaymentReveal .22s ease both}
+.sb-cash-confirm-title{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#eee;font-weight:800;margin-bottom:7px}
+.sb-cash-confirm-copy{font-size:11px;line-height:1.55;color:#888;margin-bottom:13px}
+.sb-cash-confirm-amount{font-size:25px;font-weight:900;color:#fff;margin-bottom:14px}
+.sb-cash-success{display:none;margin-top:14px;padding:18px;border:1px solid rgba(99,233,155,.25);border-radius:18px;background:rgba(99,233,155,.06);text-align:center}
+.sb-cash-success.show{display:block;animation:sbPaymentReveal .25s ease both}
+.sb-cash-success strong{display:block;color:#63e99b;font-size:11px;letter-spacing:1.7px;margin-bottom:6px}
+.sb-cash-success span{font-size:10px;color:#aaa}
+
 .sb-payment-qr-caption.show{display:block}
 @media(max-width:560px){
   .sb-payment-sheet{padding:10px 14px 24px;border-radius:24px 24px 0 0}
@@ -3668,6 +3679,21 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="sb-payment-qr" id="sbPaymentQr"></div>
     </div>
     <div class="sb-payment-qr-caption" id="sbPaymentQrCaption">SCAN TO OPEN SECURE PAYMENT</div>
+    <button type="button" class="sb-payment-cash-btn" id="sbPaymentCash">CUSTOMER PAID CASH</button>
+    <div class="sb-cash-confirm" id="sbCashConfirm">
+      <div class="sb-cash-confirm-title">CONFIRM CASH RECEIVED</div>
+      <div class="sb-cash-confirm-copy">Only confirm this after the customer has physically handed you the cash. This will close the active digital payment and log the income as cash.</div>
+      <div class="sb-cash-confirm-amount" id="sbCashConfirmAmount">£0.00</div>
+      <div class="sb-payment-actions">
+        <button type="button" class="secondary" id="sbCashBack">GO BACK</button>
+        <button type="button" class="sb-payment-primary" id="sbCashConfirmButton">CONFIRM CASH</button>
+      </div>
+      <div class="sb-payment-status" id="sbCashStatus"></div>
+    </div>
+    <div class="sb-cash-success" id="sbCashSuccess">
+      <strong>✓ PAID · CASH</strong>
+      <span id="sbCashSuccessText">Payment recorded in STANCEBOUND finance.</span>
+    </div>
   </div>
 </section>
 
@@ -3676,6 +3702,7 @@ document.addEventListener('DOMContentLoaded', function () {
 (() => {
   let paymentEnquiryId = null;
   let activePaymentUrl = '';
+  let activePaymentRequestId = null;
 
   const $ = q => document.querySelector(q);
   const backdrop = $('#sbPaymentBackdrop');
@@ -3704,7 +3731,16 @@ document.addEventListener('DOMContentLoaded', function () {
       qrCaption?.classList.remove('show');
       if(qr) qr.innerHTML='';
       if(qrBtn) qrBtn.textContent='DISPLAY QR';
+      $('#sbCashConfirm')?.classList.remove('show');
+      $('#sbCashSuccess')?.classList.remove('show');
+      const cashStatus=$('#sbCashStatus');
+      if(cashStatus){ cashStatus.textContent=''; cashStatus.classList.remove('error'); }
+      const cashBtn=$('#sbPaymentCash');
+      if(cashBtn){ cashBtn.disabled=false; cashBtn.style.display=''; }
+      const confirmCash=$('#sbCashConfirmButton');
+      if(confirmCash){ confirmCash.disabled=false; confirmCash.textContent='CONFIRM CASH'; }
       activePaymentUrl='';
+      activePaymentRequestId=null;
       paymentEnquiryId=null;
     }, 280);
   }
@@ -3785,6 +3821,74 @@ document.addEventListener('DOMContentLoaded', function () {
     button.textContent='HIDE QR';
   });
 
+  $('#sbPaymentCash')?.addEventListener('click', () => {
+    if(!activePaymentRequestId){
+      alert('Activate the payment first.');
+      return;
+    }
+    $('#sbCashConfirmAmount').textContent=$('#sbPaymentResultAmount')?.textContent || '£0.00';
+    $('#sbCashStatus').textContent='';
+    $('#sbCashStatus').classList.remove('error');
+    $('#sbCashConfirm').classList.add('show');
+    $('#sbCashConfirmButton')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+
+  $('#sbCashBack')?.addEventListener('click', () => {
+    $('#sbCashConfirm')?.classList.remove('show');
+    const cashStatus=$('#sbCashStatus');
+    if(cashStatus){ cashStatus.textContent=''; cashStatus.classList.remove('error'); }
+  });
+
+  $('#sbCashConfirmButton')?.addEventListener('click', async () => {
+    const button=$('#sbCashConfirmButton');
+    const cashStatus=$('#sbCashStatus');
+    if(!activePaymentRequestId){
+      cashStatus.textContent='Active payment could not be identified.';
+      cashStatus.classList.add('error');
+      return;
+    }
+
+    button.disabled=true;
+    button.textContent='RECORDING…';
+    cashStatus.classList.remove('error');
+    cashStatus.textContent='Recording cash payment…';
+
+    try{
+      const sbClient=window.sbAdminSupabase;
+      if(!sbClient) throw new Error('Admin Supabase client is not ready.');
+
+      const {data,error}=await sbClient.functions.invoke('record-cash-payment',{
+        body:{payment_request_id:activePaymentRequestId}
+      });
+
+      if(error) throw error;
+      if(!data?.success){
+        throw new Error(data?.error || 'Cash payment could not be recorded.');
+      }
+
+      const amount=Number(data.payment?.amount || 0);
+      $('#sbCashConfirm')?.classList.remove('show');
+      $('#sbPaymentQrWrap')?.classList.remove('show');
+      $('#sbPaymentQrWrap')?.setAttribute('aria-hidden','true');
+      $('#sbPaymentQrCaption')?.classList.remove('show');
+      if($('#sbPaymentShowQr')) $('#sbPaymentShowQr').style.display='none';
+      if($('#sbPaymentCash')) $('#sbPaymentCash').style.display='none';
+      if($('#sbPaymentPin')) $('#sbPaymentPin').textContent='CASH';
+      if($('#sbPaymentExpiry')) $('#sbPaymentExpiry').textContent='Payment recorded '+new Date(data.payment?.paid_at || Date.now()).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      if($('#sbCashSuccessText')) $('#sbCashSuccessText').textContent='£'+amount.toFixed(2)+' recorded as cash income.';
+      $('#sbCashSuccess')?.classList.add('show');
+      const ready=document.querySelector('.sb-payment-ready');
+      if(ready) ready.textContent='✓ PAID · CASH';
+      activePaymentUrl='';
+    }catch(err){
+      console.error('STANCEBOUND cash payment failed:',err);
+      cashStatus.textContent=err?.message || 'Could not record cash payment.';
+      cashStatus.classList.add('error');
+      button.disabled=false;
+      button.textContent='CONFIRM CASH';
+    }
+  });
+
   activate?.addEventListener('click', async () => {
     const amount = Number($('#sbPayAmount')?.value);
     if(!paymentEnquiryId){
@@ -3818,6 +3922,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const p=data.payment_request;
+      activePaymentRequestId=p.id || p.payment_request_id || null;
       activePaymentUrl=p.payment_url || 'https://www.stancebound.com/pay/';
       const qrTarget=$('#sbPaymentQr');
       if(qrTarget){ qrTarget.innerHTML=''; delete qrTarget.dataset.rendered; }
