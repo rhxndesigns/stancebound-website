@@ -706,6 +706,19 @@ main, .admin-page, .panel {
 @media(max-width:420px){.sb-work-grid{grid-template-columns:1fr 1fr!important}}
  .finance-row-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .finance-row-actions button{min-width:72px}
+</style><style id="sb-finance-edit-v3">
+.finance-row{flex-wrap:wrap!important}
+.finance-row-main{flex:1 1 160px}
+.finance-row-side{flex:0 0 auto}
+.finance-row-actions{display:flex!important;gap:7px!important;margin-top:9px!important}
+.finance-edit-btn,.finance-remove-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:36px!important;padding:8px 11px!important;border:1px solid #444!important;background:#151515!important;color:#fff!important;font-size:9px!important;font-weight:800!important;letter-spacing:.08em!important;border-radius:10px!important}
+.finance-remove-btn{border-color:rgba(220,80,80,.55)!important;color:#ff9b9b!important}
+.finance-inline-editor{flex:1 0 100%;width:100%;margin-top:12px;padding:14px;border-top:1px solid #292929;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}
+.finance-inline-editor label{font-size:8px;letter-spacing:.13em;color:#777}
+.finance-inline-editor input,.finance-inline-editor select{width:100%;box-sizing:border-box;margin-top:6px;min-height:44px}
+.finance-inline-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.finance-inline-editor .status{grid-column:1/-1}
+@media(max-width:520px){.finance-inline-editor{grid-template-columns:1fr}.finance-inline-actions,.finance-inline-editor .status{grid-column:auto}.finance-row-side{width:100%;text-align:left}.finance-row-actions{justify-content:flex-start!important}}
 </style></head>
 
 <body>
@@ -3785,28 +3798,55 @@ async function loadFinance(){
     const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
     const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
     set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
-    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="secondary" type="button" data-edit-finance="${x.id}">EDIT</button><button class="secondary danger" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
-    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="secondary" type="button" data-edit-expense="${x.id}">EDIT</button><button class="secondary danger" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
-    document.querySelectorAll('[data-edit-finance]').forEach(b=>b.onclick=async()=>{
+    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-finance="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
+    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-expense="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
+    document.querySelectorAll('[data-edit-finance]').forEach(b=>b.onclick=()=>{
       const row=t.data.find(x=>String(x.id)===String(b.dataset.editFinance));if(!row)return;
-      const amount=prompt('Income amount (£)',Number(row.amount).toFixed(2));if(amount===null)return;
-      const n=Number(amount);if(!Number.isFinite(n)||n<0){alert('Enter a valid amount.');return;}
-      const desc=prompt('Description',row.description||'STANCEBOUND payment');if(desc===null)return;
-      const method=prompt('Payment method: cash, stripe, bank_transfer or other',row.payment_method||'other');if(method===null)return;
-      const allowed=['cash','stripe','bank_transfer','other'];if(!allowed.includes(method)){alert('Use cash, stripe, bank_transfer or other.');return;}
-      b.disabled=true;
-      const {error}=await window.sbAdminSupabase.from('finance_transactions').update({amount:n,description:desc.trim()||'STANCEBOUND payment',payment_method:method}).eq('id',row.id);
-      if(error){alert(error.message);b.disabled=false}else await loadFinance();
+      const host=b.closest('.finance-row');
+      if(host.querySelector('.finance-inline-editor')){host.querySelector('.finance-inline-editor').remove();return;}
+      const editor=document.createElement('div');editor.className='finance-inline-editor';
+      editor.innerHTML=`<label>AMOUNT (£)<input data-fin-edit-amount type="number" min="0" step="0.01" value="${Number(row.amount).toFixed(2)}"></label>
+        <label>DESCRIPTION<input data-fin-edit-description value="${escapeHtml(row.description||'STANCEBOUND payment')}"></label>
+        <label>PAYMENT METHOD<select data-fin-edit-method><option value="cash">Cash</option><option value="stripe">Stripe / card</option><option value="bank_transfer">Bank transfer</option><option value="other">Other</option></select></label>
+        <div class="finance-inline-actions"><button type="button" data-fin-save>SAVE CHANGES</button><button type="button" class="secondary" data-fin-cancel>CANCEL</button></div><div class="status" data-fin-status></div>`;
+      host.appendChild(editor);editor.querySelector('[data-fin-edit-method]').value=row.payment_method||'other';
+      editor.querySelector('[data-fin-cancel]').onclick=()=>editor.remove();
+      editor.querySelector('[data-fin-save]').onclick=async()=>{
+        const save=editor.querySelector('[data-fin-save]'),st=editor.querySelector('[data-fin-status]');
+        const amount=Number(editor.querySelector('[data-fin-edit-amount]').value);
+        const description=editor.querySelector('[data-fin-edit-description]').value.trim();
+        const payment_method=editor.querySelector('[data-fin-edit-method]').value;
+        if(!Number.isFinite(amount)||amount<0){st.textContent='Enter a valid amount.';return;}
+        if(!description){st.textContent='Add a description.';return;}
+        save.disabled=true;st.textContent='Saving…';
+        const {error}=await window.sbAdminSupabase.from('finance_transactions').update({amount,description,payment_method}).eq('id',row.id);
+        if(error){st.textContent=error.message;save.disabled=false;return;}
+        await loadFinance();
+      };
     });
-    document.querySelectorAll('[data-edit-expense]').forEach(b=>b.onclick=async()=>{
+    document.querySelectorAll('[data-edit-expense]').forEach(b=>b.onclick=()=>{
       const row=e.data.find(x=>String(x.id)===String(b.dataset.editExpense));if(!row)return;
-      const amount=prompt('Spending amount (£)',Number(row.amount).toFixed(2));if(amount===null)return;
-      const n=Number(amount);if(!Number.isFinite(n)||n<=0){alert('Enter a valid amount.');return;}
-      const desc=prompt('What was it?',row.description||'');if(desc===null||!desc.trim())return;
-      const supplier=prompt('Supplier / shop',row.supplier||'');if(supplier===null)return;
-      b.disabled=true;
-      const {error}=await window.sbAdminSupabase.from('business_expenses').update({amount:n,description:desc.trim(),supplier:supplier.trim()||null}).eq('id',row.id);
-      if(error){alert(error.message);b.disabled=false}else await loadFinance();
+      const host=b.closest('.finance-row');
+      if(host.querySelector('.finance-inline-editor')){host.querySelector('.finance-inline-editor').remove();return;}
+      const editor=document.createElement('div');editor.className='finance-inline-editor';
+      editor.innerHTML=`<label>AMOUNT (£)<input data-exp-edit-amount type="number" min="0.01" step="0.01" value="${Number(row.amount).toFixed(2)}"></label>
+        <label>DESCRIPTION<input data-exp-edit-description value="${escapeHtml(row.description||'')}"></label>
+        <label>SUPPLIER<input data-exp-edit-supplier value="${escapeHtml(row.supplier||'')}"></label>
+        <div class="finance-inline-actions"><button type="button" data-exp-save>SAVE CHANGES</button><button type="button" class="secondary" data-exp-cancel>CANCEL</button></div><div class="status" data-exp-status></div>`;
+      host.appendChild(editor);
+      editor.querySelector('[data-exp-cancel]').onclick=()=>editor.remove();
+      editor.querySelector('[data-exp-save]').onclick=async()=>{
+        const save=editor.querySelector('[data-exp-save]'),st=editor.querySelector('[data-exp-status]');
+        const amount=Number(editor.querySelector('[data-exp-edit-amount]').value);
+        const description=editor.querySelector('[data-exp-edit-description]').value.trim();
+        const supplier=editor.querySelector('[data-exp-edit-supplier]').value.trim();
+        if(!(amount>0)){st.textContent='Enter a valid amount.';return;}
+        if(!description){st.textContent='Add a description.';return;}
+        save.disabled=true;st.textContent='Saving…';
+        const {error}=await window.sbAdminSupabase.from('business_expenses').update({amount,description,supplier:supplier||null}).eq('id',row.id);
+        if(error){st.textContent=error.message;save.disabled=false;return;}
+        await loadFinance();
+      };
     });
     document.querySelectorAll('[data-delete-finance]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this finance record? Use this for test or incorrect entries only.'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('finance_transactions').delete().eq('id',b.dataset.deleteFinance);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
     document.querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this spending record?'))return;b.disabled=true;const {error}=await window.sbAdminSupabase.from('business_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){alert(error.message);b.disabled=false}else await loadFinance()});
