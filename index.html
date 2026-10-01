@@ -2715,1152 +2715,12 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
-
-<style id="stancebound-pricing-visibility-fix">
-  #pricing.page.active .future-services,
-  #pricing.page.active .one-car-statement{
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    filter:none !important;
-    transform:none !important;
-  }
-  #pricing.page.active .future-service{
-    visibility:visible !important;
-    opacity:1 !important;
-  }
-</style>
-
-
-<style id="stancebound-pricing-gap-fix">
-  #pricing .intro-price-card{margin-bottom:18px !important;}
-  #pricing .pricing-notes,
-  #pricing .pricing-note-grid{margin-top:0 !important;margin-bottom:18px !important;}
-  #pricing .future-services{margin-top:18px !important;padding-top:0 !important;}
-</style>
-
-
-<style id="stancebound-pricing-spacing-hard-fix">
-  /* Prices is a normal flowing page. No artificial viewport-height sections. */
-  #pricing,
-  #pricing.page,
-  #pricing.page.active{
-    min-height:0 !important;
-    height:auto !important;
-  }
-
-  #pricing > .content{
-    min-height:0 !important;
-    height:auto !important;
-    padding-bottom:28px !important;
-  }
-
-  #pricing .pricing-hero,
-  #pricing .intro-price-card,
-  #pricing .future-services,
-  #pricing .future-service-grid,
-  #pricing .future-service,
-  #pricing .sale-prep-feature,
-  #pricing .one-car-statement,
-  #pricing .pricing-disclaimer{
-    min-height:0 !important;
-  }
-
-  #pricing .intro-price-card{
-    margin-bottom:18px !important;
-  }
-
-  #pricing .future-services{
-    margin-top:18px !important;
-    margin-bottom:18px !important;
-    padding-top:0 !important;
-    padding-bottom:0 !important;
-  }
-
-  #pricing .one-car-statement{
-    margin-top:18px !important;
-    margin-bottom:18px !important;
-  }
-
-  #pricing .pricing-disclaimer{
-    margin-top:0 !important;
-    margin-bottom:18px !important;
-  }
-
-  #pricing .content > :last-child{
-    margin-bottom:0 !important;
-  }
-
-  /* The global reveal system must never reserve a fake viewport on this page. */
-  #pricing .sb-scroll-reveal,
-  #pricing .sb-in-view{
-    min-height:0 !important;
-  }
-
-  @media(max-width:760px){
-    #pricing > .content{padding-bottom:18px !important;}
-    #pricing .pricing-hero,
-    #pricing .intro-price-card,
-    #pricing .future-services,
-    #pricing .one-car-statement,
-    #pricing .pricing-disclaimer{
-      margin-bottom:14px !important;
-    }
-  }
-</style>
-
-
-<style id="stancebound-pricing-no-ghost-space">
-  #pricing *{
-    transition-delay:0s;
-  }
-  #pricing .pricing-hero,
-  #pricing .intro-price-card,
-  #pricing .pricing-note-grid,
-  #pricing .pricing-note,
-  #pricing .future-services,
-  #pricing .future-services-head,
-  #pricing .future-service-grid,
-  #pricing .future-service,
-  #pricing .one-car-statement,
-  #pricing .pricing-disclaimer,
-  #pricing .cta{
-    opacity:1 !important;
-    visibility:visible !important;
-    transform:none !important;
-    filter:none !important;
-  }
-  #pricing .pricing-note-grid{margin:14px 0 !important;}
-  #pricing .future-services{margin:18px 0 !important;}
-  #pricing .one-car-statement{margin:18px 0 !important;}
-  #pricing .pricing-disclaimer{margin:18px 0 !important;}
-  #pricing .cta{margin:18px 0 0 !important;}
-  #pricing > .content{padding-bottom:24px !important;}
-</style>
-
-
-<style id="stancebound-pricing-modern-compact">
-  #pricing > .content{padding-top:34px !important}
-  #pricing .pricing-hero{padding:clamp(26px,5vw,48px);margin-bottom:14px}
-  #pricing .intro-price-card{padding:clamp(22px,4vw,38px);margin-bottom:12px !important}
-  #pricing .price-includes{gap:7px}
-  #pricing .pricing-note-grid{margin:12px 0 18px !important}
-
-  .modern-service-browser{margin:20px 0 14px !important}
-  .modern-service-browser .future-services-head{margin-bottom:14px}
-  .service-tabs{
-    display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;
-    scrollbar-width:none;overscroll-behavior-inline:contain;
-  }
-  .service-tabs::-webkit-scrollbar{display:none}
-  .service-tab{
-    flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted);
-    min-height:42px;padding:0 15px;font:inherit;font-size:9px;font-weight:900;
-    letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:999px;
-    transition:background .25s ease,color .25s ease,border-color .25s ease,transform .2s ease;
-  }
-  .service-tab.active{background:var(--text);color:var(--bg);border-color:var(--text)}
-  .service-tab:active{transform:scale(.96)}
-  .service-stage{
-    position:relative;border:1px solid var(--line);
-    background:radial-gradient(circle at 82% 18%,rgba(255,255,255,.07),transparent 26%),var(--panel);
-    overflow:hidden;
-  }
-  .service-panel{display:none;padding:clamp(24px,5vw,46px);animation:servicePanelIn .38s cubic-bezier(.16,1,.3,1)}
-  .service-panel.active{display:block}
-  @keyframes servicePanelIn{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:none}}
-  .service-panel-index{font-size:8px;font-weight:900;letter-spacing:.18em;color:var(--muted);margin-bottom:22px}
-  .service-panel-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(280px,1.1fr);gap:38px;align-items:end}
-  .service-status{display:inline-block;margin-bottom:10px;border:1px solid var(--line);padding:6px 9px;font-size:7px;font-weight:900;letter-spacing:.16em}
-  .service-panel h3{margin:0;font-size:clamp(34px,6vw,66px);line-height:.9;letter-spacing:-.05em;text-transform:uppercase}
-  .service-panel-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
-  .service-panel-copy small{display:block;margin-top:13px;color:var(--muted);font-size:10px;line-height:1.6}
-  .service-panel .sale-prep-flow{margin-top:16px}
-
-  .compact-philosophy{
-    display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;text-align:left !important;
-    padding:24px 28px !important;margin:14px 0 !important;
-  }
-  .compact-philosophy h2{margin:5px 0 0 !important;font-size:clamp(28px,5vw,48px) !important;line-height:.95 !important}
-  .compact-philosophy p{margin:0 !important;max-width:none !important}
-
-  #pricing .pricing-disclaimer{padding:13px 16px !important;margin:12px 0 !important;font-size:10px}
-  #pricing .cta{padding:26px 20px !important;margin:12px 0 0 !important}
-  #pricing .cta h2{font-size:clamp(20px,4vw,28px)}
-
-  @media(max-width:760px){
-    #pricing > .content{padding-top:24px !important}
-    #pricing .pricing-hero{padding:24px 18px}
-    #pricing .pricing-hero-copy{margin-top:20px;gap:14px}
-    #pricing .intro-price-card{padding:22px 18px}
-    #pricing .pricing-note-grid{
-      display:flex !important;overflow-x:auto;gap:8px;padding-bottom:5px;
-      scroll-snap-type:x mandatory;scrollbar-width:none;
-    }
-    #pricing .pricing-note-grid::-webkit-scrollbar{display:none}
-    #pricing .pricing-note{flex:0 0 82%;scroll-snap-align:start;padding:17px}
-    .modern-service-browser .future-services-head p{display:none}
-    .service-panel{padding:22px 18px}
-    .service-panel-grid{grid-template-columns:1fr;gap:18px}
-    .service-panel h3{font-size:clamp(36px,11vw,54px)}
-    .compact-philosophy{grid-template-columns:1fr;gap:10px;padding:20px 18px !important}
-    .compact-philosophy p{font-size:12px}
-  }
-</style>
-
-
-<style id="stancebound-boxed-services">
-  .boxed-services{margin:18px 0 !important}
-  .boxed-services-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:14px}
-  .boxed-services-head h2{margin:4px 0 0;font-size:clamp(32px,6vw,58px);line-height:.9;text-transform:uppercase;letter-spacing:-.05em}
-  .boxed-services-head p{max-width:420px;margin:0;color:var(--muted);font-size:12px;line-height:1.6}
-  .service-box-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .service-box{
-    position:relative;min-height:190px;padding:18px;text-align:left;color:var(--text);
-    border:1px solid var(--line);background:rgba(255,255,255,.018);font:inherit;cursor:pointer;
-    display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s,border-color .25s;
-    overflow:hidden;
-  }
-  .service-box:hover,.service-box.open{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.4)}
-  .service-box:active{transform:scale(.985)}
-  .service-box-featured{grid-column:span 2;background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.018))}
-  .service-box-top{display:flex;justify-content:space-between;gap:12px;font-size:7px;font-weight:900;letter-spacing:.14em;color:var(--muted)}
-  .service-box-top b{font:inherit;color:inherit}
-  .service-box-title{margin:auto 0 12px;font-size:clamp(22px,3.5vw,36px);font-weight:900;line-height:.92;letter-spacing:-.035em;text-transform:uppercase}
-  .service-box-short{font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .service-box-plus{position:absolute;right:15px;bottom:12px;font-size:20px;font-weight:300;color:var(--muted)}
-  .service-box-detail{display:none;margin-top:8px;padding:clamp(22px,4vw,38px);border:1px solid var(--line);background:var(--panel)}
-  .service-box-detail.open{display:block;animation:boxDetailIn .38s cubic-bezier(.16,1,.3,1)}
-  @keyframes boxDetailIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-  .box-detail-index{margin-bottom:20px;font-size:8px;font-weight:900;letter-spacing:.16em;color:var(--muted)}
-  .box-detail-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px;align-items:end}
-  .box-detail-layout h3{margin:0;font-size:clamp(34px,6vw,64px);line-height:.9;letter-spacing:-.05em;text-transform:uppercase}
-  .box-detail-layout p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
-  .box-detail-layout small{display:block;margin-top:12px;color:var(--muted);font-size:10px;line-height:1.6}
-  @media(max-width:760px){
-    .boxed-services-head{display:block}.boxed-services-head p{margin-top:10px}
-    .service-box-grid{grid-template-columns:repeat(2,1fr)}
-    .service-box-featured{grid-column:span 2}
-    .service-box{min-height:150px;padding:15px}
-    .service-box-featured{min-height:165px}
-    .service-box-title{font-size:clamp(20px,6vw,29px)}
-    .box-detail-layout{grid-template-columns:1fr;gap:16px}
-    .service-box-detail{padding:20px 17px}
-  }
-</style>
-
-
-<style id="stancebound-current-service-motion">
-  .current-service-console{
-    position:relative;overflow:hidden;margin:0 0 18px;padding:clamp(24px,5vw,52px);
-    border:1px solid var(--line);
-    background:
-      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
-      radial-gradient(circle at 82% 18%,rgba(255,255,255,.09),transparent 25%),
-      linear-gradient(145deg,#0d0d0d,#050505);
-    background-size:38px 38px,38px 38px,auto,auto;
-    isolation:isolate;
-  }
-  body.light-theme .current-service-console{
-    background:
-      linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px),
-      radial-gradient(circle at 82% 18%,rgba(0,0,0,.07),transparent 25%),
-      linear-gradient(145deg,#fafafa,#ededeb);
-    background-size:38px 38px,38px 38px,auto,auto;
-  }
-  .service-light-orbit{
-    position:absolute;width:380px;height:380px;right:-180px;top:-190px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.11);box-shadow:0 0 0 44px rgba(255,255,255,.018),0 0 0 92px rgba(255,255,255,.01);
-    animation:serviceOrbit 9s linear infinite;pointer-events:none;z-index:-1;
-  }
-  .service-light-orbit:after{
-    content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;
-    left:50%;top:-4px;box-shadow:0 0 14px 4px rgba(255,255,255,.65);
-  }
-  @keyframes serviceOrbit{to{transform:rotate(360deg)}}
-  .service-scanline{
-    position:absolute;left:0;right:0;height:1px;top:15%;opacity:.22;
-    background:linear-gradient(90deg,transparent,#fff,transparent);
-    animation:serviceScan 5.5s ease-in-out infinite;pointer-events:none;
-  }
-  @keyframes serviceScan{0%,100%{top:14%;opacity:0}15%{opacity:.25}75%{opacity:.12}90%{top:88%;opacity:0}}
-  .service-corner{position:absolute;width:20px;height:20px;opacity:.45;pointer-events:none}
-  .service-corner.tl{left:12px;top:12px;border-left:1px solid currentColor;border-top:1px solid currentColor}
-  .service-corner.tr{right:12px;top:12px;border-right:1px solid currentColor;border-top:1px solid currentColor}
-  .service-corner.bl{left:12px;bottom:12px;border-left:1px solid currentColor;border-bottom:1px solid currentColor}
-  .service-corner.br{right:12px;bottom:12px;border-right:1px solid currentColor;border-bottom:1px solid currentColor}
-  .live-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;animation:livePulse 2s infinite}
-  @keyframes livePulse{50%{box-shadow:0 0 0 6px transparent;opacity:.65}}
-  .current-service-top{display:grid;grid-template-columns:1.25fr .75fr;gap:36px;align-items:end}
-  .current-service-top h1{margin:7px 0 18px;font-size:clamp(48px,9vw,100px);line-height:.82;letter-spacing:-.065em;text-transform:uppercase}
-  .current-service-top p{max-width:660px;margin:0;color:var(--muted);font-size:13px;line-height:1.75}
-  .current-price-module{border:1px solid var(--line);padding:22px;background:rgba(255,255,255,.025)}
-  .current-price-module>span,.current-price-module>small{display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
-  .current-price-module strong{display:block;margin:8px 0 5px;font-size:clamp(66px,12vw,112px);line-height:.82;letter-spacing:-.075em}
-  .price-info-toggle{
-    width:100%;margin-top:22px;min-height:46px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;
-    border:1px solid var(--line);background:transparent;color:var(--text);font:inherit;font-size:8px;font-weight:900;letter-spacing:.14em;cursor:pointer;
-    transition:background .25s,color .25s,border-color .25s;
-  }
-  .price-info-toggle:hover,.price-info-toggle[aria-expanded="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
-  .price-info-toggle i{font-style:normal;font-size:18px;font-weight:300;transition:transform .35s cubic-bezier(.16,1,.3,1)}
-  .price-info-toggle[aria-expanded="true"] i{transform:rotate(45deg)}
-  .current-service-details{
-    display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .55s cubic-bezier(.16,1,.3,1),opacity .3s ease;
-    overflow:hidden;
-  }
-  .current-service-details>*{min-height:0}
-  .current-service-console.expanded .current-service-details{grid-template-rows:1fr;opacity:1;margin-top:30px;overflow:visible}
-  /* grid animation wrapper fallback: details use max-height for browsers that don't animate grid children cleanly */
-  .current-service-details{max-height:0}
-  .current-service-console.expanded .current-service-details{max-height:1200px;transition:max-height .7s cubic-bezier(.16,1,.3,1),opacity .3s ease}
-  .detail-tech-line{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.16em;color:var(--muted)}
-  .detail-process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}
-  .process-box{position:relative;min-height:135px;padding:15px;border:1px solid var(--line);background:rgba(255,255,255,.018);overflow:hidden}
-  .process-box b{position:absolute;right:12px;top:10px;color:var(--muted);font-size:8px;letter-spacing:.1em}
-  .process-box strong,.process-box small{display:block}
-  .process-box strong{margin-top:20px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-  .process-box small{margin-top:5px;color:var(--muted);font-size:9px}
-  .process-icon{display:block;position:relative;width:34px;height:34px;opacity:.72}
-  .wheel-icon{border:2px solid currentColor;border-radius:50%}.wheel-icon:before,.wheel-icon:after{content:"";position:absolute;left:15px;top:3px;width:2px;height:24px;background:currentColor}.wheel-icon:after{transform:rotate(90deg)}
-  .foam-icon:before{content:"";position:absolute;left:4px;top:8px;width:24px;height:17px;border:1px solid currentColor;border-radius:50% 50% 55% 45%}.foam-icon:after{content:"";position:absolute;right:0;top:0;width:6px;height:6px;border:1px solid currentColor;border-radius:50%;box-shadow:-27px 5px 0 -1px currentColor}
-  .dry-icon:before{content:"";position:absolute;inset:5px;border:1px solid currentColor;transform:rotate(12deg)}.dry-icon:after{content:"";position:absolute;left:1px;right:1px;top:16px;border-top:1px solid currentColor;transform:rotate(-12deg)}
-  .cabin-icon:before{content:"";position:absolute;left:3px;right:3px;bottom:5px;height:16px;border:1px solid currentColor;border-radius:12px 12px 3px 3px}.cabin-icon:after{content:"";position:absolute;left:10px;top:2px;width:13px;height:13px;border:1px solid currentColor;border-radius:50%}
-  .glass-icon:before{content:"";position:absolute;inset:3px 6px;border:1px solid currentColor;transform:skew(-8deg)}.glass-icon:after{content:"";position:absolute;left:16px;top:1px;height:32px;border-left:1px solid currentColor;transform:rotate(28deg)}
-  .inspect-icon:before{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border:2px solid currentColor;border-radius:50%}.inspect-icon:after{content:"";position:absolute;width:14px;border-top:2px solid currentColor;transform:rotate(45deg);right:1px;bottom:5px}
-  .detail-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
-  .detail-fact{padding:15px;border:1px solid var(--line)}.detail-fact span{font-size:8px;font-weight:900;letter-spacing:.14em}.detail-fact p{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
-  .current-book-btn{width:100%;margin-top:8px}
-  @media(max-width:760px){
-    .current-service-console{padding:22px 17px}
-    .current-service-top{grid-template-columns:1fr;gap:20px}
-    .current-service-top h1{font-size:clamp(48px,15vw,72px)}
-    .current-price-module{padding:17px}
-    .detail-process-grid{grid-template-columns:repeat(2,1fr)}
-    .process-box{min-height:120px;padding:13px}
-    .detail-bottom-row{grid-template-columns:1fr}
-  }
-  @media(prefers-reduced-motion:reduce){
-    .service-light-orbit,.service-scanline,.live-pulse{animation:none!important}
-    .current-service-details,.price-info-toggle i{transition:none!important}
-  }
-</style>
-
-
-<style id="stancebound-mobile-placement-fix">
-/* Keep the Prices interface comfortably inside narrow Android viewports. */
-@media(max-width:760px){
-  #pricing > .content{
-    width:calc(100% - 24px) !important;
-    max-width:calc(100% - 24px) !important;
-    overflow:visible !important;
-  }
-
-  .current-service-console{
-    width:100%;
-    box-sizing:border-box;
-    padding:22px 16px 18px !important;
-    overflow:hidden;
-  }
-
-  .current-service-top,
-  .current-service-top > *,
-  .current-price-module,
-  .current-service-details,
-  .detail-process-grid,
-  .detail-bottom-row{
-    min-width:0;
-    max-width:100%;
-    box-sizing:border-box;
-  }
-
-  .current-service-top h1{
-    max-width:100%;
-    margin:8px 0 16px;
-    font-size:clamp(42px,13.2vw,64px) !important;
-    line-height:.86 !important;
-    letter-spacing:-.06em !important;
-    overflow-wrap:normal;
-  }
-
-  .current-service-top p{
-    max-width:100%;
-    font-size:12px;
-    line-height:1.65;
-  }
-
-  .current-service-console .pricing-kicker{
-    max-width:100%;
-    white-space:normal;
-    line-height:1.5;
-    letter-spacing:.13em;
-  }
-
-  .current-price-module{
-    width:100%;
-    padding:17px 15px !important;
-  }
-
-  .current-price-module strong{
-    font-size:clamp(68px,22vw,96px) !important;
-  }
-
-  .price-info-toggle{
-    width:100%;
-    box-sizing:border-box;
-  }
-
-  .detail-process-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:7px;
-  }
-
-  .process-box{
-    min-width:0;
-    width:auto;
-    min-height:132px;
-    padding:13px 11px;
-  }
-
-  .process-box strong{
-    font-size:10px;
-    line-height:1.25;
-    overflow-wrap:anywhere;
-  }
-
-  .process-box small{
-    font-size:8px;
-    line-height:1.35;
-  }
-
-  .boxed-services{
-    width:100%;
-    box-sizing:border-box;
-    overflow:hidden;
-  }
-
-  .boxed-services-head{
-    padding:0 2px;
-  }
-
-  .service-box-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:8px !important;
-    width:100%;
-  }
-
-  .service-box,
-  .service-box-featured{
-    min-width:0;
-    width:auto;
-    box-sizing:border-box;
-    overflow:hidden;
-  }
-
-  .service-box{
-    min-height:158px !important;
-    padding:14px 13px 13px !important;
-  }
-
-  .service-box-featured{
-    grid-column:1 / -1 !important;
-    min-height:155px !important;
-  }
-
-  .service-box-top{
-    gap:6px;
-    white-space:nowrap;
-    font-size:6.5px;
-    letter-spacing:.11em;
-  }
-
-  .service-box-title{
-    width:calc(100% - 6px);
-    max-width:100%;
-    margin:auto 0 10px;
-    font-size:clamp(19px,5.8vw,27px) !important;
-    line-height:.94 !important;
-    letter-spacing:-.035em;
-    overflow-wrap:anywhere;
-    word-break:normal;
-  }
-
-  .service-box-featured .service-box-title{
-    font-size:clamp(26px,8vw,38px) !important;
-    width:90%;
-  }
-
-  .service-box-short{
-    width:calc(100% - 26px);
-    font-size:7px;
-    line-height:1.35;
-    letter-spacing:.08em;
-    overflow-wrap:anywhere;
-  }
-
-  .service-box-plus{
-    right:11px;
-    bottom:10px;
-  }
-
-  .service-box-detail{
-    width:100%;
-    box-sizing:border-box;
-    overflow:hidden;
-  }
-
-  .box-detail-layout,
-  .box-detail-layout > *{
-    min-width:0;
-    max-width:100%;
-  }
-
-  .box-detail-layout h3{
-    font-size:clamp(32px,10vw,48px) !important;
-    overflow-wrap:anywhere;
-  }
-
-  .compact-philosophy{
-    width:100%;
-    box-sizing:border-box;
-    padding:20px 17px !important;
-    overflow:hidden;
-  }
-
-  .compact-philosophy h2{
-    max-width:100%;
-    font-size:clamp(29px,9vw,42px) !important;
-    line-height:.95 !important;
-    letter-spacing:-.045em;
-    overflow-wrap:normal;
-  }
-
-  .compact-philosophy p{
-    max-width:100%;
-    font-size:11px !important;
-    line-height:1.6;
-  }
-
-  .compact-philosophy .eyebrow{
-    max-width:100%;
-    font-size:7px;
-    letter-spacing:.13em;
-    white-space:normal;
-  }
-}
-
-@media(max-width:390px){
-  #pricing > .content{
-    width:calc(100% - 18px) !important;
-    max-width:calc(100% - 18px) !important;
-  }
-  .current-service-top h1{font-size:12.5vw !important}
-  .service-box-title{font-size:5.5vw !important}
-  .service-box-featured .service-box-title{font-size:7.5vw !important}
-  .service-box-top{font-size:6px}
-}
-</style>
-
-
-<style id="stancebound-service-grid-neaten">
-  /* Static service cards: cleaner typography and a deliberately finished grid. */
-  .service-box{cursor:default !important}
-  .service-box:hover{transform:none !important}
-  .service-box.open{background:rgba(255,255,255,.018) !important;border-color:var(--line) !important}
-  .service-box-featured{
-    background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.012)) !important;
-  }
-  .service-box-wide{
-    grid-column:1 / -1 !important;
-    min-height:145px !important;
-    background:linear-gradient(105deg,rgba(255,255,255,.035),rgba(255,255,255,.01)) !important;
-  }
-  .service-box-wide .service-box-title{
-    max-width:72%;
-  }
-  .service-box-wide .service-box-short{
-    max-width:72%;
-  }
-
-  @media(max-width:760px){
-    .boxed-services-head h2{
-      font-size:clamp(30px,9vw,42px) !important;
-      line-height:.94 !important;
-    }
-    .boxed-services-head p{
-      font-size:11px !important;
-      line-height:1.55 !important;
-      max-width:92%;
-    }
-
-    .service-box{
-      display:flex !important;
-      flex-direction:column !important;
-      justify-content:space-between !important;
-      min-height:166px !important;
-      padding:15px 14px !important;
-    }
-    .service-box-featured{
-      min-height:160px !important;
-    }
-    .service-box-wide{
-      min-height:142px !important;
-    }
-
-    .service-box-top{
-      align-items:center;
-      min-height:16px;
-      margin-bottom:18px;
-      font-size:6.5px !important;
-      line-height:1.2;
-    }
-    .service-box-top b{
-      flex:0 0 auto;
-    }
-
-    .service-box-title{
-      width:100% !important;
-      max-width:100% !important;
-      margin:auto 0 12px !important;
-      font-size:clamp(18px,5.25vw,25px) !important;
-      line-height:.96 !important;
-      letter-spacing:-.035em !important;
-      overflow-wrap:normal !important;
-      word-break:normal !important;
-      hyphens:none !important;
-    }
-    .service-box-featured .service-box-title{
-      max-width:88% !important;
-      font-size:clamp(27px,7.7vw,36px) !important;
-      line-height:.93 !important;
-    }
-    .service-box-wide .service-box-title{
-      max-width:72% !important;
-      font-size:clamp(25px,7.2vw,34px) !important;
-    }
-
-    .service-box-short{
-      width:100% !important;
-      max-width:100% !important;
-      padding-right:0 !important;
-      font-size:6.8px !important;
-      line-height:1.35 !important;
-      letter-spacing:.075em !important;
-      overflow-wrap:normal !important;
-    }
-    .service-box-wide .service-box-short{
-      max-width:72% !important;
-    }
-  }
-
-  @media(max-width:390px){
-    .service-box-title{font-size:5vw !important}
-    .service-box-featured .service-box-title{font-size:7.2vw !important}
-    .service-box-wide .service-box-title{font-size:6.8vw !important}
-  }
-</style>
-
-
-<style id="stancebound-clean-pricing-top">
-  .current-service-top-clean{
-    grid-template-columns:minmax(0,1.1fr) minmax(260px,.65fr) !important;
-    align-items:center !important;
-  }
-  .current-service-top-clean .current-service-summary{
-    min-width:0;
-    max-width:680px;
-  }
-  .current-service-top-clean h1{
-    margin:10px 0 13px !important;
-    font-size:clamp(44px,7vw,78px) !important;
-    line-height:.88 !important;
-    letter-spacing:-.055em !important;
-    text-transform:uppercase;
-  }
-  .current-service-top-clean .current-service-summary>p{
-    max-width:520px !important;
-    margin:0 !important;
-    font-size:12px !important;
-    line-height:1.6 !important;
-  }
-  .current-service-tags{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    margin-top:18px;
-  }
-  .current-service-tags span{
-    border:1px solid var(--line);
-    padding:7px 9px;
-    font-size:7px;
-    font-weight:900;
-    letter-spacing:.14em;
-  }
-  .current-service-top-clean .current-price-module{
-    align-self:stretch;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
-
-  @media(max-width:760px){
-    .current-service-console{
-      padding:20px 16px 17px !important;
-    }
-    .current-service-top-clean{
-      grid-template-columns:1fr !important;
-      gap:16px !important;
-    }
-    .current-service-top-clean h1{
-      font-size:clamp(38px,11vw,54px) !important;
-      line-height:.9 !important;
-      margin:9px 0 10px !important;
-    }
-    .current-service-top-clean .current-service-summary>p{
-      font-size:11px !important;
-      line-height:1.55 !important;
-    }
-    .current-service-tags{
-      margin-top:13px;
-    }
-    .current-service-top-clean .current-price-module{
-      padding:15px !important;
-    }
-    .current-service-top-clean .current-price-module strong{
-      font-size:clamp(62px,19vw,86px) !important;
-      margin:6px 0 4px !important;
-    }
-    .current-service-top-clean .price-info-toggle{
-      margin-top:15px !important;
-    }
-  }
-</style>
-
-
-<style id="stancebound-pricing-rebuild">
-#pricing .sbp-content{max-width:900px;padding-bottom:22px}
-.sbp-hero{position:relative;overflow:hidden;border:1px solid var(--line);padding:20px;background:rgba(255,255,255,.008)}
-.sbp-hero .service-light-orbit{right:-160px;top:-190px;opacity:.45}
-.sbp-live{position:relative;display:flex;align-items:center;gap:8px;font-size:7px;font-weight:900;letter-spacing:.18em}
-.sbp-live b{margin-left:auto;color:var(--muted)}
-.sbp-hero-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:18px;margin-top:52px}
-.sbp-hero-main small,.sbp-price span{font-size:6px;font-weight:900;letter-spacing:.18em;color:var(--muted)}
-.sbp-hero-main h1{font-size:clamp(44px,7vw,72px);line-height:.82;letter-spacing:-.06em;margin:8px 0 12px}
-.sbp-hero-main p{max-width:340px;margin:0;color:var(--muted);font-size:10px;line-height:1.5}
-.sbp-price{text-align:right}.sbp-price strong{display:block;font-size:clamp(64px,9vw,94px);line-height:.78;letter-spacing:-.07em}
-.sbp-actions{position:relative;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-top:24px}
-.sbp-actions button{height:48px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--text);font:900 7px/1 inherit;letter-spacing:.15em;text-align:left;padding:0 4px}
-.sbp-actions button:last-child{border-right:0;padding-left:14px}.sbp-actions i{float:right;font-style:normal;font-size:12px;margin-right:10px}
-
-.sbp-explorer{margin-top:10px;border:1px solid var(--line);background:rgba(255,255,255,.005)}
-.sbp-explorer-head{display:flex;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.16em}.sbp-explorer-head small{color:var(--muted)}
-.sbp-tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);scroll-snap-type:x proximity}.sbp-tabs::-webkit-scrollbar{display:none}
-.sbp-tabs button{flex:0 0 auto;height:43px;padding:0 16px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);font:900 6px/1 inherit;letter-spacing:.14em;transition:.25s}
-.sbp-tabs button.active{color:var(--text);background:rgba(255,255,255,.035)}
-.sbp-stage{position:relative;min-height:285px;overflow:hidden}
-.sbp-stage-grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(90deg,transparent,#000 55%,#000)}
-.sbp-stage-graphic{position:absolute;right:5%;top:14%;width:43%;height:62%;transition:opacity .18s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
-.sbp-stage-graphic:before,.sbp-stage-graphic:after{content:"";position:absolute}
-.sbp-stage[data-mode="sale"] .sbp-stage-graphic:before{inset:14% 4%;border:1px solid var(--line);clip-path:polygon(0 18%,32% 18%,32% 0,68% 0,68% 18%,100% 18%,100% 82%,68% 82%,68% 100%,32% 100%,32% 82%,0 82%)}
-.sbp-stage[data-mode="sale"] .sbp-stage-graphic:after{left:10%;right:10%;top:50%;height:1px;background:var(--text);box-shadow:0 -34px 0 var(--line),0 34px 0 var(--line)}
-.sbp-stage[data-mode="scratch"] .sbp-stage-graphic:before{width:115%;height:1px;left:-10%;top:45%;background:linear-gradient(90deg,transparent,var(--text),transparent);transform:rotate(-12deg);box-shadow:0 13px 0 rgba(255,255,255,.22),0 -15px 0 rgba(255,255,255,.1)}
-.sbp-stage[data-mode="scratch"] .sbp-stage-graphic:after{width:145px;height:145px;border:1px solid var(--line);border-radius:50%;right:-30px;top:0}
-.sbp-stage[data-mode="headlight"] .sbp-stage-graphic:before{width:150px;height:150px;border:1px solid var(--line);border-radius:50%;right:0;top:0;box-shadow:inset 0 0 0 32px rgba(255,255,255,.018),inset 0 0 0 58px rgba(255,255,255,.018)}
-.sbp-stage[data-mode="headlight"] .sbp-stage-graphic:after{width:180px;height:1px;right:-20px;top:75px;background:linear-gradient(90deg,var(--text),transparent);animation:sbpBeam 2.6s ease-in-out infinite}
-@keyframes sbpBeam{50%{opacity:.25;transform:scaleX(.8)}}
-.sbp-stage[data-mode="paint"] .sbp-stage-graphic:before{width:180px;height:180px;border:1px solid var(--line);border-radius:50%;right:-15px;top:-15px}
-.sbp-stage[data-mode="paint"] .sbp-stage-graphic:after{width:1px;height:190px;right:70px;top:-15px;background:linear-gradient(transparent,var(--text),transparent);transform:rotate(28deg);box-shadow:34px 0 0 rgba(255,255,255,.15)}
-.sbp-stage[data-mode="ceramic"] .sbp-stage-graphic:before{width:70px;height:70px;border:1px solid var(--line);transform:rotate(45deg);right:48px;top:38px;box-shadow:50px 50px 0 -1px #080808,50px 50px 0 0 var(--line),-50px 50px 0 -1px #080808,-50px 50px 0 0 var(--line)}
-.sbp-stage[data-mode="ceramic"] .sbp-stage-graphic:after{width:165px;height:165px;border:1px dashed var(--line);border-radius:50%;right:0;top:0;animation:sbpSpin 16s linear infinite}
-@keyframes sbpSpin{to{transform:rotate(360deg)}}
-.sbp-stage[data-mode="photo"] .sbp-stage-graphic:before{inset:12% 2%;border:1px solid var(--line);background:linear-gradient(var(--line),var(--line)) 50% 50%/55px 1px no-repeat,linear-gradient(var(--line),var(--line)) 50% 50%/1px 55px no-repeat}
-.sbp-stage[data-mode="photo"] .sbp-stage-graphic:after{width:34px;height:34px;border:1px solid var(--text);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
-.sbp-stage-copy{position:relative;z-index:2;width:58%;padding:34px 16px 18px}
-.sbp-status{font-size:6px;font-weight:900;letter-spacing:.17em;color:var(--muted)}
-.sbp-stage-copy h2{font-size:clamp(34px,6vw,60px);line-height:.82;letter-spacing:-.05em;margin:35px 0 10px}
-.sbp-stage-copy p{max-width:300px;margin:0;color:var(--muted);font-size:9px;line-height:1.5}
-.sbp-stage-copy button{margin-top:24px;width:100%;height:38px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--text);font:900 6px/1 inherit;letter-spacing:.15em;text-align:left;padding:0}.sbp-stage-copy button span{float:right;font-size:12px}
-.sbp-dots{display:flex;gap:4px;padding:0 14px 13px}.sbp-dots i{height:2px;width:16px;background:var(--line);transition:.25s}.sbp-dots i.active{width:32px;background:var(--text)}
-.sbp-footer-line{display:flex;justify-content:space-between;gap:15px;padding:15px 2px 0;font-size:5px;letter-spacing:.14em;color:var(--muted)}.sbp-footer-line strong{font-size:7px;color:var(--text)}
-.sbp-detail-source{display:none}
-
-.sbp-modal{position:fixed;inset:0;z-index:10080;display:none;align-items:flex-end;padding:18px}.sbp-modal.open{display:flex}
-.sbp-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.sbp-sheet{position:relative;z-index:2;width:min(720px,100%);max-height:84dvh;overflow:auto;overscroll-behavior:contain;margin:auto auto 0;background:#080808;border:1px solid #333;padding:17px;transform:translateY(28px);opacity:0;transition:.3s cubic-bezier(.2,.8,.2,1)}
-.sbp-modal.open .sbp-sheet{transform:none;opacity:1}
-.sbp-sheet-head{position:sticky;top:-17px;z-index:5;margin:-17px -17px 15px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,8,.95);border-bottom:1px solid #292929;backdrop-filter:blur(10px)}
-.sbp-sheet-head small{display:block;color:#777;font-size:6px;letter-spacing:.17em}.sbp-sheet-head strong{display:block;margin-top:4px;font-size:14px}
-.sbp-close{width:38px;height:38px;border:1px solid #333;background:#0d0d0d;color:#fff;font-size:19px}
-.sbp-modal-visual{height:105px;border:1px solid #222;margin-bottom:15px;position:relative;overflow:hidden;background-image:linear-gradient(#151515 1px,transparent 1px),linear-gradient(90deg,#151515 1px,transparent 1px);background-size:28px 28px}
-.sbp-modal-visual:before{content:"";position:absolute;width:145px;height:145px;border:1px solid #3a3a3a;border-radius:50%;right:-25px;top:-55px}
-.sbp-modal-visual:after{content:"";position:absolute;left:18px;right:18px;top:50%;height:1px;background:linear-gradient(90deg,#fff,transparent);opacity:.35}
-.sbp-modal-copy h3{font-size:28px;line-height:.9;margin:0 0 10px}.sbp-modal-copy p{margin:0;color:#999;font-size:10px;line-height:1.6}.sbp-modal-copy .sbp-coming{margin-top:16px;padding-top:12px;border-top:1px solid #222;font-size:7px;font-weight:900;letter-spacing:.16em}
-body.sbp-modal-open{overflow:hidden}
-body.light-theme .sbp-hero,body.light-theme .sbp-explorer{background:rgba(0,0,0,.008)}
-body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .sbp-sheet-head{background:rgba(247,247,245,.95)}.light-theme .sbp-close{background:#fff;color:#111;border-color:#ccc}
-
-@media(max-width:600px){
- #pricing .sbp-content{width:calc(100% - 24px)!important;max-width:calc(100% - 24px)!important;padding-left:0!important;padding-right:0!important}
- .sbp-hero{padding:15px}.sbp-hero-main{margin-top:38px;gap:8px}.sbp-hero-main h1{font-size:10.6vw}.sbp-hero-main p{font-size:8.5px;max-width:210px}.sbp-price strong{font-size:15vw}.sbp-actions{margin-top:19px}.sbp-actions button{height:43px;font-size:5.7px}
- .sbp-stage{min-height:245px}.sbp-stage-copy{width:62%;padding:25px 12px 14px}.sbp-stage-copy h2{font-size:9vw;margin-top:31px}.sbp-stage-copy p{font-size:8px}.sbp-stage-graphic{right:2%;width:45%;height:58%}
- .sbp-tabs button{height:40px;padding:0 13px;font-size:5.5px}
- .sbp-modal{padding:0}.sbp-sheet{width:100%;max-height:87dvh;border-left:0;border-right:0;border-bottom:0}
- .sbp-sheet .detail-process-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.sbp-sheet .process-box{min-height:120px!important}
-}
-</style>
-
-<style id="stancebound-pricing-polish-v3">
-/* ---- Pricing interaction polish ---- */
-#pricing button{
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
-}
-#pricing button,
-.sbp-close{
-  position:relative;
-  overflow:hidden;
-}
-#pricing button::after,
-.sbp-close::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:currentColor;
-  opacity:0;
-  transform:scale(.72);
-  transition:opacity .18s ease,transform .28s cubic-bezier(.2,.8,.2,1);
-  pointer-events:none;
-}
-#pricing button:active::after,
-.sbp-close:active::after{
-  opacity:.055;
-  transform:scale(1);
-}
-#pricing button:focus-visible,
-.sbp-close:focus-visible{
-  outline:1px solid var(--text);
-  outline-offset:-3px;
-}
-
-.sbp-actions button,
-.sbp-tabs button,
-.sbp-stage-copy button{
-  transition:
-    background-color .24s ease,
-    color .24s ease,
-    border-color .24s ease,
-    opacity .24s ease;
-}
-.sbp-actions button i,
-.sbp-stage-copy button span{
-  display:inline-block;
-  transition:transform .3s cubic-bezier(.2,.8,.2,1);
-}
-.sbp-actions button:active i,
-.sbp-stage-copy button:active span{transform:translate(4px,-2px)}
-
-.sbp-tabs button{
-  scroll-snap-align:start;
-}
-.sbp-tabs button.active{
-  box-shadow:inset 0 -1px 0 var(--text);
-}
-.sbp-tabs button.active::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  bottom:0;
-  width:18px;
-  height:1px;
-  background:var(--text);
-  transform:translateX(-50%);
-}
-
-.sbp-stage{
-  isolation:isolate;
-}
-.sbp-stage-copy{
-  transition:opacity .18s ease,transform .3s cubic-bezier(.2,.8,.2,1);
-}
-.sbp-stage.sbp-changing .sbp-stage-copy{
-  opacity:0;
-  transform:translateX(-10px);
-}
-.sbp-stage.sbp-changing .sbp-stage-graphic{
-  opacity:0!important;
-  transform:translateX(18px) scale(.96)!important;
-}
-.sbp-stage-graphic{
-  will-change:transform,opacity;
-}
-.sbp-stage::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;top:0;
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--text),transparent);
-  opacity:0;
-  pointer-events:none;
-}
-.sbp-stage.sbp-changing::after{
-  animation:sbpSwitchScan .42s ease;
-}
-@keyframes sbpSwitchScan{
-  0%{top:0;opacity:0}
-  20%{opacity:.28}
-  100%{top:100%;opacity:0}
-}
-
-.sbp-modal{
-  visibility:hidden;
-  display:flex!important;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity .24s ease,visibility 0s linear .3s;
-}
-.sbp-modal.open{
-  visibility:visible;
-  pointer-events:auto;
-  opacity:1;
-  transition:opacity .24s ease;
-}
-.sbp-modal-bg{opacity:0;transition:opacity .26s ease}
-.sbp-modal.open .sbp-modal-bg{opacity:1}
-.sbp-sheet{
-  display:block!important;
-  transform:translateY(34px) scale(.985)!important;
-  opacity:0!important;
-  transition:
-    transform .34s cubic-bezier(.2,.82,.2,1),
-    opacity .24s ease!important;
-}
-.sbp-modal.open .sbp-sheet{
-  transform:translateY(0) scale(1)!important;
-  opacity:1!important;
-}
-
-.sbp-detail-source .detail-process-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px;
-}
-.sbp-detail-source .process-box{
-  min-width:0;
-  overflow:hidden;
-}
-.sbp-detail-source .process-box strong,
-.sbp-detail-source .process-box small{
-  overflow-wrap:normal;
-  word-break:normal;
-}
-
-@media (hover:hover) and (pointer:fine){
-  .sbp-actions button:hover,
-  .sbp-stage-copy button:hover{background:rgba(255,255,255,.035)}
-  .sbp-tabs button:hover{color:var(--text)}
-}
-
-/* ---- Hard mobile geometry: nothing may escape the viewport ---- */
-@media(max-width:600px){
-  #pricing,
-  #pricing .page,
-  #pricing .sbp-content,
-  .sbp-hero,
-  .sbp-explorer,
-  .sbp-stage{
-    min-width:0!important;
-    max-width:100%!important;
-    box-sizing:border-box!important;
-  }
-  #pricing .sbp-content{
-    width:calc(100% - 24px)!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
-    overflow:visible!important;
-  }
-
-  .sbp-hero-main{
-    grid-template-columns:minmax(0,1fr) minmax(86px,29%)!important;
-    gap:8px!important;
-  }
-  .sbp-hero-main>div{min-width:0}
-  .sbp-hero-main h1{
-    font-size:clamp(35px,10vw,47px)!important;
-    line-height:.82!important;
-    overflow-wrap:normal!important;
-    word-break:normal!important;
-  }
-  .sbp-price{
-    min-width:0!important;
-    width:100%!important;
-  }
-  .sbp-price strong{
-    font-size:clamp(49px,14vw,66px)!important;
-    white-space:nowrap!important;
-  }
-
-  .sbp-actions button{
-    min-width:0!important;
-    padding-left:3px!important;
-    padding-right:7px!important;
-    white-space:nowrap!important;
-  }
-  .sbp-actions button:last-child{padding-left:10px!important}
-
-  .sbp-tabs{
-    width:100%!important;
-    overscroll-behavior-x:contain;
-  }
-  .sbp-tabs button{
-    position:relative;
-    min-width:max-content!important;
-  }
-
-  .sbp-stage{
-    min-height:250px!important;
-  }
-  .sbp-stage-copy{
-    width:62%!important;
-    max-width:62%!important;
-    min-width:0!important;
-    padding:25px 12px 14px!important;
-  }
-  .sbp-stage-copy h2{
-    font-size:clamp(29px,8.6vw,40px)!important;
-    line-height:.84!important;
-    overflow-wrap:normal!important;
-    word-break:normal!important;
-  }
-  .sbp-stage-copy p{
-    width:100%!important;
-    max-width:100%!important;
-  }
-  .sbp-stage-graphic{
-    width:41%!important;
-    right:1%!important;
-  }
-
-  .sbp-footer-line{
-    align-items:center!important;
-  }
-  .sbp-footer-line span{
-    max-width:72%!important;
-    line-height:1.45!important;
-  }
-
-  .sbp-sheet{
-    box-sizing:border-box!important;
-    max-width:100vw!important;
-    padding:15px!important;
-  }
-  .sbp-sheet-head{
-    margin:-15px -15px 14px!important;
-    top:-15px!important;
-  }
-  .sbp-detail-source .detail-process-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:7px!important;
-  }
-  .sbp-detail-source .process-box{
-    padding:11px!important;
-    min-height:118px!important;
-  }
-  .sbp-detail-source .process-box strong{
-    font-size:9px!important;
-    line-height:1.15!important;
-  }
-  .sbp-detail-source .process-box small{
-    font-size:6px!important;
-    line-height:1.35!important;
-  }
-}
-
-@media(max-width:360px){
-  .sbp-hero-main{
-    grid-template-columns:minmax(0,1fr) 82px!important;
-  }
-  .sbp-hero-main h1{font-size:34px!important}
-  .sbp-price strong{font-size:48px!important}
-  .sbp-stage-copy h2{font-size:28px!important}
-}
-@media(prefers-reduced-motion:reduce){
-  #pricing *, .sbp-modal *{
-    animation-duration:.01ms!important;
-    animation-iteration-count:1!important;
-    transition-duration:.01ms!important;
-    scroll-behavior:auto!important;
-  }
-}
-</style>
-
-
-<style id="stancebound-cinematic-service-browser">
-.sbp-cinema{margin-top:10px;border:1px solid var(--line);overflow:hidden;background:#070707}
-.sbp-cinema-head{height:42px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.17em}
-.sbp-cinema-head small{font-size:6px;color:var(--muted)}
-.sbp-cinema-frame{position:relative;min-height:430px;overflow:hidden;isolation:isolate;background:#0a0a0a}
-.sbp-cinema-image{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.02);transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .45s ease,opacity .28s ease}
-.sbp-cinema-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.6) 46%,rgba(0,0,0,.16) 100%),linear-gradient(0deg,rgba(0,0,0,.72),transparent 58%)}
-.sbp-cinema-tech{position:absolute;right:5%;top:10%;width:44%;height:55%;opacity:.62;transition:opacity .25s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
-.sbp-cinema-tech:before,.sbp-cinema-tech:after{content:"";position:absolute}
-.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-tech:before{inset:10%;border:1px solid rgba(255,255,255,.3);clip-path:polygon(0 18%,30% 18%,30% 0,70% 0,70% 18%,100% 18%,100% 82%,70% 82%,70% 100%,30% 100%,30% 82%,0 82%)}
-.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-tech:after{left:10%;right:10%;top:50%;height:1px;background:#fff;box-shadow:0 -40px 0 rgba(255,255,255,.18),0 40px 0 rgba(255,255,255,.18)}
-.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-tech:before{left:-10%;top:48%;width:120%;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);transform:rotate(-12deg);box-shadow:0 12px 0 rgba(255,255,255,.3),0 -15px 0 rgba(255,255,255,.15)}
-.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-tech:after{right:-10%;top:5%;width:160px;height:160px;border:1px solid rgba(255,255,255,.28);border-radius:50%}
-.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-tech:before{right:0;top:0;width:170px;height:170px;border:1px solid rgba(255,255,255,.3);border-radius:50%;box-shadow:inset 0 0 0 36px rgba(255,255,255,.025),inset 0 0 0 68px rgba(255,255,255,.025)}
-.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-tech:after{right:-20%;top:85px;width:220px;height:1px;background:linear-gradient(90deg,#fff,transparent);animation:cinemaBeam 2.5s ease-in-out infinite}
-@keyframes cinemaBeam{50%{opacity:.25;transform:scaleX(.78)}}
-.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-tech:before{right:-10%;top:-5%;width:190px;height:190px;border:1px solid rgba(255,255,255,.28);border-radius:50%}
-.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-tech:after{right:72px;top:-5%;width:1px;height:220px;background:linear-gradient(transparent,#fff,transparent);transform:rotate(27deg);box-shadow:38px 0 0 rgba(255,255,255,.15)}
-.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-tech:before{right:50px;top:45px;width:72px;height:72px;border:1px solid rgba(255,255,255,.3);transform:rotate(45deg);box-shadow:52px 52px 0 -1px #090909,52px 52px 0 0 rgba(255,255,255,.2),-52px 52px 0 -1px #090909,-52px 52px 0 0 rgba(255,255,255,.2)}
-.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-tech:after{right:0;top:0;width:180px;height:180px;border:1px dashed rgba(255,255,255,.24);border-radius:50%;animation:sbpSpin 16s linear infinite}
-.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-tech:before{inset:8%;border:1px solid rgba(255,255,255,.28);background:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3)) 50% 50%/65px 1px no-repeat,linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3)) 50% 50%/1px 65px no-repeat}
-.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-tech:after{left:50%;top:50%;width:38px;height:38px;border:1px solid #fff;border-radius:50%;transform:translate(-50%,-50%)}
-.sbp-cinema-copy{position:relative;z-index:3;width:58%;padding:42px 0 24px 22px}
-.sbp-cinema-status{font-size:6px;font-weight:900;letter-spacing:.17em;color:#aaa;display:flex;align-items:center;gap:8px}.sbp-cinema-status i{width:24px;height:1px;background:#777}
-.sbp-cinema-index{margin-top:55px;font-size:8px;letter-spacing:.18em;color:#777;font-weight:900}
-.sbp-cinema-copy h2{margin:10px 0 11px;font-size:clamp(42px,7vw,72px);line-height:.82;letter-spacing:-.055em;color:#fff}
-.sbp-cinema-copy p{margin:0;color:#aaa;font-size:9px;letter-spacing:.02em}
-.sbp-explore-btn{margin-top:30px;width:min(290px,100%);height:52px;border:1px solid rgba(255,255,255,.35);background:rgba(5,5,5,.3);color:#fff;padding:0 15px;display:flex;align-items:center;justify-content:space-between;font:900 7px/1 inherit;letter-spacing:.16em;backdrop-filter:blur(8px);transition:background .25s ease,border-color .25s ease}
-.sbp-explore-btn i{font-style:normal;font-size:14px;transition:transform .3s cubic-bezier(.2,.8,.2,1)}.sbp-explore-btn:active i{transform:translate(4px,-4px)}
-.sbp-hit{position:absolute!important;z-index:2;top:0;bottom:0;width:21%;border:0!important;background:transparent!important;opacity:0}.sbp-hit-left{left:0}.sbp-hit-right{right:0}
-.sbp-cinema-nav{height:62px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:0 14px;border-top:1px solid var(--line)}
-.sbp-cinema-nav>button{height:38px;border:0;background:transparent;color:var(--text);display:flex;gap:7px;align-items:center;font:900 6px/1 inherit;letter-spacing:.14em}.sbp-cinema-nav>button i{font-style:normal;font-size:13px}
-.sbp-cinema-progress{display:flex;align-items:center;justify-content:center;min-width:0}.sbp-cinema-progress b{font-size:5px;color:#666;transition:.25s}.sbp-cinema-progress i{width:10px;height:1px;background:#333;transition:width .35s ease,background .35s ease}.sbp-cinema-progress b.active{font-size:7px;color:#fff}.sbp-cinema-progress b.active+i{width:27px;background:#fff}
-.sbp-cinema-frame.cinema-changing .sbp-cinema-image{filter:blur(8px);opacity:.4;transform:scale(1.07)}
-.sbp-cinema-frame.cinema-changing .sbp-cinema-tech{opacity:0;transform:translateX(22px) scale(.95)}
-.sbp-cinema-frame.cinema-changing .sbp-cinema-copy{opacity:0;transform:translateX(-12px)}
-.sbp-cinema-copy{transition:opacity .2s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
-/* Temporary photographic treatment. These can be replaced with Ryan's own STANCEBOUND images later. */
-.sbp-cinema-frame[data-mode="sale"] .sbp-cinema-image{background-image:radial-gradient(circle at 78% 34%,rgba(255,255,255,.13),transparent 18%),linear-gradient(125deg,#080808 18%,#171717 56%,#050505)}
-.sbp-cinema-frame[data-mode="scratch"] .sbp-cinema-image{background-image:linear-gradient(145deg,#050505,#1b1b1b 48%,#070707)}
-.sbp-cinema-frame[data-mode="headlight"] .sbp-cinema-image{background-image:radial-gradient(circle at 78% 38%,rgba(255,255,255,.22),transparent 8%,rgba(255,255,255,.04) 17%,transparent 28%),linear-gradient(135deg,#050505,#161616)}
-.sbp-cinema-frame[data-mode="paint"] .sbp-cinema-image{background-image:linear-gradient(112deg,#050505 20%,#202020 54%,#090909 55%,#151515)}
-.sbp-cinema-frame[data-mode="ceramic"] .sbp-cinema-image{background-image:radial-gradient(circle at 75% 30%,rgba(255,255,255,.1) 0 2px,transparent 3px),radial-gradient(circle at 86% 45%,rgba(255,255,255,.1) 0 2px,transparent 3px),linear-gradient(140deg,#050505,#191919)}
-.sbp-cinema-frame[data-mode="photo"] .sbp-cinema-image{background-image:linear-gradient(125deg,#050505 20%,#1c1c1c 62%,#060606)}
-@media(max-width:600px){
- .sbp-cinema-frame{min-height:390px}.sbp-cinema-copy{width:68%;padding:34px 0 20px 15px}.sbp-cinema-index{margin-top:48px}.sbp-cinema-copy h2{font-size:10vw}.sbp-cinema-tech{right:-2%;width:48%;top:13%}.sbp-explore-btn{height:50px;width:220px;margin-top:25px}
- .sbp-cinema-nav{grid-template-columns:52px 1fr 42px;gap:6px;padding:0 9px}.sbp-cinema-nav>button span{display:none}.sbp-cinema-progress i{width:7px}.sbp-cinema-progress b.active+i{width:19px}
-}
-</style>
-
-<style id="stancebound-cinema-swipe-v2">
-.sbp-cinema-frame{touch-action:pan-y}
-.sbp-swipe-cue{position:absolute;z-index:6;right:12px;bottom:12px;height:29px;padding:0 9px;display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.46);backdrop-filter:blur(8px);color:#fff;font-size:5.5px;font-weight:900;letter-spacing:.16em;pointer-events:none;transition:.35s}
-.sbp-swipe-cue i{font-style:normal;font-size:11px;animation:sbSwipeCue 1.45s ease-in-out infinite}.sbp-swipe-cue i:last-child{animation-direction:reverse}
-@keyframes sbSwipeCue{50%{transform:translateX(-3px);opacity:.4}}
-.sbp-cinema.has-swiped .sbp-swipe-cue{opacity:.35}
-.sbp-cinema-edge{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:30px;height:56px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.32);backdrop-filter:blur(7px);color:#fff;font-size:17px;pointer-events:none}
-.sbp-cinema-edge.left{left:0;border-left:0}.sbp-cinema-edge.right{right:0;border-right:0}
-.sbp-cinema-frame.swiping-left .sbp-cinema-image{transform:translateX(-14px) scale(1.045)}
-.sbp-cinema-frame.swiping-right .sbp-cinema-image{transform:translateX(14px) scale(1.045)}
-.sbp-cinema-frame.swiping-left .sbp-cinema-copy{transform:translateX(-7px)}
-.sbp-cinema-frame.swiping-right .sbp-cinema-copy{transform:translateX(7px)}
-@media(max-width:600px){.sbp-swipe-cue{right:8px;bottom:8px;height:27px;font-size:5px}.sbp-cinema-edge{width:27px;height:52px}}
-</style>
-</head>
+<style id="sb-booking-request-terms-v2">
+.booking-terms-notice{margin:22px 0 14px;padding:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.025)}
+.booking-terms-notice h3{margin:7px 0 13px}
+.booking-terms-notice p{margin:8px 0;color:var(--grey);line-height:1.65;font-size:12px}
+.booking-terms-notice strong{color:var(--white)}
+</style></head>
 
 
 
@@ -4245,91 +3105,181 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
          ======================================== -->
 
     <section id="pricing" class="page">
-      <div class="content sbp-content">
+      <div class="content">
 
-        <section class="sbp-hero">
-          <div class="service-light-orbit" aria-hidden="true"></div>
-          <div class="service-scanline" aria-hidden="true"></div>
-          <div class="service-corner tl" aria-hidden="true"></div>
-          <div class="service-corner tr" aria-hidden="true"></div>
-          <div class="service-corner bl" aria-hidden="true"></div>
-          <div class="service-corner br" aria-hidden="true"></div>
+        <div class="pricing-hero sb-scroll-reveal">
+          <div class="eyebrow">STANCEBOUND · CURRENT PRICING</div>
+          <h1>Simple.<br>For now.</h1>
 
-          <div class="sbp-live"><span class="live-pulse"></span> AVAILABLE NOW <b>01</b></div>
-          <div class="sbp-hero-main">
+          <div class="pricing-hero-copy">
+            <p>
+              STANCEBOUND is currently offering detailing at an introductory rate
+              while the portfolio and service offering continue to grow. No confusing
+              package ladder. No pretending every car needs the same thing. Just proper
+              attention to the vehicle at a deliberately accessible starting price.
+            </p>
+
+            <div class="pricing-price-lockup">
+              <span>Introductory detail</span>
+              <strong>£40</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-price-card sb-scroll-reveal">
+          <div>
+            <div class="pricing-kicker">Portfolio rate · Limited period</div>
+            <h2>STANCEBOUND<br>Detail</h2>
+            <p class="lead">
+              A full in-depth interior and exterior detail at the current STANCEBOUND
+              introductory rate. The exact process is adapted to the vehicle and its
+              condition rather than rushed through a generic checklist.
+            </p>
+
+            <div class="price-includes" aria-label="What is included">
+              <div class="price-include">Wheels &amp; exterior pre-clean</div>
+              <div class="price-include">Snow foam &amp; safe contact wash</div>
+              <div class="price-include">Careful drying &amp; finishing touches</div>
+              <div class="price-include">In-depth interior vacuum &amp; detailed clean</div>
+              <div class="price-include">Interior surfaces, trims, crevices &amp; detailed areas</div>
+              <div class="price-include">Interior &amp; exterior glass</div>
+            </div>
+          </div>
+
+          <aside class="price-side">
             <div>
-              <small>FULL DEEP DETAIL</small>
-              <h1>ONE CAR.<br>PROPERLY DONE.</h1>
-              <p>In-depth interior + exterior detailing, tailored to the vehicle.</p>
+              <div class="price-label">Current detailing price</div>
+              <div class="price">£40</div>
+              <div class="price-note">
+                Introductory portfolio-building rate. Vehicle condition and any work
+                outside the standard detail can be discussed before the booking is confirmed.
+              </div>
             </div>
-            <div class="sbp-price"><span>INTRO RATE</span><strong>£40</strong></div>
-          </div>
-          <div class="sbp-actions">
-            <button type="button" data-sbp-open="detail">WHAT'S INCLUDED? <i>↗</i></button>
-            <button type="button" onclick="bookIntroDetail()">BOOK <i>→</i></button>
-          </div>
-        </section>
 
-        <section class="sbp-cinema" id="sbpCinema">
-          <div class="sbp-cinema-head">
-            <span>SERVICES / <b id="sbpCinemaNum">02</b>—07</span>
-            <small>EXPLORE</small>
-          </div>
+            <button class="btn" type="button" onclick="bookIntroDetail()">
+              BOOK THE £40 DETAIL
+            </button>
+          </aside>
+        </div>
 
-          <article class="sbp-cinema-frame" id="sbpCinemaFrame" data-mode="sale">
-            <div class="sbp-cinema-image" id="sbpCinemaImage" aria-hidden="true"></div>
-            <div class="sbp-cinema-shade" aria-hidden="true"></div>
-            <div class="sbp-cinema-tech" id="sbpCinemaTech" aria-hidden="true"></div>
-            <button class="sbp-hit sbp-hit-left" type="button" data-cinema-prev aria-label="Previous service"></button>
-            <button class="sbp-hit sbp-hit-right" type="button" data-cinema-next aria-label="Next service"></button>
-
-            <div class="sbp-swipe-cue" aria-hidden="true"><i>←</i><span>SWIPE SERVICES</span><i>→</i></div>
-            <div class="sbp-cinema-edge left" aria-hidden="true">‹</div>
-            <div class="sbp-cinema-edge right" aria-hidden="true">›</div>
-            <div class="sbp-cinema-copy">
-              <div class="sbp-cinema-status">COMING SOON <i></i></div>
-              <div class="sbp-cinema-index" id="sbpCinemaIndex">02</div>
-              <h2 id="sbpCinemaTitle">SALE<br>PREPARATION.</h2>
-              <p id="sbpCinemaText">Detail · Photography · Listing creation</p>
-              <button type="button" class="sbp-explore-btn" id="sbpCinemaMore" data-sbp-open="sale">
-                <span>EXPLORE SERVICE</span><i>↗</i>
-              </button>
-            </div>
+        <div class="pricing-note-grid">
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Why £40?</strong>
+            <p>
+              STANCEBOUND is currently building its detailing portfolio and experience,
+              so the service is being offered at an introductory rate for a limited period.
+            </p>
           </article>
 
-          <div class="sbp-cinema-nav">
-            <button type="button" data-cinema-prev><i>←</i><span>PREVIOUS</span></button>
-            <div class="sbp-cinema-progress" id="sbpCinemaProgress">
-              <b class="active">02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b><i></i><b>06</b><i></i><b>07</b>
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Your vehicle matters</strong>
+            <p>
+              Every car is different. Heavy soiling, unusual requirements or additional
+              work can be discussed with you before anything outside the agreed service is done.
+            </p>
+          </article>
+
+          <article class="pricing-note sb-scroll-reveal">
+            <strong>Photography</strong>
+            <p>
+              Automotive photography and combined detailing + photography work are available
+              separately. Get in touch with STANCEBOUND for the right option for your car.
+            </p>
+          </article>
+        </div>
+
+
+        <section class="future-services sb-scroll-reveal">
+          <div class="future-services-head">
+            <div>
+              <div class="pricing-kicker">Where STANCEBOUND is going</div>
+              <h2>Future services.</h2>
             </div>
-            <button type="button" data-cinema-next><span>NEXT</span><i>→</i></button>
+            <p>
+              STANCEBOUND is being built around one vehicle at a time, not a conveyor belt.
+              These services will become available as the equipment, training and experience
+              are in place to offer them properly.
+            </p>
+          </div>
+
+          <div class="future-service-grid">
+            <article class="future-service">
+              <div class="num">01 · RESTORATION</div>
+              <h3>Scratch Removal</h3>
+              <p>Targeted improvement of suitable paint defects and scratches, assessed vehicle by vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">02 · RESTORATION</div>
+              <h3>Headlight Restoration</h3>
+              <p>Restoring tired, oxidised headlights to improve their clarity and overall presentation.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">03 · PAINT</div>
+              <h3>Paint Correction</h3>
+              <p>Machine polishing and corrective work aimed at improving swirls, haze and paint clarity.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">04 · PROTECTION</div>
+              <h3>Ceramic Coating</h3>
+              <p>Preparation-led ceramic protection designed to preserve the finish after the paint is properly prepared.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service">
+              <div class="num">05 · MEDIA</div>
+              <h3>Detail + Photography</h3>
+              <p>A full in-depth STANCEBOUND detail followed by dedicated automotive photography of the finished vehicle.</p>
+              <div class="future-tag">Not available yet</div>
+            </article>
+
+            <article class="future-service sale-prep-feature">
+              <div class="num">06 · SALE PREPARATION</div>
+              <h3>Prepare it. Shoot it. Advertise it.</h3>
+              <p>
+                A future service for owners selling their vehicle: STANCEBOUND prepares the car,
+                photographs it professionally and builds a polished factual advert from information
+                supplied by the owner. Selected cars could also have their own shareable STANCEBOUND
+                listing page, clearly advertised on behalf of the owner.
+              </p>
+              <div class="sale-prep-flow">
+                <span>Deep Detail</span><span>Sale Preparation</span><span>Photography</span><span>Listing Creation</span>
+              </div>
+              <div class="future-tag">Not available yet</div>
+            </article>
           </div>
         </section>
 
-        <div class="sbp-footer-line">
-          <span>DETAILING · RESTORATION · PROTECTION · PHOTOGRAPHY</span>
-          <strong>STANCEBOUND</strong>
+        <section class="one-car-statement sb-scroll-reveal">
+          <div class="eyebrow">THE STANCEBOUND APPROACH</div>
+          <h2>One car.<br>Properly done.</h2>
+          <p>
+            STANCEBOUND is not being built around rushing multiple vehicles through in a day.
+            Availability is deliberately limited so the vehicle booked in gets the time and
+            attention needed for an in-depth result.
+          </p>
+        </section>
+
+        <div class="pricing-disclaimer sb-scroll-reveal">
+          The £40 price is the current introductory detailing rate and may change as
+          STANCEBOUND's service offering develops. Any different or additional price
+          will be agreed with you before the work is carried out.
         </div>
 
-        <!-- Original six-step graphic system retained here and moved into the modal only when requested. -->
-        <div class="sbp-detail-source" id="currentServiceDetails">
-          <div class="detail-tech-line"><span>DETAIL PROCESS</span><span>01 / CURRENT</span></div>
-          <div class="detail-process-grid">
-            <div class="process-box"><span class="process-icon wheel-icon" aria-hidden="true"></span><b>01</b><strong>Wheels + Pre-clean</strong><small>Initial exterior preparation</small></div>
-            <div class="process-box"><span class="process-icon foam-icon" aria-hidden="true"></span><b>02</b><strong>Snow Foam + Wash</strong><small>Safe contact wash process</small></div>
-            <div class="process-box"><span class="process-icon dry-icon" aria-hidden="true"></span><b>03</b><strong>Dry + Finish</strong><small>Careful finishing touches</small></div>
-            <div class="process-box"><span class="process-icon cabin-icon" aria-hidden="true"></span><b>04</b><strong>Interior Deep Clean</strong><small>Vacuum, trims + crevices</small></div>
-            <div class="process-box"><span class="process-icon glass-icon" aria-hidden="true"></span><b>05</b><strong>Glass</strong><small>Interior + exterior glass</small></div>
-            <div class="process-box"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
-          </div>
-          <div class="detail-bottom-row">
-            <div class="detail-fact"><span>WHY £40?</span><p>STANCEBOUND is building its detailing portfolio and experience, so the current service is offered at an introductory rate for a limited period.</p></div>
-            <div class="detail-fact"><span>VEHICLE CONDITION</span><p>Heavy soiling or additional work is discussed before anything outside the agreed service is carried out.</p></div>
-          </div>
-          <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
+        <div class="cta sb-scroll-reveal">
+          <h2>Ready to get your car booked in?</h2>
+          <p>Choose detailing on the booking form and tell STANCEBOUND about the vehicle.</p>
+          <button class="btn" type="button" onclick="bookIntroDetail()">REQUEST A BOOKING</button>
         </div>
+
       </div>
     </section>
+
 
     <!-- ========================================
          PHOTOGRAPHY
@@ -4529,7 +3479,6 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             <div class="calendar-weekdays"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
             <div class="calendar-grid" id="calendarGrid"></div>
             <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
-            <div class="calendar-selection-feedback" id="calendarSelectionFeedback" aria-live="polite">Tap an OPEN date to select it.</div>
             <p class="calendar-note">Only dates manually opened by STANCEBOUND can be requested. All other dates are unavailable by default.</p>
           </div>
 
@@ -4539,18 +3488,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
               <div class="enquiry-field"><label for="enquiryName">Full name</label><input id="enquiryName" name="name" type="text" maxlength="80" autocomplete="name" required></div>
               <div class="enquiry-field"><label for="enquiryEmail">Email address</label><input id="enquiryEmail" name="email" type="email" maxlength="160" autocomplete="email" required></div>
               <div class="enquiry-field"><label for="enquiryPhone">Phone number</label><input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional"></div>
-              <div class="enquiry-field"><label for="enquiryService">Service</label><select id="enquiryService" name="service" required>
-                <option value="">Choose the service you want</option>
-                <option value="Detailing">Full Deep Detail — £40 introductory rate</option>
-                <option value="Sale Preparation" disabled>Sale Preparation / Car Sale Service — Coming Soon</option>
-                <option value="Automotive Photography">Automotive Photography</option>
-                <option value="Detailing + Photography" disabled>Detailing + Photography — Coming Soon</option>
-                <option value="Scratch Removal" disabled>Scratch Removal — Coming Soon</option>
-                <option value="Headlight Restoration" disabled>Headlight Restoration — Coming Soon</option>
-                <option value="Paint Correction" disabled>Paint Correction — Coming Soon</option>
-                <option value="Ceramic Coating" disabled>Ceramic Coating — Coming Soon</option>
-                <option value="Collaboration / Other">Collaboration / Other</option>
-              </select></div>
+              <div class="enquiry-field"><label for="enquiryService">Service</label><select id="enquiryService" name="service" required><option value="">Choose a service</option><option>Detailing</option><option>Automotive Photography</option><option>Detailing + Photography</option><option>Collaboration / Other</option></select></div>
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
@@ -4559,34 +3497,17 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             </div>
 
-            <div class="agreement-panel" aria-label="STANCEBOUND Customer Agreement">
-              <div class="eyebrow">CUSTOMER AGREEMENT · VERSION 1</div>
-              <h3>STANCEBOUND Customer Agreement</h3>
-              <h4>Customer & booking</h4><p>The person making and accepting the booking must be 18 or over and have authority to authorise work on the vehicle.</p>
-              <h4>Vehicle condition</h4><p>Please disclose known damage, faults, loose trim, paint defects, electrical issues or modifications that may affect the work. Existing defects may be photographed before work begins.</p>
-              <h4>Access & working area</h4><p>You must provide safe, reasonable access to the vehicle and an appropriate working area. STANCEBOUND does not require access to your home unless separately agreed and necessary for the service.</p>
-              <h4>Children & pets</h4><p>Children and pets must be kept clear of the working area while work is taking place because electrical equipment, cables, pressure washing, chemicals and machine-polishing equipment may be in use. The customer is responsible for helping keep the area clear and safe.</p>
-              <h4>Results & limitations</h4><p>STANCEBOUND will use reasonable care but cannot guarantee that every stain, scratch, mark, odour or existing defect can be removed or corrected.</p>
-              <h4>Personal belongings</h4><p>Please remove valuables and personal belongings from areas being worked on. STANCEBOUND will take reasonable care while carrying out the agreed service.</p>
-              <h4>Price & additional work</h4><p>Any additional work or price changes will be discussed with you before that extra work is carried out.</p>
-              <h4>Cancellation & access</h4><p>Weather, unsuitable access, vehicle condition or other circumstances may mean work needs to stop or be rearranged. Any communicated cancellation or deposit terms also apply.</p>
-              <h4>Photography & media</h4><p>Promotional photography is only used where you separately agree. STANCEBOUND will not intentionally include personal, address or identifying information in promotional material.</p>
+            <div class="booking-terms-notice" aria-label="Booking terms notice">
+              <div class="eyebrow">BEFORE YOU REQUEST</div>
+              <h3>Booking terms & confirmation</h3>
+              <p>By sending this request, you confirm that you are 18 or over and have authority to request work on the vehicle.</p>
+              <p>This is only a <strong>booking request</strong>. It is not a final or confirmed booking yet. STANCEBOUND will review the details first.</p>
+              <p>Your final booking details, price and customer terms will be sent at the confirmation stage. <strong>Your booking does not become final until you review and sign that confirmation.</strong></p>
             </div>
 
-            <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I confirm that I am 18 or over, have authority to authorise work on this vehicle, and have read and agree to the STANCEBOUND Customer Agreement.</label></div>
+            <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I understand this is a booking request only and that the booking is not final until I receive, review and sign the STANCEBOUND confirmation and terms.</label></div>
 
-            <div id="signatureWrap" class="signature-wrap" aria-hidden="true">
-              <div class="signature-head">
-                <div><strong>Customer signature</strong><span>Sign below with your finger or pointer to confirm this agreement.</span></div>
-                <button class="signature-clear" id="clearAgreementSignature" type="button">Clear signature</button>
-              </div>
-              <div class="signature-pad-shell">
-                <canvas id="agreementSignature" aria-label="Customer signature pad"></canvas>
-                <div class="signature-line"></div>
-                <div class="signature-line-label">Sign here</div>
-              </div>
-              <div id="signatureStatus" class="signature-status" aria-live="polite"></div>
-            </div>
+            <div id="signatureWrap" class="signature-wrap" aria-hidden="true" hidden></div>
             <div class="consent-row"><input id="mediaConsent" name="media_consent" type="checkbox"><label for="mediaConsent">I'm happy for STANCEBOUND to photograph my vehicle and use the images for its website, portfolio and social media. <strong>Optional.</strong></label></div>
 
             <div class="enquiry-field full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div></div>
@@ -5063,10 +3984,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       if(!signatureCanvas)return;const ctx=signatureCanvas.getContext("2d");ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
       agreementSignaturePresent=false;signatureStatus.textContent="";signatureStatus.classList.remove("error");
     }
-    agreementAccepted?.addEventListener("change",()=>{
-      const show=agreementAccepted.checked;signatureWrap?.classList.toggle("show",show);signatureWrap?.setAttribute("aria-hidden",String(!show));
-      if(show)requestAnimationFrame(resizeSignatureCanvas);else clearSignature();
-    });
+    agreementAccepted?.addEventListener("change",()=>{});
     signatureCanvas?.addEventListener("pointerdown",startSignature);
     signatureCanvas?.addEventListener("pointermove",moveSignature);
     signatureCanvas?.addEventListener("pointerup",endSignature);
@@ -5080,13 +3998,6 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
         enquiryStatus.classList.remove("success");
 
         if(!enquiryForm.reportValidity())return;
-        if(document.getElementById("agreementAccepted")?.checked && !agreementSignaturePresent){
-          signatureStatus.textContent="Please add your signature before requesting the booking.";
-          signatureStatus.classList.add("error");
-          signatureWrap?.scrollIntoView({behavior:"smooth",block:"center"});
-          return;
-        }
-
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
           enquiryStatus.textContent="Please complete the anti-spam check first.";
@@ -5110,10 +4021,10 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
-          agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
-          agreement_text:Array.from(document.querySelectorAll(".agreement-panel h4,.agreement-panel p")).map(el=>el.textContent.trim()).filter(Boolean).join("\n\n"),
-          agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
-          agreement_signed_at:new Date().toISOString(),
+          agreement_version:"STANCEBOUND-BOOKING-REQUEST-NOTICE-V1",
+          agreement_text:"Booking request only. Customer acknowledges that the booking is not final until the STANCEBOUND confirmation and customer terms are reviewed and signed.",
+          agreement_signature:null,
+          agreement_signed_at:null,
           media_consent:document.getElementById("mediaConsent").checked,
           website:document.getElementById("enquiryWebsite").value,
           turnstileToken
@@ -5442,7 +4353,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
     // Site-wide cinematic scroll reveals. Applied automatically so future content inherits the motion system.
     const sbRevealTargets = [];
     document.querySelectorAll('.page').forEach(page => {
-      if (page.id === 'home' || page.id === 'pricing') return;
+      if (page.id === 'home') return;
       const content = page.querySelector('.content') || page;
       const candidates = Array.from(content.children).filter(el =>
         !el.matches('script,style') && !el.classList.contains('sb-scroll-reveal')
@@ -5653,76 +4564,29 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
   const oldShow=window.showPage;
   if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
 
-  const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate'),selectionFeedback=document.getElementById('calendarSelectionFeedback');
+  const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
   if(!grid||!label||!dateInput)return;
 
   const now=new Date(); now.setHours(0,0,0,0);
   let view=new Date(now.getFullYear(),now.getMonth(),1);
   let openDates=new Map();
-  let confirmedBookingDates=new Set();
 
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
-  async function getSupabaseClient(){
-    for(let i=0;i<100;i++){
-      if(window.stanceboundSupabase)return window.stanceboundSupabase;
-      await new Promise(resolve=>setTimeout(resolve,50));
-    }
-    throw new Error('STANCEBOUND booking service did not initialise.');
-  }
-
   async function loadAvailability(){
-    // Render the month immediately so the calendar never appears blank while
-    // Supabase is loading. Availability is applied as soon as it arrives.
-    render();
-    try{
-      const client=await getSupabaseClient();
-      const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
-      const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
-      const {data,error}=await client
-        .from('booking_availability')
-        .select('availability_date,is_available,start_time,end_time')
-        .gte('availability_date',start)
-        .lte('availability_date',end)
-        .eq('is_available',true);
-      if(error)throw error;
-      openDates=new Map((data||[]).map(x=>[String(x.availability_date).slice(0,10),x]));
-
-      // Confirmed bookings override availability, even if an old availability
-      // row is still marked true.
-      confirmedBookingDates=new Set();
-      const {data:bookedRows,error:bookedError}=await client
-        .from('enquiries')
-        .select('booking_date,status,final_confirmation_status')
-        .gte('booking_date',start)
-        .lte('booking_date',end);
-
-      if(!bookedError){
-        (bookedRows||[]).forEach(row=>{
-          const confirmed=
-            row?.status==='booked' ||
-            row?.status==='completed' ||
-            row?.final_confirmation_status==='signed';
-          if(confirmed && row?.booking_date){
-            const key=String(row.booking_date).slice(0,10);
-            confirmedBookingDates.add(key);
-            openDates.delete(key);
-          }
-        });
-      }else{
-        console.warn('Confirmed booking cross-check:',bookedError);
-      }
-    }catch(error){
+    const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
+    const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
+    const {data,error}=await supabase
+      .from('booking_availability')
+      .select('availability_date,is_available,start_time,end_time')
+      .gte('availability_date',start)
+      .lte('availability_date',end)
+      .eq('is_available',true);
+    if(error){
       console.error('Availability calendar:',error);
       openDates=new Map();
-      confirmedBookingDates=new Set();
-    }
-    if(dateInput.value && confirmedBookingDates.has(dateInput.value)){
-      dateInput.value='';
-      if(selectionFeedback){
-        selectionFeedback.textContent='That date is already booked. Choose another OPEN date.';
-        selectionFeedback.classList.remove('active');
-      }
+    }else{
+      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
     }
     render();
   }
@@ -5741,14 +4605,13 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       const d=new Date(view.getFullYear(),view.getMonth(),n);
       const val=iso(d);
       const slot=openDates.get(val);
-      const isBooked=confirmedBookingDates.has(val);
       const b=document.createElement('button');
       b.type='button'; b.className='calendar-day'; b.textContent=n;
 
-      const unavailable=d<now || !slot || isBooked;
+      const unavailable=d<now || !slot;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
-      if(dateInput.value===val && !unavailable)b.classList.add('selected');
+      if(dateInput.value===val)b.classList.add('selected');
 
       if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
@@ -5759,27 +4622,9 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 
       b.addEventListener('click',()=>{
         if(b.disabled)return;
-
         dateInput.value=val;
-        dateInput.setCustomValidity('');
-
-        const timeInput=document.getElementById('bookingTime');
-        if(timeInput && !timeInput.value && slot?.start_time){
-          timeInput.value=String(slot.start_time).slice(0,5);
-        }
-
-        if(selectionFeedback){
-          const pretty=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-          const hours=[slot?.start_time?.slice(0,5),slot?.end_time?.slice(0,5)].filter(Boolean).join(' – ');
-          selectionFeedback.textContent=`Selected: ${pretty}${hours?' · '+hours:''}`;
-          selectionFeedback.classList.add('active');
-        }
-
         dateInput.dispatchEvent(new Event('change',{bubbles:true}));
         render();
-
-        // Give immediate mobile feedback without throwing the user halfway down the page.
-        if(navigator.vibrate)navigator.vibrate(20);
       });
       grid.appendChild(b);
     }
@@ -5801,17 +4646,7 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
       render();
       return;
     }
-    if(dateInput.value){
-      const [y,m]=dateInput.value.split('-').map(Number);view=new Date(y,m-1,1);
-      const chosen=new Date(dateInput.value+'T12:00:00');
-      const slot=openDates.get(dateInput.value);
-      if(selectionFeedback){
-        const pretty=chosen.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-        const hours=[slot?.start_time?.slice(0,5),slot?.end_time?.slice(0,5)].filter(Boolean).join(' – ');
-        selectionFeedback.textContent=`Selected: ${pretty}${hours?' · '+hours:''}`;
-        selectionFeedback.classList.add('active');
-      }
-    }
+    if(dateInput.value){const [y,m]=dateInput.value.split('-').map(Number);view=new Date(y,m-1,1)}
     render();
   });
 
@@ -7037,113 +5872,6 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     #sbRouteVeil{transition:none!important}
     button,a,.btn,.home-choice,.home-link,.product-card,.photo,.ba-card,.size-option,[role="button"],input,textarea,select{transition:none!important}
   }
-
-
-/* ===== STANCEBOUND MOBILE WIDTH / OVERFLOW FIX ===== */
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-.page, .content, .enquiry-shell, .availability-calendar {
-  min-width: 0;
-  max-width: 100%;
-}
-.calendar-weekdays,
-.calendar-grid {
-  width: 100%;
-  min-width: 0;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-.calendar-day {
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-}
-@media (max-width: 600px) {
-  .content {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .enquiry-shell {
-    width: 100%;
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .availability-calendar {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 16px 12px;
-  }
-  .availability-head {
-    min-width: 0;
-    gap: 10px;
-  }
-  .availability-head > * {
-    min-width: 0;
-  }
-  .calendar-controls {
-    flex: 0 0 auto;
-    gap: 6px;
-  }
-  .calendar-controls strong {
-    min-width: 82px;
-  }
-  .calendar-weekdays,
-  .calendar-grid {
-    gap: 4px;
-  }
-  .calendar-day {
-    aspect-ratio: 1;
-    padding: 0;
-    font-size: 9px;
-  }
-}
-
-
-/* ===== STANCEBOUND PUBLIC AVAILABILITY CALENDAR FIX ===== */
-#booking .calendar-day.open-day{
-  opacity:1;
-  border-color:#666;
-  background:#121212;
-  color:var(--text);
-  font-weight:800;
-}
-#booking .calendar-day.open-day:not(.selected)::after{
-  content:"OPEN";
-  display:block;
-  margin-top:4px;
-  font-size:6px;
-  letter-spacing:.12em;
-  opacity:.72;
-}
-#booking .calendar-day.closed-day{
-  opacity:.18;
-  background:transparent;
-}
-#booking .calendar-day.open-day.selected{
-  opacity:1!important;
-  background:var(--text)!important;
-  color:var(--bg)!important;
-  border-color:var(--text)!important;
-  transform:translateY(-1px);
-}
-#booking .calendar-selection-feedback{
-  min-height:18px;
-  margin:12px 0 0;
-  font-size:9px;
-  line-height:1.5;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:var(--grey);
-}
-#booking .calendar-selection-feedback.active{color:var(--text)}
-
 </style>
 <script id="stancebound-global-interaction-motion-script">
 (function(){
@@ -7230,156 +5958,6 @@ html, body {
     if(!reduce){veil.classList.add('show');await wait(180)}
     location.href=url.href;
   },true);
-})();
-</script>
-
-
-
-
-<script id="stancebound-current-service-interaction">
-document.addEventListener('click',function(e){
-  const toggle=e.target.closest('#priceInfoToggle');
-  if(!toggle)return;
-  const consoleEl=document.getElementById('currentServiceConsole');
-  const open=!consoleEl.classList.contains('expanded');
-  consoleEl.classList.toggle('expanded',open);
-  toggle.setAttribute('aria-expanded',String(open));
-  const label=toggle.querySelector('span');
-  if(label)label.textContent=open?'CLOSE DETAIL':'EXPLORE THE DETAIL';
-});
-</script>
-
-
-<div class="sbp-modal" id="sbpModal" aria-hidden="true">
-  <div class="sbp-modal-bg" data-sbp-close></div>
-  <section class="sbp-sheet" role="dialog" aria-modal="true">
-    <header class="sbp-sheet-head">
-      <div><small id="sbpModalKicker">STANCEBOUND / SERVICE</small><strong id="sbpModalTitle">SERVICE</strong></div>
-      <button type="button" class="sbp-close" data-sbp-close aria-label="Close">×</button>
-    </header>
-    <div id="sbpModalBody"></div>
-  </section>
-</div>
-<script id="stancebound-pricing-rebuild-js">
-(function(){
- const services={
-  sale:{n:'02',title:'SALE PREPARATION.',display:'SALE<br>PREPARATION.',text:'Deep detail, professional photography and help creating the vehicle listing.',modal:'Deep detail, sale preparation, professional automotive photography and help creating the advert from information supplied by the owner.'},
-  scratch:{n:'03',title:'SCRATCH REMOVAL.',display:'SCRATCH<br>REMOVAL.',text:'Targeted improvement for suitable scratches and paint defects.',modal:'Targeted paint improvement for suitable scratches and defects. The method depends on the depth, location and condition of the paint.'},
-  headlight:{n:'04',title:'HEADLIGHT RESTORATION.',display:'HEADLIGHT<br>RESTORATION.',text:'Restore clarity to tired or oxidised headlight lenses.',modal:'A restoration process aimed at improving clarity and presentation of tired or oxidised headlight lenses.'},
-  paint:{n:'05',title:'PAINT CORRECTION.',display:'PAINT<br>CORRECTION.',text:'Machine correction for improved clarity, gloss and depth.',modal:'Machine correction focused on improving swirls, haze, gloss and paint clarity, tailored to the condition of the vehicle.'},
-  ceramic:{n:'06',title:'CERAMIC COATING.',display:'CERAMIC<br>COATING.',text:'Preparation-led protection with a durable finish.',modal:'Ceramic protection built around proper preparation first, rather than simply applying a coating over existing defects.'},
-  photo:{n:'07',title:'DETAIL + AUTOMOTIVE PHOTOGRAPHY.',display:'DETAIL +<br>PHOTOGRAPHY.',text:'Finish the vehicle properly, then capture it properly.',modal:'A full deep detail followed by dedicated automotive photography, combining vehicle presentation with STANCEBOUND imagery.'}
- };
- let current='sale',detailNode=null,detailHome=null;
- const order=Object.keys(services);
-
- function selectService(key){
-  const s=services[key]; if(!s)return;
-  const stage=document.getElementById('sbpStage');
-  const activeTab=document.querySelector('[data-sbp-service="'+key+'"]');
-  document.querySelectorAll('[data-sbp-service]').forEach(b=>b.classList.toggle('active',b.dataset.sbpService===key));
-  if(activeTab) activeTab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  stage.classList.add('sbp-changing');
-  setTimeout(()=>{
-    current=key;
-    stage.dataset.mode=key;
-    document.getElementById('sbpTitle').innerHTML=s.display;
-    document.getElementById('sbpText').textContent=s.text;
-    document.getElementById('sbpCount').textContent=s.n+' / 07';
-    document.getElementById('sbpMore').dataset.sbpOpen=key;
-    document.querySelectorAll('.sbp-dots i').forEach((d,i)=>d.classList.toggle('active',order[i]===key));
-    requestAnimationFrame(()=>stage.classList.remove('sbp-changing'));
-  },150);
- }
- function openModal(key){
-  const modal=document.getElementById('sbpModal'),body=document.getElementById('sbpModalBody');
-  if(key==='detail'){
-   detailNode=document.getElementById('currentServiceDetails');
-   if(!detailNode)return;
-   if(!detailHome){detailHome=document.createComment('detail-home');detailNode.parentNode.insertBefore(detailHome,detailNode)}
-   body.innerHTML='';
-   body.appendChild(detailNode); detailNode.style.display='block';
-   document.getElementById('sbpModalKicker').textContent='01 / AVAILABLE NOW · £40';
-   document.getElementById('sbpModalTitle').textContent="WHAT'S INCLUDED";
-  }else{
-   const s=services[key];if(!s)return;
-   body.innerHTML='<div class="sbp-modal-visual"></div><div class="sbp-modal-copy"><h3>'+s.title+'</h3><p>'+s.modal+'</p><div class="sbp-coming">COMING SOON</div></div>';
-   document.getElementById('sbpModalKicker').textContent=s.n+' / STANCEBOUND SERVICE';
-   document.getElementById('sbpModalTitle').textContent=s.title;
-  }
-  document.body.classList.add('sbp-modal-open');modal.classList.add('open');modal.setAttribute('aria-hidden','false');
- }
- function closeModal(){
-  const modal=document.getElementById('sbpModal'); if(!modal)return;
-  modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('sbp-modal-open');
-  if(detailNode&&detailHome?.parentNode){detailHome.parentNode.insertBefore(detailNode,detailHome.nextSibling);detailNode.style.display=''}
- }
- document.addEventListener('click',e=>{
-  const tab=e.target.closest('[data-sbp-service]'); if(tab){selectService(tab.dataset.sbpService);return}
-  const open=e.target.closest('[data-sbp-open]'); if(open){e.preventDefault();openModal(open.dataset.sbpOpen);return}
-  if(e.target.closest('[data-sbp-close]'))closeModal();
- });
- document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
- selectService('sale');
-})();
-</script>
-
-<script id="stancebound-cinema-browser-js">
-(function(){
- const data=[
-  ['sale','02','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
-  ['scratch','03','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
-  ['headlight','04','HEADLIGHT<br>RESTORATION.','Restore clarity to tired or oxidised lenses'],
-  ['paint','05','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
-  ['ceramic','06','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
-  ['photo','07','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
- ];
- let index=0,busy=false,startX=null,startY=null,dragging=false;
- function render(next){
-  if(busy)return;busy=true;
-  const frame=document.getElementById('sbpCinemaFrame');if(!frame){busy=false;return}
-  frame.classList.remove('swiping-left','swiping-right');frame.classList.add('cinema-changing');
-  document.getElementById('sbpCinema')?.classList.add('has-swiped');
-  setTimeout(()=>{
-   index=(next+data.length)%data.length;
-   const [key,num,title,text]=data[index];
-   frame.dataset.mode=key;
-   document.getElementById('sbpCinemaNum').textContent=num;
-   document.getElementById('sbpCinemaIndex').textContent=num;
-   document.getElementById('sbpCinemaTitle').innerHTML=title;
-   document.getElementById('sbpCinemaText').textContent=text;
-   document.getElementById('sbpCinemaMore').dataset.sbpOpen=key;
-   document.querySelectorAll('#sbpCinemaProgress b').forEach((b,i)=>b.classList.toggle('active',i===index));
-   requestAnimationFrame(()=>frame.classList.remove('cinema-changing'));
-   setTimeout(()=>busy=false,390);
-  },180);
- }
- document.addEventListener('click',e=>{
-  if(e.target.closest('[data-cinema-prev]')){e.preventDefault();render(index-1)}
-  else if(e.target.closest('[data-cinema-next]')){e.preventDefault();render(index+1)}
- });
- const frame=document.getElementById('sbpCinemaFrame');
- if(frame){
-  frame.addEventListener('touchstart',e=>{
-   if(e.target.closest('.sbp-explore-btn'))return;
-   const t=e.touches[0];startX=t.clientX;startY=t.clientY;dragging=true;
-  },{passive:true});
-  frame.addEventListener('touchmove',e=>{
-   if(!dragging||startX===null)return;
-   const t=e.touches[0],dx=t.clientX-startX,dy=t.clientY-startY;
-   const horizontal=Math.abs(dx)>18&&Math.abs(dx)>Math.abs(dy)*1.25;
-   frame.classList.toggle('swiping-left',horizontal&&dx<0);
-   frame.classList.toggle('swiping-right',horizontal&&dx>0);
-  },{passive:true});
-  frame.addEventListener('touchend',e=>{
-   if(!dragging||startX===null)return;
-   const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;
-   dragging=false;startX=startY=null;
-   frame.classList.remove('swiping-left','swiping-right');
-   if(Math.abs(dx)>=52&&Math.abs(dx)>Math.abs(dy)*1.25)render(index+(dx<0?1:-1));
-  },{passive:true});
-  frame.addEventListener('touchcancel',()=>{dragging=false;startX=startY=null;frame.classList.remove('swiping-left','swiping-right')},{passive:true});
- }
 })();
 </script>
 
