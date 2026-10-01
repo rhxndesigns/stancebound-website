@@ -2715,74 +2715,31 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   }
 </style>
 
-<style id="sb-booking-request-terms-v2">
-.booking-terms-notice{margin:22px 0 14px;padding:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.025)}
-.booking-terms-notice h3{margin:7px 0 13px}
-.booking-terms-notice p{margin:8px 0;color:var(--grey);line-height:1.65;font-size:12px}
-.booking-terms-notice strong{color:var(--white)}
-</style><style id="sb-booking-email-warning">
-.booking-email-warning{margin:18px 0;padding:15px 16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.035);text-align:left}
-.booking-email-warning strong{display:block;margin-bottom:7px;font-size:9px;letter-spacing:.18em;color:var(--text)}
-.booking-email-warning span{display:block;color:var(--grey);font-size:11px;line-height:1.65}
-.booking-email-warning span b{color:var(--text)}
-.booking-email-warning-thanks{max-width:650px;margin:20px auto!important}
-</style>
 
 <style id="sb-calendar-selection-feedback">
-  .calendar-day{
-    -webkit-tap-highlight-color:transparent;
-    position:relative;
-  }
-  .calendar-day.open-day:active{
-    transform:scale(.90);
-  }
-  .calendar-day.selected,
-  .calendar-day.open-day.selected{
-    background:var(--text)!important;
-    color:var(--bg)!important;
-    border-color:var(--text)!important;
-    opacity:1!important;
-    transform:scale(.92);
-    box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--text);
-    font-weight:900;
-  }
-  .calendar-day.selected::after{
-    content:"✓";
-    position:absolute;
-    right:3px;
-    top:1px;
-    font-size:7px;
-    font-weight:900;
-  }
-  .calendar-selection{
-    margin-top:14px;
-    padding:13px 15px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,.025);
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    transition:border-color .2s ease,background .2s ease,transform .2s ease;
-  }
-  .calendar-selection-label{
-    color:var(--grey);
-    font-size:7px;
-    font-weight:800;
-    letter-spacing:1.4px;
-  }
-  .calendar-selection strong{
-    font-size:11px;
-    letter-spacing:.5px;
-    text-transform:uppercase;
-  }
-  .calendar-selection.has-selection{
-    border-color:var(--text);
-    background:rgba(255,255,255,.07);
-    transform:translateY(-1px);
-  }
-  @media (prefers-reduced-motion:reduce){
-    .calendar-day,.calendar-selection{transition:none!important}
-  }
+.calendar-day{position:relative;-webkit-tap-highlight-color:transparent}
+.calendar-day.open-day:active{transform:scale(.92)}
+.calendar-day.selected,.calendar-day.open-day.selected{
+  background:var(--white)!important;color:var(--black)!important;
+  border-color:var(--white)!important;opacity:1!important;font-weight:900;
+  box-shadow:0 0 0 2px var(--black),0 0 0 3px var(--white)
+}
+.calendar-day.selected::after{
+  content:"✓";position:absolute;right:3px;top:1px;font-size:7px;font-weight:900
+}
+.calendar-selection{
+  margin-top:14px;padding:13px 15px;border:1px solid var(--line);
+  background:rgba(255,255,255,.025);display:flex;flex-direction:column;gap:5px
+}
+.calendar-selection span{
+  color:var(--grey);font-size:7px;font-weight:800;letter-spacing:1.4px
+}
+.calendar-selection strong{
+  font-size:11px;letter-spacing:.5px;text-transform:uppercase
+}
+.calendar-selection.has-selection{
+  border-color:var(--white);background:rgba(255,255,255,.07)
+}
 </style>
 </head>
 
@@ -3543,7 +3500,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
             <div class="calendar-weekdays"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
             <div class="calendar-grid" id="calendarGrid"></div>
             <div id="calendarSelection" class="calendar-selection" aria-live="polite">
-              <span class="calendar-selection-label">YOUR PREFERRED DATE</span>
+              <span>YOUR PREFERRED DATE</span>
               <strong id="calendarSelectionText">Tap an available date above</strong>
             </div>
             <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
@@ -3565,23 +3522,36 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             </div>
 
-            <div class="booking-terms-notice" aria-label="Booking terms notice">
-              <div class="eyebrow">BEFORE YOU REQUEST</div>
-              <h3>Booking terms & confirmation</h3>
-              <p>By sending this request, you confirm that you are 18 or over and have authority to request work on the vehicle.</p>
-              <p>This is only a <strong>booking request</strong>. It is not a final or confirmed booking yet. STANCEBOUND will review the details first.</p>
-              <p>Your final booking details, price and customer terms will be sent at the confirmation stage. <strong>Your booking does not become final until you review and sign that confirmation.</strong></p>
+            <div class="agreement-panel" aria-label="STANCEBOUND Customer Agreement">
+              <div class="eyebrow">CUSTOMER AGREEMENT · VERSION 1</div>
+              <h3>STANCEBOUND Customer Agreement</h3>
+              <h4>Customer & booking</h4><p>The person making and accepting the booking must be 18 or over and have authority to authorise work on the vehicle.</p>
+              <h4>Vehicle condition</h4><p>Please disclose known damage, faults, loose trim, paint defects, electrical issues or modifications that may affect the work. Existing defects may be photographed before work begins.</p>
+              <h4>Access & working area</h4><p>You must provide safe, reasonable access to the vehicle and an appropriate working area. STANCEBOUND does not require access to your home unless separately agreed and necessary for the service.</p>
+              <h4>Children & pets</h4><p>Children and pets must be kept clear of the working area while work is taking place because electrical equipment, cables, pressure washing, chemicals and machine-polishing equipment may be in use. The customer is responsible for helping keep the area clear and safe.</p>
+              <h4>Results & limitations</h4><p>STANCEBOUND will use reasonable care but cannot guarantee that every stain, scratch, mark, odour or existing defect can be removed or corrected.</p>
+              <h4>Personal belongings</h4><p>Please remove valuables and personal belongings from areas being worked on. STANCEBOUND will take reasonable care while carrying out the agreed service.</p>
+              <h4>Price & additional work</h4><p>Any additional work or price changes will be discussed with you before that extra work is carried out.</p>
+              <h4>Cancellation & access</h4><p>Weather, unsuitable access, vehicle condition or other circumstances may mean work needs to stop or be rearranged. Any communicated cancellation or deposit terms also apply.</p>
+              <h4>Photography & media</h4><p>Promotional photography is only used where you separately agree. STANCEBOUND will not intentionally include personal, address or identifying information in promotional material.</p>
             </div>
 
-            <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I understand this is a booking request only and that the booking is not final until I receive, review and sign the STANCEBOUND confirmation and terms.</label></div>
+            <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I confirm that I am 18 or over, have authority to authorise work on this vehicle, and have read and agree to the STANCEBOUND Customer Agreement.</label></div>
 
-            <div id="signatureWrap" class="signature-wrap" aria-hidden="true" hidden></div>
+            <div id="signatureWrap" class="signature-wrap" aria-hidden="true">
+              <div class="signature-head">
+                <div><strong>Customer signature</strong><span>Sign below with your finger or pointer to confirm this agreement.</span></div>
+                <button class="signature-clear" id="clearAgreementSignature" type="button">Clear signature</button>
+              </div>
+              <div class="signature-pad-shell">
+                <canvas id="agreementSignature" aria-label="Customer signature pad"></canvas>
+                <div class="signature-line"></div>
+                <div class="signature-line-label">Sign here</div>
+              </div>
+              <div id="signatureStatus" class="signature-status" aria-live="polite"></div>
+            </div>
             <div class="consent-row"><input id="mediaConsent" name="media_consent" type="checkbox"><label for="mediaConsent">I'm happy for STANCEBOUND to photograph my vehicle and use the images for its website, portfolio and social media. <strong>Optional.</strong></label></div>
 
-            <div class="booking-email-warning">
-              <strong>KEEP AN EYE ON YOUR EMAIL</strong>
-              <span>STANCEBOUND will email you to verify and confirm your booking. Please check your <b>Spam / Junk</b> folder as well as your inbox, as confirmation emails can occasionally be filtered there. Mark the email as “Not spam” if needed so you do not miss your booking confirmation.</span>
-            </div>
             <div class="enquiry-field full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div></div>
             <div class="enquiry-actions">
               <button class="btn" id="sendEnquiryBtn" type="submit">Request Booking</button>
@@ -3601,10 +3571,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         <div class="heading-line" style="margin-left:auto;margin-right:auto;"></div>
         <p style="max-width:650px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. I’ll review the requested date, time and details before confirming the booking by email.</p>
         <p style="color:var(--grey);font-size:12px;letter-spacing:.08em;">YOUR REQUEST IS NOT CONFIRMED UNTIL YOU RECEIVE A STANCEBOUND BOOKING CONFIRMATION.</p>
-        <div class="booking-email-warning booking-email-warning-thanks">
-          <strong>CHECK YOUR SPAM / JUNK FOLDER</strong>
-          <span>If you cannot see a STANCEBOUND email in your inbox, check Spam or Junk and mark it as “Not spam”. Your booking is not final until the confirmation has been reviewed and signed.</span>
-        </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:42px auto 24px;text-align:left;">
           <button type="button" onclick="showPage('shop')" style="cursor:pointer;text-align:left;padding:26px;border:1px solid var(--line);background:var(--panel);color:var(--white);font:inherit;">
@@ -4060,7 +4026,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       if(!signatureCanvas)return;const ctx=signatureCanvas.getContext("2d");ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
       agreementSignaturePresent=false;signatureStatus.textContent="";signatureStatus.classList.remove("error");
     }
-    agreementAccepted?.addEventListener("change",()=>{});
+    agreementAccepted?.addEventListener("change",()=>{
+      const show=agreementAccepted.checked;signatureWrap?.classList.toggle("show",show);signatureWrap?.setAttribute("aria-hidden",String(!show));
+      if(show)requestAnimationFrame(resizeSignatureCanvas);else clearSignature();
+    });
     signatureCanvas?.addEventListener("pointerdown",startSignature);
     signatureCanvas?.addEventListener("pointermove",moveSignature);
     signatureCanvas?.addEventListener("pointerup",endSignature);
@@ -4074,6 +4043,13 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
         enquiryStatus.classList.remove("success");
 
         if(!enquiryForm.reportValidity())return;
+        if(document.getElementById("agreementAccepted")?.checked && !agreementSignaturePresent){
+          signatureStatus.textContent="Please add your signature before requesting the booking.";
+          signatureStatus.classList.add("error");
+          signatureWrap?.scrollIntoView({behavior:"smooth",block:"center"});
+          return;
+        }
+
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
           enquiryStatus.textContent="Please complete the anti-spam check first.";
@@ -4097,10 +4073,10 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
-          agreement_version:"STANCEBOUND-BOOKING-REQUEST-NOTICE-V1",
-          agreement_text:"Booking request only. Customer acknowledges that the booking is not final until the STANCEBOUND confirmation and customer terms are reviewed and signed.",
-          agreement_signature:null,
-          agreement_signed_at:null,
+          agreement_version:"STANCEBOUND-CUSTOMER-AGREEMENT-V1",
+          agreement_text:Array.from(document.querySelectorAll(".agreement-panel h4,.agreement-panel p")).map(el=>el.textContent.trim()).filter(Boolean).join("\n\n"),
+          agreement_signature:agreementSignaturePresent?signatureCanvas.toDataURL("image/png"):null,
+          agreement_signed_at:new Date().toISOString(),
           media_consent:document.getElementById("mediaConsent").checked,
           website:document.getElementById("enquiryWebsite").value,
           turnstileToken
@@ -4638,13 +4614,13 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     requestAnimationFrame(()=>window.showPage(btn.dataset.page));
   }));
   const oldShow=window.showPage;
-  if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='booking')setTimeout(()=>window.sbReloadBookingAvailability?.(),80);return out}}
+  if(oldShow){window.showPage=function(page,...rest){const out=oldShow(page,...rest);document.querySelectorAll('.radial-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));return out}}
 
   const grid=document.getElementById('calendarGrid'),label=document.getElementById('calendarMonth'),dateInput=document.getElementById('bookingDate');
   const selectionBox=document.getElementById('calendarSelection'),selectionText=document.getElementById('calendarSelectionText');
   if(!grid||!label||!dateInput)return;
 
-  function updateSelectionFeedback(){
+  function updateCalendarSelection(){
     if(!selectionBox||!selectionText)return;
     if(!dateInput.value){
       selectionBox.classList.remove('has-selection');
@@ -4652,9 +4628,8 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       return;
     }
     const [y,m,d]=dateInput.value.split('-').map(Number);
-    const chosen=new Date(y,m-1,d);
-    selectionText.textContent='Selected: '+chosen.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     selectionBox.classList.add('has-selection');
+    selectionText.textContent='Selected: '+new Date(y,m-1,d).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   }
 
   const now=new Date(); now.setHours(0,0,0,0);
@@ -4666,27 +4641,24 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   async function loadAvailability(){
     const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
     const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
-    try{
-      const base='https://fxlekwzcxedkiyqfswvq.supabase.co/rest/v1/booking_availability';
-      const key='sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld';
-      const url=base+'?select=availability_date,is_available,start_time,end_time'
-        +'&availability_date=gte.'+encodeURIComponent(start)
-        +'&availability_date=lte.'+encodeURIComponent(end)
-        +'&is_available=eq.true';
-      const res=await fetch(url,{headers:{apikey:key,Authorization:'Bearer '+key},cache:'no-store'});
-      if(!res.ok)throw new Error('Availability request failed: '+res.status);
-      const data=await res.json();
-      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
-    }catch(error){
+    const {data,error}=await supabase
+      .from('booking_availability')
+      .select('availability_date,is_available,start_time,end_time')
+      .gte('availability_date',start)
+      .lte('availability_date',end)
+      .eq('is_available',true);
+    if(error){
       console.error('Availability calendar:',error);
       openDates=new Map();
+    }else{
+      openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
     }
     render();
   }
 
   function render(){
     grid.innerHTML='';
-    updateSelectionFeedback();
+    updateCalendarSelection();
     label.textContent=view.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
     const first=(new Date(view.getFullYear(),view.getMonth(),1).getDay()+6)%7;
     const days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
@@ -4705,13 +4677,7 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
       const unavailable=d<now || !slot;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
-      if(dateInput.value===val){
-        b.classList.add('selected');
-        b.setAttribute('aria-pressed','true');
-        b.setAttribute('aria-label',`${n}, selected preferred date`);
-      }else{
-        b.setAttribute('aria-pressed','false');
-      }
+      if(dateInput.value===val)b.classList.add('selected');
 
       if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
@@ -4748,12 +4714,6 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
     }
     if(dateInput.value){const [y,m]=dateInput.value.split('-').map(Number);view=new Date(y,m-1,1)}
     render();
-  });
-
-  window.sbReloadBookingAvailability=loadAvailability;
-  document.addEventListener('click',e=>{
-    const bookingNav=e.target.closest('[data-page="booking"]');
-    if(bookingNav)setTimeout(loadAvailability,120);
   });
 
   // Keep the native date input from silently accepting a closed day.
