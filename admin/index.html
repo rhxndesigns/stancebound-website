@@ -3612,6 +3612,13 @@ document.addEventListener('DOMContentLoaded', function () {
 .sb-payment-status{min-height:18px;margin-top:12px;font-size:10px;color:#aaa;line-height:1.5}
 .sb-payment-status.error{color:#ff7373}
 .sb-payment-security{font-size:9px;color:#555;line-height:1.55;margin-top:14px;text-align:center}
+.sb-payment-qr-wrap{display:none;margin:18px auto 4px;padding:16px;width:min(280px,100%);box-sizing:border-box;border:1px solid #242424;border-radius:22px;background:#fff}
+.sb-payment-qr-wrap.show{display:block;animation:sbPaymentReveal .25s ease both}
+.sb-payment-qr{position:relative;width:100%;aspect-ratio:1;display:grid;place-items:center}
+.sb-payment-qr img,.sb-payment-qr canvas{display:block!important;width:100%!important;height:100%!important}
+.sb-payment-qr-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;object-fit:contain;background:#050505;border:7px solid #fff;border-radius:14px;padding:5px;box-sizing:border-box;pointer-events:none}
+.sb-payment-qr-caption{display:none;font-size:9px;letter-spacing:1.5px;color:#777;text-align:center;text-transform:uppercase;margin-top:10px}
+.sb-payment-qr-caption.show{display:block}
 @media(max-width:560px){
   .sb-payment-sheet{padding:10px 14px 24px;border-radius:24px 24px 0 0}
   .sb-payment-actions{grid-template-columns:1fr}
@@ -3655,13 +3662,20 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="sb-payment-expiry" id="sbPaymentExpiry">Expires in 15 minutes</div>
     <div class="sb-payment-actions">
       <button type="button" class="secondary" id="sbPaymentDone">DONE</button>
+      <button type="button" class="sb-payment-primary" id="sbPaymentShowQr">DISPLAY QR</button>
     </div>
+    <div class="sb-payment-qr-wrap" id="sbPaymentQrWrap" aria-hidden="true">
+      <div class="sb-payment-qr" id="sbPaymentQr"></div>
+    </div>
+    <div class="sb-payment-qr-caption" id="sbPaymentQrCaption">SCAN TO OPEN SECURE PAYMENT</div>
   </div>
 </section>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script id="stancebound-payment-admin">
 (() => {
   let paymentEnquiryId = null;
+  let activePaymentUrl = '';
 
   const $ = q => document.querySelector(q);
   const backdrop = $('#sbPaymentBackdrop');
@@ -3681,6 +3695,16 @@ document.addEventListener('DOMContentLoaded', function () {
       result?.classList.remove('show');
       if(status){ status.textContent=''; status.classList.remove('error'); }
       if(activate){ activate.disabled=false; activate.textContent='ACTIVATE PAYMENT'; }
+      const qrWrap=$('#sbPaymentQrWrap');
+      const qr=$('#sbPaymentQr');
+      const qrCaption=$('#sbPaymentQrCaption');
+      const qrBtn=$('#sbPaymentShowQr');
+      qrWrap?.classList.remove('show');
+      qrWrap?.setAttribute('aria-hidden','true');
+      qrCaption?.classList.remove('show');
+      if(qr) qr.innerHTML='';
+      if(qrBtn) qrBtn.textContent='DISPLAY QR';
+      activePaymentUrl='';
       paymentEnquiryId=null;
     }, 280);
   }
@@ -3712,6 +3736,54 @@ document.addEventListener('DOMContentLoaded', function () {
   $('#sbPaymentClose')?.addEventListener('click', closePaymentSheet);
   $('#sbPaymentDone')?.addEventListener('click', closePaymentSheet);
   backdrop?.addEventListener('click', closePaymentSheet);
+
+  $('#sbPaymentShowQr')?.addEventListener('click', () => {
+    const wrap=$('#sbPaymentQrWrap');
+    const target=$('#sbPaymentQr');
+    const caption=$('#sbPaymentQrCaption');
+    const button=$('#sbPaymentShowQr');
+    if(!wrap || !target || !button) return;
+
+    if(wrap.classList.contains('show')){
+      wrap.classList.remove('show');
+      wrap.setAttribute('aria-hidden','true');
+      caption?.classList.remove('show');
+      button.textContent='DISPLAY QR';
+      return;
+    }
+
+    if(!activePaymentUrl){
+      activePaymentUrl='https://www.stancebound.com/pay/';
+    }
+
+    if(!target.dataset.rendered){
+      if(typeof QRCode === 'undefined'){
+        alert('QR generator did not load. Refresh Admin and try again.');
+        return;
+      }
+      target.innerHTML='';
+      new QRCode(target,{
+        text:activePaymentUrl,
+        width:248,
+        height:248,
+        colorDark:'#050505',
+        colorLight:'#ffffff',
+        correctLevel:QRCode.CorrectLevel.H
+      });
+      const logo=document.createElement('img');
+      logo.className='sb-payment-qr-logo';
+      logo.src='/images/stanceboundlogo.png?v=30';
+      logo.alt='';
+      logo.setAttribute('aria-hidden','true');
+      target.appendChild(logo);
+      target.dataset.rendered='1';
+    }
+
+    wrap.classList.add('show');
+    wrap.setAttribute('aria-hidden','false');
+    caption?.classList.add('show');
+    button.textContent='HIDE QR';
+  });
 
   activate?.addEventListener('click', async () => {
     const amount = Number($('#sbPayAmount')?.value);
@@ -3746,6 +3818,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const p=data.payment_request;
+      activePaymentUrl=p.payment_url || 'https://www.stancebound.com/pay/';
+      const qrTarget=$('#sbPaymentQr');
+      if(qrTarget){ qrTarget.innerHTML=''; delete qrTarget.dataset.rendered; }
+      $('#sbPaymentQrWrap')?.classList.remove('show');
+      $('#sbPaymentQrWrap')?.setAttribute('aria-hidden','true');
+      $('#sbPaymentQrCaption')?.classList.remove('show');
+      if($('#sbPaymentShowQr')) $('#sbPaymentShowQr').textContent='DISPLAY QR';
       $('#sbPaymentPin').textContent=String(p.pin || '').padStart(4,'0');
       $('#sbPaymentResultCustomer').textContent=p.customer?.name || $('#sbPayCustomer').textContent || 'Customer';
       $('#sbPaymentResultAmount').textContent='£'+Number(p.amount).toFixed(2);
