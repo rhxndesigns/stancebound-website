@@ -1567,6 +1567,7 @@ async function loadEnquiries(){
   }
 
   cachedEnquiries=data||[];
+  window.cachedEnquiries=cachedEnquiries;
   pendingConfirmationCache.clear();
   const pendingRows=cachedEnquiries.filter(r=>r.final_confirmation_status==='pending'&&r.final_confirmation_id);
   await Promise.all(pendingRows.map(async r=>{
@@ -3702,7 +3703,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-take-payment]');
     if(!btn) return;
-    const row = (window.cachedEnquiries || cachedEnquiries || []).find(r => String(r.id) === String(btn.dataset.takePayment));
+    const row = (window.cachedEnquiries || []).find(r => String(r.id) === String(btn.dataset.takePayment));
     if(!row) return;
     openPaymentSheet(row);
   });
