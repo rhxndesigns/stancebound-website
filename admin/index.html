@@ -2084,7 +2084,7 @@ function renderBookingRequests(){
           ${isPending?`<button type="button" class="secondary" data-edit-pending="${r.id}">EDIT BOOKING DETAILS</button>`:''}
           ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
           <button type="button" class="secondary" data-chat-invite="${r.id}">CHAT</button>
-          ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button>`:''}
+          ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">Open Schedule</button><button type="button" class="secondary sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`:''}
           ${!isPending?`<button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'Email Customer':'Reply / Suggest Date'}</button>`:''}
           ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">Cancel Booking</button>`:''}
           <button type="button" class="secondary danger" data-delete-booking="${r.id}">Delete</button>
@@ -3564,6 +3564,205 @@ document.addEventListener('DOMContentLoaded', function () {
     password.setAttribute('autocomplete', 'off');
   }
 });
+</script>
+
+
+<style id="stancebound-payment-admin-styles">
+.sb-payment-backdrop{
+  position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.72);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;pointer-events:none;transition:opacity .24s ease
+}
+.sb-payment-backdrop.show{opacity:1;pointer-events:auto}
+.sb-payment-sheet{
+  position:fixed;left:50%;bottom:0;z-index:10051;width:min(620px,100%);
+  max-height:92dvh;overflow:auto;box-sizing:border-box;padding:12px 18px 28px;
+  border:1px solid #292929;border-bottom:0;border-radius:28px 28px 0 0;
+  background:linear-gradient(180deg,#101010 0%,#050505 100%);
+  box-shadow:0 -24px 80px rgba(0,0,0,.65);
+  transform:translate(-50%,105%);transition:transform .34s cubic-bezier(.2,.8,.2,1)
+}
+.sb-payment-sheet.show{transform:translate(-50%,0)}
+.sb-payment-grab{width:42px;height:4px;border-radius:99px;background:#383838;margin:0 auto 22px}
+.sb-payment-kicker{font-size:9px;letter-spacing:2.4px;color:#777;text-transform:uppercase}
+.sb-payment-sheet h2{font-size:24px;letter-spacing:.5px;margin:8px 0 4px}
+.sb-payment-sub{font-size:11px;line-height:1.6;color:#777;margin-bottom:18px}
+.sb-payment-summary{border:1px solid #242424;background:#090909;border-radius:18px;padding:15px;margin-bottom:14px}
+.sb-payment-summary-row{display:flex;justify-content:space-between;gap:14px;padding:7px 0;font-size:11px}
+.sb-payment-summary-row span{color:#737373}
+.sb-payment-summary-row strong{text-align:right;color:#eee}
+.sb-payment-amount-wrap{margin:16px 0}
+.sb-payment-amount-wrap label{display:block;font-size:9px;letter-spacing:1.6px;color:#777;text-transform:uppercase;margin-bottom:8px}
+.sb-payment-amount-field{display:flex;align-items:center;border:1px solid #303030;background:#050505;border-radius:16px;padding:0 15px}
+.sb-payment-amount-field span{font-size:22px;color:#777}
+.sb-payment-amount-field input{width:100%;border:0!important;background:transparent!important;color:#fff!important;padding:15px 10px!important;font-size:26px!important;font-weight:800;outline:0}
+.sb-payment-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.sb-payment-actions button{margin:0!important}
+.sb-payment-primary{background:#fff!important;color:#000!important;border-color:#fff!important;font-weight:800}
+.sb-payment-result{display:none;text-align:center;padding:22px 4px 4px}
+.sb-payment-result.show{display:block;animation:sbPaymentReveal .3s ease both}
+@keyframes sbPaymentReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sb-payment-ready{font-size:9px;letter-spacing:2.2px;color:#63e99b;text-transform:uppercase;margin-bottom:12px}
+.sb-payment-pin-label{font-size:9px;letter-spacing:2px;color:#777;text-transform:uppercase}
+.sb-payment-pin{font-size:48px;line-height:1;font-weight:900;letter-spacing:10px;margin:10px 0 16px;padding-left:10px}
+.sb-payment-result-amount{font-size:17px;font-weight:800;margin-bottom:6px}
+.sb-payment-expiry{font-size:10px;color:#777;margin-bottom:18px}
+.sb-payment-status{min-height:18px;margin-top:12px;font-size:10px;color:#aaa;line-height:1.5}
+.sb-payment-status.error{color:#ff7373}
+.sb-payment-security{font-size:9px;color:#555;line-height:1.55;margin-top:14px;text-align:center}
+@media(max-width:560px){
+  .sb-payment-sheet{padding:10px 14px 24px;border-radius:24px 24px 0 0}
+  .sb-payment-actions{grid-template-columns:1fr}
+}
+</style>
+
+<div class="sb-payment-backdrop" id="sbPaymentBackdrop" aria-hidden="true"></div>
+<section class="sb-payment-sheet" id="sbPaymentSheet" aria-hidden="true" aria-label="Take payment">
+  <div class="sb-payment-grab"></div>
+
+  <div id="sbPaymentSetup">
+    <div class="sb-payment-kicker">STANCEBOUND · SECURE PAYMENT</div>
+    <h2>TAKE PAYMENT.</h2>
+    <div class="sb-payment-sub">Activate a temporary payment request for this customer. It automatically expires after 15 minutes.</div>
+
+    <div class="sb-payment-summary">
+      <div class="sb-payment-summary-row"><span>Customer</span><strong id="sbPayCustomer">—</strong></div>
+      <div class="sb-payment-summary-row"><span>Vehicle</span><strong id="sbPayVehicle">—</strong></div>
+      <div class="sb-payment-summary-row"><span>Service</span><strong id="sbPayService">—</strong></div>
+    </div>
+
+    <div class="sb-payment-amount-wrap">
+      <label for="sbPayAmount">Amount to collect</label>
+      <div class="sb-payment-amount-field"><span>£</span><input id="sbPayAmount" type="number" min="0.01" step="0.01" inputmode="decimal"></div>
+    </div>
+
+    <div class="sb-payment-actions">
+      <button type="button" class="secondary" id="sbPaymentClose">CANCEL</button>
+      <button type="button" class="sb-payment-primary" id="sbPaymentActivate">ACTIVATE PAYMENT</button>
+    </div>
+    <div class="sb-payment-status" id="sbPaymentStatus"></div>
+    <div class="sb-payment-security">The PIN and secure session are generated by the server. No card details are handled by this Admin page.</div>
+  </div>
+
+  <div class="sb-payment-result" id="sbPaymentResult">
+    <div class="sb-payment-ready">● PAYMENT ACTIVE</div>
+    <div class="sb-payment-result-amount" id="sbPaymentResultCustomer">—</div>
+    <div class="sb-payment-result-amount" id="sbPaymentResultAmount">£0.00</div>
+    <div class="sb-payment-pin-label">Customer payment PIN</div>
+    <div class="sb-payment-pin" id="sbPaymentPin">0000</div>
+    <div class="sb-payment-expiry" id="sbPaymentExpiry">Expires in 15 minutes</div>
+    <div class="sb-payment-actions">
+      <button type="button" class="secondary" id="sbPaymentDone">DONE</button>
+    </div>
+  </div>
+</section>
+
+<script id="stancebound-payment-admin">
+(() => {
+  let paymentEnquiryId = null;
+
+  const $ = q => document.querySelector(q);
+  const backdrop = $('#sbPaymentBackdrop');
+  const sheet = $('#sbPaymentSheet');
+  const setup = $('#sbPaymentSetup');
+  const result = $('#sbPaymentResult');
+  const status = $('#sbPaymentStatus');
+  const activate = $('#sbPaymentActivate');
+
+  function closePaymentSheet(){
+    backdrop?.classList.remove('show');
+    sheet?.classList.remove('show');
+    backdrop?.setAttribute('aria-hidden','true');
+    sheet?.setAttribute('aria-hidden','true');
+    setTimeout(() => {
+      if(setup) setup.style.display = '';
+      result?.classList.remove('show');
+      if(status){ status.textContent=''; status.classList.remove('error'); }
+      if(activate){ activate.disabled=false; activate.textContent='ACTIVATE PAYMENT'; }
+      paymentEnquiryId=null;
+    }, 280);
+  }
+
+  function openPaymentSheet(row){
+    paymentEnquiryId = row.id;
+    $('#sbPayCustomer').textContent = row.name || 'Customer';
+    $('#sbPayVehicle').textContent = row.vehicle || 'Not set';
+    $('#sbPayService').textContent = row.service || 'Not set';
+    $('#sbPayAmount').value = row.quoted_price == null || row.quoted_price === '' ? '' : Number(row.quoted_price).toFixed(2);
+    if(setup) setup.style.display='';
+    result?.classList.remove('show');
+    if(status){status.textContent='';status.classList.remove('error');}
+    backdrop?.classList.add('show');
+    sheet?.classList.add('show');
+    backdrop?.setAttribute('aria-hidden','false');
+    sheet?.setAttribute('aria-hidden','false');
+    setTimeout(()=>$('#sbPayAmount')?.focus(),300);
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-take-payment]');
+    if(!btn) return;
+    const row = (window.cachedEnquiries || cachedEnquiries || []).find(r => String(r.id) === String(btn.dataset.takePayment));
+    if(!row) return;
+    openPaymentSheet(row);
+  });
+
+  $('#sbPaymentClose')?.addEventListener('click', closePaymentSheet);
+  $('#sbPaymentDone')?.addEventListener('click', closePaymentSheet);
+  backdrop?.addEventListener('click', closePaymentSheet);
+
+  activate?.addEventListener('click', async () => {
+    const amount = Number($('#sbPayAmount')?.value);
+    if(!paymentEnquiryId){
+      status.textContent='Booking could not be identified.';
+      status.classList.add('error');
+      return;
+    }
+    if(!Number.isFinite(amount) || amount <= 0){
+      status.textContent='Enter a valid payment amount.';
+      status.classList.add('error');
+      $('#sbPayAmount')?.focus();
+      return;
+    }
+
+    activate.disabled=true;
+    activate.textContent='ACTIVATING…';
+    status.classList.remove('error');
+    status.textContent='Creating secure payment request…';
+
+    try{
+      const {data,error} = await supabase.functions.invoke('create-payment-request',{
+        body:{enquiry_id:paymentEnquiryId,amount}
+      });
+
+      if(error) throw error;
+      if(!data?.success || !data?.payment_request){
+        throw new Error(data?.error || 'Payment request could not be activated.');
+      }
+
+      const p=data.payment_request;
+      $('#sbPaymentPin').textContent=String(p.pin || '').padStart(4,'0');
+      $('#sbPaymentResultCustomer').textContent=p.customer?.name || $('#sbPayCustomer').textContent || 'Customer';
+      $('#sbPaymentResultAmount').textContent='£'+Number(p.amount).toFixed(2);
+
+      if(p.expires_at){
+        const expiry=new Date(p.expires_at);
+        $('#sbPaymentExpiry').textContent='Expires '+expiry.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      }else{
+        $('#sbPaymentExpiry').textContent='Expires in 15 minutes';
+      }
+
+      setup.style.display='none';
+      result.classList.add('show');
+    }catch(err){
+      console.error('STANCEBOUND payment activation failed:',err);
+      status.textContent=err?.message || 'Could not activate payment.';
+      status.classList.add('error');
+      activate.disabled=false;
+      activate.textContent='ACTIVATE PAYMENT';
+    }
+  });
+})();
 </script>
 
 </body>
