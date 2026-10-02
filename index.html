@@ -4021,6 +4021,29 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 #home .sb-home-reactor{opacity:.68!important}
 @media(prefers-reduced-motion:reduce){.sb-entry-orbit,.sb-entry-orbit:before,.sb-entry-scan,#sbFingerprint:before,#sbFingerprint:after{animation:none!important}}
 </style>
+
+<style id="stancebound-v15-fingerprint-tap">
+/* Keep the original boot/interface graphics visible with the fingerprint layered into them */
+#sbEntryGate{background:rgba(2,2,2,.88)!important;backdrop-filter:none!important}
+.sb-entry-grid{opacity:.18!important}
+.sb-entry-orbit{opacity:1!important}
+.sb-entry-scan{opacity:1}
+#sbFingerprint{margin-top:15px!important}
+.sb-entry-copy{margin-top:218px!important}
+
+/* Tap interaction rather than press-and-hold */
+#sbFingerprint.sb-reading{animation:sbFingerTap .72s cubic-bezier(.2,.8,.2,1)}
+#sbFingerprint.sb-reading:before{animation:sbFingerUnlockRing .72s ease-out forwards!important}
+#sbFingerprint.sb-reading:after{animation:sbFingerUnlockOuter .9s ease-out forwards!important}
+#sbFingerprint.sb-reading .sb-finger-beam{animation:sbFingerTapBeam .55s ease-in-out forwards!important}
+#sbEntryGate.sb-reading .sb-entry-progress i{animation:sbEntryTapProgress .62s cubic-bezier(.2,.8,.2,1) forwards!important}
+@keyframes sbFingerTap{35%{transform:scale(.94)}70%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes sbFingerUnlockRing{to{transform:scale(1.45);opacity:0;border-color:#fff}}
+@keyframes sbFingerUnlockOuter{to{transform:rotate(95deg) scale(1.3);opacity:0}}
+@keyframes sbFingerTapBeam{0%{top:10%;opacity:0}15%{opacity:1}100%{top:88%;opacity:0}}
+@keyframes sbEntryTapProgress{to{width:100%}}
+</style>
+
 </head>
 
 
@@ -7863,6 +7886,48 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
       return originalShowPage.call(this,pageName,addToHistory);
     };
   }
+})();
+</script>
+
+
+<script id="stancebound-v15-fingerprint-tap-js">
+(()=>{
+ const gate=document.querySelector('#sbEntryGate');
+ const oldFinger=document.querySelector('#sbFingerprint');
+ if(!gate||!oldFinger)return;
+
+ /* Clone strips the old V13 press/hold listeners cleanly. */
+ const finger=oldFinger.cloneNode(true);
+ oldFinger.replaceWith(finger);
+ const hold=document.querySelector('#sbEntryHold');
+ let opening=false;
+
+ if(hold) hold.textContent='TAP TO ENTER';
+ finger.setAttribute('aria-label','Tap fingerprint to enter STANCEBOUND');
+
+ function enter(){
+   if(opening)return;
+   opening=true;
+   gate.classList.add('sb-reading');
+   finger.classList.add('sb-reading');
+   hold?.classList.add('active');
+   if(hold)hold.textContent='ACCESS GRANTED';
+
+   /* Keep the boot graphics alive during the scan instead of instantly hiding them. */
+   setTimeout(()=>{
+     gate.classList.add('sb-entry-open');
+     document.documentElement.classList.add('sb-site-entered');
+   },720);
+   setTimeout(()=>gate.remove(),1550);
+ }
+
+ finger.addEventListener('click',enter);
+ finger.addEventListener('keydown',e=>{
+   if((e.key==='Enter'||e.key===' ')&&!opening){
+     e.preventDefault();
+     enter();
+   }
+ });
 })();
 </script>
 
