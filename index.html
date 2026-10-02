@@ -3726,6 +3726,59 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-golfer-geometry-v9">
+/* V9 micro-calibration from the latest live Android screenshots */
+
+/* Wheel analysis rings: slightly smaller, lower, and individually nudged
+   onto the visible tyre circumference. */
+#sbDetailScanner .sbds-zone-front-wheel,
+#sbDetailScanner .sbds-zone-rear-wheel{
+  width:12.9%;
+  top:58.0%;
+}
+#sbDetailScanner .sbds-zone-front-wheel{left:12.55%}
+#sbDetailScanner .sbds-zone-rear-wheel{right:11.45%}
+
+/* Glass aperture: pull the mask inward a fraction so the illumination
+   remains inside the real seals/pillars instead of touching the bodywork. */
+#sbDetailScanner .sbds-zone-glass{
+  clip-path:polygon(
+    32.0% 42.55%,
+    42.25% 27.35%,
+    54.75% 26.45%,
+    53.85% 42.15%,
+    32.0% 42.55%,
+    55.75% 26.45%,
+    72.35% 27.0%,
+    78.25% 41.55%,
+    55.05% 42.15%
+  );
+}
+
+/* Cabin remains marginally broader than the glass-only stage. */
+#sbDetailScanner .sbds-zone-cabin{
+  clip-path:polygon(
+    31.45% 43.15%,
+    41.75% 26.25%,
+    73.0% 25.95%,
+    79.2% 42.15%,
+    76.65% 44.35%,
+    31.55% 44.35%
+  );
+}
+
+/* Less bloom makes the alignment itself visible. */
+#sbDetailScanner[data-stage="1"] .sbds-zone-front-wheel,
+#sbDetailScanner[data-stage="1"] .sbds-zone-rear-wheel{
+  box-shadow:0 0 6px rgba(255,255,255,.30),inset 0 0 5px rgba(255,255,255,.05);
+}
+#sbDetailScanner[data-stage="5"] .sbds-zone-glass{
+  background:rgba(255,255,255,.075);
+  filter:drop-shadow(0 0 4px rgba(255,255,255,.36));
+}
+</style>
+
 </head>
 
 
