@@ -3437,6 +3437,39 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-detail-scanner-v3">
+/* Kill the old abstract car/orbit implementation */
+#sbDetailScanner .detail-orbit,#sbDetailScanner .detail-scan,#sbDetailScanner .detail-car-line,#sbDetailScanner .detail-reticle,#sbDetailScanner .detail-visual-label,#sbDetailScanner .detail-live-state{display:none!important}
+.sb-detail-scanner{position:relative;height:235px!important;overflow:hidden;border:1px solid rgba(255,255,255,.15)!important;background:radial-gradient(circle at 52% 47%,rgba(255,255,255,.055),transparent 37%),#060606!important}
+.sbds-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:25px 25px;mask-image:linear-gradient(#000,rgba(0,0,0,.75))}
+.sbds-head{position:absolute;z-index:4;left:13px;right:13px;top:11px;display:flex;justify-content:space-between;gap:10px;font-size:5.5px;font-weight:900;letter-spacing:.17em;color:#a0a0a0}.sbds-head b{color:#555;text-align:right}
+.sbds-car{position:absolute;z-index:2;left:4%;top:18%;width:92%;height:70%;overflow:visible;filter:drop-shadow(0 0 9px rgba(255,255,255,.09))}
+.sbds-outline,.sbds-panel,.sbds-glass,.sbds-cabin,.sbds-trace,.sbds-measure path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.sbds-outline{stroke:rgba(245,245,245,.76);stroke-width:1.25}.sbds-panel{stroke:rgba(180,180,180,.30);stroke-width:.72}.sbds-glass{stroke:rgba(220,220,220,.42);stroke-width:.8;fill:rgba(255,255,255,.018)}.sbds-cabin{stroke:rgba(170,170,170,.25);stroke-width:.7}
+.sbds-trace{stroke:#fff;stroke-width:1.35;stroke-dasharray:900;stroke-dashoffset:900;filter:drop-shadow(0 0 4px rgba(255,255,255,.7));animation:sbdsTrace 4.5s cubic-bezier(.25,.1,.25,1) infinite}
+.sbds-wheel{fill:#050505;stroke:rgba(245,245,245,.7);stroke-width:2}.sbds-rim{fill:none;stroke:rgba(210,210,210,.42);stroke-width:1.5}.sbds-hub{fill:#aaa}
+.sbds-nodes circle{fill:#fff;opacity:.16;filter:drop-shadow(0 0 4px #fff);transition:opacity .35s ease,r .35s ease}.sbds-measure path{stroke:rgba(255,255,255,.18);stroke-width:.7}
+.sbds-sweep{position:absolute;z-index:3;top:29px;bottom:24px;left:5%;width:1px;background:linear-gradient(transparent,rgba(255,255,255,.95),transparent);box-shadow:0 0 18px 2px rgba(255,255,255,.17);animation:sbdsSweep 4.2s ease-in-out infinite}
+.sbds-target{position:absolute;z-index:3;width:32px;height:32px;border:1px solid rgba(255,255,255,.18);border-radius:50%;opacity:0;transition:all .4s ease}.sbds-target:before,.sbds-target:after{content:"";position:absolute;background:rgba(255,255,255,.35)}.sbds-target:before{width:44px;height:1px;left:-7px;top:15px}.sbds-target:after{height:44px;width:1px;left:15px;top:-7px}
+.sbds-label{position:absolute;z-index:4;font-size:4.7px;font-weight:900;letter-spacing:.14em;color:#777;opacity:0;transition:opacity .35s ease}.sbds-label-a{left:11%;bottom:34px}.sbds-label-b{right:9%;bottom:34px}
+.sbds-stage{position:absolute;z-index:1;right:11px;top:27px;font-size:50px;font-weight:900;line-height:1;color:rgba(255,255,255,.055);letter-spacing:-.07em}
+.sbds-foot{position:absolute;z-index:4;left:12px;right:12px;bottom:9px;display:flex;justify-content:space-between;font-size:4.5px;font-weight:900;letter-spacing:.15em;color:#4f4f4f}.sbds-foot i{display:inline-block;width:3px;height:3px;border-radius:50%;background:#fff;margin-right:5px;box-shadow:0 0 7px #fff}.sbds-foot b{font-weight:900;color:#777}
+.process-box[data-detail-stage]{cursor:pointer;position:relative;transition:border-color .3s ease,background .3s ease,transform .3s ease,box-shadow .3s ease}
+.process-box[data-detail-stage].sbds-active{border-color:rgba(255,255,255,.48)!important;background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.012))!important;box-shadow:inset 0 0 25px rgba(255,255,255,.025)}
+.process-box[data-detail-stage].sbds-active:after{content:"ACTIVE";position:absolute;right:8px;bottom:7px;font-size:4.5px;font-weight:900;letter-spacing:.16em;color:#777}
+#sbDetailScanner[data-stage="1"] .sbds-wheels{filter:drop-shadow(0 0 9px rgba(255,255,255,.55))}#sbDetailScanner[data-stage="1"] .sbds-wheel{stroke:#fff}#sbDetailScanner[data-stage="1"] .sbds-label{opacity:1}#sbDetailScanner[data-stage="1"] .sbds-target.t1{opacity:.55;left:19%;top:60%}#sbDetailScanner[data-stage="1"] .sbds-target.t2{opacity:.55;right:18%;top:60%}
+#sbDetailScanner[data-stage="2"] .sbds-body{filter:drop-shadow(0 0 7px rgba(255,255,255,.35))}#sbDetailScanner[data-stage="2"] .sbds-sweep{animation-duration:2.5s}
+#sbDetailScanner[data-stage="3"] .sbds-outline,#sbDetailScanner[data-stage="3"] .sbds-panel{stroke:#eee}#sbDetailScanner[data-stage="3"] .sbds-trace{animation-duration:2.8s}
+#sbDetailScanner[data-stage="4"] .sbds-glass{fill:rgba(255,255,255,.10);stroke:#fff;filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}#sbDetailScanner[data-stage="4"] .sbds-cabin{stroke:#fff}
+#sbDetailScanner[data-stage="5"] .sbds-glass{fill:rgba(255,255,255,.14);stroke:#fff;filter:drop-shadow(0 0 12px rgba(255,255,255,.5))}#sbDetailScanner[data-stage="5"] .sbds-body{opacity:.42}
+#sbDetailScanner[data-stage="6"] .sbds-nodes circle{opacity:.95}#sbDetailScanner[data-stage="6"] .sbds-car{filter:drop-shadow(0 0 13px rgba(255,255,255,.28))}#sbDetailScanner[data-stage="6"] .sbds-outline{stroke:#fff}
+@keyframes sbdsTrace{0%,10%{stroke-dashoffset:900;opacity:.1}55%,75%{stroke-dashoffset:0;opacity:.95}100%{stroke-dashoffset:-900;opacity:.08}}
+@keyframes sbdsSweep{0%{left:5%;opacity:0}12%{opacity:.95}88%{opacity:.45}100%{left:95%;opacity:0}}
+@media(max-width:600px){.sb-detail-scanner{height:190px!important}.sbds-car{left:1%;width:98%;top:20%;height:66%}.sbds-head{font-size:4.5px}.sbds-stage{font-size:40px}.sbds-foot{font-size:3.8px}.sbds-label{font-size:3.8px}}
+@media(prefers-reduced-motion:reduce){.sbds-trace,.sbds-sweep{animation:none!important}.sbds-trace{stroke-dashoffset:0}}
+</style>
+
 </head>
 
 
@@ -3921,24 +3954,45 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 
         <!-- Original six-step graphic system retained here and moved into the modal only when requested. -->
         <div class="sbp-detail-source" id="currentServiceDetails">
-          <div class="detail-visual-console" aria-hidden="true">
-            <div class="detail-orbit"></div>
-            <div class="detail-scan"></div>
-            <div class="detail-car-line">
-              <i class="car-roof"></i><i class="car-body"></i><i class="car-wheel w1"></i><i class="car-wheel w2"></i>
-            </div>
-            <div class="detail-reticle r1"></div><div class="detail-reticle r2"></div>
-            <span class="detail-visual-label">DETAIL SYSTEM / 01</span><span class="detail-live-state"><i></i>SURFACE ANALYSIS ACTIVE</span>
-            <b>01</b>
-          </div>
-          <div class="detail-tech-line"><span>6-STAGE DETAIL PROCESS</span><span>01 / CURRENT</span></div>
+          <div class="detail-visual-console sb-detail-scanner" id="sbDetailScanner">
+  <div class="sbds-grid"></div>
+  <div class="sbds-sweep"></div>
+  <div class="sbds-head"><span id="sbdsSystem">STAGE 01 / WHEEL SYSTEM</span><b id="sbdsStatus">PRE-CLEAN ANALYSIS</b></div>
+  <svg class="sbds-car" viewBox="0 0 760 270" aria-hidden="true">
+    <g class="sbds-body">
+      <path class="sbds-outline" d="M72 184 C91 161 123 151 174 143 L247 76 C269 57 299 48 349 47 L453 49 C491 51 522 64 552 89 L614 142 C655 148 686 161 698 183 L696 204 L646 207 C639 174 617 158 586 158 C553 158 531 176 525 208 L235 208 C229 176 207 158 174 158 C142 158 120 175 113 207 L72 204 Z"/>
+      <path class="sbds-panel" d="M250 79 L307 141 L594 141 M312 61 L329 140 M455 58 L505 140 M249 142 L198 148 M614 149 L662 163 M266 161 L510 161 M377 50 L377 140"/>
+      <path class="sbds-panel" d="M78 188 L113 188 M235 188 L525 188 M646 188 L695 188"/>
+      <path class="sbds-glass" d="M263 78 C283 63 307 57 345 56 L447 58 C474 59 494 67 515 84 L570 137 L315 137 Z"/>
+      <path class="sbds-cabin" d="M330 137 L330 78 M454 137 L454 61"/>
+      <path class="sbds-trace" d="M72 184 C91 161 123 151 174 143 L247 76 C269 57 299 48 349 47 L453 49 C491 51 522 64 552 89 L614 142 C655 148 686 161 698 183"/>
+    </g>
+    <g class="sbds-wheels">
+      <circle class="sbds-wheel" cx="174" cy="202" r="43"/><circle class="sbds-rim" cx="174" cy="202" r="24"/><circle class="sbds-hub" cx="174" cy="202" r="4"/>
+      <circle class="sbds-wheel" cx="586" cy="202" r="43"/><circle class="sbds-rim" cx="586" cy="202" r="24"/><circle class="sbds-hub" cx="586" cy="202" r="4"/>
+    </g>
+    <g class="sbds-nodes">
+      <circle cx="174" cy="202" r="5"/><circle cx="586" cy="202" r="5"/><circle cx="312" cy="78" r="4"/><circle cx="506" cy="139" r="4"/><circle cx="662" cy="163" r="4"/>
+    </g>
+    <g class="sbds-measure">
+      <path d="M94 232 H667 M94 226 V238 M667 226 V238"/>
+      <path d="M226 34 V119 M220 34 H232 M220 119 H232"/>
+    </g>
+  </svg>
+  <div class="sbds-target t1"></div><div class="sbds-target t2"></div>
+  <div class="sbds-label sbds-label-a" id="sbdsLabelA">WHEEL / FRONT</div>
+  <div class="sbds-label sbds-label-b" id="sbdsLabelB">WHEEL / REAR</div>
+  <div class="sbds-stage">01</div>
+  <div class="sbds-foot"><span><i></i>DETAIL SYSTEM / LIVE</span><b>SWIPE OR SELECT STAGE</b></div>
+</div>
+<div class="detail-tech-line"><span>6-STAGE DETAIL PROCESS</span><span>01 / CURRENT</span></div>
           <div class="detail-process-grid">
-            <div class="process-box"><span class="process-icon wheel-icon" aria-hidden="true"></span><b>01</b><strong>Wheels + Pre-clean</strong><small>Initial exterior preparation</small></div>
-            <div class="process-box"><span class="process-icon foam-icon" aria-hidden="true"></span><b>02</b><strong>Snow Foam + Wash</strong><small>Safe contact wash process</small></div>
-            <div class="process-box"><span class="process-icon dry-icon" aria-hidden="true"></span><b>03</b><strong>Dry + Finish</strong><small>Careful finishing touches</small></div>
-            <div class="process-box"><span class="process-icon cabin-icon" aria-hidden="true"></span><b>04</b><strong>Interior Deep Clean</strong><small>Vacuum, trims + crevices</small></div>
-            <div class="process-box"><span class="process-icon glass-icon" aria-hidden="true"></span><b>05</b><strong>Glass</strong><small>Interior + exterior glass</small></div>
-            <div class="process-box"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
+            <div class="process-box" data-detail-stage="1"><span class="process-icon wheel-icon" aria-hidden="true"></span><b>01</b><strong>Wheels + Pre-clean</strong><small>Initial exterior preparation</small></div>
+            <div class="process-box" data-detail-stage="2"><span class="process-icon foam-icon" aria-hidden="true"></span><b>02</b><strong>Snow Foam + Wash</strong><small>Safe contact wash process</small></div>
+            <div class="process-box" data-detail-stage="3"><span class="process-icon dry-icon" aria-hidden="true"></span><b>03</b><strong>Dry + Finish</strong><small>Careful finishing touches</small></div>
+            <div class="process-box" data-detail-stage="4"><span class="process-icon cabin-icon" aria-hidden="true"></span><b>04</b><strong>Interior Deep Clean</strong><small>Vacuum, trims + crevices</small></div>
+            <div class="process-box" data-detail-stage="5"><span class="process-icon glass-icon" aria-hidden="true"></span><b>05</b><strong>Glass</strong><small>Interior + exterior glass</small></div>
+            <div class="process-box" data-detail-stage="6"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
           </div>
           <div class="detail-bottom-row">
             <div class="detail-fact"><span>INTRODUCTORY RATE / £40</span><p>A limited launch rate while STANCEBOUND builds its detailing portfolio. The process and attention stay the same. The price simply reflects this early portfolio-building period.</p></div>
@@ -7080,6 +7134,33 @@ window.addEventListener('pageshow',function(e){
 });
 </script>
 
+
+
+<script id="stancebound-detail-scanner-v3-js">
+(()=>{
+ const scanner=document.querySelector('#sbDetailScanner');if(!scanner)return;
+ const cards=[...document.querySelectorAll('.process-box[data-detail-stage]')];
+ const system=document.querySelector('#sbdsSystem'),status=document.querySelector('#sbdsStatus'),stageNum=scanner.querySelector('.sbds-stage'),a=document.querySelector('#sbdsLabelA'),b=document.querySelector('#sbdsLabelB');
+ const stages={
+  1:['STAGE 01 / WHEEL SYSTEM','PRE-CLEAN ANALYSIS','WHEEL / FRONT','WHEEL / REAR'],
+  2:['STAGE 02 / WASH SYSTEM','CONTACT WASH SEQUENCE','BODY / SURFACE','FOAM / COVERAGE'],
+  3:['STAGE 03 / FINISH SYSTEM','EXTERIOR FINISH','PANEL / TRACE','FINISH / CHECK'],
+  4:['STAGE 04 / INTERIOR SYSTEM','CABIN DEEP CLEAN','CABIN / ACTIVE','TRIMS / CREVICES'],
+  5:['STAGE 05 / GLASS SYSTEM','GLASS INSPECTION','GLASS / EXTERIOR','GLASS / INTERIOR'],
+  6:['STAGE 06 / INSPECTION','FINAL VEHICLE CHECK','SYSTEM / COMPLETE','ALL NODES / ACTIVE']
+ };
+ let current=1,startX=0;
+ function setStage(n){
+  n=Math.max(1,Math.min(6,Number(n)||1));current=n;scanner.dataset.stage=n;
+  const s=stages[n];system.textContent=s[0];status.textContent=s[1];stageNum.textContent=String(n).padStart(2,'0');a.textContent=s[2];b.textContent=s[3];
+  cards.forEach(c=>c.classList.toggle('sbds-active',Number(c.dataset.detailStage)===n));
+ }
+ cards.forEach(c=>{c.setAttribute('role','button');c.setAttribute('tabindex','0');c.addEventListener('click',()=>setStage(c.dataset.detailStage));c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setStage(c.dataset.detailStage)}})});
+ scanner.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX},{passive:true});
+ scanner.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)setStage(current+(dx<0?1:-1))},{passive:true});
+ setStage(1);
+})();
+</script>
 
 </body>
 
