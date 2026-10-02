@@ -378,6 +378,10 @@ body{padding-bottom:88px}
 .sheet-card.sb-sheet-closing{transition:transform .26s cubic-bezier(.4,0,1,1)!important;transform:translateY(105%)!important;}
 @media(prefers-reduced-motion:reduce){.more-sheet,.quick-sheet,.more-sheet .sheet-card,.quick-sheet .sheet-card{transition:none!important}.admin-page.sb-page-entering{animation:none!important}}
 
+
+/* Prevent auth/page flash during refresh */
+#sbAdminBootCover{position:fixed;inset:0;z-index:2147483647;background:#050505;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .14s ease,visibility 0s linear .14s}
+#sbAdminBootCover.sb-ready{opacity:0;visibility:hidden;pointer-events:none}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -722,6 +726,8 @@ main, .admin-page, .panel {
 </style></head>
 
 <body>
+<div id="sbAdminBootCover" aria-hidden="true"></div>
+
 <script>
 let bookingRequestFilter='all';
 
@@ -2897,6 +2903,12 @@ manualBookingForm?.addEventListener('submit',async(event)=>{
 });
 
 
+function revealAdminAfterAuth(){
+  const cover=document.querySelector('#sbAdminBootCover');
+  if(!cover)return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>cover.classList.add('sb-ready')));
+}
+
 function applyAdminSession(session) {
   const loggedIn = !!session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com';
 
@@ -2915,6 +2927,7 @@ function applyAdminSession(session) {
       });
     }
   }
+  revealAdminAfterAuth();
 }
 
 function getStoredAdminSession() {
@@ -3562,6 +3575,7 @@ if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en
 // Restore the admin UI immediately from the valid persisted Supabase session.
 // RLS still protects all database data; this only prevents the login screen
 // flashing/sticking while Supabase restores its client state.
+setTimeout(revealAdminAfterAuth,2500);
 const storedAdminSession = getStoredAdminSession();
 applyAdminSession(storedAdminSession);
 if (storedAdminSession) {
