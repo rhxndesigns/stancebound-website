@@ -3472,20 +3472,135 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 
 
 
-<style id="stancebound-golfr-blueprint-v5">
-#sbDetailScanner .sbds-car{left:1%;width:98%;top:14%;height:76%}
-#sbDetailScanner .sbds-outline{stroke-width:1.35}
-#sbDetailScanner .sbds-spoke{fill:none;stroke:rgba(210,210,210,.30);stroke-width:1;vector-effect:non-scaling-stroke}
-#sbDetailScanner[data-stage="1"] .sbds-spoke{stroke:rgba(255,255,255,.82);filter:drop-shadow(0 0 3px rgba(255,255,255,.5))}
-#sbDetailScanner[data-stage="3"] .sbds-panel{stroke:rgba(245,245,245,.72)}
-/* Interior stage: illuminate the actual hatchback cabin instead of the whole car */
-#sbDetailScanner[data-stage="4"] .sbds-glass{fill:rgba(255,255,255,.115);stroke:#fff;filter:drop-shadow(0 0 9px rgba(255,255,255,.42))}
-#sbDetailScanner[data-stage="4"] .sbds-cabin{stroke:rgba(255,255,255,.9)}
-/* Glass stage: stronger glasshouse isolation */
-#sbDetailScanner[data-stage="5"] .sbds-glass{fill:rgba(255,255,255,.16);stroke:#fff;filter:drop-shadow(0 0 13px rgba(255,255,255,.58))}
-#sbDetailScanner[data-stage="5"] .sbds-outline,#sbDetailScanner[data-stage="5"] .sbds-panel,#sbDetailScanner[data-stage="5"] .sbds-wheels{opacity:.38}
+
+<style id="stancebound-golfer-reference-v6">
+/*
+  Exact scanner foundation:
+  /images/golfer.png
+  Source reference aspect ratio: 1536 × 768 (2:1)
+*/
+#sbDetailScanner .sbds-reference-car{
+  position:absolute;
+  z-index:2;
+  left:3%;
+  top:20%;
+  width:94%;
+  height:auto;
+  aspect-ratio:2/1;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.12));
+  transition:filter .45s ease,opacity .45s ease;
+}
+#sbDetailScanner .sbds-golfer-base{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  opacity:.76;
+  mix-blend-mode:screen;
+  filter:grayscale(1) brightness(1.12) contrast(1.08);
+  transition:opacity .4s ease,filter .4s ease;
+}
+#sbDetailScanner .sbds-zone{
+  position:absolute;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .4s ease,filter .4s ease,background .4s ease;
+}
+#sbDetailScanner .sbds-zone-front-wheel,
+#sbDetailScanner .sbds-zone-rear-wheel{
+  width:18.5%;
+  aspect-ratio:1/1;
+  border-radius:50%;
+  top:51.7%;
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 0 18px rgba(255,255,255,.28),inset 0 0 18px rgba(255,255,255,.08);
+}
+#sbDetailScanner .sbds-zone-front-wheel{left:10.3%}
+#sbDetailScanner .sbds-zone-rear-wheel{right:8.5%}
+#sbDetailScanner .sbds-zone-cabin{
+  left:31.5%;top:20%;width:49%;height:33%;
+  clip-path:polygon(8% 100%,18% 16%,30% 4%,72% 5%,91% 18%,100% 100%);
+  background:linear-gradient(110deg,transparent,rgba(255,255,255,.14),transparent);
+}
+#sbDetailScanner .sbds-zone-glass{
+  left:32.5%;top:20.5%;width:47.5%;height:31.5%;
+  clip-path:polygon(7% 100%,18% 15%,30% 4%,72% 5%,90% 18%,100% 100%);
+  background:rgba(255,255,255,.12);
+  filter:drop-shadow(0 0 10px rgba(255,255,255,.4));
+}
+#sbDetailScanner .sbds-zone-body{
+  left:2%;right:2%;top:42%;height:36%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);
+  clip-path:polygon(0 35%,15% 8%,82% 4%,100% 30%,98% 82%,76% 82%,71% 48%,28% 48%,23% 82%,2% 82%);
+}
+#sbDetailScanner .sbds-inspection-node{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#fff;box-shadow:0 0 9px #fff;
+  opacity:0;transition:opacity .35s ease,transform .35s ease;
+}
+#sbDetailScanner .sbds-inspection-node.n1{left:20%;top:66%}
+#sbDetailScanner .sbds-inspection-node.n2{left:48%;top:48%}
+#sbDetailScanner .sbds-inspection-node.n3{left:75%;top:47%}
+#sbDetailScanner .sbds-inspection-node.n4{left:86%;top:65%}
+
+/* 01 Wheels + Pre-clean */
+#sbDetailScanner[data-stage="1"] .sbds-zone-front-wheel,
+#sbDetailScanner[data-stage="1"] .sbds-zone-rear-wheel{opacity:.88;animation:sbGolfWheelLock 1.8s ease-in-out infinite}
+#sbDetailScanner[data-stage="1"] .sbds-golfer-base{opacity:.58}
+
+/* 02 Snow Foam + Wash */
+#sbDetailScanner[data-stage="2"] .sbds-zone-body{opacity:1}
+#sbDetailScanner[data-stage="2"] .sbds-sweep{animation-duration:2.35s;box-shadow:0 0 25px 3px rgba(255,255,255,.24)}
+#sbDetailScanner[data-stage="2"] .sbds-golfer-base{opacity:.9}
+
+/* 03 Dry + Finish */
+#sbDetailScanner[data-stage="3"] .sbds-golfer-base{
+  opacity:1;
+  filter:grayscale(1) brightness(1.32) contrast(1.16) drop-shadow(0 0 6px rgba(255,255,255,.25));
+}
+#sbDetailScanner[data-stage="3"] .sbds-zone-body{opacity:.72}
+
+/* 04 Interior Deep Clean */
+#sbDetailScanner[data-stage="4"] .sbds-zone-cabin{opacity:1;animation:sbGolfCabinScan 2.8s ease-in-out infinite}
+#sbDetailScanner[data-stage="4"] .sbds-golfer-base{opacity:.62}
+
+/* 05 Glass */
+#sbDetailScanner[data-stage="5"] .sbds-zone-glass{opacity:1}
+#sbDetailScanner[data-stage="5"] .sbds-golfer-base{opacity:.42}
+
+/* 06 Final Inspection */
+#sbDetailScanner[data-stage="6"] .sbds-golfer-base{
+  opacity:1;
+  filter:grayscale(1) brightness(1.28) contrast(1.12) drop-shadow(0 0 9px rgba(255,255,255,.32));
+}
+#sbDetailScanner[data-stage="6"] .sbds-inspection-node{opacity:1;animation:sbGolfNode 1.5s ease-in-out infinite}
+#sbDetailScanner[data-stage="6"] .sbds-inspection-node.n2{animation-delay:.2s}
+#sbDetailScanner[data-stage="6"] .sbds-inspection-node.n3{animation-delay:.4s}
+#sbDetailScanner[data-stage="6"] .sbds-inspection-node.n4{animation-delay:.6s}
+
+@keyframes sbGolfWheelLock{
+  50%{box-shadow:0 0 27px rgba(255,255,255,.42),inset 0 0 22px rgba(255,255,255,.11)}
+}
+@keyframes sbGolfCabinScan{
+  0%,100%{filter:brightness(.8);opacity:.42}
+  50%{filter:brightness(1.5);opacity:1}
+}
+@keyframes sbGolfNode{
+  50%{transform:scale(1.65);opacity:.35}
+}
+
 @media(max-width:600px){
- #sbDetailScanner .sbds-car{left:-1%;width:102%;top:17%;height:70%}
+ #sbDetailScanner .sbds-reference-car{
+   left:1%;
+   top:23%;
+   width:98%;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #sbDetailScanner .sbds-zone,
+ #sbDetailScanner .sbds-inspection-node{animation:none!important}
 }
 </style>
 
@@ -3977,74 +4092,18 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
   <div class="sbds-grid"></div>
   <div class="sbds-sweep"></div>
   <div class="sbds-head"><span id="sbdsSystem">STAGE 01 / WHEEL SYSTEM</span><b id="sbdsStatus">PRE-CLEAN ANALYSIS</b></div>
-  <svg class="sbds-car sbds-golfr" viewBox="0 0 900 330" aria-hidden="true">
-  <g class="sbds-body">
-    <!-- unmistakable hot-hatch proportions: short bonnet, upright hatch, long roof, 5-door cabin -->
-    <path class="sbds-outline" d="M61 220
-      C72 202 94 190 127 181
-      L203 163
-      L279 92
-      C302 70 333 59 374 55
-      L520 55
-      C558 57 587 68 614 91
-      L690 157
-      L765 177
-      C796 185 817 199 825 216
-      L820 232
-      L762 237
-      C753 198 726 178 689 178
-      C650 178 622 201 614 240
-      L289 240
-      C281 201 253 178 214 178
-      C175 178 147 201 139 239
-      L76 235
-      C64 232 58 227 61 220 Z"/>
-    <!-- roof / glasshouse / pillars -->
-    <path class="sbds-glass" d="M291 94
-      C313 73 340 64 377 62
-      L512 62
-      C544 64 568 73 591 93
-      L662 157
-      L232 157 Z"/>
-    <path class="sbds-cabin" d="M386 63 L371 157 M517 63 L555 157"/>
-    <path class="sbds-cabin" d="M589 93 L612 157"/>
-    <!-- doors and hatch -->
-    <path class="sbds-panel" d="M370 161 L360 225 M555 160 L571 225"/>
-    <path class="sbds-panel" d="M613 160 L649 226 M682 159 L704 180"/>
-    <path class="sbds-panel" d="M284 164 L279 226"/>
-    <!-- characteristic horizontal shoulder and lower sill -->
-    <path class="sbds-panel" d="M109 184 C225 164 405 161 678 163 L774 188"/>
-    <path class="sbds-panel" d="M288 190 L617 190"/>
-    <path class="sbds-panel" d="M290 222 L616 222"/>
-    <!-- short bonnet, headlamp, bumpers -->
-    <path class="sbds-panel" d="M66 218 L109 202 L198 178"/>
-    <path class="sbds-panel" d="M80 211 L130 206 L157 191"/>
-    <path class="sbds-panel" d="M766 186 L810 207"/>
-    <path class="sbds-panel" d="M727 175 L781 189"/>
-    <!-- door handles -->
-    <path class="sbds-panel" d="M430 178 h27 M584 178 h25"/>
-    <!-- animated roof/body trace -->
-    <path class="sbds-trace" d="M61 220 C72 202 94 190 127 181 L203 163 L279 92 C302 70 333 59 374 55 L520 55 C558 57 587 68 614 91 L690 157 L765 177 C796 185 817 199 825 216"/>
-  </g>
-
-  <g class="sbds-wheels">
-    <circle class="sbds-wheel" cx="214" cy="231" r="54"/><circle class="sbds-rim" cx="214" cy="231" r="34"/><circle class="sbds-hub" cx="214" cy="231" r="5"/>
-    <circle class="sbds-wheel" cx="689" cy="231" r="54"/><circle class="sbds-rim" cx="689" cy="231" r="34"/><circle class="sbds-hub" cx="689" cy="231" r="5"/>
-    <path class="sbds-spoke" d="M214 198 V264 M181 231 H247 M191 208 L237 254 M237 208 L191 254"/>
-    <path class="sbds-spoke" d="M689 198 V264 M656 231 H722 M666 208 L712 254 M712 208 L666 254"/>
-  </g>
-
-  <g class="sbds-nodes">
-    <circle cx="214" cy="231" r="5"/><circle cx="689" cy="231" r="5"/>
-    <circle cx="291" cy="94" r="4"/><circle cx="591" cy="93" r="4"/><circle cx="774" cy="188" r="4"/>
-  </g>
-
-  <g class="sbds-measure">
-    <path d="M91 294 H795 M91 286 V302 M795 286 V302"/>
-    <path d="M246 38 V158 M239 38 H253 M239 158 H253"/>
-    <path d="M214 280 V304 M689 280 V304"/>
-  </g>
-</svg>
+  <div class="sbds-car sbds-reference-car" aria-hidden="true">
+  <img class="sbds-golfer-base" src="/images/golfer.png?v=1" alt="">
+  <div class="sbds-zone sbds-zone-front-wheel"></div>
+  <div class="sbds-zone sbds-zone-rear-wheel"></div>
+  <div class="sbds-zone sbds-zone-cabin"></div>
+  <div class="sbds-zone sbds-zone-glass"></div>
+  <div class="sbds-zone sbds-zone-body"></div>
+  <div class="sbds-inspection-node n1"></div>
+  <div class="sbds-inspection-node n2"></div>
+  <div class="sbds-inspection-node n3"></div>
+  <div class="sbds-inspection-node n4"></div>
+</div>
   <div class="sbds-target t1"></div><div class="sbds-target t2"></div>
   <div class="sbds-label sbds-label-a" id="sbdsLabelA">WHEEL / FRONT</div>
   <div class="sbds-label sbds-label-b" id="sbdsLabelB">WHEEL / REAR</div>
