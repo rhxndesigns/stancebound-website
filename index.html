@@ -3909,6 +3909,86 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-home-interactive-v12">
+/* V12: interactive hero/logo system */
+#home .sb-home-techfield{transition:transform .18s ease-out,filter .35s ease}
+#home .sb-home-reactor{
+ position:absolute;left:50%;top:43%;width:min(58vw,450px);aspect-ratio:1;
+ transform:translate(-50%,-50%);pointer-events:none;border-radius:50%;
+ background:
+ radial-gradient(circle,transparent 0 27%,rgba(255,255,255,.055) 27.4%,transparent 28.1%),
+ conic-gradient(from 20deg,transparent 0 11%,rgba(255,255,255,.13) 12%,transparent 13% 36%,rgba(255,255,255,.07) 37%,transparent 38% 72%,rgba(255,255,255,.11) 73%,transparent 74%);
+ opacity:.48;animation:sbReactorSpin 19s linear infinite
+}
+#home .sb-home-reactor:before{
+ content:"";position:absolute;inset:17%;border-radius:50%;
+ border:1px dashed rgba(255,255,255,.12);animation:sbReactorBack 12s linear infinite
+}
+#home .sb-home-reactor:after{
+ content:"";position:absolute;inset:35%;border-radius:50%;
+ box-shadow:0 0 55px rgba(255,255,255,.08),inset 0 0 28px rgba(255,255,255,.045);
+ border:1px solid rgba(255,255,255,.1)
+}
+#home .sb-home-beam{
+ position:absolute;left:-25%;top:20%;width:32%;height:66%;
+ transform:skewX(-17deg);
+ background:linear-gradient(100deg,transparent,rgba(255,255,255,.018),rgba(255,255,255,.13),rgba(255,255,255,.025),transparent);
+ filter:blur(7px);opacity:0;animation:sbHeroBeam 6.6s ease-in-out infinite
+}
+#home .sb-home-horizon{
+ position:absolute;left:3%;right:3%;top:43%;height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+ opacity:.22
+}
+#home .sb-home-horizon:after{
+ content:"";position:absolute;left:50%;top:-2px;width:5px;height:5px;border-radius:50%;
+ background:#fff;box-shadow:0 0 12px #fff;animation:sbHorizonDot 5s ease-in-out infinite
+}
+#home .sb-logo-hit{
+ position:absolute;z-index:3;left:14%;right:14%;top:12%;height:55%;
+ cursor:crosshair;touch-action:pan-y;
+}
+#home .sb-logo-glint{
+ position:absolute;z-index:4;pointer-events:none;width:140px;height:140px;border-radius:50%;
+ transform:translate(-50%,-50%);opacity:0;
+ background:radial-gradient(circle,rgba(255,255,255,.13),rgba(255,255,255,.035) 27%,transparent 68%);
+ mix-blend-mode:screen;filter:blur(4px);transition:opacity .25s ease
+}
+#home .sb-logo-reticle{
+ position:absolute;z-index:4;pointer-events:none;width:42px;height:42px;
+ border:1px solid rgba(255,255,255,.28);opacity:0;transform:translate(-50%,-50%) rotate(45deg);
+ transition:opacity .2s ease,width .25s ease,height .25s ease
+}
+#home .sb-logo-reticle:before,#home .sb-logo-reticle:after{content:"";position:absolute;background:rgba(255,255,255,.35)}
+#home .sb-logo-reticle:before{left:50%;top:-12px;width:1px;height:64px}
+#home .sb-logo-reticle:after{top:50%;left:-12px;height:1px;width:64px}
+#home .sb-logo-readout{
+ position:absolute;z-index:4;pointer-events:none;left:6%;top:18%;
+ font-size:5px;font-weight:900;letter-spacing:.18em;line-height:1.8;color:rgba(255,255,255,.36);
+ opacity:0;transition:opacity .25s ease
+}
+#home .sb-logo-readout b{color:rgba(255,255,255,.76);font-weight:900}
+#home .sb-logo-hit.sb-engaged~.sb-logo-readout{opacity:1}
+#home .sb-logo-hit.sb-engaged~.sb-logo-glint,#home .sb-logo-hit.sb-engaged~.sb-logo-reticle{opacity:1}
+#home .sb-home-techfield.sb-boost{filter:brightness(1.35)}
+#home .sb-home-techfield.sb-boost .sb-home-scan{animation-duration:2.7s}
+#home .sb-home-techfield.sb-boost .sb-home-orbit{border-color:rgba(255,255,255,.14)}
+@keyframes sbReactorSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes sbReactorBack{to{transform:rotate(-360deg)}}
+@keyframes sbHeroBeam{0%,15%{left:-32%;opacity:0}27%{opacity:.7}70%{opacity:.26}88%,100%{left:110%;opacity:0}}
+@keyframes sbHorizonDot{0%,100%{left:12%;opacity:.15}50%{left:88%;opacity:1}}
+@media(max-width:600px){
+ #home .sb-home-reactor{top:39%;width:76vw}
+ #home .sb-home-horizon{top:39%}
+ #home .sb-logo-hit{left:5%;right:5%;top:8%;height:57%}
+ #home .sb-logo-readout{top:12%;font-size:4px}
+}
+@media(prefers-reduced-motion:reduce){
+ #home .sb-home-reactor,#home .sb-home-reactor:before,#home .sb-home-beam,#home .sb-home-horizon:after{animation:none!important}
+}
+</style>
+
 </head>
 
 
@@ -7633,6 +7713,51 @@ window.addEventListener('pageshow',function(e){
    });
  });
  hero.addEventListener('pointerleave',()=>field.style.transform='');
+})();
+</script>
+
+
+<script id="stancebound-home-interactive-v12-js">
+(()=>{
+ const home=document.querySelector('#home'),field=home?.querySelector('.sb-home-techfield');
+ if(!home||!field)return;
+ field.insertAdjacentHTML('beforeend',`
+   <div class="sb-home-reactor"></div>
+   <div class="sb-home-beam"></div>
+   <div class="sb-home-horizon"></div>`);
+ const hero=field.parentElement;
+ const hit=document.createElement('div');hit.className='sb-logo-hit';hit.setAttribute('aria-label','STANCEBOUND visual system');
+ const glint=document.createElement('div');glint.className='sb-logo-glint';
+ const reticle=document.createElement('div');reticle.className='sb-logo-reticle';
+ const readout=document.createElement('div');readout.className='sb-logo-readout';readout.innerHTML='<b>STANCEBOUND / VISUAL CORE</b><br>SURFACE TRACKING / ACTIVE<br>INPUT RESPONSE / LIVE';
+ hero.append(hit,readout,glint,reticle);
+
+ function position(clientX,clientY){
+   const r=hero.getBoundingClientRect(),x=clientX-r.left,y=clientY-r.top;
+   glint.style.left=reticle.style.left=x+'px';glint.style.top=reticle.style.top=y+'px';
+   const nx=x/r.width-.5,ny=y/r.height-.5;
+   field.style.transform=`translate3d(${nx*10}px,${ny*7}px,0) scale(1.01)`;
+ }
+ hit.addEventListener('pointerenter',()=>{hit.classList.add('sb-engaged');field.classList.add('sb-boost')});
+ hit.addEventListener('pointermove',e=>position(e.clientX,e.clientY));
+ hit.addEventListener('pointerleave',()=>{hit.classList.remove('sb-engaged');field.classList.remove('sb-boost');field.style.transform=''});
+ hit.addEventListener('pointerdown',e=>{
+   position(e.clientX,e.clientY);hit.classList.add('sb-engaged');field.classList.add('sb-boost');
+   reticle.style.width='62px';reticle.style.height='62px';
+   setTimeout(()=>{reticle.style.width='42px';reticle.style.height='42px'},220);
+ });
+ hit.addEventListener('pointerup',()=>setTimeout(()=>{hit.classList.remove('sb-engaged');field.classList.remove('sb-boost')},650));
+
+ // Phone: logo responds to scroll position with restrained depth and illumination.
+ let ticking=false;
+ addEventListener('scroll',()=>{
+  if(ticking)return;ticking=true;
+  requestAnimationFrame(()=>{
+   const r=hero.getBoundingClientRect(),p=Math.max(-1,Math.min(1,(innerHeight/2-(r.top+r.height/2))/innerHeight));
+   if(matchMedia('(pointer:coarse)').matches)field.style.transform=`translate3d(0,${p*9}px,0)`;
+   ticking=false;
+  });
+ },{passive:true});
 })();
 </script>
 
