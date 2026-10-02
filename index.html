@@ -3233,6 +3233,103 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 .sbp-cinema-frame.swiping-right .sbp-cinema-copy{transform:translateX(7px)}
 @media(max-width:600px){.sbp-swipe-cue{right:8px;bottom:8px;height:27px;font-size:5px}.sbp-cinema-edge{width:27px;height:52px}}
 </style>
+<style id="stancebound-current-service-motion">
+  .current-service-console{
+    position:relative;overflow:hidden;margin:0 0 18px;padding:clamp(24px,5vw,52px);
+    border:1px solid var(--line);
+    background:
+      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
+      radial-gradient(circle at 82% 18%,rgba(255,255,255,.09),transparent 25%),
+      linear-gradient(145deg,#0d0d0d,#050505);
+    background-size:38px 38px,38px 38px,auto,auto;
+    isolation:isolate;
+  }
+  body.light-theme .current-service-console{
+    background:
+      linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px),
+      radial-gradient(circle at 82% 18%,rgba(0,0,0,.07),transparent 25%),
+      linear-gradient(145deg,#fafafa,#ededeb);
+    background-size:38px 38px,38px 38px,auto,auto;
+  }
+  .service-light-orbit{
+    position:absolute;width:380px;height:380px;right:-180px;top:-190px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.11);box-shadow:0 0 0 44px rgba(255,255,255,.018),0 0 0 92px rgba(255,255,255,.01);
+    animation:serviceOrbit 9s linear infinite;pointer-events:none;z-index:-1;
+  }
+  .service-light-orbit:after{
+    content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;
+    left:50%;top:-4px;box-shadow:0 0 14px 4px rgba(255,255,255,.65);
+  }
+  @keyframes serviceOrbit{to{transform:rotate(360deg)}}
+  .service-scanline{
+    position:absolute;left:0;right:0;height:1px;top:15%;opacity:.22;
+    background:linear-gradient(90deg,transparent,#fff,transparent);
+    animation:serviceScan 5.5s ease-in-out infinite;pointer-events:none;
+  }
+  @keyframes serviceScan{0%,100%{top:14%;opacity:0}15%{opacity:.25}75%{opacity:.12}90%{top:88%;opacity:0}}
+  .service-corner{position:absolute;width:20px;height:20px;opacity:.45;pointer-events:none}
+  .service-corner.tl{left:12px;top:12px;border-left:1px solid currentColor;border-top:1px solid currentColor}
+  .service-corner.tr{right:12px;top:12px;border-right:1px solid currentColor;border-top:1px solid currentColor}
+  .service-corner.bl{left:12px;bottom:12px;border-left:1px solid currentColor;border-bottom:1px solid currentColor}
+  .service-corner.br{right:12px;bottom:12px;border-right:1px solid currentColor;border-bottom:1px solid currentColor}
+  .live-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;animation:livePulse 2s infinite}
+  @keyframes livePulse{50%{box-shadow:0 0 0 6px transparent;opacity:.65}}
+  .current-service-top{display:grid;grid-template-columns:1.25fr .75fr;gap:36px;align-items:end}
+  .current-service-top h1{margin:7px 0 18px;font-size:clamp(48px,9vw,100px);line-height:.82;letter-spacing:-.065em;text-transform:uppercase}
+  .current-service-top p{max-width:660px;margin:0;color:var(--muted);font-size:13px;line-height:1.75}
+  .current-price-module{border:1px solid var(--line);padding:22px;background:rgba(255,255,255,.025)}
+  .current-price-module>span,.current-price-module>small{display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+  .current-price-module strong{display:block;margin:8px 0 5px;font-size:clamp(66px,12vw,112px);line-height:.82;letter-spacing:-.075em}
+  .price-info-toggle{
+    width:100%;margin-top:22px;min-height:46px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;
+    border:1px solid var(--line);background:transparent;color:var(--text);font:inherit;font-size:8px;font-weight:900;letter-spacing:.14em;cursor:pointer;
+    transition:background .25s,color .25s,border-color .25s;
+  }
+  .price-info-toggle:hover,.price-info-toggle[aria-expanded="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .price-info-toggle i{font-style:normal;font-size:18px;font-weight:300;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+  .price-info-toggle[aria-expanded="true"] i{transform:rotate(45deg)}
+  .current-service-details{
+    display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .55s cubic-bezier(.16,1,.3,1),opacity .3s ease;
+    overflow:hidden;
+  }
+  .current-service-details>*{min-height:0}
+  .current-service-console.expanded .current-service-details{grid-template-rows:1fr;opacity:1;margin-top:30px;overflow:visible}
+  /* grid animation wrapper fallback: details use max-height for browsers that don't animate grid children cleanly */
+  .current-service-details{max-height:0}
+  .current-service-console.expanded .current-service-details{max-height:1200px;transition:max-height .7s cubic-bezier(.16,1,.3,1),opacity .3s ease}
+  .detail-tech-line{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:7px;font-weight:900;letter-spacing:.16em;color:var(--muted)}
+  .detail-process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px}
+  .process-box{position:relative;min-height:135px;padding:15px;border:1px solid var(--line);background:rgba(255,255,255,.018);overflow:hidden}
+  .process-box b{position:absolute;right:12px;top:10px;color:var(--muted);font-size:8px;letter-spacing:.1em}
+  .process-box strong,.process-box small{display:block}
+  .process-box strong{margin-top:20px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .process-box small{margin-top:5px;color:var(--muted);font-size:9px}
+  .process-icon{display:block;position:relative;width:34px;height:34px;opacity:.72}
+  .wheel-icon{border:2px solid currentColor;border-radius:50%}.wheel-icon:before,.wheel-icon:after{content:"";position:absolute;left:15px;top:3px;width:2px;height:24px;background:currentColor}.wheel-icon:after{transform:rotate(90deg)}
+  .foam-icon:before{content:"";position:absolute;left:4px;top:8px;width:24px;height:17px;border:1px solid currentColor;border-radius:50% 50% 55% 45%}.foam-icon:after{content:"";position:absolute;right:0;top:0;width:6px;height:6px;border:1px solid currentColor;border-radius:50%;box-shadow:-27px 5px 0 -1px currentColor}
+  .dry-icon:before{content:"";position:absolute;inset:5px;border:1px solid currentColor;transform:rotate(12deg)}.dry-icon:after{content:"";position:absolute;left:1px;right:1px;top:16px;border-top:1px solid currentColor;transform:rotate(-12deg)}
+  .cabin-icon:before{content:"";position:absolute;left:3px;right:3px;bottom:5px;height:16px;border:1px solid currentColor;border-radius:12px 12px 3px 3px}.cabin-icon:after{content:"";position:absolute;left:10px;top:2px;width:13px;height:13px;border:1px solid currentColor;border-radius:50%}
+  .glass-icon:before{content:"";position:absolute;inset:3px 6px;border:1px solid currentColor;transform:skew(-8deg)}.glass-icon:after{content:"";position:absolute;left:16px;top:1px;height:32px;border-left:1px solid currentColor;transform:rotate(28deg)}
+  .inspect-icon:before{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border:2px solid currentColor;border-radius:50%}.inspect-icon:after{content:"";position:absolute;width:14px;border-top:2px solid currentColor;transform:rotate(45deg);right:1px;bottom:5px}
+  .detail-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+  .detail-fact{padding:15px;border:1px solid var(--line)}.detail-fact span{font-size:8px;font-weight:900;letter-spacing:.14em}.detail-fact p{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
+  .current-book-btn{width:100%;margin-top:8px}
+  @media(max-width:760px){
+    .current-service-console{padding:22px 17px}
+    .current-service-top{grid-template-columns:1fr;gap:20px}
+    .current-service-top h1{font-size:clamp(48px,15vw,72px)}
+    .current-price-module{padding:17px}
+    .detail-process-grid{grid-template-columns:repeat(2,1fr)}
+    .process-box{min-height:120px;padding:13px}
+    .detail-bottom-row{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .service-light-orbit,.service-scanline,.live-pulse{animation:none!important}
+    .current-service-details,.price-info-toggle i{transition:none!important}
+  }
+</style>
 </head>
 
 
@@ -3686,7 +3783,17 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
 
         <!-- Original six-step graphic system retained here and moved into the modal only when requested. -->
         <div class="sbp-detail-source" id="currentServiceDetails">
-          <div class="detail-tech-line"><span>DETAIL PROCESS</span><span>01 / CURRENT</span></div>
+          <div class="detail-visual-console" aria-hidden="true">
+            <div class="detail-orbit"></div>
+            <div class="detail-scan"></div>
+            <div class="detail-car-line">
+              <i class="car-roof"></i><i class="car-body"></i><i class="car-wheel w1"></i><i class="car-wheel w2"></i>
+            </div>
+            <div class="detail-reticle r1"></div><div class="detail-reticle r2"></div>
+            <span class="detail-visual-label">STANCEBOUND / DETAIL SYSTEM</span>
+            <b>01</b>
+          </div>
+          <div class="detail-tech-line"><span>6-STAGE DETAIL PROCESS</span><span>01 / CURRENT</span></div>
           <div class="detail-process-grid">
             <div class="process-box"><span class="process-icon wheel-icon" aria-hidden="true"></span><b>01</b><strong>Wheels + Pre-clean</strong><small>Initial exterior preparation</small></div>
             <div class="process-box"><span class="process-icon foam-icon" aria-hidden="true"></span><b>02</b><strong>Snow Foam + Wash</strong><small>Safe contact wash process</small></div>
@@ -3696,8 +3803,8 @@ body.light-theme .sbp-sheet{background:#f7f7f5;border-color:#ccc}.light-theme .s
             <div class="process-box"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
           </div>
           <div class="detail-bottom-row">
-            <div class="detail-fact"><span>WHY £40?</span><p>STANCEBOUND is building its detailing portfolio and experience, so the current service is offered at an introductory rate for a limited period.</p></div>
-            <div class="detail-fact"><span>VEHICLE CONDITION</span><p>Heavy soiling or additional work is discussed before anything outside the agreed service is carried out.</p></div>
+            <div class="detail-fact"><span>INTRODUCTORY RATE / £40</span><p>A limited launch rate while STANCEBOUND builds its detailing portfolio. The process and attention stay the same. The price simply reflects this early portfolio-building period.</p></div>
+            <div class="detail-fact"><span>CONDITION / ADDITIONAL WORK</span><p>Every vehicle is assessed before work begins. If its condition needs anything beyond the booked detail, it is discussed and agreed with you first.</p></div>
           </div>
           <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
         </div>
@@ -6743,6 +6850,82 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
  });
 })();
 </script>
+
+
+<style id="stancebound-detail-modal-premium-v5">
+.sbp-sheet{background:
+ radial-gradient(circle at 78% 12%,rgba(255,255,255,.07),transparent 25%),
+ linear-gradient(180deg,#090909,#050505 72%)!important}
+.sbp-sheet-body{position:relative}
+.sbp-sheet-body:before{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;
+ background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+ background-size:32px 32px;mask-image:linear-gradient(#000,transparent 82%)
+}
+.sbp-detail-source{position:relative;z-index:1}
+.detail-visual-console{
+ height:150px;position:relative;overflow:hidden;margin:0 0 18px;border:1px solid var(--line);
+ background:radial-gradient(circle at 72% 48%,rgba(255,255,255,.09),transparent 27%),rgba(255,255,255,.012)
+}
+.detail-visual-console:before,.detail-visual-console:after{content:"";position:absolute;width:18px;height:18px;opacity:.45}
+.detail-visual-console:before{left:10px;top:10px;border-left:1px solid currentColor;border-top:1px solid currentColor}
+.detail-visual-console:after{right:10px;bottom:10px;border-right:1px solid currentColor;border-bottom:1px solid currentColor}
+.detail-orbit{
+ position:absolute;width:210px;height:210px;border:1px solid rgba(255,255,255,.14);border-radius:50%;
+ right:-62px;top:-62px;box-shadow:0 0 0 30px rgba(255,255,255,.015),0 0 0 62px rgba(255,255,255,.008);
+ animation:detailOrbit 10s linear infinite
+}
+.detail-orbit:after{content:"";position:absolute;left:50%;top:-3px;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 14px 4px rgba(255,255,255,.55)}
+.detail-scan{position:absolute;left:0;right:0;top:10%;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:0;animation:detailScan 4.8s ease-in-out infinite}
+.detail-car-line{position:absolute;width:205px;height:70px;left:50%;top:50%;transform:translate(-50%,-42%);filter:drop-shadow(0 0 10px rgba(255,255,255,.13))}
+.detail-car-line .car-roof{position:absolute;left:48px;top:7px;width:105px;height:37px;border:1px solid rgba(255,255,255,.62);border-bottom:0;border-radius:55% 50% 0 0;transform:skewX(-8deg)}
+.detail-car-line .car-body{position:absolute;left:10px;right:8px;top:35px;height:24px;border:1px solid rgba(255,255,255,.68);border-radius:35px 42px 10px 10px}
+.detail-car-line .car-body:after{content:"";position:absolute;left:25px;right:24px;top:9px;border-top:1px solid rgba(255,255,255,.2)}
+.detail-car-line .car-wheel{position:absolute;top:47px;width:24px;height:24px;border:1px solid rgba(255,255,255,.78);border-radius:50%;background:#080808;box-shadow:inset 0 0 0 5px #080808, inset 0 0 0 6px rgba(255,255,255,.3)}
+.detail-car-line .w1{left:37px}.detail-car-line .w2{right:30px}
+.detail-reticle{position:absolute;width:25px;height:25px;opacity:.25}
+.detail-reticle:before,.detail-reticle:after{content:"";position:absolute;background:#fff}
+.detail-reticle:before{width:100%;height:1px;top:50%}.detail-reticle:after{height:100%;width:1px;left:50%}
+.detail-reticle.r1{left:18%;top:28%}.detail-reticle.r2{right:17%;bottom:20%}
+.detail-visual-label{position:absolute;left:13px;bottom:11px;font-size:6px;font-weight:900;letter-spacing:.18em;color:var(--muted)}
+.detail-visual-console>b{position:absolute;right:14px;top:10px;font-size:28px;line-height:1;color:rgba(255,255,255,.12);letter-spacing:-.06em}
+.sbp-detail-source .detail-tech-line{margin-bottom:7px}
+.sbp-detail-source .process-box{
+ display:grid!important;grid-template-columns:42px 1fr!important;grid-template-rows:auto auto!important;
+ column-gap:10px!important;align-content:center!important;padding:13px!important;min-height:105px!important;
+ background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.008))!important
+}
+.sbp-detail-source .process-box .process-icon{grid-row:1/3;align-self:center;margin:0!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.12))}
+.sbp-detail-source .process-box>b{font-size:7px!important;right:9px!important;top:8px!important}
+.sbp-detail-source .process-box strong{grid-column:2;margin:0!important;font-size:8px!important;line-height:1.25!important;letter-spacing:.07em!important}
+.sbp-detail-source .process-box small{grid-column:2;margin:4px 0 0!important;font-size:6.5px!important;line-height:1.4!important}
+.sbp-detail-source .detail-fact{
+ position:relative;overflow:hidden;padding:16px!important;background:rgba(255,255,255,.012)
+}
+.sbp-detail-source .detail-fact:before{content:"";position:absolute;left:0;top:0;width:38px;border-top:1px solid rgba(255,255,255,.55)}
+.sbp-detail-source .detail-fact span{font-size:7px!important;letter-spacing:.16em!important}
+.sbp-detail-source .detail-fact p{font-size:8.5px!important;line-height:1.65!important;max-width:52ch}
+.sbp-detail-source .current-book-btn{margin-top:10px!important;min-height:48px!important;position:relative;overflow:hidden}
+.sbp-detail-source .current-book-btn:after{
+ content:"";position:absolute;inset:0;transform:translateX(-130%);
+ background:linear-gradient(105deg,transparent,rgba(255,255,255,.13),transparent);
+ animation:detailButtonSweep 6s ease-in-out infinite
+}
+@keyframes detailOrbit{to{transform:rotate(360deg)}}
+@keyframes detailScan{0%,100%{top:8%;opacity:0}15%{opacity:.28}82%{top:92%;opacity:.08}90%{opacity:0}}
+@keyframes detailButtonSweep{0%,65%{transform:translateX(-130%)}85%,100%{transform:translateX(130%)}}
+@media(max-width:600px){
+ .sbp-sheet{padding:14px!important}
+ .sbp-sheet-head{margin:-14px -14px 14px!important}
+ .detail-visual-console{height:128px;margin-bottom:14px}
+ .detail-car-line{transform:translate(-50%,-42%) scale(.84)}
+ .sbp-detail-source .detail-process-grid{gap:6px!important}
+ .sbp-detail-source .process-box{min-height:100px!important;padding:10px!important;grid-template-columns:34px 1fr!important;column-gap:8px!important}
+ .sbp-detail-source .process-box .process-icon{transform:scale(.82);transform-origin:left center}
+ .sbp-detail-source .detail-bottom-row{gap:6px!important}
+}
+@media(prefers-reduced-motion:reduce){.detail-orbit,.detail-scan,.sbp-detail-source .current-book-btn:after{animation:none!important}}
+</style>
 
 </body>
 
