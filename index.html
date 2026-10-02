@@ -3342,14 +3342,66 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 .sb-boot-kicker{font-size:7px;font-weight:800;letter-spacing:.31em;color:#777;margin-bottom:9px;opacity:0;animation:sbBootText .35s ease .38s forwards}.sb-boot-title{font-size:clamp(23px,7vw,34px);font-weight:900;letter-spacing:.09em;line-height:1;margin:0;opacity:0;animation:sbBootText .38s ease .46s forwards}.sb-boot-rule{height:1px;width:0;margin:17px auto 15px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:sbBootRule .62s cubic-bezier(.16,1,.3,1) .58s forwards}.sb-boot-readout{display:flex;justify-content:center;gap:11px;align-items:center;font-size:6.5px;font-weight:800;letter-spacing:.16em;color:#686868;opacity:0;animation:sbBootText .32s ease .68s forwards}.sb-boot-readout i{width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 8px #fff;animation:sbBootPulse .8s ease-in-out infinite}.sb-boot-status{position:absolute;left:24px;right:24px;bottom:27px;display:flex;justify-content:space-between;font-size:5.5px;font-weight:800;letter-spacing:.18em;color:#4c4c4c}.sb-boot-status span:last-child{color:#9a9a9a}
 @keyframes sbBootScan{0%{top:-2%;opacity:0}10%{opacity:.9}100%{top:102%;opacity:0}}@keyframes sbBootMark{from{opacity:0;transform:scale(.82);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:none}}@keyframes sbBootText{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes sbBootRule{to{width:100%}}@keyframes sbBootDiamond{to{transform:rotate(405deg)}}@keyframes sbBootPulse{50%{opacity:.25;transform:scale(.6)}}
 @media(prefers-reduced-motion:reduce){.sb-boot-scan,.sb-boot-mark,.sb-boot-kicker,.sb-boot-title,.sb-boot-rule,.sb-boot-readout,.sb-boot-mark:before,.sb-boot-mark:after,.sb-boot-readout i{animation:none!important;opacity:1}.sb-boot-rule{width:100%}}
-</style><script id="stancebound-boot-early">(()=>{try{if(!sessionStorage.getItem('sb_boot_seen_v1'))document.documentElement.classList.add('sb-boot-lock')}catch(_){document.documentElement.classList.add('sb-boot-lock')}})();</script>
+</style><script id="stancebound-boot-early">(()=>{document.documentElement.classList.add('sb-boot-lock')})();</script>
+
+<style id="stancebound-boot-v2-detail">
+#sbBoot:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.065),transparent 24%);animation:sbBootCoreGlow 3.2s ease-in-out both}
+.sb-boot-core:before,.sb-boot-core:after{content:"";position:absolute;left:50%;top:37px;width:128px;height:128px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none}
+.sb-boot-core:before{animation:sbBootRadar 2.8s linear infinite}.sb-boot-core:after{width:104px;height:104px;border-style:dashed;animation:sbBootRadar 5s linear infinite reverse}
+.sb-boot-title{position:relative;text-shadow:0 0 28px rgba(255,255,255,.13)}
+.sb-boot-title:after{content:"";position:absolute;left:0;right:0;top:52%;height:1px;background:#fff;opacity:0;transform:scaleX(.1);animation:sbBootGlitch 2.7s steps(1,end) .8s infinite}
+.sb-boot-readout{transition:filter .18s ease,transform .18s ease}.sb-boot-readout.sb-boot-tick{animation:sbBootTick .32s ease}
+#sbBoot.sb-boot-ready .sb-boot-mark{filter:drop-shadow(0 0 16px rgba(255,255,255,.28))}
+#sbBoot.sb-boot-ready .sb-boot-rule{box-shadow:0 0 14px rgba(255,255,255,.28)}
+#sbBoot.sb-boot-ready .sb-boot-status span:last-child{color:#fff;text-shadow:0 0 10px rgba(255,255,255,.45)}
+.sb-boot-data{position:absolute;top:25px;font-size:5px;line-height:1.9;letter-spacing:.15em;color:#363636;font-weight:800}
+.sb-boot-data.left{left:25px;text-align:left}.sb-boot-data.right{right:25px;text-align:right}
+.sb-boot-progress{position:absolute;left:24px;right:24px;bottom:48px;height:1px;background:#151515;overflow:hidden}
+.sb-boot-progress:after{content:"";display:block;height:100%;width:0;background:#bdbdbd;box-shadow:0 0 9px rgba(255,255,255,.35);animation:sbBootProgress 3.05s cubic-bezier(.2,.7,.2,1) .15s forwards}
+@keyframes sbBootRadar{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes sbBootCoreGlow{0%{opacity:.2}55%{opacity:1}100%{opacity:.55}}
+@keyframes sbBootTick{0%{filter:blur(2px);transform:translateY(2px);opacity:.35}100%{filter:none;transform:none;opacity:1}}
+@keyframes sbBootGlitch{0%,91%,94%,100%{opacity:0}92%{opacity:.45;transform:scaleX(.92)}93%{opacity:.12;transform:scaleX(.45)}}
+@keyframes sbBootProgress{0%{width:0}22%{width:18%}48%{width:47%}73%{width:72%}100%{width:100%}}
+@media(max-width:600px){.sb-boot-data{font-size:4.5px}.sb-boot-data.left{left:18px}.sb-boot-data.right{right:18px}}
+</style>
+
 </head>
 
 
 
 <body class="intro-running">
-<div id="sbBoot" aria-hidden="true"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-core"><div class="sb-boot-mark"><img src="/images/stanceboundlogo.png?v=30" alt=""></div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><h1 class="sb-boot-title">STANCEBOUND</h1><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
-<script id="stancebound-first-visit-boot-js">(()=>{const root=document.documentElement,boot=document.querySelector('#sbBoot');if(!boot)return;if(!root.classList.contains('sb-boot-lock')){boot.remove();return}const finish=()=>{try{sessionStorage.setItem('sb_boot_seen_v1','1')}catch(_){}boot.classList.add('sb-boot-exit');setTimeout(()=>{root.classList.remove('sb-boot-lock');boot.remove()},480)};setTimeout(finish,matchMedia('(prefers-reduced-motion: reduce)').matches?650:1550)})();</script>
+<div id="sbBoot" aria-hidden="true"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br>UI CORE / ONLINE<br>MOTION / ACTIVE</div>
+ <div class="sb-boot-data right">SB-01<br>SECURE SESSION<br>SOUTH WALES</div>
+ <div class="sb-boot-core"><div class="sb-boot-mark"><img src="/images/stanceboundlogo.png?v=30" alt=""></div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><h1 class="sb-boot-title">STANCEBOUND</h1><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
+<script id="stancebound-first-visit-boot-js">
+(()=>{
+ const root=document.documentElement,boot=document.querySelector('#sbBoot');
+ if(!boot)return;
+ const status=boot.querySelector('.sb-boot-status span:last-child');
+ const kicker=boot.querySelector('.sb-boot-kicker');
+ const readout=boot.querySelector('.sb-boot-readout');
+ const stages=[
+   [520,'SYSTEM CHECK / INTERFACE'],
+   [1120,'VISUAL SYSTEM / ONLINE'],
+   [1760,'DETAILING SYSTEM / READY'],
+   [2350,'PHOTOGRAPHY SYSTEM / READY']
+ ];
+ stages.forEach(([t,label],i)=>setTimeout(()=>{
+   if(kicker)kicker.textContent=label;
+   if(status)status.textContent=i<stages.length-1?'INITIALISING':'READY';
+   if(readout){readout.classList.remove('sb-boot-tick');void readout.offsetWidth;readout.classList.add('sb-boot-tick')}
+ },t));
+ setTimeout(()=>{
+   if(status)status.textContent='SYSTEM READY';
+   boot.classList.add('sb-boot-ready');
+ },2850);
+ setTimeout(()=>{
+   boot.classList.add('sb-boot-exit');
+   setTimeout(()=>{root.classList.remove('sb-boot-lock');boot.remove()},620);
+ },3450);
+})();
+</script>
   <div id="site-intro" class="site-intro" aria-hidden="true">
     <div class="intro-inner">
       <img src="images/stanceboundlogo.png?v=30" alt="STANCEBOUND Detailing" class="intro-logo">
