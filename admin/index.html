@@ -1121,8 +1121,18 @@ Log In
           <div id="financeTransactionModalList" class="finance-list finance-modal-list"></div>
         </section>
       </div>
-      <div class="finance-section-head"><div><div class="admin-kicker">Money Out</div><h3>Spending</h3></div></div>
-      <div id="financeExpenses" class="finance-list"></div>
+      <div class="finance-section-head"><div><div class="admin-kicker">Money Out</div><h3>Transactions</h3><p class="help" style="margin-top:6px">Open the searchable spending history without filling the Finance page with every expense.</p></div></div>
+      <button type="button" id="financeOpenExpenses" class="finance-history-launch finance-history-launch-out"><span><small>SPENDING HISTORY</small><strong>VIEW TRANSACTIONS</strong></span><span id="financeExpenseCount" class="status-pill">0</span></button>
+      <div id="financeExpenses" class="finance-list" hidden></div>
+      <div id="financeExpenseModal" class="finance-history-modal" hidden>
+        <div class="finance-history-backdrop" data-close-expense-history></div>
+        <section class="finance-history-sheet" role="dialog" aria-modal="true" aria-labelledby="financeExpenseHistoryTitle">
+          <div class="finance-history-handle"></div>
+          <div class="finance-history-head"><div><div class="admin-kicker">Money Out</div><h2 id="financeExpenseHistoryTitle">Transactions</h2></div><button type="button" class="finance-history-close" data-close-expense-history aria-label="Close">×</button></div>
+          <div class="finance-history-search"><input id="financeExpenseSearch" type="search" autocomplete="off" placeholder="Search expense, supplier, amount, date or category…"><span id="financeExpenseSearchCount"></span></div>
+          <div id="financeExpenseModalList" class="finance-list finance-modal-list"></div>
+        </section>
+      </div>
       <div class="finance-tax-note"><strong>TAX ESTIMATE</strong><span>Next stage: tax-year-aware estimates using reviewed allowable expenses, rather than blindly treating every purchase as deductible.</span></div>
       <div id="financeStatus" class="status"></div>
     </div>
@@ -3842,6 +3852,15 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style id="stancebound-finance-history-ui">
 .finance-history-launch{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;padding:18px 20px;margin:8px 0 24px;border:1px solid var(--line);border-radius:16px;background:#080808;color:#fff}.finance-history-launch span:first-child{display:grid;gap:5px}.finance-history-launch small{font-size:9px;letter-spacing:.22em;color:#777}.finance-history-launch strong{font-size:14px;letter-spacing:.08em}.finance-history-modal{position:fixed;inset:0;z-index:99999}.finance-history-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(8px)}.finance-history-sheet{position:absolute;left:0;right:0;bottom:0;max-height:88dvh;overflow:hidden;background:#090909;border:1px solid #252525;border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.55)}.finance-history-handle{width:48px;height:5px;border-radius:99px;background:#4a4a4a;margin:0 auto 14px;touch-action:none;cursor:grab;padding:8px 22px;background-clip:content-box;box-sizing:content-box}.finance-history-handle:active{cursor:grabbing}.finance-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.finance-history-head h2{margin:3px 0 0}.finance-history-close{width:42px;height:42px;min-width:42px;min-height:42px;padding:0!important;border-radius:50%;border:1px solid #2b2b2b;background:#111;color:#fff;font-size:25px;line-height:1;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;font-family:Arial,sans-serif;font-weight:300;box-sizing:border-box;overflow:hidden}.finance-history-search{position:sticky;top:0;z-index:2;background:#090909;padding:16px 0 12px}.finance-history-search input{width:100%;min-height:50px;border:1px solid #292929;border-radius:14px;background:#101010;color:#fff;padding:0 15px;font-size:16px}.finance-history-search span{display:block;margin-top:7px;color:#777;font-size:10px;letter-spacing:.12em}.finance-modal-list{max-height:calc(88dvh - 175px);overflow:auto;padding-bottom:12px}.finance-reference{display:block;margin-top:5px;font-size:9px!important;letter-spacing:.08em;color:#666!important;word-break:break-all}.finance-history-sheet .finance-row{cursor:pointer}.finance-history-sheet .finance-row-main strong{font-size:14px}@media(min-width:760px){.finance-history-sheet{left:50%;right:auto;transform:translateX(-50%);width:min(720px,92vw);bottom:5vh;border-radius:24px;max-height:90vh}}
+
+.finance-history-launch:not(.finance-history-launch-out){border-color:rgba(46,204,113,.34);background:linear-gradient(135deg,rgba(46,204,113,.105),#080808 52%)}
+.finance-history-launch:not(.finance-history-launch-out) small,.finance-history-launch:not(.finance-history-launch-out) .status-pill{color:#57d98b}
+.finance-history-launch-out{border-color:rgba(255,74,74,.34);background:linear-gradient(135deg,rgba(255,74,74,.105),#080808 52%)}
+.finance-history-launch-out small,.finance-history-launch-out .status-pill{color:#ff6868}
+#financeTransactionModal .finance-row-side>strong{color:#57d98b}
+#financeExpenseModal .finance-row-side>strong{color:#ff6868}
+#financeTransactionModal .finance-history-head .admin-kicker{color:#57d98b}
+#financeExpenseModal .finance-history-head .admin-kicker{color:#ff6868}
 </style>
 <script id="stancebound-finance-admin">
 function escapeHtml(value=""){
@@ -3860,7 +3879,18 @@ function renderFinanceTransactionModal(query=''){
   list.innerHTML=rows.length?rows.map(x=>{const ref=sbFinanceReference(x);return `<div class="finance-row" data-finance-row="${escapeHtml(x.id)}"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span>${ref?`<span class="finance-reference">REF · ${escapeHtml(String(ref))}</span>`:''}</div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-finance="${x.id}">EDIT</button><button class="finance-remove-btn" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`}).join(''):'<div class="empty-state">No matching transactions.</div>';
 }
 function closeFinanceHistory(){const m=document.querySelector('#financeTransactionModal'),sheet=m?.querySelector('.finance-history-sheet');if(!m)return;if(sheet){sheet.style.transition='transform .24s ease';sheet.style.transform='translateY(105%)';}setTimeout(()=>{m.hidden=true;if(sheet){sheet.style.transition='';sheet.style.transform='';}document.body.style.overflow='';},230)}
-function openFinanceHistory(){const m=document.querySelector('#financeTransactionModal'),sheet=m?.querySelector('.finance-history-sheet');if(!m)return;m.hidden=false;if(sheet){sheet.style.transition='';sheet.style.transform='translateY(105%)';requestAnimationFrame(()=>requestAnimationFrame(()=>{sheet.style.transition='transform .28s cubic-bezier(.22,.8,.22,1)';sheet.style.transform='translateY(0)';}));}document.body.style.overflow='hidden';const q=document.querySelector('#financeTransactionSearch');if(q){q.value='';renderFinanceTransactionModal('');}}
+function openFinanceHistory(){const m=document.querySelector('#financeTransactionModal'),sheet=m?.querySelector('.finance-history-sheet');if(!m)return;m.hidden=false;if(sheet){sheet.style.transition='';sheet.style.transform='translateY(105%)';requestAnimationFrame(()=>requestAnimationFrame(()=>{sheet.style.transition='transform .28s cubic-bezier(.22,.8,.22,1)';sheet.style.transform='translateY(0)';}));}document.body.style.overflow='hidden';const q=document.querySelector('#financeTransactionSearch');if(q){q.value='';document.querySelectorAll('#financeTransactionModalList [data-finance-row]').forEach(el=>el.hidden=false);const all=window.sbFinanceTransactions||[];const sc=document.querySelector('#financeSearchCount');if(sc)sc.textContent=all.length+' OF '+all.length+' TRANSACTIONS';}}
+
+function sbExpenseSearchText(x){return [x.description,x.amount,x.expense_date,sbFinanceDate(x.expense_date),x.category,sbExpenseLabel(x.category),x.payment_method,x.supplier,x.notes,x.id].filter(Boolean).join(' ').toLowerCase()}
+function renderFinanceExpenseModal(query=''){
+  const list=document.querySelector('#financeExpenseModalList');if(!list)return;
+  const all=window.sbFinanceExpenses||[],q=String(query||'').trim().toLowerCase();
+  const rows=q?all.filter(x=>sbExpenseSearchText(x).includes(q)):all;
+  const sc=document.querySelector('#financeExpenseSearchCount');if(sc)sc.textContent=rows.length+' OF '+all.length+' TRANSACTIONS';
+  list.innerHTML=rows.length?rows.map(x=>`<div class="finance-row" data-expense-row="${escapeHtml(x.id)}"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span><span class="finance-reference">REF · ${escapeHtml(String(x.id))}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-expense="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No matching spending transactions.</div>';
+}
+function closeExpenseHistory(){const m=document.querySelector('#financeExpenseModal'),sheet=m?.querySelector('.finance-history-sheet');if(!m)return;if(sheet){sheet.style.transition='transform .24s ease';sheet.style.transform='translateY(105%)';}setTimeout(()=>{m.hidden=true;if(sheet){sheet.style.transition='';sheet.style.transform='';}document.body.style.overflow='';},230)}
+function openExpenseHistory(){const m=document.querySelector('#financeExpenseModal'),sheet=m?.querySelector('.finance-history-sheet');if(!m)return;m.hidden=false;if(sheet){sheet.style.transition='';sheet.style.transform='translateY(105%)';requestAnimationFrame(()=>requestAnimationFrame(()=>{sheet.style.transition='transform .28s cubic-bezier(.22,.8,.22,1)';sheet.style.transform='translateY(0)';}));}document.body.style.overflow='hidden';const q=document.querySelector('#financeExpenseSearch');if(q){q.value='';document.querySelectorAll('#financeExpenseModalList [data-expense-row]').forEach(el=>el.hidden=false);const all=window.sbFinanceExpenses||[];const sc=document.querySelector('#financeExpenseSearchCount');if(sc)sc.textContent=all.length+' OF '+all.length+' TRANSACTIONS';}}
 async function loadFinance(){
   const st=document.querySelector('#financeStatus');if(st)st.textContent='Loading finance…';
   try{
@@ -3873,7 +3903,10 @@ async function loadFinance(){
     const count=document.querySelector('#financeTransactionCount');if(count)count.textContent=String(t.data?.length||0);
     const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML='';
     renderFinanceTransactionModal(document.querySelector('#financeTransactionSearch')?.value||'');
-    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-expense="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
+    window.sbFinanceExpenses=e.data||[];
+    const expenseCount=document.querySelector('#financeExpenseCount');if(expenseCount)expenseCount.textContent=String(e.data?.length||0);
+    const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML='';
+    renderFinanceExpenseModal(document.querySelector('#financeExpenseSearch')?.value||'');
     document.querySelectorAll('[data-edit-finance]').forEach(b=>b.onclick=()=>{
       const row=t.data.find(x=>String(x.id)===String(b.dataset.editFinance));if(!row)return;
       const host=b.closest('.finance-row');
@@ -3943,6 +3976,23 @@ document.querySelector('#financeTransactionSearch')?.addEventListener('input',e=
   const q=e.target.value.trim().toLowerCase(),all=window.sbFinanceTransactions||[];let shown=0;
   document.querySelectorAll('#financeTransactionModalList [data-finance-row]').forEach(el=>{const row=all.find(x=>String(x.id)===String(el.dataset.financeRow));const yes=!q||(row&&sbFinanceSearchText(row).includes(q));el.hidden=!yes;if(yes)shown++});
   const sc=document.querySelector('#financeSearchCount');if(sc)sc.textContent=shown+' OF '+all.length+' TRANSACTIONS';
+});
+
+document.querySelector('#financeOpenExpenses')?.addEventListener('click',openExpenseHistory);
+document.querySelectorAll('[data-close-expense-history]').forEach(b=>b.addEventListener('click',closeExpenseHistory));
+(() => {
+  const modal=document.querySelector('#financeExpenseModal'),sheet=modal?.querySelector('.finance-history-sheet'),handle=modal?.querySelector('.finance-history-handle');
+  if(!modal||!sheet||!handle)return;
+  let dragging=false,startY=0,dy=0;
+  handle.addEventListener('pointerdown',e=>{dragging=true;startY=e.clientY;dy=0;sheet.style.transition='none';handle.setPointerCapture?.(e.pointerId);});
+  handle.addEventListener('pointermove',e=>{if(!dragging)return;dy=Math.max(0,e.clientY-startY);sheet.style.transform=`translateY(${Math.min(dy,320)}px)`;});
+  const finish=()=>{if(!dragging)return;dragging=false;if(dy>90){closeExpenseHistory();}else{sheet.style.transition='transform .22s ease';sheet.style.transform='translateY(0)';setTimeout(()=>{sheet.style.transition='';},230);}};
+  handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);
+})();
+document.querySelector('#financeExpenseSearch')?.addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase(),all=window.sbFinanceExpenses||[];let shown=0;
+  document.querySelectorAll('#financeExpenseModalList [data-expense-row]').forEach(el=>{const row=all.find(x=>String(x.id)===String(el.dataset.expenseRow));const yes=!q||(row&&sbExpenseSearchText(row).includes(q));el.hidden=!yes;if(yes)shown++});
+  const sc=document.querySelector('#financeExpenseSearchCount');if(sc)sc.textContent=shown+' OF '+all.length+' TRANSACTIONS';
 });
 document.querySelector('#financeAddExpense')?.addEventListener('click',()=>{const f=document.querySelector('#financeExpenseForm');f.hidden=!f.hidden;if(!f.hidden){const d=document.querySelector('#expenseDate');if(d&&!d.value)d.value=new Date().toISOString().slice(0,10)}});
 document.querySelector('#expenseCancel')?.addEventListener('click',()=>document.querySelector('#financeExpenseForm').hidden=true);
