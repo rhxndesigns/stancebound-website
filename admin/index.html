@@ -1074,8 +1074,18 @@ Log In
         <div class="finance-toolbar"><button type="button" id="expenseSave">SAVE SPENDING</button><button type="button" class="secondary" id="expenseCancel">CANCEL</button></div>
         <div class="status" id="expenseStatus"></div>
       </div>
-      <div class="finance-section-head"><div><div class="admin-kicker">Money In</div><h3>Income History</h3><p class="help" style="margin-top:6px">Every recorded payment appears here. Removing an incorrect entry recalculates the totals above immediately.</p></div></div>
-      <div id="financeTransactions" class="finance-list"></div>
+      <div class="finance-section-head"><div><div class="admin-kicker">Money In</div><h3>Transactions</h3><p class="help" style="margin-top:6px">Keep the Finance page clean and open the searchable transaction history only when you need it.</p></div></div>
+      <button type="button" id="financeOpenTransactions" class="finance-history-launch"><span><small>INCOME HISTORY</small><strong>VIEW TRANSACTIONS</strong></span><span id="financeTransactionCount" class="status-pill">0</span></button>
+      <div id="financeTransactions" class="finance-list" hidden></div>
+      <div id="financeTransactionModal" class="finance-history-modal" hidden>
+        <div class="finance-history-backdrop" data-close-finance-history></div>
+        <section class="finance-history-sheet" role="dialog" aria-modal="true" aria-labelledby="financeHistoryTitle">
+          <div class="finance-history-handle"></div>
+          <div class="finance-history-head"><div><div class="admin-kicker">Money In</div><h2 id="financeHistoryTitle">Transactions</h2></div><button type="button" class="finance-history-close" data-close-finance-history aria-label="Close">×</button></div>
+          <div class="finance-history-search"><input id="financeTransactionSearch" type="search" autocomplete="off" placeholder="Search name, amount, date or reference…"><span id="financeSearchCount"></span></div>
+          <div id="financeTransactionModalList" class="finance-list finance-modal-list"></div>
+        </section>
+      </div>
       <div class="finance-section-head"><div><div class="admin-kicker">Money Out</div><h3>Spending</h3></div></div>
       <div id="financeExpenses" class="finance-list"></div>
       <div class="finance-tax-note"><strong>TAX ESTIMATE</strong><span>Next stage: tax-year-aware estimates using reviewed allowable expenses, rather than blindly treating every purchase as deductible.</span></div>
@@ -3786,6 +3796,9 @@ document.addEventListener('DOMContentLoaded', function () {
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style id="stancebound-finance-history-ui">
+.finance-history-launch{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;padding:18px 20px;margin:8px 0 24px;border:1px solid var(--line);border-radius:16px;background:#080808;color:#fff}.finance-history-launch span:first-child{display:grid;gap:5px}.finance-history-launch small{font-size:9px;letter-spacing:.22em;color:#777}.finance-history-launch strong{font-size:14px;letter-spacing:.08em}.finance-history-modal{position:fixed;inset:0;z-index:99999}.finance-history-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(8px)}.finance-history-sheet{position:absolute;left:0;right:0;bottom:0;max-height:88dvh;overflow:hidden;background:#090909;border:1px solid #252525;border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.55)}.finance-history-handle{width:42px;height:4px;border-radius:99px;background:#3b3b3b;margin:0 auto 14px}.finance-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.finance-history-head h2{margin:3px 0 0}.finance-history-close{width:42px;height:42px;border-radius:50%;border:1px solid #2b2b2b;background:#111;color:#fff;font-size:27px;line-height:1}.finance-history-search{position:sticky;top:0;z-index:2;background:#090909;padding:16px 0 12px}.finance-history-search input{width:100%;min-height:50px;border:1px solid #292929;border-radius:14px;background:#101010;color:#fff;padding:0 15px;font-size:16px}.finance-history-search span{display:block;margin-top:7px;color:#777;font-size:10px;letter-spacing:.12em}.finance-modal-list{max-height:calc(88dvh - 175px);overflow:auto;padding-bottom:12px}.finance-reference{display:block;margin-top:5px;font-size:9px!important;letter-spacing:.08em;color:#666!important;word-break:break-all}.finance-history-sheet .finance-row{cursor:pointer}.finance-history-sheet .finance-row-main strong{font-size:14px}@media(min-width:760px){.finance-history-sheet{left:50%;right:auto;transform:translateX(-50%);width:min(720px,92vw);bottom:5vh;border-radius:24px;max-height:90vh}}
+</style>
 <script id="stancebound-finance-admin">
 function escapeHtml(value=""){
   return String(value).replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[ch]));
@@ -3793,6 +3806,17 @@ function escapeHtml(value=""){
 function sbMoney(v){return '£'+Number(v||0).toFixed(2)}
 function sbFinanceDate(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
 function sbExpenseLabel(v){return ({chemicals_consumables:'Chemicals / consumables',equipment_tools:'Equipment / tools',fuel_mileage:'Fuel / mileage',advertising_marketing:'Advertising / marketing',website_software:'Website / software',clothing_ppe:'Clothing / PPE',insurance:'Insurance',training:'Training',vehicle:'Vehicle',printing_merchandise:'Printing / merchandise',bank_payment_fees:'Bank / payment fees',other:'Other'})[v]||String(v||'Expense').replaceAll('_',' ')}
+function sbFinanceReference(x){return x.payment_request_id||x.enquiry_id||x.order_id||x.id||''}
+function sbFinanceSearchText(x){return [x.description,x.amount,x.transaction_date,sbFinanceDate(x.transaction_date),x.payment_method,x.transaction_type,x.payment_request_id,x.enquiry_id,x.order_id,x.id].filter(Boolean).join(' ').toLowerCase()}
+function renderFinanceTransactionModal(query=''){
+  const list=document.querySelector('#financeTransactionModalList');if(!list)return;
+  const all=window.sbFinanceTransactions||[],q=String(query||'').trim().toLowerCase();
+  const rows=q?all.filter(x=>sbFinanceSearchText(x).includes(q)):all;
+  const sc=document.querySelector('#financeSearchCount');if(sc)sc.textContent=rows.length+' OF '+all.length+' TRANSACTIONS';
+  list.innerHTML=rows.length?rows.map(x=>{const ref=sbFinanceReference(x);return `<div class="finance-row" data-finance-row="${escapeHtml(x.id)}"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span>${ref?`<span class="finance-reference">REF · ${escapeHtml(String(ref))}</span>`:''}</div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-finance="${x.id}">EDIT</button><button class="finance-remove-btn" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`}).join(''):'<div class="empty-state">No matching transactions.</div>';
+}
+function closeFinanceHistory(){const m=document.querySelector('#financeTransactionModal');if(m)m.hidden=true;document.body.style.overflow=''}
+function openFinanceHistory(){const m=document.querySelector('#financeTransactionModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';const q=document.querySelector('#financeTransactionSearch');if(q){q.value='';renderFinanceTransactionModal('');setTimeout(()=>q.focus(),120)}}
 async function loadFinance(){
   const st=document.querySelector('#financeStatus');if(st)st.textContent='Loading finance…';
   try{
@@ -3801,7 +3825,10 @@ async function loadFinance(){
     const revenue=Number(s.data?.total_income||0),profit=Number(s.data?.net_profit||0);
     const set=(q,v)=>{const el=document.querySelector(q);if(el)el.textContent=v};
     set('#financeRevenue',sbMoney(revenue));set('#financeSpending',sbMoney(s.data?.total_spending));set('#financeProfit',sbMoney(profit));set('#financeMargin',(revenue>0?profit/revenue*100:0).toFixed(1)+'%');set('#financeCash',sbMoney(s.data?.cash_income));set('#financeStripe',sbMoney(s.data?.stripe_income));
-    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML=t.data?.length?t.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description||'STANCEBOUND payment')}</strong><span>${escapeHtml(sbFinanceDate(x.transaction_date))} · ${escapeHtml(String(x.payment_method||'other').replaceAll('_',' '))}</span></div><div class="finance-row-side"><strong>${x.transaction_type==='refund'?'-':'+'}${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-finance="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-finance="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No income recorded yet.</div>';
+    window.sbFinanceTransactions=t.data||[];
+    const count=document.querySelector('#financeTransactionCount');if(count)count.textContent=String(t.data?.length||0);
+    const tx=document.querySelector('#financeTransactions');if(tx)tx.innerHTML='';
+    renderFinanceTransactionModal(document.querySelector('#financeTransactionSearch')?.value||'');
     const ex=document.querySelector('#financeExpenses');if(ex)ex.innerHTML=e.data?.length?e.data.map(x=>`<div class="finance-row"><div class="finance-row-main"><strong>${escapeHtml(x.description)}</strong><span>${escapeHtml(sbFinanceDate(x.expense_date))} · ${escapeHtml(sbExpenseLabel(x.category))}${x.supplier?' · '+escapeHtml(x.supplier):''}</span></div><div class="finance-row-side"><strong>-${sbMoney(x.amount)}</strong><div class="finance-row-actions"><button class="finance-edit-btn" type="button" data-edit-expense="${x.id}">EDIT ENTRY</button><button class="finance-remove-btn" type="button" data-delete-expense="${x.id}">REMOVE</button></div></div></div>`).join(''):'<div class="empty-state">No business spending recorded yet.</div>';
     document.querySelectorAll('[data-edit-finance]').forEach(b=>b.onclick=()=>{
       const row=t.data.find(x=>String(x.id)===String(b.dataset.editFinance));if(!row)return;
@@ -3856,6 +3883,14 @@ async function loadFinance(){
     if(st)st.textContent='';
   }catch(err){console.error(err);if(st)st.textContent=err?.message||'Could not load finance.'}
 }
+
+document.querySelector('#financeOpenTransactions')?.addEventListener('click',openFinanceHistory);
+document.querySelectorAll('[data-close-finance-history]').forEach(b=>b.addEventListener('click',closeFinanceHistory));
+document.querySelector('#financeTransactionSearch')?.addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase(),all=window.sbFinanceTransactions||[];let shown=0;
+  document.querySelectorAll('#financeTransactionModalList [data-finance-row]').forEach(el=>{const row=all.find(x=>String(x.id)===String(el.dataset.financeRow));const yes=!q||(row&&sbFinanceSearchText(row).includes(q));el.hidden=!yes;if(yes)shown++});
+  const sc=document.querySelector('#financeSearchCount');if(sc)sc.textContent=shown+' OF '+all.length+' TRANSACTIONS';
+});
 document.querySelector('#financeAddExpense')?.addEventListener('click',()=>{const f=document.querySelector('#financeExpenseForm');f.hidden=!f.hidden;if(!f.hidden){const d=document.querySelector('#expenseDate');if(d&&!d.value)d.value=new Date().toISOString().slice(0,10)}});
 document.querySelector('#expenseCancel')?.addEventListener('click',()=>document.querySelector('#financeExpenseForm').hidden=true);
 document.querySelector('#financeRefresh')?.addEventListener('click',loadFinance);
