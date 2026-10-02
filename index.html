@@ -3829,6 +3829,86 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-home-hero-tech-v1">
+/* HOME HERO TECH FIELD - deliberately sits behind the existing hero artwork */
+#home .home-hero,
+#home .hero,
+#home .hero-section{position:relative;isolation:isolate;overflow:hidden}
+
+#home .sb-home-techfield{
+ position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+ opacity:.82;
+ mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 76%,transparent 100%);
+ -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 76%,transparent 100%);
+}
+#home .sb-home-tech-grid{
+ position:absolute;inset:-15%;
+ background-image:
+ linear-gradient(rgba(255,255,255,.038) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(255,255,255,.032) 1px,transparent 1px);
+ background-size:46px 46px;
+ transform:perspective(700px) rotateX(62deg) translateY(24%);
+ transform-origin:50% 55%;opacity:.55
+}
+#home .sb-home-orbit{
+ position:absolute;left:50%;top:43%;width:min(78vw,620px);aspect-ratio:1;
+ transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.055);
+ border-radius:50%;animation:sbHomeOrbit 28s linear infinite
+}
+#home .sb-home-orbit:before,#home .sb-home-orbit:after{
+ content:"";position:absolute;border-radius:50%;border:1px dashed rgba(255,255,255,.055)
+}
+#home .sb-home-orbit:before{inset:13%;animation:sbHomeOrbitReverse 18s linear infinite}
+#home .sb-home-orbit:after{inset:29%;border-style:solid;border-color:rgba(255,255,255,.075)}
+#home .sb-home-cross{position:absolute;left:50%;top:43%;width:min(88vw,720px);height:220px;transform:translate(-50%,-50%);opacity:.22}
+#home .sb-home-cross:before,#home .sb-home-cross:after{content:"";position:absolute;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)}
+#home .sb-home-cross:before{left:0;right:0;top:50%;height:1px}
+#home .sb-home-cross:after{top:-70%;bottom:-70%;left:50%;width:1px;background:linear-gradient(transparent,rgba(255,255,255,.14),transparent)}
+#home .sb-home-scan{
+ position:absolute;z-index:2;left:4%;right:4%;top:19%;height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),#fff,rgba(255,255,255,.18),transparent);
+ box-shadow:0 0 16px rgba(255,255,255,.16);opacity:0;
+ animation:sbHomeScan 7.2s cubic-bezier(.4,0,.2,1) infinite
+}
+#home .sb-home-telemetry{position:absolute;inset:0;font-size:5px;font-weight:900;letter-spacing:.18em;color:rgba(255,255,255,.29)}
+#home .sbht-a{position:absolute;left:5%;top:29%}
+#home .sbht-b{position:absolute;right:5%;top:34%;text-align:right}
+#home .sbht-c{position:absolute;left:6%;bottom:18%}
+#home .sbht-d{position:absolute;right:6%;bottom:21%;text-align:right}
+#home .sb-home-node{display:inline-block;width:3px;height:3px;border-radius:50%;background:#fff;margin-right:6px;box-shadow:0 0 8px #fff;animation:sbHomeNode 2.4s ease-in-out infinite}
+#home .sb-home-bracket{position:absolute;width:44px;height:44px;opacity:.28}
+#home .sb-home-bracket.tl{left:6%;top:22%;border-left:1px solid #aaa;border-top:1px solid #aaa}
+#home .sb-home-bracket.br{right:6%;bottom:19%;border-right:1px solid #aaa;border-bottom:1px solid #aaa}
+#home .sb-home-light{
+ position:absolute;left:-35%;top:7%;width:38%;height:72%;
+ background:linear-gradient(102deg,transparent,rgba(255,255,255,.018),rgba(255,255,255,.09),rgba(255,255,255,.018),transparent);
+ filter:blur(9px);transform:skewX(-12deg);animation:sbHomeLight 9s ease-in-out infinite
+}
+#home .sb-home-pulse{
+ position:absolute;left:50%;top:43%;width:34vw;max-width:280px;aspect-ratio:1;
+ transform:translate(-50%,-50%);border-radius:50%;
+ background:radial-gradient(circle,rgba(255,255,255,.055),rgba(255,255,255,.012) 38%,transparent 69%);
+ animation:sbHomePulse 5s ease-in-out infinite
+}
+@keyframes sbHomeOrbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes sbHomeOrbitReverse{to{transform:rotate(-360deg)}}
+@keyframes sbHomeScan{0%,12%{top:18%;opacity:0}20%{opacity:.75}68%{opacity:.32}78%,100%{top:73%;opacity:0}}
+@keyframes sbHomeLight{0%,16%{left:-42%;opacity:0}28%{opacity:.6}72%{opacity:.22}88%,100%{left:110%;opacity:0}}
+@keyframes sbHomePulse{50%{transform:translate(-50%,-50%) scale(1.13);opacity:.55}}
+@keyframes sbHomeNode{50%{opacity:.22}}
+@media(max-width:600px){
+ #home .sb-home-tech-grid{background-size:32px 32px}
+ #home .sb-home-orbit{width:92vw;top:39%}
+ #home .sb-home-cross{top:39%}
+ #home .sb-home-pulse{top:39%;width:48vw}
+ #home .sb-home-telemetry{font-size:4px}
+}
+@media(prefers-reduced-motion:reduce){
+ #home .sb-home-orbit,#home .sb-home-orbit:before,#home .sb-home-scan,#home .sb-home-light,#home .sb-home-pulse,#home .sb-home-node{animation:none!important}
+}
+</style>
+
 </head>
 
 
@@ -7509,6 +7589,50 @@ window.addEventListener('pageshow',function(e){
  scanner.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX},{passive:true});
  scanner.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)setStage(current+(dx<0?1:-1))},{passive:true});
  setStage(1);
+})();
+</script>
+
+
+<script id="stancebound-home-hero-tech-v1-js">
+(()=>{
+ const home=document.querySelector('#home');if(!home)return;
+ const candidates=[...home.querySelectorAll('.home-hero,.hero,.hero-section')];
+ let hero=candidates[0];
+ if(!hero){
+   const logo=[...home.querySelectorAll('img')].find(i=>/stancebound|logo/i.test((i.src||'')+' '+(i.alt||'')));
+   hero=logo?.closest('section,div');
+ }
+ if(!hero||hero.querySelector('.sb-home-techfield'))return;
+ const field=document.createElement('div');
+ field.className='sb-home-techfield';
+ field.setAttribute('aria-hidden','true');
+ field.innerHTML=`
+   <div class="sb-home-tech-grid"></div>
+   <div class="sb-home-pulse"></div>
+   <div class="sb-home-orbit"></div>
+   <div class="sb-home-cross"></div>
+   <div class="sb-home-scan"></div>
+   <div class="sb-home-light"></div>
+   <div class="sb-home-bracket tl"></div><div class="sb-home-bracket br"></div>
+   <div class="sb-home-telemetry">
+    <span class="sbht-a"><i class="sb-home-node"></i>STANCEBOUND / CORE</span>
+    <span class="sbht-b">VISUAL SYSTEM<br>ACTIVE / 01</span>
+    <span class="sbht-c">DETAIL · PHOTO · CULTURE</span>
+    <span class="sbht-d">SURFACE / MOTION<br>SYS READY</span>
+   </div>`;
+ hero.prepend(field);
+
+ // tiny touch/pointer-reactive depth, without moving the actual logo
+ let raf=0;
+ hero.addEventListener('pointermove',e=>{
+   if(matchMedia('(pointer:coarse)').matches)return;
+   cancelAnimationFrame(raf);
+   raf=requestAnimationFrame(()=>{
+    const r=hero.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    field.style.transform=`translate3d(${x*7}px,${y*5}px,0)`;
+   });
+ });
+ hero.addEventListener('pointerleave',()=>field.style.transform='');
 })();
 </script>
 
