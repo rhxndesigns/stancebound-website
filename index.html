@@ -3989,11 +3989,44 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+<style id="stancebound-entry-fingerprint-v13">
+#sbEntryGate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#020202;opacity:1;visibility:visible;transition:opacity .75s ease,visibility .75s}
+#sbEntryGate.sb-entry-open{opacity:0;visibility:hidden;pointer-events:none}
+.sb-entry-inner{position:relative;width:min(92vw,520px);height:min(92vh,760px);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.sb-entry-grid{position:absolute;inset:-20%;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:38px 38px;transform:perspective(620px) rotateX(63deg) translateY(27%)}
+.sb-entry-orbit{position:absolute;left:50%;top:47%;width:min(88vw,440px);aspect-ratio:1;border:1px solid rgba(255,255,255,.06);border-radius:50%;transform:translate(-50%,-50%);animation:sbEntryOrbit 19s linear infinite}
+.sb-entry-orbit:before,.sb-entry-orbit:after{content:"";position:absolute;border-radius:50%;border:1px dashed rgba(255,255,255,.07)}
+.sb-entry-orbit:before{inset:14%;animation:sbEntryOrbitBack 12s linear infinite}.sb-entry-orbit:after{inset:31%;border-style:solid}
+.sb-entry-scan{position:absolute;left:8%;right:8%;top:27%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),#fff,rgba(255,255,255,.18),transparent);box-shadow:0 0 16px rgba(255,255,255,.18);animation:sbEntryScan 4.8s ease-in-out infinite}
+.sb-entry-copy{position:relative;z-index:3;text-align:center;margin-top:235px;font-size:6px;font-weight:900;letter-spacing:.21em;color:#777;line-height:1.8}
+.sb-entry-copy b{display:block;color:#ddd;font-size:7px;letter-spacing:.25em}
+#sbFingerprint{position:relative;z-index:5;margin-top:17px;width:94px;height:94px;border:0;background:transparent;padding:0;cursor:pointer;touch-action:manipulation;filter:drop-shadow(0 0 10px rgba(255,255,255,.08))}
+#sbFingerprint:before{content:"";position:absolute;inset:-13px;border:1px solid rgba(255,255,255,.13);border-radius:50%;animation:sbFingerRing 2.5s ease-in-out infinite}
+#sbFingerprint:after{content:"";position:absolute;inset:-24px;border:1px dashed rgba(255,255,255,.07);border-radius:50%;animation:sbEntryOrbit 9s linear infinite}
+.sb-finger-svg{width:100%;height:100%;overflow:visible}.sb-finger-svg path{fill:none;stroke:rgba(255,255,255,.68);stroke-width:2.1;stroke-linecap:round;transition:stroke .25s ease,filter .25s ease}
+#sbFingerprint.sb-reading .sb-finger-svg path{stroke:#fff;filter:drop-shadow(0 0 4px rgba(255,255,255,.7));animation:sbFingerRead .65s ease-in-out infinite alternate}
+.sb-finger-beam{position:absolute;z-index:6;left:11%;right:11%;top:12%;height:1px;background:#fff;box-shadow:0 0 12px 2px rgba(255,255,255,.4);opacity:0}
+#sbFingerprint.sb-reading .sb-finger-beam{opacity:1;animation:sbFingerBeam 1.05s ease-in-out infinite alternate}
+.sb-entry-hold{position:relative;z-index:5;margin-top:13px;font-size:5px;font-weight:900;letter-spacing:.18em;color:#555;transition:color .25s ease}.sb-entry-hold.active{color:#bbb}
+.sb-entry-progress{position:relative;z-index:5;width:118px;height:1px;margin-top:9px;background:#171717;overflow:hidden}.sb-entry-progress i{display:block;width:0;height:100%;background:#fff;box-shadow:0 0 8px #fff}
+#sbEntryGate.sb-reading .sb-entry-progress i{animation:sbEntryProgress 1.15s linear forwards}
+.sb-entry-status{position:absolute;left:18px;right:18px;bottom:24px;display:flex;justify-content:space-between;font-size:4.5px;font-weight:900;letter-spacing:.16em;color:#444}
+@keyframes sbEntryOrbit{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes sbEntryOrbitBack{to{transform:rotate(-360deg)}}@keyframes sbEntryScan{0%,100%{top:26%;opacity:0}15%{opacity:.75}75%{opacity:.25}90%{top:72%;opacity:0}}@keyframes sbFingerRing{50%{transform:scale(1.1);border-color:rgba(255,255,255,.32);box-shadow:0 0 18px rgba(255,255,255,.08)}}@keyframes sbFingerRead{to{stroke:rgba(255,255,255,.45)}}@keyframes sbFingerBeam{to{top:86%}}@keyframes sbEntryProgress{to{width:100%}}
+#home .sb-home-techfield{opacity:1!important;filter:brightness(1.22) contrast(1.08)}
+#home .sb-home-orbit{border-color:rgba(255,255,255,.11)!important;box-shadow:0 0 48px rgba(255,255,255,.035)}
+#home .sb-home-orbit:before{border-color:rgba(255,255,255,.10)!important}#home .sb-home-cross{opacity:.34!important}
+#home .sb-home-scan{box-shadow:0 0 22px 2px rgba(255,255,255,.23)!important}#home .sb-home-light{filter:blur(7px)!important}
+#home .sb-home-pulse{background:radial-gradient(circle,rgba(255,255,255,.095),rgba(255,255,255,.025) 39%,transparent 69%)!important}
+#home .sb-home-beam{filter:blur(5px)!important;background:linear-gradient(100deg,transparent,rgba(255,255,255,.03),rgba(255,255,255,.18),rgba(255,255,255,.035),transparent)!important}
+#home .sb-home-reactor{opacity:.68!important}
+@media(prefers-reduced-motion:reduce){.sb-entry-orbit,.sb-entry-orbit:before,.sb-entry-scan,#sbFingerprint:before,#sbFingerprint:after{animation:none!important}}
+</style>
 </head>
 
 
 
 <body class="intro-running">
+<div id="sbEntryGate" aria-label="Enter STANCEBOUND"><div class="sb-entry-inner"><div class="sb-entry-grid"></div><div class="sb-entry-orbit"></div><div class="sb-entry-scan"></div><div class="sb-entry-copy"><b>STANCEBOUND / ACCESS</b>TOUCH SENSOR TO INITIALISE</div><button id="sbFingerprint" type="button" aria-label="Press and hold fingerprint to enter"><span class="sb-finger-beam"></span><svg class="sb-finger-svg" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 13C29 13 17 29 17 47"/><path d="M82 47C82 27 69 13 50 13"/><path d="M26 58V46c0-14 10-24 24-24s24 10 24 24v8"/><path d="M34 68V47c0-10 6-17 16-17s16 7 16 17v14"/><path d="M42 78V48c0-5 3-9 8-9s8 4 8 9v22"/><path d="M50 47v34"/><path d="M25 66c1 12 6 19 14 25"/><path d="M74 61c-1 15-6 25-15 33"/><path d="M17 56c0 18 7 31 19 39"/><path d="M83 56c0 19-7 32-19 40"/></svg></button><div class="sb-entry-hold" id="sbEntryHold">PRESS + HOLD</div><div class="sb-entry-progress"><i></i></div><div class="sb-entry-status"><span>PUBLIC ACCESS / ENABLED</span><span>SYS / 00</span></div></div></div>
 <div id="sbBoot" aria-hidden="true"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br>UI CORE / ONLINE<br>MOTION / ACTIVE</div>
  <div class="sb-boot-data right">SB-01<br>SECURE SESSION<br>SOUTH WALES</div>
  <div class="sb-boot-core"><div class="sb-boot-mark"><img src="/images/stanceboundlogo.png?v=30" alt=""></div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><h1 class="sb-boot-title">STANCEBOUND</h1><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
@@ -7761,6 +7794,15 @@ window.addEventListener('pageshow',function(e){
 })();
 </script>
 
+<script id="stancebound-entry-fingerprint-v13-js">
+(()=>{const gate=document.querySelector('#sbEntryGate'),finger=document.querySelector('#sbFingerprint'),hold=document.querySelector('#sbEntryHold');if(!gate||!finger)return;let timer=0,opened=false;
+function resetBar(){const bar=gate.querySelector('.sb-entry-progress i');if(bar){bar.style.animation='none';void bar.offsetWidth;bar.style.animation=''}}
+function start(e){if(opened)return;if(e?.cancelable)e.preventDefault();clearTimeout(timer);resetBar();gate.classList.add('sb-reading');finger.classList.add('sb-reading');hold?.classList.add('active');if(hold)hold.textContent='READING / HOLD';timer=setTimeout(open,1150)}
+function cancel(){if(opened)return;clearTimeout(timer);gate.classList.remove('sb-reading');finger.classList.remove('sb-reading');hold?.classList.remove('active');if(hold)hold.textContent='PRESS + HOLD';resetBar()}
+function open(){opened=true;clearTimeout(timer);if(hold)hold.textContent='ACCESS GRANTED';finger.classList.remove('sb-reading');gate.classList.remove('sb-reading');setTimeout(()=>{gate.classList.add('sb-entry-open');document.documentElement.classList.add('sb-site-entered')},260);setTimeout(()=>gate.remove(),1100)}
+finger.addEventListener('pointerdown',start);['pointerup','pointercancel','pointerleave'].forEach(n=>finger.addEventListener(n,cancel));finger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();start(e)}});finger.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')cancel()});
+})();
+</script>
 </body>
 
 </html>
