@@ -3779,6 +3779,56 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-golfer-geometry-v10">
+/* V10: explicit directional corrections from live test */
+
+/* Bring both wheel targets inward toward the centre of the car.
+   Left/front -> RIGHT. Right/rear -> LEFT. */
+#sbDetailScanner .sbds-zone-front-wheel{
+  left:13.35% !important;
+}
+#sbDetailScanner .sbds-zone-rear-wheel{
+  right:12.25% !important;
+}
+
+/* Keep the corrected wheel diameter/height from V9. */
+#sbDetailScanner .sbds-zone-front-wheel,
+#sbDetailScanner .sbds-zone-rear-wheel{
+  width:12.9% !important;
+  top:58.0% !important;
+}
+
+/* Extend the glass analysis area farther RIGHT while retaining
+   the calibrated left/windscreen edge. */
+#sbDetailScanner .sbds-zone-glass{
+  clip-path:polygon(
+    32.0% 42.55%,
+    42.25% 27.35%,
+    54.75% 26.45%,
+    53.85% 42.15%,
+    32.0% 42.55%,
+
+    55.75% 26.45%,
+    74.15% 26.95%,
+    80.05% 41.55%,
+    55.05% 42.15%
+  ) !important;
+}
+
+/* Interior scan follows the same corrected rearward cabin extent. */
+#sbDetailScanner .sbds-zone-cabin{
+  clip-path:polygon(
+    31.45% 43.15%,
+    41.75% 26.25%,
+    74.45% 25.95%,
+    80.75% 42.15%,
+    78.10% 44.35%,
+    31.55% 44.35%
+  ) !important;
+}
+</style>
+
 </head>
 
 
