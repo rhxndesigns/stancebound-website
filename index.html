@@ -220,9 +220,6 @@
 
       min-height:
         calc(100vh - 72px);
-
-      animation:
-        pageFade 0.4s ease;
     }
 
 
@@ -4325,20 +4322,15 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
 
       if (selectedPage) {
 
+        // Prepare the top of a hidden page before it is painted. This avoids
+        // the first-visit flash where reveal elements briefly render hidden.
+        selectedPage.querySelectorAll(".sb-scroll-reveal").forEach(el => {
+          el.classList.add("sb-in-view");
+        });
+
         selectedPage.classList.add(
           "active"
         );
-
-        // Hidden pages cannot intersect until they are opened. Re-check their
-        // reveal elements now so nothing remains visually shifted left/right.
-        requestAnimationFrame(() => {
-          selectedPage.querySelectorAll(".sb-scroll-reveal").forEach(el => {
-            const r = el.getBoundingClientRect();
-            if (r.top < window.innerHeight * 1.08 && r.bottom > -20) {
-              el.classList.add("sb-in-view");
-            }
-          });
-        });
 
       }
 
@@ -6168,6 +6160,35 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
     if(!reduce){veil.classList.add('show');await wait(180)}
     location.href=url.href;
   },true);
+})();
+</script>
+
+
+<script id="sb-page-image-preloader">
+(() => {
+  const warmPageImages = () => {
+    const urls = new Set();
+    document.querySelectorAll('.page img[src]').forEach(img => {
+      const raw = img.getAttribute('src');
+      if (!raw || raw.startsWith('data:') || raw.startsWith('blob:')) return;
+      urls.add(raw);
+    });
+    urls.forEach(src => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+    });
+  };
+
+  if (document.readyState === 'complete') {
+    if ('requestIdleCallback' in window) requestIdleCallback(warmPageImages, {timeout: 1200});
+    else setTimeout(warmPageImages, 250);
+  } else {
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) requestIdleCallback(warmPageImages, {timeout: 1200});
+      else setTimeout(warmPageImages, 250);
+    }, {once:true});
+  }
 })();
 </script>
 
