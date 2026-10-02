@@ -7803,6 +7803,69 @@ function open(){opened=true;clearTimeout(timer);if(hold)hold.textContent='ACCESS
 finger.addEventListener('pointerdown',start);['pointerup','pointercancel','pointerleave'].forEach(n=>finger.addEventListener(n,cancel));finger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();start(e)}});finger.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')cancel()});
 })();
 </script>
+
+<style id="stancebound-v14-stability-fixes">
+/* HOME: keep readable copy completely stable while the graphics move behind it */
+#home .hero-content,
+#home .tagline,
+#home .hero-subtitle,
+#home .hero-description,
+#home .hero-socials,
+#home .hero-buttons{
+  transform:none!important;
+  filter:none!important;
+  animation:none!important;
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+#home .hero-logo{
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* prevent animated lighting layers from blend/glitching the foreground copy */
+#home .sb-home-techfield{
+  contain:paint;
+  will-change:transform;
+}
+</style>
+<script id="stancebound-v14-modal-navigation-fix">
+(()=>{
+  function forceClosePricingModal(){
+    const modal=document.getElementById('sbpModal');
+    if(!modal)return;
+    /* use the existing close control first so the Golf scanner is returned
+       to its source container correctly */
+    const close=modal.querySelector('[data-sbp-close]');
+    if(modal.classList.contains('open') && close){
+      close.click();
+    }
+    /* hard cleanup as a fallback */
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('sbp-modal-open');
+  }
+
+  /* Booking buttons can live inside the moved Golf-detail node, so close
+     the sheet before showPage swaps the page underneath it. */
+  document.addEventListener('click',e=>{
+    const booking=e.target.closest(
+      '#sbpModal button[onclick*="bookIntroDetail"], #sbpModal [data-page="booking"]'
+    );
+    if(booking) forceClosePricingModal();
+  },true);
+
+  /* Also make every page navigation close the service sheet. This prevents
+     any future navigation route leaving the modal stranded above a new page. */
+  const originalShowPage=window.showPage;
+  if(typeof originalShowPage==='function'){
+    window.showPage=function(pageName,addToHistory=true){
+      forceClosePricingModal();
+      return originalShowPage.call(this,pageName,addToHistory);
+    };
+  }
+})();
+</script>
+
 </body>
 
 </html>
