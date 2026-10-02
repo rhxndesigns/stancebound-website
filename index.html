@@ -6633,6 +6633,117 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
  }
 })();
 </script>
+
+<style id="stancebound-pricing-microdetail-v4">
+#pricing{position:relative;overflow:hidden}
+#pricing .sbp-content{position:relative;isolation:isolate}
+#pricing .sbp-content:before{
+ content:"";position:absolute;z-index:-2;left:-20vw;top:-12vh;width:78vw;height:52vh;
+ background:radial-gradient(ellipse at center,rgba(255,255,255,.115),rgba(255,255,255,.025) 34%,transparent 70%);
+ filter:blur(22px);opacity:.65;pointer-events:none;animation:sbAmbientDrift 9s ease-in-out infinite alternate
+}
+#pricing .sbp-content:after{
+ content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;opacity:.18;
+ background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+ background-size:54px 54px;mask-image:linear-gradient(to bottom,#000,transparent 75%)
+}
+#pricing .sbp-hero{position:relative;overflow:hidden}
+#pricing .sbp-hero:before{
+ content:"";position:absolute;top:-65%;left:-35%;width:32%;height:230%;pointer-events:none;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),rgba(255,255,255,.18),rgba(255,255,255,.035),transparent);
+ transform:rotate(18deg);filter:blur(4px);animation:sbHeroSweep 7.5s cubic-bezier(.2,.7,.2,1) infinite
+}
+#pricing .sbp-hero:after{
+ content:"";position:absolute;inset:1px;pointer-events:none;
+ background:linear-gradient(115deg,rgba(255,255,255,.055),transparent 24%,transparent 72%,rgba(255,255,255,.025))
+}
+#pricing .live-pulse{box-shadow:0 0 0 0 rgba(255,255,255,.55);animation:sbLivePulse 1.9s ease-out infinite}
+#pricing .sbp-price strong{
+ position:relative;display:inline-block;
+ text-shadow:0 0 24px rgba(255,255,255,.09);
+ animation:sbPriceBreathe 4.5s ease-in-out infinite
+}
+#pricing .sbp-price strong:after{
+ content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);
+ transform:scaleX(.35);opacity:.55;animation:sbPriceLine 3.8s ease-in-out infinite
+}
+#pricing .sbp-cinema-frame:after{
+ content:"";position:absolute;z-index:2;inset:-35% -70%;pointer-events:none;
+ background:linear-gradient(108deg,transparent 43%,rgba(255,255,255,.055) 49%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.045) 51%,transparent 57%);
+ transform:translateX(-36%);animation:sbCinemaLight 8s ease-in-out infinite
+}
+#pricing .sbp-cinema-frame:before{
+ content:"";position:absolute;z-index:4;inset:0;pointer-events:none;
+ background:linear-gradient(90deg,rgba(255,255,255,.12),transparent 1px) 50% 0/1px 100% no-repeat,
+ linear-gradient(rgba(255,255,255,.09),transparent 1px) 0 50%/100% 1px no-repeat;
+ opacity:.08
+}
+#pricing .sbp-cinema-image{will-change:transform,filter;animation:sbImageFloat 8s ease-in-out infinite alternate}
+#pricing .sbp-cinema-tech{filter:drop-shadow(0 0 10px rgba(255,255,255,.08))}
+#pricing .sbp-cinema-status i{position:relative;overflow:visible}
+#pricing .sbp-cinema-status i:after{
+ content:"";position:absolute;right:-2px;top:-1px;width:3px;height:3px;border-radius:50%;
+ background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8);animation:sbStatusDot 2.2s ease-in-out infinite
+}
+#pricing .sbp-cinema-index{position:relative}
+#pricing .sbp-cinema-index:after{content:" / 07";color:#3f3f3f;font-size:.75em}
+#pricing .sbp-explore-btn{position:relative;overflow:hidden}
+#pricing .sbp-explore-btn:before{
+ content:"";position:absolute;inset:0;transform:translateX(-120%);
+ background:linear-gradient(105deg,transparent,rgba(255,255,255,.11),transparent);
+ transition:transform .65s cubic-bezier(.2,.8,.2,1)
+}
+#pricing .sbp-explore-btn:hover:before,#pricing .sbp-explore-btn:active:before{transform:translateX(120%)}
+#pricing .sbp-cinema-progress b.active{text-shadow:0 0 12px rgba(255,255,255,.35)}
+#pricing .sbp-cinema-progress b.active+i{box-shadow:0 0 10px rgba(255,255,255,.18)}
+#pricing .sbp-footer-line span{position:relative}
+#pricing .sbp-footer-line span:after{
+ content:"";position:absolute;left:0;bottom:-7px;width:100%;height:1px;
+ background:linear-gradient(90deg,transparent,#666,transparent);opacity:.35
+}
+@keyframes sbAmbientDrift{to{transform:translate3d(20vw,7vh,0) scale(1.12);opacity:.9}}
+@keyframes sbHeroSweep{0%,58%{transform:translateX(-30vw) rotate(18deg);opacity:0}64%{opacity:.75}82%,100%{transform:translateX(155vw) rotate(18deg);opacity:0}}
+@keyframes sbLivePulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+@keyframes sbPriceBreathe{50%{text-shadow:0 0 34px rgba(255,255,255,.17);transform:translateY(-1px)}}
+@keyframes sbPriceLine{50%{transform:scaleX(.9);opacity:.9}}
+@keyframes sbCinemaLight{0%,55%{transform:translateX(-38%);opacity:0}63%{opacity:.65}82%,100%{transform:translateX(38%);opacity:0}}
+@keyframes sbImageFloat{from{transform:scale(1.025) translate3d(-3px,0,0)}to{transform:scale(1.055) translate3d(5px,-3px,0)}}
+@keyframes sbStatusDot{50%{opacity:.28;transform:scale(.65)}}
+@media(max-width:600px){
+ #pricing .sbp-content:before{width:115vw;height:42vh;left:-48vw}
+ #pricing .sbp-content:after{background-size:38px 38px;opacity:.13}
+ #pricing .sbp-cinema-frame:after{animation-duration:9s}
+}
+@media(prefers-reduced-motion:reduce){
+ #pricing .sbp-content:before,#pricing .sbp-hero:before,#pricing .live-pulse,#pricing .sbp-price strong,
+ #pricing .sbp-price strong:after,#pricing .sbp-cinema-frame:after,#pricing .sbp-cinema-image,
+ #pricing .sbp-cinema-status i:after{animation:none!important}
+}
+</style>
+<script id="stancebound-pricing-motion-v4">
+(()=>{
+ const pricing=document.querySelector('#pricing'), frame=document.querySelector('#sbpCinemaFrame');
+ if(!pricing||!frame)return;
+ let raf=0;
+ frame.addEventListener('pointermove',e=>{
+   if(matchMedia('(pointer:coarse)').matches)return;
+   cancelAnimationFrame(raf);
+   raf=requestAnimationFrame(()=>{
+     const r=frame.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+     frame.style.setProperty('--sbmx',x.toFixed(3));frame.style.setProperty('--sbmy',y.toFixed(3));
+     const tech=frame.querySelector('.sbp-cinema-tech'),copy=frame.querySelector('.sbp-cinema-copy');
+     if(tech)tech.style.translate=`${x*8}px ${y*5}px`;
+     if(copy)copy.style.translate=`${x*-3}px ${y*-2}px`;
+   });
+ });
+ frame.addEventListener('pointerleave',()=>{
+   const tech=frame.querySelector('.sbp-cinema-tech'),copy=frame.querySelector('.sbp-cinema-copy');
+   if(tech)tech.style.translate='';if(copy)copy.style.translate='';
+ });
+})();
+</script>
+
 </body>
 
 </html>
