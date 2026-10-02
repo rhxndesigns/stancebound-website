@@ -3787,6 +3787,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script id="stancebound-finance-admin">
+function escapeHtml(value=""){
+  return String(value).replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[ch]));
+}
 function sbMoney(v){return '£'+Number(v||0).toFixed(2)}
 function sbFinanceDate(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
 function sbExpenseLabel(v){return ({chemicals_consumables:'Chemicals / consumables',equipment_tools:'Equipment / tools',fuel_mileage:'Fuel / mileage',advertising_marketing:'Advertising / marketing',website_software:'Website / software',clothing_ppe:'Clothing / PPE',insurance:'Insurance',training:'Training',vehicle:'Vehicle',printing_merchandise:'Printing / merchandise',bank_payment_fees:'Bank / payment fees',other:'Other'})[v]||String(v||'Expense').replaceAll('_',' ')}
