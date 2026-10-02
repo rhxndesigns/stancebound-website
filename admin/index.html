@@ -455,6 +455,12 @@ body{padding-bottom:88px}
 }
 .booking-grid textarea,
 .manual-booking-grid textarea{min-height:105px;resize:vertical}
+.sb-price-editor{display:flex;align-items:center;gap:8px;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:#080808;box-sizing:border-box}
+.sb-price-editor:focus-within{border-color:#666;box-shadow:0 0 0 2px rgba(255,255,255,.06)}
+.sb-price-editor span{font-size:16px;font-weight:800;color:#ddd;flex:none}
+.sb-price-editor input{border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;min-height:46px!important;font-size:18px!important;font-weight:800!important;color:#fff!important}
+.sb-price-editor input:focus{outline:none!important}
+.sb-price-hint{display:block;margin-top:6px;color:#777;font-size:9px;line-height:1.45;letter-spacing:.03em}
 
 .admin-form-section{
   border:1px solid var(--line);
@@ -2144,7 +2150,7 @@ function renderBookingRequests(){
             <div><label>Final / proposed date</label><input type="date" data-request-date value="${escapeHtml(displayDate||'')}"></div>
             <div><label>Start time</label><input type="time" data-request-time value="${escapeHtml((displayTime||'').slice(0,5))}"></div>
             <div><label>End time</label><input type="time" data-request-end value="${escapeHtml((displayEnd||'').slice(0,5))}"></div>
-            <div><label>Agreed price (£)</label><input type="number" min="0" step="0.01" data-request-price value="${moneyValue(displayPrice)}"></div>
+            <div><label>Agreed price (£)</label><div class="sb-price-editor"><span>£</span><input type="text" inputmode="decimal" autocomplete="off" data-request-price value="${moneyValue(displayPrice)}" placeholder="0.00" aria-label="Agreed price"></div><small class="sb-price-hint">Tap the amount and type the price you want. This exact amount is sent for customer confirmation.</small></div>
             <div class="full"><label>Final / proposed service</label><input type="text" data-request-service value="${escapeHtml(displayService||'')}" placeholder="Service"></div>
             <div class="full"><label>Location</label><input type="text" data-request-location value="${escapeHtml(displayLocation||'')}" placeholder="Job location"></div>
             <div class="full"><label>Private notes</label><textarea data-request-notes placeholder="Anything useful for the job...">${escapeHtml(r.admin_notes||'')}</textarea></div>
@@ -2321,7 +2327,7 @@ function renderBookingRequests(){
     const service=card.querySelector('[data-request-service]').value.trim();
     const priceRaw=card.querySelector('[data-request-price]').value;
     const notes=card.querySelector('[data-request-notes]').value.trim();
-    if(!date||!time||!location||!service||priceRaw===''){st.textContent='Set the final date, start time, service, price and location first.';return;}
+    if(!date||!time||!location||!service||priceRaw===''||!Number.isFinite(Number(String(priceRaw).replace(/[^0-9.]/g,'')))){st.textContent='Set the final date, start time, service, a valid price and location first.';return;}
     const row=cachedEnquiries.find(r=>String(r.id)===String(id));
     const promptText=row?.final_confirmation_status==='signed'?'Send these changed booking details to the customer for a new secure signature? The current signed booking stays unchanged until they accept.':'Send this existing booking to the customer for final secure confirmation and signature? The current booking details stay in place until they sign.';
     if(!confirm(promptText))return;
@@ -2331,7 +2337,7 @@ function renderBookingRequests(){
       if(noteError)throw noteError;
       const {data,error}=await supabase.functions.invoke('send-final-confirmation',{body:{
         enquiry_id:id,booking_date:date,booking_time:time,booking_end_time:end,
-        booking_location:location,service,quoted_price:Number(priceRaw),
+        booking_location:location,service,quoted_price:Number(String(priceRaw).replace(/[^0-9.]/g,'')),
         reason:'Updated booking details issued by STANCEBOUND for customer approval.'
       }});
       if(error)throw error;
@@ -2398,8 +2404,8 @@ function renderBookingRequests(){
     const priceRaw=card.querySelector('[data-request-price]').value;
     const notes=card.querySelector('[data-request-notes]').value.trim();
 
-    if(!date||!time||!location||!service||priceRaw===''){
-      st.textContent='Set the final date, start time, service, price and location first.';
+    if(!date||!time||!location||!service||priceRaw===''||!Number.isFinite(Number(String(priceRaw).replace(/[^0-9.]/g,'')))){
+      st.textContent='Set the final date, start time, service, a valid price and location first.';
       return;
     }
     if(!confirm('Send the final booking details to the customer for secure verification and signature? The booking will only become Booked after they sign.'))return;
@@ -2415,7 +2421,7 @@ function renderBookingRequests(){
         booking_end_time:end,
         booking_location:location,
         service,
-        quoted_price:Number(priceRaw),
+        quoted_price:Number(String(priceRaw).replace(/[^0-9.]/g,'')),
         reason:'Final booking details issued by STANCEBOUND for customer approval.'
       }});
       if(error)throw error;
