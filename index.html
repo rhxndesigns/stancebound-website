@@ -3665,6 +3665,67 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 }
 </style>
 
+
+<style id="stancebound-golfer-geometry-v8">
+/* V8 live-screen calibration */
+
+/* Wheel targets: tighten onto the tyre sidewalls */
+#sbDetailScanner .sbds-zone-front-wheel,
+#sbDetailScanner .sbds-zone-rear-wheel{
+  width:13.7%;
+  top:57.1%;
+}
+#sbDetailScanner .sbds-zone-front-wheel{left:12.15%}
+#sbDetailScanner .sbds-zone-rear-wheel{right:11.05%}
+
+/* GLASS: follow the actual Golf window aperture.
+   Separate front/rear shapes are layered inside one mask so the highlight
+   stops at the A-pillar, beltline, B-pillar and rear quarter correctly. */
+#sbDetailScanner .sbds-zone-glass{
+  inset:0;
+  width:100%;
+  height:100%;
+  clip-path:polygon(
+    31.4% 43.0%,
+    41.9% 27.0%,
+    55.0% 26.0%,
+    54.0% 42.5%,
+    31.4% 43.0%,
+    55.6% 26.0%,
+    72.7% 26.6%,
+    78.8% 41.7%,
+    55.0% 42.5%
+  );
+  background:rgba(255,255,255,.105);
+}
+
+/* Interior is intentionally a touch deeper than Glass, but still contained
+   within the real cabin instead of flooding the roof/doors. */
+#sbDetailScanner .sbds-zone-cabin{
+  inset:0;
+  width:100%;
+  height:100%;
+  clip-path:polygon(
+    30.8% 43.7%,
+    41.3% 25.8%,
+    73.4% 25.4%,
+    79.8% 42.4%,
+    77.0% 45.0%,
+    31.0% 45.0%
+  );
+}
+
+/* Make selected component illumination cleaner on the phone */
+#sbDetailScanner[data-stage="1"] .sbds-zone-front-wheel,
+#sbDetailScanner[data-stage="1"] .sbds-zone-rear-wheel{
+  box-shadow:0 0 8px rgba(255,255,255,.34),inset 0 0 7px rgba(255,255,255,.06);
+}
+#sbDetailScanner[data-stage="5"] .sbds-zone-glass{
+  background:rgba(255,255,255,.09);
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.42));
+}
+</style>
+
 </head>
 
 
