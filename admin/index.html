@@ -723,7 +723,36 @@ main, .admin-page, .panel {
 .finance-inline-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .finance-inline-editor .status{grid-column:1/-1}
 @media(max-width:520px){.finance-inline-editor{grid-template-columns:1fr}.finance-inline-actions,.finance-inline-editor .status{grid-column:auto}.finance-row-side{width:100%;text-align:left}.finance-row-actions{justify-content:flex-start!important}}
-</style></head>
+</style>
+<!-- STANCEBOUND secure-entry paint guard: prevents any authenticated admin UI
+     from being painted when arriving through /admin/?lock=1 -->
+<script>
+(function () {
+  try {
+    if (new URLSearchParams(location.search).get('lock') === '1') {
+      document.documentElement.classList.add('sb-force-admin-lock');
+    }
+  } catch (_) {}
+})();
+</script>
+<style>
+html.sb-force-admin-lock #editor,
+html.sb-force-admin-lock #mobileAdminNav,
+html.sb-force-admin-lock #moreSheet,
+html.sb-force-admin-lock #quickSheet,
+html.sb-force-admin-lock #chatChoiceSheet,
+html.sb-force-admin-lock [data-admin-page],
+html.sb-force-admin-lock .admin-shell,
+html.sb-force-admin-lock .admin-nav {
+  display: none !important;
+  visibility: hidden !important;
+}
+html.sb-force-admin-lock body {
+  background: #050505 !important;
+}
+</style>
+
+</head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -3074,6 +3103,7 @@ async function handleSecureAdminEntry(){
  history.replaceState({},'',location.pathname);
  try{await supabase.auth.signOut()}catch(_){}
  applyAdminSession(null);
+ document.documentElement.classList.remove('sb-force-admin-lock');
  const st=document.querySelector('#adminPasskeyLoginStatus');
  if(st)st.textContent='Tap UNLOCK ADMIN to verify with your device.';
 }
