@@ -930,7 +930,13 @@ html.sb-force-admin-lock body {
 @media(max-width:600px){.sb-livejob-actions [data-send-livejob],.sb-livejob-actions [data-copy-livejob]{width:100%!important}}
 </style>
 
-</head>
+<style id="sb-workflow-v31">
+.sb-workflow-strip{display:flex;align-items:center;gap:7px;overflow-x:auto;white-space:nowrap;margin:16px 0 22px;padding:11px 12px;border:1px solid #202020;border-radius:12px;background:#090909;scrollbar-width:none}
+.sb-workflow-strip::-webkit-scrollbar{display:none}.sb-workflow-strip b{font-size:7px;letter-spacing:1px;color:#555}.sb-workflow-strip span{color:#343434}.sb-workflow-strip b.active{color:#ff9b21}.sb-workflow-strip b.complete{color:#58df7c}
+.sb-flow-state{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 8px;border-radius:99px;background:#121212;border:1px solid #242424;font-size:7px;font-weight:900;letter-spacing:1px;color:#999}
+.sb-flow-state.live{color:#ff9b21;border-color:#5b3a0d}.sb-flow-state.confirm{color:#ffbf69;border-color:#4a3215}.sb-flow-state.booked{color:#d8d8d8}.sb-flow-state.done{color:#58df7c;border-color:#245b34}
+@media(max-width:720px){.admin-tabs{display:none!important}.mobile-nav{grid-template-columns:repeat(5,1fr)!important}.mobile-nav button{min-width:0!important}}
+</style></head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -1022,15 +1028,14 @@ Log In
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
-    <button type="button" class="admin-tab" data-admin-target="enquiries">Chat Enquiries <span id="enquiryBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="bookings">Bookings <span id="bookingBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="chats">Booking Chats <span id="chatBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="pending">Pending</button>
-    <button type="button" class="admin-tab" data-admin-target="upcoming">Upcoming</button>
-    <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
-    <button type="button" class="admin-tab" data-admin-target="analytics">Analytics</button>
+    <button type="button" class="admin-tab" data-admin-target="bookings">Enquiries <span id="bookingBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="confirmation">Confirmation <span id="confirmationBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="upcoming">Jobs <span id="jobsBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="completed">Completed</button>
+    <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
+    <button type="button" class="admin-tab" data-admin-target="finance">Finance</button>
     <button type="button" class="admin-tab" data-admin-target="orders">Orders <span id="orderBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="analytics">Analytics</button>
     <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
     <button type="button" class="admin-tab" data-admin-target="text">Text</button>
     <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
@@ -1043,9 +1048,9 @@ Log In
       <p class="help">A quick view of what needs your attention, what is booked and what STANCEBOUND has completed.</p>
       <div class="overview-grid">
         <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New chats</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Unread customer messages</div></div>
-        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Booking requests</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Needs a response</div></div>
-        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">Awaiting customer</div><div class="metric-value" id="metricAwaitingCustomer">0</div><div class="metric-sub">Already dealt with</div></div>
-        <div class="metric-card" data-open-admin="schedule"><div class="metric-label">Upcoming jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
+        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Needs a response</div></div>
+        <div class="metric-card" data-open-admin="confirmation"><div class="metric-label">Confirmation</div><div class="metric-value" id="metricAwaitingCustomer">0</div><div class="metric-sub">Already dealt with</div></div>
+        <div class="metric-card" data-open-admin="upcoming"><div class="metric-label">Booked jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
         <div class="metric-card" data-open-admin="completed"><div class="metric-label">Completed</div><div class="metric-value" id="metricCompleted">0</div><div class="metric-sub">This month</div></div>
         <div class="metric-card" data-open-admin="orders"><div class="metric-label">Paid orders</div><div class="metric-value" id="metricOrders">0</div><div class="metric-sub">Shop orders</div></div>
       </div>
@@ -1058,16 +1063,16 @@ Log In
           <div class="dash-icon">✉</div><h3>Chat Enquiries</h3><p>Customers who contacted STANCEBOUND through Chat With Us.</p>
         </div>
         <div class="dash-card" data-open-admin="bookings">
-          <div class="dash-icon">▦</div><h3>Bookings</h3><p>Review website booking requests and confirm customers.</p>
+          <div class="dash-icon">▦</div><h3>New Enquiries</h3><p>Review new booking requests, chat if needed, then send confirmation.</p>
         </div>
         <div class="dash-card" data-open-admin="chats">
           <div class="dash-icon">◫</div><h3>Booking Chats</h3><p>Private conversations attached to booking customers.</p>
         </div>
-        <div class="dash-card" data-open-admin="pending">
-          <div class="dash-icon">○</div><h3>Pending</h3><p>Enquiries still waiting for a date to be booked.</p>
+        <div class="dash-card" data-open-admin="confirmation">
+          <div class="dash-icon">○</div><h3>Confirmation</h3><p>Customers currently waiting to sign and accept the final booking.</p>
         </div>
         <div class="dash-card" data-open-admin="upcoming">
-          <div class="dash-icon">↗</div><h3>Upcoming</h3><p>Future booked jobs with the important details together.</p>
+          <div class="dash-icon">↗</div><h3>Jobs</h3><p>Confirmed booked work and the current live job.</p>
         </div>
         <div class="dash-card" data-open-admin="schedule">
           <div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, upcoming bookings and job details.</p>
@@ -1179,17 +1184,22 @@ Log In
 
   <div class="admin-page" data-admin-page="bookings">
     <div class="panel">
-      <div class="admin-kicker">Website Booking Requests</div>
-      <div class="section-title-row"><h2>Bookings</h2><span class="status-pill" id="bookingRequestCount">0</span></div>
-      <p class="help">Booking-form submissions stay separate from ordinary enquiries. Reply, suggest another date, mark a request dealt with while you wait for the customer, then confirm it only once the final date is agreed.</p>
-      <div class="filter-pills" id="bookingRequestFilters">
-        <button class="filter-pill active" type="button" data-booking-filter="new">Needs attention</button>
-        <button class="filter-pill" type="button" data-booking-filter="awaiting">Awaiting customer</button>
-        <button class="filter-pill" type="button" data-booking-filter="booked">Booked</button>
-        <button class="filter-pill" type="button" data-booking-filter="all">All</button>
-      </div>
+      <div class="admin-kicker">01 · NEW ENQUIRIES</div>
+      <div class="section-title-row"><h2>Enquiries</h2><span class="status-pill" id="bookingRequestCount">0</span></div>
+      <p class="help">New booking requests start here. Review the request, use Chat if anything needs changing, then send the final details for customer confirmation. Once sent, the booking leaves this page automatically.</p>
+      <div class="sb-workflow-strip" aria-label="Booking workflow"><b class="active">01 ENQUIRY</b><span>›</span><b>02 CONFIRMATION</b><span>›</span><b>03 BOOKED</b><span>›</span><b>04 LIVE</b><span>›</span><b>05 COMPLETE</b></div>
       <div id="bookingRequestStatus" class="status"></div>
       <div id="bookingRequestList" class="enquiry-list"></div>
+    </div>
+  </div>
+
+  <div class="admin-page" data-admin-page="confirmation">
+    <div class="panel">
+      <div class="admin-kicker">02 · CUSTOMER APPROVAL</div>
+      <div class="section-title-row"><h2>Confirmation</h2><span class="status-pill" id="confirmationCount">0 waiting</span></div>
+      <p class="help">Only bookings waiting for the customer's final signature appear here. Edit and resend if something changes, or open Chat without losing where the booking is in the process.</p>
+      <div class="sb-workflow-strip" aria-label="Booking workflow"><b>01 ENQUIRY</b><span>›</span><b class="active">02 CONFIRMATION</b><span>›</span><b>03 BOOKED</b><span>›</span><b>04 LIVE</b><span>›</span><b>05 COMPLETE</b></div>
+      <div id="confirmationList" class="enquiry-list"></div>
     </div>
   </div>
 
@@ -1204,9 +1214,10 @@ Log In
 
   <div class="admin-page" data-admin-page="upcoming">
     <div class="panel">
-      <div class="admin-kicker">Booked Ahead</div>
-      <div class="section-title-row"><h2>Upcoming</h2><span class="status-pill" id="upcomingCount">0</span></div>
-      <p class="help">Upcoming booked work, ordered by date and time. Price, location and notes stay visible without digging through the enquiry.</p>
+      <div class="admin-kicker">03 · BOOKED / 04 · LIVE</div>
+      <div class="section-title-row"><h2>Jobs</h2><span class="status-pill" id="upcomingCount">0</span></div>
+      <p class="help">Confirmed work lives here until you complete it. Future bookings and the current live job are kept together, ordered clearly by date and time.</p>
+      <div class="sb-workflow-strip" aria-label="Booking workflow"><b>01 ENQUIRY</b><span>›</span><b>02 CONFIRMATION</b><span>›</span><b class="active">03 BOOKED / 04 LIVE</b><span>›</span><b>05 COMPLETE</b></div>
       <div id="upcomingList" class="completed-list"></div>
     </div>
   </div>
@@ -1251,7 +1262,8 @@ Log In
     <div class="panel">
       <div class="admin-kicker">Job History</div>
       <div class="section-title-row"><h2>Completed</h2><span class="status-pill" id="completedCount">0 jobs</span></div>
-      <p class="help">Finished work lives here instead of clogging up active enquiries. Prices and booking details stay attached to the job.</p>
+      <p class="help">Finished jobs live here only after the job itself is completed. Undoing a completion moves it back into Jobs.</p>
+      <div class="sb-workflow-strip" aria-label="Booking workflow"><b>01 ENQUIRY</b><span>›</span><b>02 CONFIRMATION</b><span>›</span><b>03 BOOKED</b><span>›</span><b>04 LIVE</b><span>›</span><b class="active complete">05 COMPLETE</b></div>
       <div id="completedSummary" class="overview-grid"></div>
       <div id="completedList" class="completed-list"></div>
     </div>
@@ -1456,12 +1468,12 @@ Save Changes
 
   <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
-    <button type="button" id="mobileChatsBtn"><span>✉</span>Chats</button>
+    <button type="button" data-mobile-target="bookings"><span>✉</span>Enquiries</button>
     <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions"><img src="/images/stanceboundlogo.png" alt=""></button>
-    <button type="button" data-mobile-target="schedule"><span>□</span>Schedule</button>
+    <button type="button" data-mobile-target="upcoming"><span>▦</span>Jobs</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-section-label">WORKFLOW</div><div class="sheet-grid"><button type="button" data-sheet-target="confirmation"><strong>Confirmation</strong><small>Awaiting signature</small></button><button type="button" data-sheet-target="completed"><strong>Completed</strong><small>Finished jobs</small></button></div><div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
     <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Visitors & conversion</small></button>
     <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website images</small></button>
     <button type="button" data-sheet-target="text"><strong>Text</strong><small>Website content</small></button>
@@ -1481,8 +1493,8 @@ Save Changes
   </div></div></div>
   <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">STANCEBOUND</div><div class="sheet-section-label">WORK</div><div class="sheet-grid sb-work-grid">
     <button data-sheet-target="manual-booking"><strong>＋ New Booking</strong><small>Add a customer manually</small></button>
-    <button data-sheet-target="bookings"><strong>Bookings</strong><small>Booking requests</small></button>
-    <button data-sheet-target="upcoming"><strong>Upcoming</strong><small>Jobs still to do</small></button>
+    <button data-sheet-target="bookings"><strong>New Enquiries</strong><small>Needs your review</small></button>
+    <button data-sheet-target="confirmation"><strong>Confirmation</strong><small>Waiting for customer signature</small></button><button data-sheet-target="upcoming"><strong>Jobs</strong><small>Booked & live work</small></button>
     <button data-sheet-target="completed"><strong>Completed</strong><small>Finished & paid jobs</small></button>
     <button data-sheet-target="enquiries"><strong>Enquiries</strong><small>Customer conversations</small></button>
     <button data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
@@ -1541,6 +1553,7 @@ function openAdminPage(name, addToHistory=true) {
   document.querySelector('#quickSheet')?.classList.remove('show');
   document.querySelector('#chatChoiceSheet')?.classList.remove('show');
   if(name==='completed') renderCompleted();
+  if(name==='confirmation') renderConfirmation();
   if(name==='finance') loadFinance();
   if(name==='orders') renderOrders();
   if(name==='pending') renderPending();
@@ -1947,6 +1960,7 @@ async function loadEnquiries(){
   renderBookingRequests();
   loadChats();
   renderDashboard();
+  renderConfirmation();
   renderPending();
   renderUpcoming();
   renderCompleted();
@@ -2639,22 +2653,26 @@ function formatBookingDate(date,time){
 
 
 function bookingWorkflowStatus(r){
-  if(r.status==='booked'||r.status==='completed'||r.final_confirmation_status==='signed') return 'booked';
-  if(r.status==='cancelled') return 'cancelled';
-  if(r.final_confirmation_status==='pending'||r.status==='awaiting_customer'||r.status==='ongoing') return 'awaiting';
+  if(['cancelled','spam'].includes(r.status)) return 'cancelled';
+  if(r.status==='completed') return 'completed';
+  if(r.final_confirmation_status==='signed' || r.status==='booked') return 'booked';
+  if(r.final_confirmation_status==='pending' && r.final_confirmation_id) return 'confirmation';
   return 'new';
+}
+function isBookingRecord(r){
+  return !!(r?.agreement_accepted || r?.booking_date || r?.final_confirmation_status || r?.final_confirmation_id || ['booked','completed'].includes(r?.status) || String(r?.message||'').includes('Manual booking created in STANCEBOUND Admin'));
 }
 
 function updateBookingMetrics(){
-  const bookingRows=cachedEnquiries.filter(r=>r.agreement_accepted || ['booked','completed'].includes(r.status) || r.final_confirmation_status || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
+  const bookingRows=cachedEnquiries.filter(isBookingRecord);
   const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new').length;
-  const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='awaiting').length;
-  const a=document.querySelector('#metricBookingRequests');
-  const b=document.querySelector('#metricAwaitingCustomer');
-  const badge=document.querySelector('#bookingBadge');
-  if(a)a.textContent=needs;
-  if(b)b.textContent=awaiting;
-  if(badge)badge.textContent=needs||'';
+  const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='confirmation').length;
+  const jobs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='booked').length;
+  const a=document.querySelector('#metricBookingRequests'); if(a)a.textContent=needs;
+  const b=document.querySelector('#metricAwaitingCustomer'); if(b)b.textContent=awaiting;
+  const badge=document.querySelector('#bookingBadge'); if(badge)badge.textContent=needs||'';
+  const cb=document.querySelector('#confirmationBadge'); if(cb)cb.textContent=awaiting||'';
+  const jb=document.querySelector('#jobsBadge'); if(jb)jb.textContent=jobs||'';
 }
 
 function pdfSafeFilename(value='agreement'){
@@ -2725,33 +2743,17 @@ function renderBookingRequests(){
 
   updateBookingMetrics();
 
-  let rows=cachedEnquiries
-    .filter(r=>r.agreement_accepted || ['booked','completed'].includes(r.status) || r.final_confirmation_status || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'))
+  const rows=cachedEnquiries
+    .filter(r=>isBookingRecord(r) && bookingWorkflowStatus(r)==='new')
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
-  if(bookingRequestFilter!=='all'){
-    rows=rows.filter(r=>bookingWorkflowStatus(r)===bookingRequestFilter);
-  }
-
-  if(count)count.textContent=`${rows.length} shown`;
+  if(count)count.textContent=`${rows.length} new`;
   if(status)status.textContent='';
 
-  document.querySelectorAll('[data-booking-filter]').forEach(btn=>{
-    btn.classList.toggle('active',btn.dataset.bookingFilter===bookingRequestFilter);
-    btn.onclick=()=>{
-      bookingRequestFilter=btn.dataset.bookingFilter;
-      renderBookingRequests();
-    };
-  });
+
 
   if(!rows.length){
-    const messages={
-      new:'No booking requests need attention.',
-      awaiting:'Nothing is currently awaiting a customer reply.',
-      booked:'No confirmed bookings in this view.',
-      all:'No website booking requests yet.'
-    };
-    list.innerHTML=`<div class="empty-state">${messages[bookingRequestFilter]||messages.all}</div>`;
+    list.innerHTML='<div class="empty-state">No new booking enquiries need your attention.</div>';
     return;
   }
 
@@ -3171,16 +3173,55 @@ function renderDashboard(){
 }
 
 function openEnquiryFromPipeline(id){
-  enquiryFilter='active';
-  document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x.dataset.filter==='active'));
-  openAdminPage('enquiries');
-  loadEnquiries().then(()=>setTimeout(()=>{
-    const card=document.querySelector(`[data-enquiry-id="${id}"]`);
-    card?.scrollIntoView({behavior:'smooth',block:'center'});
-    card?.classList.add('page-flash');
-  },80));
+  openWorkflowBooking(id,'edit');
 }
 
+
+function renderConfirmation(){
+  const list=document.querySelector('#confirmationList'); if(!list)return;
+  const rows=cachedEnquiries.filter(r=>isBookingRecord(r)&&bookingWorkflowStatus(r)==='confirmation')
+    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const count=document.querySelector('#confirmationCount'); if(count)count.textContent=`${rows.length} waiting`;
+  const badge=document.querySelector('#confirmationBadge'); if(badge)badge.textContent=rows.length||'';
+  if(!rows.length){list.innerHTML='<div class="empty-state">Nobody is waiting for confirmation. Signed bookings move straight into Jobs.</div>';return;}
+  list.innerHTML=rows.map(r=>{
+    const pending=pendingConfirmationCache.get(String(r.id))||{};
+    const date=pending.proposed_booking_date||r.booking_date||'Date not set';
+    const time=String(pending.proposed_booking_time||r.booking_time||'').slice(0,5);
+    const service=pending.proposed_service||r.service||'Service not set';
+    const price=pending.proposed_price??r.quoted_price;
+    return `<article class="enquiry-card" data-confirmation-id="${r.id}">
+      <div class="enquiry-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(service)}<br>${escapeHtml(date)}${time?' · '+escapeHtml(time):''}</div><span class="sb-flow-state confirm">AWAITING SIGNATURE</span></div><div class="completed-price">${price!=null?'£'+Number(price).toFixed(2):'—'}</div></div>
+      <div class="enquiry-message">${escapeHtml(r.message||'No additional message')}</div>
+      <div class="completed-actions"><button type="button" data-confirmation-manage="${r.id}">OPEN / EDIT</button><button type="button" class="secondary" data-confirmation-chat="${r.id}">CHAT</button></div>
+    </article>`;
+  }).join('');
+  list.querySelectorAll('[data-confirmation-manage]').forEach(btn=>btn.onclick=()=>openWorkflowBooking(btn.dataset.confirmationManage,'confirmation'));
+  list.querySelectorAll('[data-confirmation-chat]').forEach(btn=>btn.onclick=()=>openWorkflowBooking(btn.dataset.confirmationChat,'chat'));
+}
+
+function openWorkflowBooking(id,mode='edit'){
+  // Render the existing mature booking editor for one record in a dedicated overlay page,
+  // without duplicating the record in the normal Enquiries list.
+  const row=cachedEnquiries.find(r=>String(r.id)===String(id)); if(!row)return;
+  const page=document.querySelector('[data-admin-page="bookings"]');
+  const list=document.querySelector('#bookingRequestList'); if(!page||!list)return;
+  const original=bookingWorkflowStatus;
+  window.__sbWorkflowFocus=String(id);
+  // Temporarily render this record using the existing editor by setting the record to the renderer's "new" bucket in memory only.
+  const oldStatus=row.status, oldFinal=row.final_confirmation_status, oldFinalId=row.final_confirmation_id;
+  row.status='new'; row.final_confirmation_status=null; row.final_confirmation_id=null;
+  renderBookingRequests();
+  row.status=oldStatus; row.final_confirmation_status=oldFinal; row.final_confirmation_id=oldFinalId;
+  openAdminPage('bookings');
+  const card=list.querySelector(`[data-booking-request-id="${CSS.escape(String(id))}"]`);
+  if(card){
+    const pill=card.querySelector('.status-pill'); if(pill)pill.textContent='AWAITING CUSTOMER SIGNATURE';
+    if(mode==='chat') card.querySelector('[data-chat-invite]')?.click();
+    else card.querySelector('[data-toggle-booking-edit]')?.click();
+    card.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
 function renderPending(){
   const list=document.querySelector('#pendingList'); if(!list)return;
   const rows=cachedEnquiries.filter(r=>!r.booking_date && !['completed','cancelled','spam'].includes(r.status));
@@ -3198,13 +3239,13 @@ function renderPending(){
 function renderUpcoming(){
   const list=document.querySelector('#upcomingList'); if(!list)return;
   const today=new Date().toISOString().slice(0,10);
-  const rows=cachedEnquiries.filter(r=>r.booking_date>=today && !['completed','cancelled','spam'].includes(r.status)).sort((a,b)=>(a.booking_date+(a.booking_time||'')).localeCompare(b.booking_date+(b.booking_time||'')));
+  const rows=cachedEnquiries.filter(r=>r.booking_date && bookingWorkflowStatus(r)==='booked').sort((a,b)=>(a.booking_date+(a.booking_time||'')).localeCompare(b.booking_date+(b.booking_time||'')));
   const count=document.querySelector('#upcomingCount'); if(count)count.textContent=`${rows.length} booked`;
-  if(!rows.length){list.innerHTML='<div class="empty-state">No upcoming jobs booked.</div>';return;}
+  if(!rows.length){list.innerHTML='<div class="empty-state">No confirmed jobs are waiting to be completed.</div>';return;}
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
   }).join('');
   list.querySelectorAll('[data-pipeline-open]').forEach(btn=>btn.onclick=()=>openEnquiryFromPipeline(btn.dataset.pipelineOpen));
   list.querySelectorAll('[data-upcoming-calendar]').forEach(btn=>btn.onclick=()=>{calendarCursor=new Date(btn.dataset.upcomingCalendar+'T12:00:00');calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);openAdminPage('schedule');renderSchedule();setTimeout(()=>selectScheduleDay(btn.dataset.upcomingCalendar),80)});
