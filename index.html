@@ -4044,6 +4044,21 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 @keyframes sbEntryTapProgress{to{width:100%}}
 </style>
 
+
+<style id="stancebound-v16-site-access">
+  .sb-site-access-heading{
+    margin-top:8px;
+    padding:18px 18px 16px;
+    border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    border-radius:18px;
+  }
+  .sb-site-access-heading .eyebrow{margin-bottom:7px}
+  .sb-site-access-title{font-size:1rem;font-weight:800;letter-spacing:.02em}
+  .sb-site-access-copy{margin-top:5px;font-size:.82rem;line-height:1.45;opacity:.68}
+  #accessParkingOtherWrap[hidden]{display:none!important}
+</style>
+
 </head>
 
 
@@ -4824,6 +4839,58 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
               <div class="enquiry-field full"><label for="bookingLocation">Location / postcode</label><input id="bookingLocation" name="booking_location" type="text" maxlength="160" placeholder="Where will the vehicle be?" required></div>
+
+              <div class="enquiry-field full sb-site-access-heading">
+                <div class="eyebrow">DETAILING ACCESS</div>
+                <div class="sb-site-access-title">Help STANCEBOUND arrive prepared</div>
+                <div class="sb-site-access-copy">Tell us what is available where the vehicle will be cleaned.</div>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessWater">Outside water tap / hose</label>
+                <select id="accessWater" name="access_water" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessPower">Outdoor electrical socket</label>
+                <select id="accessPower" name="access_power" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessParking">Where will the vehicle be?</label>
+                <select id="accessParking" name="access_parking" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="private_driveway">Private driveway</option>
+                  <option value="private_parking">Private parking area</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessSpace">Enough room to work around the vehicle?</label>
+                <select id="accessSpace" name="access_space" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field full" id="accessParkingOtherWrap" hidden>
+                <label for="accessParkingOther">Tell us where the vehicle will be parked</label>
+                <input id="accessParkingOther" name="access_parking_other" type="text" maxlength="180" placeholder="e.g. allocated bay beside the house">
+              </div>
+
               <div class="enquiry-field full"><label for="enquiryMessage">What would you like done?</label><textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea></div>
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             </div>
@@ -5331,6 +5398,20 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
     clearAgreementSignature?.addEventListener("click",clearSignature);
     window.addEventListener("resize",()=>{if(signatureWrap?.classList.contains("show"))resizeSignatureCanvas();},{passive:true});
 
+    const accessParking=document.getElementById("accessParking");
+    const accessParkingOtherWrap=document.getElementById("accessParkingOtherWrap");
+    const accessParkingOther=document.getElementById("accessParkingOther");
+    function syncAccessParkingOther(){
+      const show=accessParking?.value==="other";
+      if(accessParkingOtherWrap)accessParkingOtherWrap.hidden=!show;
+      if(accessParkingOther){
+        accessParkingOther.required=!!show;
+        if(!show)accessParkingOther.value="";
+      }
+    }
+    accessParking?.addEventListener("change",syncAccessParkingOther);
+    syncAccessParkingOther();
+
     if(enquiryForm){
       enquiryForm.addEventListener("submit",async(event)=>{
         event.preventDefault();
@@ -5355,10 +5436,23 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
           vehicle:document.getElementById("enquiryVehicle").value.trim(),
           message:[
             document.getElementById("enquiryMessage").value.trim(),
-            "Booking location: "+document.getElementById("bookingLocation").value.trim()
+            "Booking location: "+document.getElementById("bookingLocation").value.trim(),
+            "DETAILING ACCESS",
+            "Outside water tap / hose: "+document.getElementById("accessWater").selectedOptions[0].text,
+            "Outdoor electrical socket: "+document.getElementById("accessPower").selectedOptions[0].text,
+            "Vehicle location: "+document.getElementById("accessParking").selectedOptions[0].text+
+              (document.getElementById("accessParking").value==="other" && document.getElementById("accessParkingOther").value.trim()
+                ? " — "+document.getElementById("accessParkingOther").value.trim()
+                : ""),
+            "Enough room to work around vehicle: "+document.getElementById("accessSpace").selectedOptions[0].text
           ].filter(Boolean).join("\n\n"),
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
+          access_water:document.getElementById("accessWater").value,
+          access_power:document.getElementById("accessPower").value,
+          access_parking:document.getElementById("accessParking").value,
+          access_parking_other:document.getElementById("accessParkingOther").value.trim()||null,
+          access_space:document.getElementById("accessSpace").value,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-BOOKING-REQUEST-NOTICE-V1",
           agreement_text:"Booking request only. Customer acknowledges that the booking is not final until the STANCEBOUND confirmation and customer terms are reviewed and signed.",
