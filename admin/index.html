@@ -494,6 +494,10 @@ body{padding-bottom:88px}
 #sbTrackerToast{position:fixed;left:14px;right:14px;bottom:92px;z-index:2147483647;padding:14px 16px;border-radius:12px;background:#10351d;color:#aaffbf;border:1px solid #256c3b;font:800 11px/1.3 Arial,sans-serif;letter-spacing:.7px;text-align:center;opacity:0;transform:translateY(12px);pointer-events:none;transition:.18s}
 #sbTrackerToast.show{opacity:1;transform:translateY(0)}
 #sbTrackerToast.bad{background:#351010;color:#ffb3b3;border-color:#6b2525}
+
+.sb-action-feedback{display:block;min-height:16px;margin:7px 2px 2px;font-size:9px;font-weight:900;letter-spacing:.7px;color:#69e88d}
+.sb-action-feedback.error{color:#ff7777}
+.sb-livejob-page button.sb-action-success{background:#123d20!important;color:#83f5a2!important;border:1px solid #287341!important}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2397,58 +2401,82 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       </div>
       <div class="sb-livejob-actions">
         ${host.classList.contains('sb-livejob-page')?'':'<button type="button" data-open-livejob-page>OPEN LIVE TRACKER</button>'}
-        ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
-        <button type="button" data-save-livejob>UPDATE ETA</button>
-        <button type="button" data-send-livejob>SEND LIVE TRACKING LINK</button>
-        <button type="button" data-copy-livejob>COPY LIVE TRACKING LINK</button>
+        ${job.status==='not_started'?'<div class="sb-action-wrap"><button type="button" data-start-livejob>START JOB</button><small class="sb-action-feedback" data-feedback="start"></small></div>':''}
+        <div class="sb-action-wrap"><button type="button" data-save-livejob>UPDATE ETA</button><small class="sb-action-feedback" data-feedback="eta"></small></div>
+        <div class="sb-action-wrap"><button type="button" data-send-livejob>SEND LIVE TRACKING LINK</button><small class="sb-action-feedback" data-feedback="send"></small></div>
+        <div class="sb-action-wrap"><button type="button" data-copy-livejob>COPY LIVE TRACKING LINK</button><small class="sb-action-feedback" data-feedback="copy"></small></div>
       </div>
       <div class="sb-livejob-stages">${stages.map((s,i)=>`
         <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
           <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.title||'Stage')}</b>
-          <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'DONE':s.status==='active'?'COMPLETE':'START'}</button>
+          <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'DONE':(s.status==='in_progress'||s.status==='active')?'COMPLETE':'START'}</button>
         </div>`).join('')}</div><div class="status"></div>`;
 
     const statusEl=host.querySelector('.status');
+    const actionFeedback=(key,msg,bad=false)=>{
+      const el=host.querySelector(`[data-feedback="${key}"]`);
+      if(el){el.textContent=msg;el.classList.toggle('error',!!bad);}
+    };
+    const actionSuccess=(btn,text)=>{
+      if(!btn)return;
+      btn.dataset.originalText=btn.dataset.originalText||btn.textContent;
+      btn.textContent=text;
+      btn.classList.add('sb-action-success');
+      setTimeout(()=>{btn.textContent=btn.dataset.originalText;btn.classList.remove('sb-action-success');},3500);
+    };
+
     host.querySelector('[data-open-livejob-page]')?.addEventListener('click',e=>{
       e.stopPropagation();
       const customer=host.closest('.completed-card')?.querySelector('h3')?.textContent?.trim()||'';
       sbOpenLiveTrackerPage(enquiryId,customer);
     });
-    host.querySelector('[data-start-livejob]')?.addEventListener('click',async()=>{
+    host.querySelector('[data-start-livejob]')?.addEventListener('click',async e=>{
+      const b=e.currentTarget;b.disabled=true;actionFeedback('start','STARTING…');
       const {error}=await supabase.from('live_jobs').update({status:'in_progress',started_at:new Date().toISOString()}).eq('id',job.id);
-      if(error){statusEl.textContent=error.message;return} await sbHydrateLiveJobPanel(host,enquiryId);
+      if(error){actionFeedback('start',error.message,true);b.disabled=false;return}
+      actionFeedback('start','JOB STARTED ✓');actionSuccess(b,'STARTED ✓');
+      setTimeout(async()=>{delete host.dataset.livejobLoading;await sbHydrateLiveJobPanel(host,enquiryId)},900);
     });
     host.querySelector('[data-save-livejob]')?.addEventListener('click',async()=>{
       const eta=host.querySelector('[data-livejob-eta]').value||null;
       const {error}=await supabase.from('live_jobs').update({eta_time:eta}).eq('id',job.id);
-      statusEl.textContent=error?error.message:'ETA UPDATED ✓';
+      if(error){actionFeedback('eta',error.message,true)}
+      else{actionFeedback('eta','ESTIMATED TIME UPDATED ✓');actionSuccess(host.querySelector('[data-save-livejob]'),'UPDATED ✓')}
     });
     host.querySelector('[data-send-livejob]')?.addEventListener('click',async e=>{
-      const b=e.currentTarget;b.disabled=true;statusEl.textContent='SENDING TRACKING LINK…';
+      const btn=e.currentTarget;
+      if(btn.disabled)return;
+      btn.disabled=true;actionFeedback('send','SENDING…');
       try{
         const {data,error}=await supabase.functions.invoke('send-live-job-link',{body:{enquiry_id:enquiryId}});
         if(error)throw error;
         if(!data?.success)throw new Error(data?.error||'Could not send tracking link.');
-        statusEl.textContent='TRACKING LINK SENT ✓';
-      }catch(err){statusEl.textContent=err?.message||'Could not send tracking link.'}
-      finally{b.disabled=false}
+        actionFeedback('send','TRACKING LINK SENT ✓');
+        actionSuccess(btn,'SENT ✓');
+      }catch(err){
+        actionFeedback('send',err?.message||'Could not send tracking link.',true);
+      }finally{
+        setTimeout(()=>{btn.disabled=false},3500);
+      }
     });
-    host.querySelector('[data-copy-livejob]')?.addEventListener('click',async()=>{
+    host.querySelector('[data-copy-livejob]')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;
       const token=job.tracking_token;
-      if(!token){statusEl.textContent='This tracker has no customer token.';return}
+      if(!token){actionFeedback('copy','NO CUSTOMER TRACKING TOKEN',true);return}
       const url=`https://www.stancebound.com/?track=${encodeURIComponent(token)}`;
       const copied=await sbCopyText(url);
-      statusEl.textContent=copied?'CUSTOMER TRACKING LINK COPIED ✓':'COPY FAILED · '+url;
+      if(copied){actionFeedback('copy','TRACKING LINK COPIED ✓');actionSuccess(btn,'COPIED ✓')}
+      else{actionFeedback('copy','COPY FAILED',true)}
     });
     host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.onclick=async()=>{
       const current=btn.dataset.stageStatus;
-      const next=current==='active'?'completed':'active';
+      const next=(current==='in_progress'||current==='active')?'completed':'in_progress';
       btn.disabled=true;
-      if(next==='active'){
-        await supabase.from('live_job_stages').update({status:'pending'}).eq('live_job_id',job.id).eq('status','active');
+      if(next==='in_progress'){
+        await supabase.from('live_job_stages').update({status:'pending'}).eq('live_job_id',job.id).eq('status','in_progress');
       }
       const update={status:next};
-      if(next==='active')update.started_at=new Date().toISOString();
+      if(next==='in_progress')update.started_at=new Date().toISOString();
       if(next==='completed')update.completed_at=new Date().toISOString();
       const {error}=await supabase.from('live_job_stages').update(update).eq('id',btn.dataset.stageId);
       if(error){statusEl.textContent=error.message;btn.disabled=false;return}
