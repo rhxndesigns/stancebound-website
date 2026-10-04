@@ -498,6 +498,13 @@ body{padding-bottom:88px}
 .sb-action-feedback{display:block;min-height:16px;margin:7px 2px 2px;font-size:9px;font-weight:900;letter-spacing:.7px;color:#69e88d}
 .sb-action-feedback.error{color:#ff7777}
 .sb-livejob-page button.sb-action-success{background:#123d20!important;color:#83f5a2!important;border:1px solid #287341!important}
+
+.sb-livejob-page .sb-livejob-stage.in_progress{background:rgba(255,145,0,.08)!important;border-bottom-color:#5b3a0d!important}
+.sb-livejob-page .sb-livejob-stage.in_progress b,.sb-livejob-page .sb-livejob-stage.in_progress em{color:#ff9d22!important}
+.sb-livejob-page .sb-livejob-stage.in_progress button{background:#ff9418!important;color:#090909!important}
+.sb-livejob-page .sb-livejob-stage.completed{opacity:1!important}
+.sb-livejob-page .sb-livejob-stage.completed b,.sb-livejob-page .sb-livejob-stage.completed em{color:#64df86!important}
+.sb-livejob-page .sb-livejob-stage.completed button{background:#123d20!important;color:#78ee99!important;border:1px solid #287341!important}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2409,7 +2416,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       <div class="sb-livejob-stages">${stages.map((s,i)=>`
         <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
           <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.title||'Stage')}</b>
-          <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'DONE':(s.status==='in_progress'||s.status==='active')?'COMPLETE':'START'}</button>
+          <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'COMPLETED':(s.status==='in_progress'||s.status==='active')?'IN PROGRESS':'START'}</button>
         </div>`).join('')}</div><div class="status"></div>`;
 
     const statusEl=host.querySelector('.status');
@@ -2469,24 +2476,40 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       else{actionFeedback('copy','COPY FAILED',true)}
     });
     host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.onclick=async()=>{
+      if(btn.disabled || btn.dataset.stageStatus==='completed')return;
       const current=btn.dataset.stageStatus;
-      const next=(current==='in_progress'||current==='active')?'completed':'in_progress';
+      const isRunning=current==='in_progress'||current==='active';
       btn.disabled=true;
-      if(next==='in_progress'){
-        await supabase.from('live_job_stages').update({status:'pending'}).eq('live_job_id',job.id).eq('status','in_progress');
+      try{
+        if(isRunning){
+          const {error}=await supabase.from('live_job_stages').update({status:'completed',completed_at:new Date().toISOString()}).eq('id',btn.dataset.stageId);
+          if(error)throw error;
+        }else{
+          const {data:running,error:runningReadError}=await supabase.from('live_job_stages').select('id').eq('live_job_id',job.id).eq('status','in_progress');
+          if(runningReadError)throw runningReadError;
+          for(const row of (running||[])){
+            const {error}=await supabase.from('live_job_stages').update({status:'completed',completed_at:new Date().toISOString()}).eq('id',row.id);
+            if(error)throw error;
+          }
+          const {error}=await supabase.from('live_job_stages').update({status:'in_progress',started_at:new Date().toISOString(),completed_at:null}).eq('id',btn.dataset.stageId);
+          if(error)throw error;
+          const jobUpdate={status:'in_progress'};
+          if(!job.started_at)jobUpdate.started_at=new Date().toISOString();
+          const {error:jobError}=await supabase.from('live_jobs').update(jobUpdate).eq('id',job.id);
+          if(jobError)throw jobError;
+        }
+        const {data:remaining,error:remainingError}=await supabase.from('live_job_stages').select('id').eq('live_job_id',job.id).neq('status','completed');
+        if(remainingError)throw remainingError;
+        if((remaining||[]).length===0){
+          const {error:jobError}=await supabase.from('live_jobs').update({status:'completed',completed_at:new Date().toISOString()}).eq('id',job.id);
+          if(jobError)throw jobError;
+        }
+        delete host.dataset.livejobLoading;
+        await sbHydrateLiveJobPanel(host,enquiryId);
+      }catch(err){
+        statusEl.textContent=err?.message||'Could not update stage.';
+        btn.disabled=false;
       }
-      const update={status:next};
-      if(next==='in_progress')update.started_at=new Date().toISOString();
-      if(next==='completed')update.completed_at=new Date().toISOString();
-      const {error}=await supabase.from('live_job_stages').update(update).eq('id',btn.dataset.stageId);
-      if(error){statusEl.textContent=error.message;btn.disabled=false;return}
-      const {data:remaining}=await supabase.from('live_job_stages').select('id').eq('live_job_id',job.id).neq('status','completed');
-      if(next==='completed' && (remaining||[]).length===0){
-        await supabase.from('live_jobs').update({status:'completed',completed_at:new Date().toISOString()}).eq('id',job.id);
-      }else{
-        await supabase.from('live_jobs').update({status:'in_progress'}).eq('id',job.id);
-      }
-      await sbHydrateLiveJobPanel(host,enquiryId);
     });
   }catch(err){
     host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>UNAVAILABLE</span></div><div class="status">${escapeHtml(err?.message||'Could not load live job.')}</div>`;
