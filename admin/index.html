@@ -383,22 +383,113 @@ body{padding-bottom:88px}
 #sbAdminBootCover{position:fixed;inset:0;z-index:2147483647;background:#050505;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .14s ease,visibility 0s linear .14s}
 #sbAdminBootCover.sb-ready{opacity:0;visibility:hidden;pointer-events:none}
 
-#sbAdminLiveTrackerPage{position:fixed;inset:0;z-index:100000;background:#050505;color:#f4f4f4;display:none;overflow:auto;padding-bottom:110px}
+
+/* V23 live tracker: clean, isolated and touch-safe */
+.pipeline-card:active{transform:none!important;border-color:#282828!important;background:#070707!important}
+
+#sbAdminLiveTrackerPage{
+  position:fixed;inset:0;z-index:100000;background:#050505;color:#f4f4f4;
+  display:none;overflow-y:auto;overflow-x:hidden;padding:0 0 calc(28px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain
+}
 #sbAdminLiveTrackerPage.show{display:block}
-.sb-tracker-page-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:16px;padding:18px 18px 14px;background:rgba(5,5,5,.96);border-bottom:1px solid #222;backdrop-filter:blur(18px)}
-.sb-tracker-page-bar button{width:auto!important;margin:0!important;min-height:42px;padding:0 14px!important;background:#111!important;color:#fff!important;border:1px solid #333!important}
+.sb-tracker-page-bar{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  background:#080808;border-bottom:1px solid #1c1c1c
+}
+.sb-tracker-page-bar button{
+  appearance:none;-webkit-appearance:none;width:auto!important;min-width:74px!important;
+  min-height:46px!important;margin:0!important;padding:0 14px!important;border:0!important;
+  border-radius:10px!important;background:#171717!important;color:#fff!important;
+  touch-action:manipulation!important;position:relative!important;z-index:22!important
+}
 .sb-tracker-page-bar small{display:block;font-size:7px;letter-spacing:2px;color:#666;margin-bottom:4px}
-.sb-tracker-page-bar strong{font-size:12px;letter-spacing:1.4px}
-.sb-tracker-page-body{max-width:760px;margin:0 auto;padding:26px 18px}
-.sb-tracker-page-title{font-size:24px;font-weight:800;margin-bottom:18px}
-.sb-livejob-page{margin-top:0!important;border-radius:18px!important;padding:18px!important}
-.sb-livejob-page .sb-livejob-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.sb-livejob-page .sb-livejob-actions button{width:100%!important;min-height:48px!important}
-.sb-livejob-page .sb-livejob-stages{gap:9px}
-.sb-livejob-page .sb-livejob-stage{padding:13px}
-.sb-livejob button,.sb-livejob input{pointer-events:auto!important;position:relative;z-index:3}
-[data-open-livejob-page]{background:#f4f4f4!important;color:#080808!important}
-@media(max-width:600px){.sb-livejob-page .sb-livejob-actions{grid-template-columns:1fr}.sb-tracker-page-body{padding:20px 14px}}
+.sb-tracker-page-bar strong{font-size:12px;letter-spacing:1.3px}
+.sb-tracker-page-body{max-width:720px;margin:0 auto;padding:22px 16px}
+.sb-tracker-page-title{font-size:21px;font-weight:850;margin:0 0 16px}
+
+.sb-livejob-page{
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important
+}
+.sb-livejob-page .sb-livejob-head{
+  padding:0 0 14px;margin:0 0 14px;border-bottom:1px solid #1d1d1d
+}
+.sb-livejob-page .sb-livejob-progress{margin:14px 0;height:4px;border:0!important}
+.sb-livejob-page .sb-livejob-meta{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px
+}
+.sb-livejob-page .sb-livejob-meta label{
+  display:block;padding:12px;background:#0c0c0c;border:0!important;border-radius:12px
+}
+.sb-livejob-page .sb-livejob-meta input{
+  display:block;width:100%;box-sizing:border-box;margin:7px 0 0!important;min-height:44px!important;
+  border:0!important;border-radius:8px!important;background:#151515!important
+}
+.sb-livejob-page .sb-livejob-actions{
+  display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important;margin:0 0 20px!important
+}
+.sb-livejob-page .sb-livejob-actions button,
+.sb-livejob-page .sb-livejob-stage button{
+  appearance:none!important;-webkit-appearance:none!important;
+  position:relative!important;z-index:5!important;box-sizing:border-box!important;
+  margin:0!important;min-height:52px!important;padding:12px 14px!important;
+  border:0!important;border-radius:11px!important;background:#171717!important;color:#fff!important;
+  font-size:9px!important;font-weight:850!important;letter-spacing:.8px!important;
+  line-height:1.15!important;touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;transform:none!important
+}
+.sb-livejob-page .sb-livejob-actions button:active,
+.sb-livejob-page .sb-livejob-stage button:active{background:#2a2a2a!important;transform:none!important}
+.sb-livejob-page [data-send-livejob]{background:#f2f2f2!important;color:#080808!important}
+.sb-livejob-page .sb-livejob-stages{
+  display:grid!important;gap:8px!important;margin:0!important
+}
+.sb-livejob-page .sb-livejob-stage{
+  display:grid!important;grid-template-columns:30px minmax(0,1fr) 96px!important;
+  gap:10px!important;align-items:center!important;padding:10px 0!important;
+  border:0!important;border-bottom:1px solid #1a1a1a!important;background:transparent!important
+}
+.sb-livejob-page .sb-livejob-stage:last-child{border-bottom:0!important}
+.sb-livejob-page .sb-livejob-stage em{font-size:9px!important;color:#555!important}
+.sb-livejob-page .sb-livejob-stage b{font-size:10px!important;line-height:1.3!important}
+.sb-livejob-page .sb-livejob-stage button{width:96px!important;min-height:46px!important;padding:10px 8px!important}
+.sb-livejob-page .sb-livejob-stage.done{opacity:.55}
+.sb-livejob-page .sb-livejob-stage.active{background:transparent!important}
+.sb-livejob-page .status{margin-top:14px!important}
+
+/* Every tracker control owns only its visible hit area. */
+.sb-livejob-page button,.sb-livejob-page input{
+  pointer-events:auto!important;isolation:isolate!important
+}
+.sb-livejob-page button::before,.sb-livejob-page button::after{pointer-events:none!important}
+
+/* Compact Upcoming card. The job is managed on its dedicated page. */
+.completed-card .sb-livejob:not(.sb-livejob-page){
+  border:0!important;border-top:1px solid #202020!important;border-radius:0!important;
+  background:transparent!important;padding:14px 0 0!important;margin-top:14px!important
+}
+.completed-card .sb-livejob:not(.sb-livejob-page) .sb-livejob-meta,
+.completed-card .sb-livejob:not(.sb-livejob-page) .sb-livejob-stages,
+.completed-card .sb-livejob:not(.sb-livejob-page) [data-start-livejob],
+.completed-card .sb-livejob:not(.sb-livejob-page) [data-save-livejob],
+.completed-card .sb-livejob:not(.sb-livejob-page) [data-send-livejob],
+.completed-card .sb-livejob:not(.sb-livejob-page) [data-copy-livejob]{
+  display:none!important
+}
+.completed-card .sb-livejob:not(.sb-livejob-page) .sb-livejob-actions{margin-top:10px!important}
+.completed-card .sb-livejob:not(.sb-livejob-page) [data-open-livejob-page]{
+  display:block!important;width:100%!important;min-height:48px!important;margin:0!important;
+  border:0!important;border-radius:10px!important;background:#f2f2f2!important;color:#080808!important;
+  touch-action:manipulation!important;position:relative!important;z-index:5!important
+}
+
+@media(max-width:600px){
+  .sb-tracker-page-body{padding:18px 14px}
+  .sb-livejob-page .sb-livejob-actions{grid-template-columns:1fr!important}
+  .sb-livejob-page .sb-livejob-meta{grid-template-columns:1fr 1fr}
+}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2156,6 +2247,17 @@ async function loadChats(){
 
 
 
+
+(function(){
+  const protect=(e)=>{
+    const control=e.target.closest?.('#sbAdminLiveTrackerPage button,#sbAdminLiveTrackerPage input,.sb-livejob button,.sb-livejob input');
+    if(!control)return;
+    e.stopPropagation();
+  };
+  document.addEventListener('pointerdown',protect,true);
+  document.addEventListener('touchstart',protect,{capture:true,passive:true});
+})();
+
 async function sbCopyText(text){
   try{
     if(navigator.clipboard && window.isSecureContext){
@@ -2274,7 +2376,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         <label>STATUS<input value="${escapeHtml(job.status||'not_started')}" disabled></label>
       </div>
       <div class="sb-livejob-actions">
-        <button type="button" data-open-livejob-page>OPEN LIVE TRACKER</button>
+        ${host.classList.contains('sb-livejob-page')?'':'<button type="button" data-open-livejob-page>OPEN LIVE TRACKER</button>'}
         ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
         <button type="button" data-save-livejob>UPDATE ETA</button>
         <button type="button" data-send-livejob>SEND LIVE TRACKING LINK</button>
