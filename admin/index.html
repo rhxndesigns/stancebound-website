@@ -793,6 +793,12 @@ html.sb-force-admin-lock body {
 .sb-livejob-meta input{margin-top:5px!important}
 </style>
 
+<style id="stancebound-admin-v19-live-tracking-fix">
+[data-enable-livejob],[data-send-livejob]{background:#f1f1f1!important;color:#080808!important;border-color:#f1f1f1!important;font-weight:900!important;letter-spacing:.9px!important}
+[data-enable-livejob]{width:100%!important}
+@media(max-width:600px){.sb-livejob-actions [data-send-livejob],.sb-livejob-actions [data-copy-livejob]{width:100%!important}}
+</style>
+
 </head>
 
 <body>
@@ -2159,14 +2165,26 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
   try{
     const job=await sbGetLiveJob(enquiryId);
     if(!job){
-      host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>NOT CREATED</span></div>
-        <div class="sb-livejob-actions"><button type="button" data-create-livejob>CREATE JOB TRACKER</button></div>
-        <div class="status">Creates the customer's progress tracker for this booking.</div>`;
-      host.querySelector('[data-create-livejob]').onclick=async e=>{
+      host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB TRACKING</strong><span>NOT ENABLED</span></div>
+        <div class="sb-livejob-actions"><button type="button" data-enable-livejob>ENABLE LIVE JOB TRACKING</button></div>
+        <div class="status">Creates this customer's private progress tracker. You can send their link immediately afterwards.</div>`;
+      host.querySelector('[data-enable-livejob]').onclick=async e=>{
         const b=e.currentTarget;b.disabled=true;
-        host.querySelector('.status').textContent='Creating job tracker…';
-        try{await sbCreateLiveJob(enquiryId);await sbHydrateLiveJobPanel(host,enquiryId)}
-        catch(err){host.querySelector('.status').textContent=err?.message||'Could not create tracker.';b.disabled=false}
+        const status=host.querySelector('.status');
+        status.textContent='ENABLING LIVE JOB TRACKING…';
+        try{
+          await sbCreateLiveJob(enquiryId);
+          await sbHydrateLiveJobPanel(host,enquiryId);
+          const send=host.querySelector('[data-send-livejob]');
+          if(send){
+            const note=host.querySelector('.status');
+            if(note)note.textContent='LIVE JOB TRACKING ENABLED ✓ · READY TO SEND';
+            send.scrollIntoView({behavior:'smooth',block:'nearest'});
+          }
+        }catch(err){
+          status.textContent=err?.message||'Could not enable live job tracking.';
+          b.disabled=false;
+        }
       };
       return;
     }
@@ -2175,7 +2193,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
     const complete=stages.filter(s=>s.status==='completed').length;
     const pct=stages.length?Math.round(complete/stages.length*100):0;
     const state=String(job.status||'not_started').replaceAll('_',' ').toUpperCase();
-    host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>${escapeHtml(state)}</span></div>
+    host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB TRACKING</strong><span>${escapeHtml(state)}</span></div>
       <div class="sb-livejob-progress"><i style="width:${pct}%"></i></div>
       <div class="sb-livejob-head"><strong>${pct}% COMPLETE</strong><span>${complete}/${stages.length} STAGES</span></div>
       <div class="sb-livejob-meta">
@@ -2185,8 +2203,8 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       <div class="sb-livejob-actions">
         ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
         <button type="button" data-save-livejob>UPDATE ETA</button>
-        <button type="button" data-send-livejob>SEND TRACKING LINK</button>
-        <button type="button" data-copy-livejob>COPY CUSTOMER LINK</button>
+        <button type="button" data-send-livejob>SEND LIVE TRACKING LINK</button>
+        <button type="button" data-copy-livejob>COPY LIVE TRACKING LINK</button>
       </div>
       <div class="sb-livejob-stages">${stages.map((s,i)=>`
         <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
