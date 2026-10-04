@@ -2428,8 +2428,8 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         </div>`).join('')}</div>
       <div class="sb-job-finish">
         ${job.status==='completed'
-          ?'<button type="button" data-undo-livejob>UNDO JOB COMPLETION</button><small class="sb-finish-note">Reopens the live tracker if the job was completed by mistake.</small>'
-          :'<button type="button" data-complete-livejob>COMPLETE JOB</button><small class="sb-finish-note">Finishes the live tracker and shows the customer the completion message.</small>'}
+          ?'<button type="button" data-undo-livejob>UNDO JOB COMPLETION</button><small class="sb-finish-note">Reopens the live tracker if the job was completed by mistake.</small><div class="sb-action-feedback" data-feedback="finish"></div>'
+          :'<button type="button" data-complete-livejob>COMPLETE JOB</button><small class="sb-finish-note">Finishes the live tracker, shows the customer the completion message and emails them that their vehicle is ready.</small><div class="sb-action-feedback" data-feedback="finish"></div>'}
       </div>
       <div class="status"></div>`;
 
@@ -2504,8 +2504,32 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
           .update({status:'completed',completed_at:now})
           .eq('id',job.id);
         if(jobError)throw jobError;
-        delete host.dataset.livejobLoading;
-        await sbHydrateLiveJobPanel(host,enquiryId);
+
+        btn.textContent='SENDING EMAIL…';
+        const {data:{session}}=await supabase.auth.getSession();
+        if(!session?.access_token)throw new Error('Admin session expired. Please sign in again.');
+
+        const emailResponse=await fetch('https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/send-job-complete-email',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'Authorization':`Bearer ${session.access_token}`
+          },
+          body:JSON.stringify({enquiry_id:enquiryId})
+        });
+
+        const emailResult=await emailResponse.json().catch(()=>({}));
+        if(!emailResponse.ok || !emailResult?.success){
+          throw new Error(emailResult?.error||'Job completed, but the completion email could not be sent.');
+        }
+
+        actionFeedback('finish','JOB COMPLETED · CUSTOMER EMAIL SENT ✓',false);
+        btn.textContent='COMPLETED ✓';
+        btn.classList.add('sb-action-success');
+        setTimeout(async()=>{
+          delete host.dataset.livejobLoading;
+          await sbHydrateLiveJobPanel(host,enquiryId);
+        },1300);
       }catch(err){
         statusEl.textContent=err?.message||'Could not complete job.';
         btn.disabled=false;btn.textContent='COMPLETE JOB';
