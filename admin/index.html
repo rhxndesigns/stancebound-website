@@ -2185,6 +2185,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       <div class="sb-livejob-actions">
         ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
         <button type="button" data-save-livejob>UPDATE ETA</button>
+        <button type="button" data-send-livejob>SEND TRACKING LINK</button>
         <button type="button" data-copy-livejob>COPY CUSTOMER LINK</button>
       </div>
       <div class="sb-livejob-stages">${stages.map((s,i)=>`
@@ -2202,6 +2203,16 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       const eta=host.querySelector('[data-livejob-eta]').value||null;
       const {error}=await supabase.from('live_jobs').update({eta_time:eta}).eq('id',job.id);
       statusEl.textContent=error?error.message:'ETA UPDATED ✓';
+    });
+    host.querySelector('[data-send-livejob]')?.addEventListener('click',async e=>{
+      const b=e.currentTarget;b.disabled=true;statusEl.textContent='SENDING TRACKING LINK…';
+      try{
+        const {data,error}=await supabase.functions.invoke('send-live-job-link',{body:{enquiry_id:enquiryId}});
+        if(error)throw error;
+        if(!data?.success)throw new Error(data?.error||'Could not send tracking link.');
+        statusEl.textContent='TRACKING LINK SENT ✓';
+      }catch(err){statusEl.textContent=err?.message||'Could not send tracking link.'}
+      finally{b.disabled=false}
     });
     host.querySelector('[data-copy-livejob]')?.addEventListener('click',async()=>{
       const token=job.tracking_token;
