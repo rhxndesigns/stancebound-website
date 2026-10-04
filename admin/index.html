@@ -2161,7 +2161,8 @@ function sbLiveJobPanelShell(enquiryId){
 }
 
 async function sbHydrateLiveJobPanel(host,enquiryId){
-  if(!host)return;
+  if(!host||host.dataset.livejobLoading==='1')return;
+  host.dataset.livejobLoading='1';
   try{
     const job=await sbGetLiveJob(enquiryId);
     if(!job){
@@ -2260,6 +2261,8 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
     });
   }catch(err){
     host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>UNAVAILABLE</span></div><div class="status">${escapeHtml(err?.message||'Could not load live job.')}</div>`;
+  }finally{
+    delete host.dataset.livejobLoading;
   }
 }
 
@@ -2846,6 +2849,10 @@ function renderUpcoming(){
   }).join('');
   list.querySelectorAll('[data-pipeline-open]').forEach(btn=>btn.onclick=()=>openEnquiryFromPipeline(btn.dataset.pipelineOpen));
   list.querySelectorAll('[data-upcoming-calendar]').forEach(btn=>btn.onclick=()=>{calendarCursor=new Date(btn.dataset.upcomingCalendar+'T12:00:00');calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);openAdminPage('schedule');renderSchedule();setTimeout(()=>selectScheduleDay(btn.dataset.upcomingCalendar),80)});
+
+  // V20: Upcoming cards are created here, AFTER loadEnquiries() previously
+  // attempted to hydrate live-job panels. Hydrate the newly-created shells now.
+  sbHydrateVisibleLiveJobs();
 }
 
 function renderCompleted(){
