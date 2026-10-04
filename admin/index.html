@@ -936,7 +936,84 @@ html.sb-force-admin-lock body {
 .sb-flow-state{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 8px;border-radius:99px;background:#121212;border:1px solid #242424;font-size:7px;font-weight:900;letter-spacing:1px;color:#999}
 .sb-flow-state.live{color:#ff9b21;border-color:#5b3a0d}.sb-flow-state.confirm{color:#ffbf69;border-color:#4a3215}.sb-flow-state.booked{color:#d8d8d8}.sb-flow-state.done{color:#58df7c;border-color:#245b34}
 @media(max-width:720px){.admin-tabs{display:none!important}.mobile-nav{grid-template-columns:repeat(5,1fr)!important}.mobile-nav button{min-width:0!important}}
-</style></head>
+</style>
+<style id="sb-control-centre-v32">
+:root{
+  --sb-bg:#050505;--sb-surface:#0a0a0a;--sb-card:#0d0d0d;--sb-line:#1d1d1d;
+  --sb-soft:#111;--sb-text:#f4f4f2;--sb-muted:#777;--sb-dim:#484848;
+  --sb-accent:#ff981f;--sb-good:#5ddd80;--sb-danger:#e16868;
+  --sb-radius:18px;--sb-radius-sm:13px;
+}
+html{background:var(--sb-bg)}
+body{background:
+ radial-gradient(circle at 82% 4%,rgba(255,152,31,.055),transparent 23rem),
+ linear-gradient(180deg,#060606 0,#040404 100%)!important;color:var(--sb-text)}
+main{max-width:1180px!important;margin:0 auto!important}
+#editor{position:relative}
+#editor:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.18;
+ background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+ background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 72%)}
+.admin-topbar{min-height:105px!important;padding:22px 2px 14px!important;margin:0!important;border:0!important}
+.admin-topbar:after{font-size:128px!important;right:0!important;top:-42px!important;opacity:.018!important}
+.admin-title{font-size:clamp(28px,4vw,46px)!important;letter-spacing:-.055em!important;line-height:.95!important}
+.admin-kicker{letter-spacing:.22em!important;font-size:8px!important;color:#656565!important}
+.admin-date{margin-top:8px;color:#575757!important;font-size:9px!important;letter-spacing:.12em}
+.admin-tabs{display:flex!important;position:sticky!important;top:8px!important;z-index:40!important;gap:4px!important;
+ padding:5px!important;margin:8px 0 24px!important;border:1px solid #1d1d1d!important;border-radius:15px!important;
+ background:rgba(7,7,7,.84)!important;backdrop-filter:blur(20px) saturate(1.2)!important;overflow-x:auto!important;scrollbar-width:none}
+.admin-tabs::-webkit-scrollbar{display:none}.admin-tab{flex:0 0 auto!important;border:0!important;border-radius:10px!important;
+ padding:10px 13px!important;background:transparent!important;color:#646464!important;font-size:8px!important;letter-spacing:.1em!important;
+ transition:background .2s ease,color .2s ease,transform .2s ease!important}
+.admin-tab:hover{background:#101010!important;color:#bbb!important}.admin-tab.active{background:#171717!important;color:#fff!important;box-shadow:inset 0 0 0 1px #242424}
+.admin-tab:active{transform:scale(.97)}
+.admin-page>.panel,.admin-page .panel{border:1px solid var(--sb-line)!important;border-radius:var(--sb-radius)!important;
+ background:linear-gradient(180deg,rgba(13,13,13,.96),rgba(8,8,8,.96))!important;box-shadow:0 24px 70px rgba(0,0,0,.22)!important}
+.admin-page>.panel{padding:clamp(18px,3vw,30px)!important}
+.admin-page h2{font-size:clamp(24px,4vw,38px)!important;letter-spacing:-.045em!important;margin:5px 0 4px!important}
+.admin-page h3{letter-spacing:-.02em}
+.help{max-width:760px;color:#747474!important;line-height:1.65!important}
+.overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.metric-card{border:1px solid #1c1c1c!important;border-radius:15px!important;background:#0b0b0b!important;padding:16px!important;min-height:105px!important;
+ transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .22s ease,background .22s ease!important}
+.metric-card[data-open-admin]{cursor:pointer}.metric-card[data-open-admin]:hover{transform:translateY(-2px);border-color:#2a2a2a!important;background:#0f0f0f!important}
+.metric-label{color:#6d6d6d!important;font-size:8px!important;letter-spacing:.13em!important}.metric-value{font-size:30px!important;letter-spacing:-.05em!important}.metric-sub{color:#515151!important}
+.today-wrap{border:1px solid #1c1c1c!important;border-radius:17px!important;background:linear-gradient(135deg,#0c0c0c,#080808)!important;padding:18px!important}
+.dashboard-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin-top:10px!important}
+.dash-card{position:relative!important;overflow:hidden!important;min-height:145px!important;padding:18px!important;border:1px solid #1b1b1b!important;border-radius:16px!important;
+ background:#0a0a0a!important;transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,background .24s ease!important}
+.dash-card:after{content:"";position:absolute;inset:auto -35px -55px auto;width:105px;height:105px;border-radius:50%;border:1px solid #171717;transition:transform .35s ease,border-color .35s ease}
+.dash-card:hover{transform:translateY(-3px);border-color:#292929!important;background:#0d0d0d!important}.dash-card:hover:after{transform:scale(1.2);border-color:#252525}
+.dash-card p{color:#666!important;line-height:1.55!important}.dash-icon{color:var(--sb-accent)!important;font-size:17px!important}
+.sb-workflow-strip{border:0!important;border-top:1px solid #1b1b1b!important;border-bottom:1px solid #1b1b1b!important;border-radius:0!important;background:transparent!important;padding:12px 2px!important}
+.enquiry-card,.completed-card,.pipeline-card,.day-job,.analytics-card,.finance-mini,.finance-history-launch{
+ border:1px solid #1d1d1d!important;border-radius:15px!important;background:#0a0a0a!important;box-shadow:none!important}
+.enquiry-card,.completed-card{margin-bottom:10px!important}
+button{border-radius:11px!important;transition:transform .16s ease,filter .16s ease,background .16s ease,border-color .16s ease!important}
+button:active{transform:scale(.975)}button:disabled{opacity:.45!important}
+input,select,textarea{border-radius:11px!important;background:#080808!important;border-color:#252525!important}
+.status{border-radius:10px}
+.section-title-row{align-items:flex-end!important}.status-pill{border-radius:999px!important}
+.booking-calendar{gap:4px!important}.calendar-day{border-radius:10px!important}
+.more-sheet,.quick-sheet,.chat-choice-sheet{backdrop-filter:blur(16px)!important;background:rgba(0,0,0,.7)!important}
+.sheet-card{border-radius:24px 24px 0 0!important;background:#090909!important;border-color:#292929!important;box-shadow:0 -30px 80px rgba(0,0,0,.5)!important}
+.sheet-grid button,.sheet-grid a{border-radius:14px!important;background:#0d0d0d!important;border-color:#202020!important}
+.mobile-nav{background:rgba(6,6,6,.9)!important;backdrop-filter:blur(22px)!important;border-color:#1d1d1d!important}
+.mobile-nav .nav-plus{background:#ededeb!important;box-shadow:0 0 0 6px #050505,0 10px 30px rgba(0,0,0,.45)!important}
+.admin-page.sb-page-entering{animation:sbV32PageIn .32s cubic-bezier(.2,.8,.2,1) both!important}
+@keyframes sbV32PageIn{from{opacity:0;transform:translateY(9px) scale(.995)}to{opacity:1;transform:none}}
+@media(max-width:900px){.dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:720px){
+ body{padding-bottom:96px!important}.admin-topbar{min-height:88px!important;padding:18px 3px 10px!important}.admin-title{font-size:31px!important}
+ .admin-tabs{display:none!important}.admin-page>.panel{padding:17px!important;border-radius:16px!important}
+ .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.dash-card{min-height:126px!important;padding:15px!important}
+ .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.metric-card{min-height:92px!important;padding:14px!important}.metric-value{font-size:24px!important}
+ .admin-page h2{font-size:27px!important}.completed-card-head,.enquiry-card-head{gap:10px!important}
+ .mobile-nav{display:grid!important}
+}
+@media(max-width:390px){.dashboard-grid{grid-template-columns:1fr 1fr!important}.dash-card{min-height:118px!important}.dash-card p{font-size:8px!important}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.admin-page.sb-page-entering,.dash-card,.metric-card{animation:none!important;transition:none!important}}
+</style>
+</head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -1020,32 +1097,32 @@ Log In
 
   <div class="admin-topbar">
     <div>
-      <div class="admin-kicker">Private Control Panel</div>
-      <h1 class="admin-title">Website Admin</h1>
+      <div class="admin-kicker">STANCEBOUND · CONTROL CENTRE</div>
+      <h1 class="admin-title">Admin.</h1>
       <div class="admin-date" id="adminToday"></div>
     </div>
   </div>
 
   <nav class="admin-tabs" aria-label="Admin pages">
-    <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
+    <button type="button" class="admin-tab active" data-admin-target="dashboard">Overview</button>
     <button type="button" class="admin-tab" data-admin-target="bookings">Enquiries <span id="bookingBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="confirmation">Confirmation <span id="confirmationBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="upcoming">Jobs <span id="jobsBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="completed">Completed</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
+    <button type="button" class="admin-tab" data-admin-target="completed">History</button>
     <button type="button" class="admin-tab" data-admin-target="finance">Finance</button>
-    <button type="button" class="admin-tab" data-admin-target="orders">Orders <span id="orderBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="orders">Shop <span id="orderBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="analytics">Analytics</button>
-    <button type="button" class="admin-tab" data-admin-target="photos">Photos</button>
-    <button type="button" class="admin-tab" data-admin-target="text">Text</button>
-    <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
+    <button type="button" class="admin-tab" data-admin-target="photos">Media</button>
+    <button type="button" class="admin-tab" data-admin-target="text">Content</button>
+    <button type="button" class="admin-tab" data-admin-target="tools">System</button>
   </nav>
 
   <div class="admin-page active" data-admin-page="dashboard">
     <div class="panel">
       <div class="admin-kicker">STANCEBOUND</div>
-      <h2>Welcome back, Ryan.</h2>
-      <p class="help">A quick view of what needs your attention, what is booked and what STANCEBOUND has completed.</p>
+      <h2>Control centre.</h2>
+      <p class="help">One clean route through customers, jobs, money and the website. No scavenger hunt required.</p>
       <div class="overview-grid">
         <div class="metric-card" data-open-admin="enquiries"><div class="metric-label">New chats</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Unread customer messages</div></div>
         <div class="metric-card" data-open-admin="bookings"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Needs a response</div></div>
@@ -1059,45 +1136,18 @@ Log In
         <div id="todayJob"></div>
       </div>
       <div class="dashboard-grid">
-        <div class="dash-card" data-open-admin="enquiries">
-          <div class="dash-icon">✉</div><h3>Chat Enquiries</h3><p>Customers who contacted STANCEBOUND through Chat With Us.</p>
-        </div>
-        <div class="dash-card" data-open-admin="bookings">
-          <div class="dash-icon">▦</div><h3>New Enquiries</h3><p>Review new booking requests, chat if needed, then send confirmation.</p>
-        </div>
-        <div class="dash-card" data-open-admin="chats">
-          <div class="dash-icon">◫</div><h3>Booking Chats</h3><p>Private conversations attached to booking customers.</p>
-        </div>
-        <div class="dash-card" data-open-admin="confirmation">
-          <div class="dash-icon">○</div><h3>Confirmation</h3><p>Customers currently waiting to sign and accept the final booking.</p>
-        </div>
-        <div class="dash-card" data-open-admin="upcoming">
-          <div class="dash-icon">↗</div><h3>Jobs</h3><p>Confirmed booked work and the current live job.</p>
-        </div>
-        <div class="dash-card" data-open-admin="schedule">
-          <div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, upcoming bookings and job details.</p>
-        </div>
-        <div class="dash-card" data-open-admin="completed">
-          <div class="dash-icon">✓</div><h3>Completed</h3><p>Finished jobs, prices and job history.</p>
-        </div>
-        <div class="dash-card" data-open-admin="orders">
-          <div class="dash-icon">▣</div><h3>Orders</h3><p>Paid shop orders, customer details and fulfilment status.</p>
-        </div>
-        <div class="dash-card" data-open-admin="photos">
-          <div class="dash-icon">▧</div><h3>Photos</h3><p>Upload, order and remove website images.</p>
-        </div>
-        <div class="dash-card" data-open-admin="text">
-          <div class="dash-icon">Aa</div><h3>Text</h3><p>Edit headings, descriptions, services and contact details.</p>
-        </div>
-        <div class="dash-card" data-open-admin="analytics">
-          <div class="dash-icon">⌁</div><h3>Analytics</h3><p>Visitors, service interest, traffic sources and booking funnel.</p>
-        </div>
-        <div class="dash-card" data-open-admin="tools">
-          <div class="dash-icon">⚙</div><h3>Tools</h3><p>Open the live site, refresh content and account controls.</p>
-        </div>
-        <a class="dash-card" href="/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
-          <div class="dash-icon">↗</div><h3>Live Site</h3><p>Open STANCEBOUND exactly as customers see it.</p>
-        </a>
+        <div class="dash-card" data-open-admin="bookings"><div class="dash-icon">01</div><h3>Enquiries</h3><p>New booking requests that need reviewing or a reply.</p></div>
+        <div class="dash-card" data-open-admin="confirmation"><div class="dash-icon">02</div><h3>Confirmation</h3><p>Final details currently waiting for customer approval and signature.</p></div>
+        <div class="dash-card" data-open-admin="upcoming"><div class="dash-icon">03</div><h3>Jobs</h3><p>Confirmed bookings and live detailing progress in one place.</p></div>
+        <div class="dash-card" data-open-admin="completed"><div class="dash-icon">04</div><h3>Completed</h3><p>Finished jobs and customer history.</p></div>
+        <div class="dash-card" data-open-admin="schedule"><div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, availability and booked dates.</p></div>
+        <div class="dash-card" data-open-admin="finance"><div class="dash-icon">£</div><h3>Finance</h3><p>Income, spending and STANCEBOUND profit.</p></div>
+        <div class="dash-card" data-open-admin="chats"><div class="dash-icon">✉</div><h3>Chats</h3><p>Customer conversations attached to bookings.</p></div>
+        <div class="dash-card" data-open-admin="orders"><div class="dash-icon">▣</div><h3>Shop</h3><p>Paid merchandise orders and fulfilment.</p></div>
+        <div class="dash-card" data-open-admin="analytics"><div class="dash-icon">⌁</div><h3>Analytics</h3><p>Traffic, interest and booking conversion.</p></div>
+        <div class="dash-card" data-open-admin="photos"><div class="dash-icon">▧</div><h3>Media</h3><p>Website photography and image management.</p></div>
+        <div class="dash-card" data-open-admin="text"><div class="dash-icon">Aa</div><h3>Content</h3><p>Website headings, services and written content.</p></div>
+        <div class="dash-card" data-open-admin="tools"><div class="dash-icon">⚙</div><h3>System</h3><p>Site controls, account tools and diagnostics.</p></div>
       </div>
     </div>
   </div>
@@ -1473,19 +1523,29 @@ Save Changes
     <button type="button" data-mobile-target="upcoming"><span>▦</span>Jobs</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">More</div><div class="sheet-section-label">WORKFLOW</div><div class="sheet-grid"><button type="button" data-sheet-target="confirmation"><strong>Confirmation</strong><small>Awaiting signature</small></button><button type="button" data-sheet-target="completed"><strong>Completed</strong><small>Finished jobs</small></button></div><div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
-    <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Visitors & conversion</small></button>
-    <button type="button" data-sheet-target="photos"><strong>Photos</strong><small>Website images</small></button>
-    <button type="button" data-sheet-target="text"><strong>Text</strong><small>Website content</small></button>
-    <button type="button" data-sheet-target="orders"><strong>Shop Orders</strong><small>Paid merchandise orders</small></button>
-    <div class="more-tools-divider">Admin & site</div>
-    <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health</small></button>
-    <div class="more-tools-divider">Site controls</div>
-    <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open STANCEBOUND exactly as customers see it</small></a>
-    <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Website Data</strong><small>Reload bookings, chats, orders and website content</small></button>
-    <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Set up secure biometric or device-PIN Admin access</small></button>
-    <button type="button" class="more-tool-action danger" id="moreLogoutBtn"><strong>Log Out</strong><small>End this Admin session</small></button>
-    <div id="moreToolStatus" class="status"></div>
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Control Centre</div>
+    <div class="sheet-section-label">WORK</div><div class="sheet-grid">
+      <button type="button" data-sheet-target="confirmation"><strong>Confirmation</strong><small>Awaiting customer signature</small></button>
+      <button type="button" data-sheet-target="schedule"><strong>Schedule</strong><small>Calendar & availability</small></button>
+      <button type="button" data-sheet-target="completed"><strong>History</strong><small>Completed jobs</small></button>
+      <button type="button" data-sheet-target="chats"><strong>Chats</strong><small>Booking conversations</small></button>
+    </div>
+    <div class="sheet-section-label">BUSINESS</div><div class="sheet-grid">
+      <button type="button" data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
+      <button type="button" data-sheet-target="orders"><strong>Shop</strong><small>Merchandise orders</small></button>
+      <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Traffic & conversion</small></button>
+    </div>
+    <div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
+      <button type="button" data-sheet-target="photos"><strong>Media</strong><small>Website images</small></button>
+      <button type="button" data-sheet-target="text"><strong>Content</strong><small>Website text & services</small></button>
+      <button type="button" data-sheet-target="tools"><strong>System</strong><small>Admin & site controls</small></button>
+      <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health</small></button>
+      <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open the customer website</small></a>
+      <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Data</strong><small>Reload bookings, chats, orders & content</small></button>
+      <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Secure device access</small></button>
+      <button type="button" class="more-tool-action danger" id="moreLogoutBtn"><strong>Log Out</strong><small>End this Admin session</small></button>
+      <div id="moreToolStatus" class="status"></div>
+    </div>
   </div></div></div>
   <div class="more-sheet chat-choice-sheet hidden" id="chatChoiceSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Chats</div><div class="chat-choice-grid">
     <button type="button" class="chat-choice-card" data-chat-choice="chats"><span class="chat-choice-icon">▣</span><b>Booking</b><small>Chats attached to customers and booked work</small></button>
