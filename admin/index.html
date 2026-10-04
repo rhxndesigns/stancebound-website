@@ -490,11 +490,6 @@ body{padding-bottom:88px}
   .sb-livejob-page .sb-livejob-actions{grid-template-columns:1fr!important}
   .sb-livejob-page .sb-livejob-meta{grid-template-columns:1fr 1fr}
 }
-
-#sbLiveToast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));z-index:200000;transform:translate(-50%,18px);width:min(calc(100% - 28px),520px);box-sizing:border-box;padding:14px 16px;border-radius:12px;background:#f2f2f2;color:#090909;font-size:10px;font-weight:900;letter-spacing:1px;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}
-#sbLiveToast.show{opacity:1;transform:translate(-50%,0)}
-#sbLiveToast.error{background:#351313;color:#ffb7b7}
-.sb-livejob-page button[disabled]{opacity:.42!important;pointer-events:none!important}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2263,21 +2258,6 @@ async function loadChats(){
   document.addEventListener('touchstart',protect,{capture:true,passive:true});
 })();
 
-
-let sbLiveToastTimer=null;
-function sbLiveToast(message,isError=false){
-  let el=document.querySelector('#sbLiveToast');
-  if(!el){el=document.createElement('div');el.id='sbLiveToast';document.body.appendChild(el);}
-  el.textContent=message;
-  el.classList.toggle('error',!!isError);
-  el.classList.add('show');
-  clearTimeout(sbLiveToastTimer);
-  sbLiveToastTimer=setTimeout(()=>el.classList.remove('show'),2600);
-}
-async function sbRefreshLiveJobHost(host,enquiryId){
-  delete host.dataset.livejobLoading;
-  await sbHydrateLiveJobPanel(host,enquiryId);
-}
 async function sbCopyText(text){
   try{
     if(navigator.clipboard && window.isSecureContext){
@@ -2409,127 +2389,28 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         </div>`).join('')}</div><div class="status"></div>`;
 
     const statusEl=host.querySelector('.status');
-    const setFeedback=(message,isError=false)=>{
-      if(statusEl)statusEl.textContent=message;
-      sbLiveToast(message,isError);
-    };
-
     host.querySelector('[data-open-livejob-page]')?.addEventListener('click',e=>{
       e.stopPropagation();
       const customer=host.closest('.completed-card')?.querySelector('h3')?.textContent?.trim()||'';
       sbOpenLiveTrackerPage(enquiryId,customer);
     });
-
-    host.querySelector('[data-start-livejob]')?.addEventListener('click',async e=>{
-      const b=e.currentTarget;
-      if(b.disabled)return;
-      b.disabled=true;b.textContent='STARTING…';
-      try{
-        const {error}=await supabase.from('live_jobs')
-          .update({status:'in_progress',started_at:new Date().toISOString()})
-          .eq('id',job.id);
-        if(error)throw error;
-        setFeedback('JOB STARTED ✓');
-        await sbRefreshLiveJobHost(host,enquiryId);
-      }catch(err){
-        setFeedback(err?.message||'Could not start job.',true);
-        b.disabled=false;b.textContent='START JOB';
-      }
+    host.querySelector('[data-start-livejob]')?.addEventListener('click',async()=>{
+      const {error}=await supabase.from('live_jobs').update({status:'in_progress',started_at:new Date().toISOString()}).eq('id',job.id);
+      if(error){statusEl.textContent=error.message;return} await sbHydrateLiveJobPanel(host,enquiryId);
     });
-
-    host.querySelector('[data-save-livejob]')?.addEventListener('click',async e=>{
-      const b=e.currentTarget;
-      if(b.disabled)return;
-      const eta=host.querySelector('[data-livejob-eta]')?.value||null;
-      b.disabled=true;b.textContent='UPDATING…';
-      try{
-        const {error}=await supabase.from('live_jobs').update({eta_time:eta}).eq('id',job.id);
-        if(error)throw error;
-        setFeedback('ESTIMATED TIME UPDATED ✓');
-        setTimeout(()=>{b.disabled=false;b.textContent='UPDATE ETA'},900);
-      }catch(err){
-        setFeedback(err?.message||'Could not update estimated time.',true);
-        b.disabled=false;b.textContent='UPDATE ETA';
-      }
+    host.querySelector('[data-save-livejob]')?.addEventListener('click',async()=>{
+      const eta=host.querySelector('[data-livejob-eta]').value||null;
+      const {error}=await supabase.from('live_jobs').update({eta_time:eta}).eq('id',job.id);
+      statusEl.textContent=error?error.message:'ETA UPDATED ✓';
     });
-
     host.querySelector('[data-send-livejob]')?.addEventListener('click',async e=>{
-      const b=e.currentTarget;
-      if(b.disabled)return;
-      b.disabled=true;b.textContent='SENDING…';
-      setFeedback('SENDING TRACKING LINK…');
+      const b=e.currentTarget;b.disabled=true;statusEl.textContent='SENDING TRACKING LINK…';
       try{
         const {data,error}=await supabase.functions.invoke('send-live-job-link',{body:{enquiry_id:enquiryId}});
         if(error)throw error;
         if(!data?.success)throw new Error(data?.error||'Could not send tracking link.');
-        setFeedback('TRACKING LINK EMAIL SENT ✓');
-        b.textContent='EMAIL SENT ✓';
-        setTimeout(()=>{b.disabled=false;b.textContent='SEND LIVE TRACKING LINK'},4000);
-      }catch(err){
-        setFeedback(err?.message||'Could not send tracking link.',true);
-        b.disabled=false;b.textContent='SEND LIVE TRACKING LINK';
-      }
-    });
-
-    host.querySelector('[data-copy-livejob]')?.addEventListener('click',async e=>{
-      const b=e.currentTarget;
-      if(b.disabled)return;
-      const token=job.tracking_token;
-      if(!token){setFeedback('This tracker has no customer token.',true);return}
-      b.disabled=true;
-      const url=`https://www.stancebound.com/?track=${encodeURIComponent(token)}`;
-      const copied=await sbCopyText(url);
-      if(copied){
-        setFeedback('TRACKING LINK COPIED ✓');
-        b.textContent='COPIED ✓';
-      }else{
-        setFeedback('COPY FAILED',true);
-      }
-      setTimeout(()=>{b.disabled=false;b.textContent='COPY LIVE TRACKING LINK'},1800);
-    });
-
-    host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.addEventListener('click',async()=>{
-      if(btn.disabled)return;
-      const current=btn.dataset.stageStatus;
-      const next=current==='active'?'completed':'active';
-      btn.disabled=true;
-      const original=btn.textContent;
-      btn.textContent=next==='completed'?'COMPLETING…':'STARTING…';
-      try{
-        if(next==='active'){
-          const {error:resetError}=await supabase.from('live_job_stages')
-            .update({status:'pending'}).eq('live_job_id',job.id).eq('status','active');
-          if(resetError)throw resetError;
-        }
-        const update={status:next};
-        if(next==='active')update.started_at=new Date().toISOString();
-        if(next==='completed')update.completed_at=new Date().toISOString();
-        const {error}=await supabase.from('live_job_stages').update(update).eq('id',btn.dataset.stageId);
-        if(error)throw error;
-
-        const {data:remaining,error:remainingError}=await supabase.from('live_job_stages')
-          .select('id').eq('live_job_id',job.id).neq('status','completed');
-        if(remainingError)throw remainingError;
-
-        if(next==='completed' && (remaining||[]).length===0){
-          const {error:jobError}=await supabase.from('live_jobs')
-            .update({status:'completed',completed_at:new Date().toISOString()}).eq('id',job.id);
-          if(jobError)throw jobError;
-          setFeedback('DETAIL COMPLETE ✓');
-        }else{
-          const jobUpdate={status:'in_progress'};
-          if(!job.started_at)jobUpdate.started_at=new Date().toISOString();
-          const {error:jobError}=await supabase.from('live_jobs').update(jobUpdate).eq('id',job.id);
-          if(jobError)throw jobError;
-          setFeedback(next==='completed'?'STAGE COMPLETED ✓':'STAGE STARTED ✓');
-        }
-        await sbRefreshLiveJobHost(host,enquiryId);
-      }catch(err){
-        setFeedback(err?.message||'Could not update stage.',true);
-        btn.disabled=false;btn.textContent=original;
-      }
-    }));
-  }catch(err){statusEl.textContent=err?.message||'Could not send tracking link.'}
+        statusEl.textContent='TRACKING LINK SENT ✓';
+      }catch(err){statusEl.textContent=err?.message||'Could not send tracking link.'}
       finally{b.disabled=false}
     });
     host.querySelector('[data-copy-livejob]')?.addEventListener('click',async()=>{
