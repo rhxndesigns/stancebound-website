@@ -1057,6 +1057,24 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 }
 @media(prefers-reduced-motion:reduce){.sb-home-scan,.sb-live-dot{animation:none!important}}
 </style>
+
+<style id="sb-booking-first-v35">
+/* Home is deliberately booking-only. Website/business/security tools live in the bottom navigation sheets. */
+.sb-home>.sb-tools-board,.sb-home>.sb-home-columns{display:none!important}
+.sb-home>.sb-today-card{min-height:145px}
+#quickSheet .sheet-card{background:
+ radial-gradient(circle at 50% 0,rgba(255,151,30,.08),transparent 240px),
+ #090909!important}
+#quickSheet .sheet-title:after{content:"ROOT EDITING";display:block;margin-top:5px;color:#555;font-size:6px;letter-spacing:.2em}
+#quickSheet .sb-site-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#moreSheet .sheet-title:after{content:"PRIVATE CONTROLS";display:block;margin-top:5px;color:#555;font-size:6px;letter-spacing:.2em}
+#moreSheet .sheet-grid button{min-height:76px}
+.mobile-nav .nav-plus{position:relative}
+.mobile-nav .nav-plus:after{content:"";position:absolute;inset:-7px;border:1px solid rgba(255,155,31,.13);border-radius:50%;animation:sbLogoHalo 3s ease-in-out infinite;pointer-events:none}
+@keyframes sbLogoHalo{50%{transform:scale(1.08);opacity:.35;box-shadow:0 0 18px rgba(255,155,31,.08)}}
+@media(max-width:720px){.sb-home>.sb-today-card{min-height:auto}#quickSheet .sb-site-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.mobile-nav .nav-plus:after{animation:none}}
+</style>
 </head>
 
 <body>
@@ -1148,18 +1166,13 @@ Log In
   </div>
 
   <nav class="admin-tabs" aria-label="Admin pages">
-    <button type="button" class="admin-tab active" data-admin-target="dashboard">Overview</button>
-    <button type="button" class="admin-tab" data-admin-target="bookings">Enquiries <span id="bookingBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="confirmation">Confirmation <span id="confirmationBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="upcoming">Jobs <span id="jobsBadge"></span></button>
+    <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
+    <button type="button" class="admin-tab" data-admin-target="bookings">01 Enquiries <span id="bookingBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="confirmation">02 Confirmation <span id="confirmationBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="upcoming">03 Jobs <span id="jobsBadge"></span></button>
+    <button type="button" class="admin-tab" data-admin-target="completed">04 Completed</button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
-    <button type="button" class="admin-tab" data-admin-target="completed">History</button>
     <button type="button" class="admin-tab" data-admin-target="finance">Finance</button>
-    <button type="button" class="admin-tab" data-admin-target="orders">Shop <span id="orderBadge"></span></button>
-    <button type="button" class="admin-tab" data-admin-target="analytics">Analytics</button>
-    <button type="button" class="admin-tab" data-admin-target="photos">Media</button>
-    <button type="button" class="admin-tab" data-admin-target="text">Content</button>
-    <button type="button" class="admin-tab" data-admin-target="tools">System</button>
   </nav>
 
   <div class="admin-page active" data-admin-page="dashboard">
@@ -1171,7 +1184,7 @@ Log In
       <div class="sb-home-hero-row">
         <div>
           <h2>Control centre.</h2>
-          <p>Customers move left to right. Everything else has one home below.</p>
+          <p>One customer journey. Enquiry to confirmation, job and completion.</p>
         </div>
         <div class="sb-home-date"><span>LIVE SYSTEM</span><b id="todayLabel"></b></div>
       </div>
@@ -1198,33 +1211,10 @@ Log In
       </div>
     </section>
 
-    <div class="sb-home-columns">
-      <section class="sb-today-card">
+    <section class="sb-today-card">
         <div class="sb-section-head"><div><span>TODAY</span><h3>Current work</h3></div><div class="sb-live-dot"></div></div>
         <div id="todayJob"></div>
       </section>
-
-      <section class="sb-comms-card">
-        <div class="sb-section-head"><div><span>COMMUNICATION</span><h3>Messages</h3></div><small>UNREAD</small></div>
-        <button type="button" class="sb-message-launch" data-open-admin="bookings">
-          <div><strong>Customer messages</strong><small>Open the relevant customer record to reply</small></div>
-          <b id="metricChats">0</b>
-        </button>
-      </section>
-    </div>
-
-    <section class="sb-tools-board">
-      <div class="sb-section-head"><div><span>BUSINESS</span><h3>Workspace</h3></div><small>DESIGNATED AREAS</small></div>
-      <div class="sb-tool-grid">
-        <button type="button" data-open-admin="schedule"><i>CAL</i><strong>Schedule</strong><small>Dates & availability</small></button>
-        <button type="button" data-open-admin="finance"><i>£</i><strong>Finance</strong><small>Money in & out</small></button>
-        <button type="button" data-open-admin="orders"><i>SHOP</i><strong>Shop</strong><small>Orders & fulfilment</small><b id="metricOrders">0</b></button>
-        <button type="button" data-open-admin="analytics"><i>DATA</i><strong>Analytics</strong><small>Traffic & conversion</small></button>
-        <button type="button" data-open-admin="photos"><i>IMG</i><strong>Media</strong><small>Website imagery</small></button>
-        <button type="button" data-open-admin="text"><i>TXT</i><strong>Content</strong><small>Website copy</small></button>
-        <button type="button" data-open-admin="tools"><i>SYS</i><strong>System</strong><small>Controls & diagnostics</small></button>
-      </div>
-    </section>
   </div>
 </div>
 
@@ -1594,30 +1584,18 @@ Save Changes
 
   <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
-    <button type="button" data-mobile-target="bookings"><span>✉</span>Enquiries</button>
-    <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Quick actions"><img src="/images/stanceboundlogo.png" alt=""></button>
-    <button type="button" data-mobile-target="upcoming"><span>▦</span>Jobs</button>
+    <button type="button" data-mobile-target="bookings"><span>01</span>Enquiries</button>
+    <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Website editing tools"><img src="/images/stanceboundlogo.png" alt="STANCEBOUND"></button>
+    <button type="button" data-mobile-target="upcoming"><span>03</span>Jobs</button>
     <button type="button" id="moreBtn"><span>•••</span>More</button>
   </nav>
-  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">Control Centre</div>
-    <div class="sheet-section-label">WORK</div><div class="sheet-grid">
-      <button type="button" data-sheet-target="confirmation"><strong>Confirmation</strong><small>Awaiting customer signature</small></button>
-      <button type="button" data-sheet-target="schedule"><strong>Schedule</strong><small>Calendar & availability</small></button>
-      <button type="button" data-sheet-target="completed"><strong>History</strong><small>Completed jobs</small></button>
-    </div>
-    <div class="sheet-section-label">BUSINESS</div><div class="sheet-grid">
-      <button type="button" data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
-      <button type="button" data-sheet-target="orders"><strong>Shop</strong><small>Merchandise orders</small></button>
-      <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Traffic & conversion</small></button>
-    </div>
-    <div class="sheet-section-label">WEBSITE</div><div class="sheet-grid">
-      <button type="button" data-sheet-target="photos"><strong>Media</strong><small>Website images</small></button>
-      <button type="button" data-sheet-target="text"><strong>Content</strong><small>Website text & services</small></button>
-      <button type="button" data-sheet-target="tools"><strong>System</strong><small>Admin & site controls</small></button>
-      <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health</small></button>
-      <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open the customer website</small></a>
-      <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Data</strong><small>Reload bookings, chats, orders & content</small></button>
-      <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Secure device access</small></button>
+  <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div>
+    <div class="sheet-title">Security & Admin</div>
+    <div class="sheet-section-label">SECURITY</div><div class="sheet-grid">
+      <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Secure biometric or device-PIN access</small></button>
+      <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health and errors</small></button>
+      <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Admin Data</strong><small>Reload current system data</small></button>
+      <button type="button" data-sheet-target="tools"><strong>System</strong><small>Account and Admin controls</small></button>
       <button type="button" class="more-tool-action danger" id="moreLogoutBtn"><strong>Log Out</strong><small>End this Admin session</small></button>
       <div id="moreToolStatus" class="status"></div>
     </div>
@@ -1626,13 +1604,21 @@ Save Changes
     <button type="button" class="chat-choice-card" data-chat-choice="chats"><span class="chat-choice-icon">▣</span><b>Booking</b><small>Chats attached to customers and booked work</small></button>
     <button type="button" class="chat-choice-card" data-chat-choice="enquiries"><span class="chat-choice-icon">✉</span><b>Enquiries</b><small>Chat With Us conversations before a booking</small></button>
   </div></div></div>
-  <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div><div class="sheet-title">STANCEBOUND</div><div class="sheet-section-label">WORK</div><div class="sheet-grid sb-work-grid">
-    <button data-sheet-target="manual-booking"><strong>＋ New Booking</strong><small>Add a customer manually</small></button>
-    <button data-sheet-target="bookings"><strong>New Enquiries</strong><small>Needs your review</small></button>
-    <button data-sheet-target="confirmation"><strong>Confirmation</strong><small>Waiting for customer signature</small></button><button data-sheet-target="upcoming"><strong>Jobs</strong><small>Booked & live work</small></button>
-    <button data-sheet-target="completed"><strong>Completed</strong><small>Finished & paid jobs</small></button>
-    <button data-sheet-target="enquiries"><strong>Enquiries</strong><small>Customer conversations</small></button>
-    <button data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
+  <div class="quick-sheet hidden" id="quickSheet"><div class="sheet-card"><div class="sheet-grab"></div>
+    <div class="sheet-title">Website Studio</div>
+    <div class="sheet-section-label">STANCEBOUND.COM</div>
+    <div class="sheet-grid sb-site-grid">
+      <button type="button" data-sheet-target="photos"><strong>Media</strong><small>Website photography & images</small></button>
+      <button type="button" data-sheet-target="text"><strong>Content</strong><small>Headings, copy & services</small></button>
+      <button type="button" data-sheet-target="analytics"><strong>Analytics</strong><small>Traffic & customer journey</small></button>
+      <button type="button" data-sheet-target="orders"><strong>Shop</strong><small>Products & paid orders</small></button>
+      <a class="more-tool-action" href="/" target="_blank" rel="noopener"><strong>View Live Website ↗</strong><small>Open stancebound.com</small></a>
+    </div>
+    <div class="sheet-section-label">BUSINESS</div>
+    <div class="sheet-grid">
+      <button type="button" data-sheet-target="schedule"><strong>Schedule</strong><small>Calendar & availability</small></button>
+      <button type="button" data-sheet-target="finance"><strong>Finance</strong><small>Income, spending & profit</small></button>
+    </div>
   </div></div></div>
 
 <script type="module">
