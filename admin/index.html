@@ -2142,7 +2142,7 @@ async function sbGetLiveJob(enquiryId){
   const {data,error}=await supabase.from('live_jobs').select('*').eq('enquiry_id',enquiryId).maybeSingle();
   if(error)throw error;
   if(!data)return null;
-  const {data:stages,error:stageError}=await supabase.from('live_job_stages').select('*').eq('live_job_id',data.id).order('sort_order',{ascending:true});
+  const {data:stages,error:stageError}=await supabase.from('live_job_stages').select('*').eq('live_job_id',data.id).order('stage_order',{ascending:true});
   if(stageError)throw stageError;
   return {...data,stages:stages||[]};
 }
