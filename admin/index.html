@@ -1020,6 +1020,43 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 [data-admin-page="pending"]{display:none!important}
 .sb-record-chat-note{font-size:8px;color:#666;letter-spacing:.08em;margin-top:8px}
 </style>
+
+<style id="sb-focused-dashboard-v34">
+.sb-home{display:grid;gap:14px;position:relative}
+.sb-home-hero{position:relative;overflow:hidden;min-height:170px;padding:27px;border:1px solid #202020;border-radius:22px;
+ background:radial-gradient(circle at 78% 30%,rgba(255,150,28,.12),transparent 26%),linear-gradient(135deg,#101010,#070707 68%);
+ box-shadow:0 28px 80px rgba(0,0,0,.28)}
+.sb-home-hero:before{content:"";position:absolute;inset:0;opacity:.2;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(90deg,#000,transparent 78%)}
+.sb-home-scan{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(transparent,rgba(255,157,42,.7),transparent);box-shadow:0 0 20px rgba(255,157,42,.25);animation:sbHomeScan 8s ease-in-out infinite}
+@keyframes sbHomeScan{0%,100%{left:8%;opacity:0}15%{opacity:.55}50%{left:88%;opacity:.28}85%{opacity:.55}}
+.sb-home-glow{position:absolute;width:180px;height:180px;border:1px solid rgba(255,155,31,.08);border-radius:50%;right:-40px;top:-65px;box-shadow:0 0 60px rgba(255,155,31,.035),inset 0 0 40px rgba(255,155,31,.025)}
+.sb-home-hero-row{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-top:28px}
+.sb-home-hero h2{margin:0 0 7px!important;font-size:clamp(32px,6vw,58px)!important;letter-spacing:-.065em!important}
+.sb-home-hero p{margin:0;color:#6f6f6f;font-size:11px;line-height:1.55}
+.sb-home-date{text-align:right}.sb-home-date span{display:block;color:#ff9b21;font-size:7px;font-weight:900;letter-spacing:.2em;margin-bottom:7px}.sb-home-date b{font-size:10px;color:#858585}
+.sb-flow-board,.sb-today-card,.sb-comms-card,.sb-tools-board{border:1px solid #1d1d1d;border-radius:19px;background:linear-gradient(180deg,#0b0b0b,#080808);padding:19px}
+.sb-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.sb-section-head span{display:block;color:#5c5c5c;font-size:7px;font-weight:900;letter-spacing:.18em}.sb-section-head h3{margin:3px 0 0;font-size:16px}.sb-section-head>small{font-size:6px;color:#444;letter-spacing:.15em}
+.sb-flow-track{display:grid;grid-template-columns:1fr 25px 1fr 25px 1fr 25px 1fr;align-items:stretch}
+.sb-flow-node{position:relative;text-align:left!important;min-height:125px;padding:15px!important;border:1px solid #202020!important;border-radius:14px!important;background:#0b0b0b!important;color:#fff!important;overflow:hidden}
+.sb-flow-node:after{content:"";position:absolute;width:80px;height:80px;border:1px solid #181818;border-radius:50%;right:-35px;bottom:-38px;transition:.35s ease}
+.sb-flow-node:hover{border-color:#343434!important;transform:translateY(-2px)}.sb-flow-node:hover:after{transform:scale(1.25);border-color:#302315}
+.sb-flow-node i{display:block;font-style:normal;color:#ff9b21;font-size:7px;font-weight:900;letter-spacing:.18em;margin-bottom:18px}.sb-flow-node strong{display:block;font-size:12px}.sb-flow-node b{display:block;margin:6px 0 3px;font-size:27px;letter-spacing:-.05em}.sb-flow-node small{font-size:7px;color:#5d5d5d;letter-spacing:.08em}
+.sb-flow-node.complete i{color:#5ddd80}.sb-flow-link{display:grid;place-items:center;color:#393939;font-size:12px}
+.sb-home-columns{display:grid;grid-template-columns:1.4fr .6fr;gap:14px}.sb-today-card,.sb-comms-card{min-height:150px}
+.sb-live-dot{width:7px;height:7px;border-radius:50%;background:#5ddd80;box-shadow:0 0 14px rgba(93,221,128,.5);animation:sbPulse 2s ease-in-out infinite}@keyframes sbPulse{50%{opacity:.35;box-shadow:0 0 4px rgba(93,221,128,.2)}}
+.sb-message-launch{width:100%;display:flex!important;align-items:center;justify-content:space-between;text-align:left!important;padding:15px!important;border:1px solid #202020!important;background:#0a0a0a!important}
+.sb-message-launch strong,.sb-message-launch small{display:block}.sb-message-launch small{margin-top:4px;color:#555;font-size:7px}.sb-message-launch>b{display:grid;place-items:center;min-width:38px;height:38px;border-radius:50%;background:#151515;font-size:16px}
+.sb-tool-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.sb-tool-grid button{position:relative;text-align:left!important;min-height:105px;padding:13px!important;border:1px solid #1e1e1e!important;background:#090909!important;color:#eee!important}
+.sb-tool-grid button:hover{background:#0e0e0e!important;border-color:#303030!important;transform:translateY(-2px)}.sb-tool-grid i{display:block;font-style:normal;color:#5b5b5b;font-size:6px;font-weight:900;letter-spacing:.15em;margin-bottom:21px}.sb-tool-grid strong{display:block;font-size:10px}.sb-tool-grid small{display:block;margin-top:4px;color:#515151;font-size:7px}.sb-tool-grid b{position:absolute;right:10px;top:10px;font-size:9px;color:#ff9b21}
+@media(max-width:900px){.sb-tool-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:720px){
+ .sb-home{gap:10px}.sb-home-hero{min-height:155px;padding:20px;border-radius:18px}.sb-home-hero-row{margin-top:23px;align-items:flex-end}.sb-home-hero h2{font-size:36px!important}.sb-home-hero p{font-size:9px;max-width:240px}.sb-home-date{max-width:110px}
+ .sb-flow-board,.sb-today-card,.sb-comms-card,.sb-tools-board{padding:15px;border-radius:16px}.sb-flow-track{grid-template-columns:1fr 13px 1fr;gap:0}.sb-flow-track .sb-flow-link:nth-of-type(2){display:none}
+ .sb-flow-node{min-height:108px;padding:12px!important}.sb-flow-node:nth-of-type(3){margin-top:10px;grid-column:1}.sb-flow-node:nth-of-type(4){margin-top:10px;grid-column:3}.sb-flow-node:nth-of-type(3):before{content:"↓";position:absolute;top:-15px;left:50%;color:#333}
+ .sb-flow-node i{margin-bottom:12px}.sb-flow-node b{font-size:23px}.sb-home-columns{grid-template-columns:1fr}.sb-today-card,.sb-comms-card{min-height:auto}.sb-tool-grid{grid-template-columns:repeat(2,1fr)}.sb-tool-grid button{min-height:92px}
+}
+@media(prefers-reduced-motion:reduce){.sb-home-scan,.sb-live-dot{animation:none!important}}
+</style>
 </head>
 
 <body>
@@ -1126,40 +1163,73 @@ Log In
   </nav>
 
   <div class="admin-page active" data-admin-page="dashboard">
-    <div class="panel">
-      <div class="admin-kicker">STANCEBOUND</div>
-      <h2>Control centre.</h2>
-      <p class="help">Each customer record has one home at a time. Chat, confirmation, job progress and history follow that record instead of creating duplicate pages.</p>
-      <div class="overview-grid">
-        <div class="metric-card" data-open-admin="bookings"><div class="metric-label">New enquiries</div><div class="metric-value" id="metricNew">0</div><div class="metric-sub">Needs your review</div></div>
-        <div class="metric-card" data-open-admin="confirmation"><div class="metric-label">Awaiting confirmation</div><div class="metric-value" id="metricBookingRequests">0</div><div class="metric-sub">Waiting for signature</div></div>
-        <div class="metric-card" data-open-admin="confirmation"><div class="metric-label">Confirmation</div><div class="metric-value" id="metricAwaitingCustomer">0</div><div class="metric-sub">Already dealt with</div></div>
-        <div class="metric-card" data-open-admin="upcoming"><div class="metric-label">Booked jobs</div><div class="metric-value" id="metricUpcoming">0</div><div class="metric-sub">Booked ahead</div></div>
-        <div class="metric-card" data-open-admin="completed"><div class="metric-label">Completed</div><div class="metric-value" id="metricCompleted">0</div><div class="metric-sub">This month</div></div>
-        <div class="metric-card" data-open-admin="orders"><div class="metric-label">Paid orders</div><div class="metric-value" id="metricOrders">0</div><div class="metric-sub">Shop orders</div></div>
+  <div class="sb-home">
+    <section class="sb-home-hero">
+      <div class="sb-home-scan"></div>
+      <div class="sb-home-glow"></div>
+      <div class="admin-kicker">STANCEBOUND · OPERATIONS</div>
+      <div class="sb-home-hero-row">
+        <div>
+          <h2>Control centre.</h2>
+          <p>Customers move left to right. Everything else has one home below.</p>
+        </div>
+        <div class="sb-home-date"><span>LIVE SYSTEM</span><b id="todayLabel"></b></div>
       </div>
-      <div class="today-wrap">
-        <div class="today-head"><h3>Today</h3><span id="todayLabel"></span></div>
+    </section>
+
+    <section class="sb-flow-board">
+      <div class="sb-section-head"><div><span>WORKFLOW</span><h3>Customer pipeline</h3></div><small>ONE RECORD · ONE CURRENT STAGE</small></div>
+      <div class="sb-flow-track">
+        <button type="button" class="sb-flow-node" data-open-admin="bookings">
+          <i>01</i><strong>Enquiries</strong><b id="metricNew">0</b><small>Needs review</small>
+        </button>
+        <span class="sb-flow-link">→</span>
+        <button type="button" class="sb-flow-node" data-open-admin="confirmation">
+          <i>02</i><strong>Confirmation</strong><b id="metricBookingRequests">0</b><small>Awaiting signature</small>
+        </button>
+        <span class="sb-flow-link">→</span>
+        <button type="button" class="sb-flow-node" data-open-admin="upcoming">
+          <i>03</i><strong>Jobs</strong><b id="metricUpcoming">0</b><small>Booked / live</small>
+        </button>
+        <span class="sb-flow-link">→</span>
+        <button type="button" class="sb-flow-node complete" data-open-admin="completed">
+          <i>04</i><strong>Completed</strong><b id="metricCompleted">0</b><small>This month</small>
+        </button>
+      </div>
+    </section>
+
+    <div class="sb-home-columns">
+      <section class="sb-today-card">
+        <div class="sb-section-head"><div><span>TODAY</span><h3>Current work</h3></div><div class="sb-live-dot"></div></div>
         <div id="todayJob"></div>
-      </div>
-      <div class="dashboard-grid">
-        <div class="dash-card" data-open-admin="bookings"><div class="dash-icon">01</div><h3>Enquiries</h3><p>New booking requests that need reviewing or a reply.</p></div>
-        <div class="dash-card" data-open-admin="confirmation"><div class="dash-icon">02</div><h3>Confirmation</h3><p>Final details currently waiting for customer approval and signature.</p></div>
-        <div class="dash-card" data-open-admin="upcoming"><div class="dash-icon">03</div><h3>Jobs</h3><p>Confirmed bookings and live detailing progress in one place.</p></div>
-        <div class="dash-card" data-open-admin="completed"><div class="dash-icon">04</div><h3>Completed</h3><p>Finished jobs and customer history.</p></div>
-        <div class="dash-card" data-open-admin="schedule"><div class="dash-icon">□</div><h3>Schedule</h3><p>Calendar, availability and booked dates.</p></div>
-        <div class="dash-card" data-open-admin="finance"><div class="dash-icon">£</div><h3>Finance</h3><p>Income, spending and STANCEBOUND profit.</p></div>
-        <div class="dash-card" data-open-admin="orders"><div class="dash-icon">▣</div><h3>Shop</h3><p>Paid merchandise orders and fulfilment.</p></div>
-        <div class="dash-card" data-open-admin="analytics"><div class="dash-icon">⌁</div><h3>Analytics</h3><p>Traffic, interest and booking conversion.</p></div>
-        <div class="dash-card" data-open-admin="photos"><div class="dash-icon">▧</div><h3>Media</h3><p>Website photography and image management.</p></div>
-        <div class="dash-card" data-open-admin="text"><div class="dash-icon">Aa</div><h3>Content</h3><p>Website headings, services and written content.</p></div>
-        <div class="dash-card" data-open-admin="tools"><div class="dash-icon">⚙</div><h3>System</h3><p>Site controls, account tools and diagnostics.</p></div>
-      </div>
+      </section>
+
+      <section class="sb-comms-card">
+        <div class="sb-section-head"><div><span>COMMUNICATION</span><h3>Messages</h3></div><small>UNREAD</small></div>
+        <button type="button" class="sb-message-launch" data-open-admin="bookings">
+          <div><strong>Customer messages</strong><small>Open the relevant customer record to reply</small></div>
+          <b id="metricChats">0</b>
+        </button>
+      </section>
     </div>
+
+    <section class="sb-tools-board">
+      <div class="sb-section-head"><div><span>BUSINESS</span><h3>Workspace</h3></div><small>DESIGNATED AREAS</small></div>
+      <div class="sb-tool-grid">
+        <button type="button" data-open-admin="schedule"><i>CAL</i><strong>Schedule</strong><small>Dates & availability</small></button>
+        <button type="button" data-open-admin="finance"><i>£</i><strong>Finance</strong><small>Money in & out</small></button>
+        <button type="button" data-open-admin="orders"><i>SHOP</i><strong>Shop</strong><small>Orders & fulfilment</small><b id="metricOrders">0</b></button>
+        <button type="button" data-open-admin="analytics"><i>DATA</i><strong>Analytics</strong><small>Traffic & conversion</small></button>
+        <button type="button" data-open-admin="photos"><i>IMG</i><strong>Media</strong><small>Website imagery</small></button>
+        <button type="button" data-open-admin="text"><i>TXT</i><strong>Content</strong><small>Website copy</small></button>
+        <button type="button" data-open-admin="tools"><i>SYS</i><strong>System</strong><small>Controls & diagnostics</small></button>
+      </div>
+    </section>
   </div>
+</div>
 
 
-  <div class="admin-page" data-admin-page="analytics">
+<div class="admin-page" data-admin-page="analytics">
     <div class="panel analytics-panel">
       <div class="analytics-topline">
         <div>
@@ -2241,6 +2311,9 @@ async function loadChats(){
   const bookingThreads=allThreads.filter(t=>!t.isGeneral);
   const generalUnread=generalThreads.reduce((n,t)=>n+t.unread,0);
   const bookingUnread=bookingThreads.reduce((n,t)=>n+t.unread,0);
+  const totalUnread=generalUnread+bookingUnread;
+  const chatMetric=document.querySelector('#metricChats');
+  if(chatMetric)chatMetric.textContent=totalUnread;
   const enquiryBadge=document.querySelector('#enquiryBadge');
   const chatBadge=document.querySelector('#chatBadge');
   if(enquiryBadge)enquiryBadge.textContent='';
@@ -2737,7 +2810,6 @@ function updateBookingMetrics(){
   const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='confirmation').length;
   const jobs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='booked').length;
   const a=document.querySelector('#metricBookingRequests'); if(a)a.textContent=awaiting;
-  const b=document.querySelector('#metricAwaitingCustomer'); if(b)b.textContent=awaiting;
   const newMetric=document.querySelector('#metricNew'); if(newMetric)newMetric.textContent=needs;
   const badge=document.querySelector('#bookingBadge'); if(badge)badge.textContent=needs||'';
   const cb=document.querySelector('#confirmationBadge'); if(cb)cb.textContent=awaiting||'';
