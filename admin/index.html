@@ -752,6 +752,47 @@ html.sb-force-admin-lock body {
 }
 </style>
 
+
+<style id="stancebound-admin-v16-prep">
+.sb-prep-panel{
+  margin:12px 0 0;padding:13px;border:1px solid #292929;border-radius:14px;
+  background:linear-gradient(145deg,#0b0b0b,#070707)
+}
+.sb-prep-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sb-prep-head strong{font-size:9px;letter-spacing:1.45px;text-transform:uppercase;color:#eee}
+.sb-prep-state{font-size:7px;letter-spacing:1.1px;text-transform:uppercase;color:#777}
+.sb-prep-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.sb-prep-item{padding:9px 10px;border:1px solid #202020;background:#080808}
+.sb-prep-item small{display:block;color:#5f5f5f;font-size:7px;letter-spacing:1.05px;text-transform:uppercase;margin-bottom:4px}
+.sb-prep-item b{display:block;color:#d7d7d7;font-size:9px;line-height:1.35}
+.sb-prep-alerts{display:grid;gap:6px;margin-top:9px}
+.sb-prep-alert{padding:9px 10px;border:1px solid rgba(255,87,87,.36);background:rgba(255,55,55,.075);color:#ff9292;font-size:8px;font-weight:800;letter-spacing:.85px;text-transform:uppercase}
+.sb-prep-alert.caution{border-color:rgba(255,190,72,.34);background:rgba(255,177,40,.07);color:#ffc66d}
+.sb-prep-ready{padding:9px 10px;border:1px solid rgba(83,221,143,.28);background:rgba(46,190,110,.065);color:#72e5a5;font-size:8px;font-weight:800;letter-spacing:.85px;text-transform:uppercase}
+@media(max-width:430px){.sb-prep-grid{grid-template-columns:1fr}}
+</style>
+
+
+<style id="stancebound-admin-v17-live-jobs">
+.sb-livejob{margin-top:12px;border:1px solid #292929;background:#080808;padding:13px;border-radius:14px}
+.sb-livejob-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sb-livejob-head strong{font-size:9px;letter-spacing:1.35px}
+.sb-livejob-head span{font-size:7px;color:#777;letter-spacing:1px}
+.sb-livejob-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.sb-livejob-actions button{margin:0!important;width:auto!important;min-height:38px;padding:0 12px!important;font-size:8px!important}
+.sb-livejob-progress{height:3px;background:#202020;margin:12px 0 10px;overflow:hidden}
+.sb-livejob-progress i{display:block;height:100%;background:#eee}
+.sb-livejob-stages{display:grid;gap:6px;margin-top:10px}
+.sb-livejob-stage{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid #202020}
+.sb-livejob-stage em{font-style:normal;color:#666;font-size:8px}
+.sb-livejob-stage b{font-size:8px;letter-spacing:.55px}
+.sb-livejob-stage button{margin:0!important;width:auto!important;padding:7px 9px!important;min-height:0!important;font-size:7px!important}
+.sb-livejob-stage.done{opacity:.55}.sb-livejob-stage.active{border-color:#777;background:#111}
+.sb-livejob-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.sb-livejob-meta label{font-size:7px;color:#777;letter-spacing:1px}
+.sb-livejob-meta input{margin-top:5px!important}
+</style>
+
 </head>
 
 <body>
@@ -1639,6 +1680,63 @@ function escapeHtml(value=""){
   return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
 }
 
+function sbParseDetailingAccess(message=''){
+  const text=String(message||'');
+  const pick=(label)=>{
+    const safe=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const m=text.match(new RegExp('(?:^|\\n)'+safe+':\\s*([^\\n]+)','i'));
+    return m?m[1].trim():'';
+  };
+  return {
+    water:pick('Outside water tap / hose'),
+    power:pick('Outdoor electrical socket'),
+    parking:pick('Vehicle location'),
+    space:pick('Enough room to work around vehicle')
+  };
+}
+
+function sbPrepPanel(row){
+  const a=sbParseDetailingAccess(row?.message);
+  const hasAny=!!(a.water||a.power||a.parking||a.space);
+  if(!hasAny){
+    return `<div class="sb-prep-panel">
+      <div class="sb-prep-head"><strong>Job preparation</strong><span class="sb-prep-state">No access answers</span></div>
+      <div class="sb-prep-alert caution">CHECK WATER · POWER · WORKSPACE BEFORE JOB</div>
+    </div>`;
+  }
+
+  const warnings=[];
+  const low=v=>String(v||'').toLowerCase();
+
+  if(low(a.water)==='no') warnings.push(['BRING WATER / ARRANGE WATER SUPPLY','danger']);
+  else if(low(a.water).includes('not sure')) warnings.push(['CONFIRM WATER ACCESS','caution']);
+
+  if(low(a.power)==='no') warnings.push(['NO OUTDOOR POWER · PLAN ALTERNATIVE','danger']);
+  else if(low(a.power).includes('not sure')) warnings.push(['CONFIRM POWER ACCESS','caution']);
+
+  if(low(a.space)==='no') warnings.push(['WORKSPACE MAY BE UNSUITABLE · CHECK BEFORE TRAVEL','danger']);
+  else if(low(a.space).includes('not sure')) warnings.push(['CONFIRM WORKSPACE','caution']);
+
+  if(low(a.parking).startsWith('other')) warnings.push(['CHECK VEHICLE PARKING / WORK AREA','caution']);
+
+  const cells=[
+    ['Water',a.water||'Not supplied'],
+    ['Power',a.power||'Not supplied'],
+    ['Vehicle area',a.parking||'Not supplied'],
+    ['Working room',a.space||'Not supplied']
+  ].map(([k,v])=>`<div class="sb-prep-item"><small>${escapeHtml(k)}</small><b>${escapeHtml(v)}</b></div>`).join('');
+
+  const alerts=warnings.length
+    ? `<div class="sb-prep-alerts">${warnings.map(([w,t])=>`<div class="sb-prep-alert ${t==='caution'?'caution':''}">${escapeHtml(w)}</div>`).join('')}</div>`
+    : `<div class="sb-prep-alerts"><div class="sb-prep-ready">ACCESS LOOKS READY ✓</div></div>`;
+
+  return `<div class="sb-prep-panel">
+    <div class="sb-prep-head"><strong>Job preparation</strong><span class="sb-prep-state">${warnings.length?warnings.length+' check'+(warnings.length===1?'':'s'):'Ready'}</span></div>
+    <div class="sb-prep-grid">${cells}</div>${alerts}
+  </div>`;
+}
+
+
 
 function openChatImage(url){
   if(!url)return;
@@ -1743,7 +1841,7 @@ async function loadEnquiries(){
         <span class="status-pill">${escapeHtml((r.status||'new').replaceAll('_',' '))}</span>
       </div>
 
-      <div class="enquiry-message">${escapeHtml(r.message)}</div>
+      <div class="enquiry-message">${escapeHtml(r.message)}</div>${sbPrepPanel(r)}
 
       <div class="enquiry-controls">
         <select data-status-select="${r.id}" aria-label="Enquiry status">
@@ -1858,6 +1956,7 @@ async function loadEnquiries(){
     }finally{btn.disabled=false;}
   });
 
+  sbHydrateVisibleLiveJobs();
   renderSchedule();
 }
 
@@ -2031,6 +2130,113 @@ async function loadChats(){
   if(bookingSearch&&!bookingSearch.dataset.bound){bookingSearch.dataset.bound='1';bookingSearch.addEventListener('input',()=>renderInbox(bookingList,bookingThreads,bookingSearch,'booking'));}
 }
 
+
+
+async function sbGetLiveJob(enquiryId){
+  const {data,error}=await supabase.from('live_jobs').select('*').eq('enquiry_id',enquiryId).maybeSingle();
+  if(error)throw error;
+  if(!data)return null;
+  const {data:stages,error:stageError}=await supabase.from('live_job_stages').select('*').eq('live_job_id',data.id).order('sort_order',{ascending:true});
+  if(stageError)throw stageError;
+  return {...data,stages:stages||[]};
+}
+
+async function sbCreateLiveJob(enquiryId){
+  const {data,error}=await supabase.rpc('create_live_job',{p_enquiry_id:enquiryId,p_template_key:'full_deep_detail_intro'});
+  if(error)throw error;
+  return data;
+}
+
+function sbLiveJobPanelShell(enquiryId){
+  return `<div class="sb-livejob" data-livejob="${escapeHtml(enquiryId)}">
+    <div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>LOADING</span></div>
+    <div class="status">Checking job tracker…</div>
+  </div>`;
+}
+
+async function sbHydrateLiveJobPanel(host,enquiryId){
+  if(!host)return;
+  try{
+    const job=await sbGetLiveJob(enquiryId);
+    if(!job){
+      host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>NOT CREATED</span></div>
+        <div class="sb-livejob-actions"><button type="button" data-create-livejob>CREATE JOB TRACKER</button></div>
+        <div class="status">Creates the customer's progress tracker for this booking.</div>`;
+      host.querySelector('[data-create-livejob]').onclick=async e=>{
+        const b=e.currentTarget;b.disabled=true;
+        host.querySelector('.status').textContent='Creating job tracker…';
+        try{await sbCreateLiveJob(enquiryId);await sbHydrateLiveJobPanel(host,enquiryId)}
+        catch(err){host.querySelector('.status').textContent=err?.message||'Could not create tracker.';b.disabled=false}
+      };
+      return;
+    }
+
+    const stages=job.stages||[];
+    const complete=stages.filter(s=>s.status==='completed').length;
+    const pct=stages.length?Math.round(complete/stages.length*100):0;
+    const state=String(job.status||'not_started').replaceAll('_',' ').toUpperCase();
+    host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>${escapeHtml(state)}</span></div>
+      <div class="sb-livejob-progress"><i style="width:${pct}%"></i></div>
+      <div class="sb-livejob-head"><strong>${pct}% COMPLETE</strong><span>${complete}/${stages.length} STAGES</span></div>
+      <div class="sb-livejob-meta">
+        <label>ETA<input type="time" data-livejob-eta value="${escapeHtml(job.eta_time||'')}"></label>
+        <label>STATUS<input value="${escapeHtml(job.status||'not_started')}" disabled></label>
+      </div>
+      <div class="sb-livejob-actions">
+        ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
+        <button type="button" data-save-livejob>UPDATE ETA</button>
+        <button type="button" data-copy-livejob>COPY CUSTOMER LINK</button>
+      </div>
+      <div class="sb-livejob-stages">${stages.map((s,i)=>`
+        <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
+          <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.label||s.stage_name||'Stage')}</b>
+          <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'DONE':s.status==='active'?'COMPLETE':'START'}</button>
+        </div>`).join('')}</div><div class="status"></div>`;
+
+    const statusEl=host.querySelector('.status');
+    host.querySelector('[data-start-livejob]')?.addEventListener('click',async()=>{
+      const {error}=await supabase.from('live_jobs').update({status:'in_progress',started_at:new Date().toISOString()}).eq('id',job.id);
+      if(error){statusEl.textContent=error.message;return} await sbHydrateLiveJobPanel(host,enquiryId);
+    });
+    host.querySelector('[data-save-livejob]')?.addEventListener('click',async()=>{
+      const eta=host.querySelector('[data-livejob-eta]').value||null;
+      const {error}=await supabase.from('live_jobs').update({eta_time:eta}).eq('id',job.id);
+      statusEl.textContent=error?error.message:'ETA UPDATED ✓';
+    });
+    host.querySelector('[data-copy-livejob]')?.addEventListener('click',async()=>{
+      const token=job.tracking_token;
+      if(!token){statusEl.textContent='This tracker has no customer token.';return}
+      await navigator.clipboard.writeText(`${location.origin}/?track=${encodeURIComponent(token)}`);
+      statusEl.textContent='CUSTOMER TRACKING LINK COPIED ✓';
+    });
+    host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.onclick=async()=>{
+      const current=btn.dataset.stageStatus;
+      const next=current==='active'?'completed':'active';
+      btn.disabled=true;
+      if(next==='active'){
+        await supabase.from('live_job_stages').update({status:'pending'}).eq('live_job_id',job.id).eq('status','active');
+      }
+      const update={status:next};
+      if(next==='active')update.started_at=new Date().toISOString();
+      if(next==='completed')update.completed_at=new Date().toISOString();
+      const {error}=await supabase.from('live_job_stages').update(update).eq('id',btn.dataset.stageId);
+      if(error){statusEl.textContent=error.message;btn.disabled=false;return}
+      const {data:remaining}=await supabase.from('live_job_stages').select('id').eq('live_job_id',job.id).neq('status','completed');
+      if(next==='completed' && (remaining||[]).length===0){
+        await supabase.from('live_jobs').update({status:'completed',completed_at:new Date().toISOString()}).eq('id',job.id);
+      }else{
+        await supabase.from('live_jobs').update({status:'in_progress'}).eq('id',job.id);
+      }
+      await sbHydrateLiveJobPanel(host,enquiryId);
+    });
+  }catch(err){
+    host.innerHTML=`<div class="sb-livejob-head"><strong>LIVE JOB PROGRESS</strong><span>UNAVAILABLE</span></div><div class="status">${escapeHtml(err?.message||'Could not load live job.')}</div>`;
+  }
+}
+
+function sbHydrateVisibleLiveJobs(){
+  document.querySelectorAll('[data-livejob]').forEach(el=>sbHydrateLiveJobPanel(el,el.dataset.livejob));
+}
 
 function formatBookingDate(date,time){
   if(!date)return 'No date requested';
@@ -2607,7 +2813,7 @@ function renderUpcoming(){
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
   }).join('');
   list.querySelectorAll('[data-pipeline-open]').forEach(btn=>btn.onclick=()=>openEnquiryFromPipeline(btn.dataset.pipelineOpen));
   list.querySelectorAll('[data-upcoming-calendar]').forEach(btn=>btn.onclick=()=>{calendarCursor=new Date(btn.dataset.upcomingCalendar+'T12:00:00');calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);openAdminPage('schedule');renderSchedule();setTimeout(()=>selectScheduleDay(btn.dataset.upcomingCalendar),80)});
