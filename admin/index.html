@@ -382,6 +382,23 @@ body{padding-bottom:88px}
 /* Prevent auth/page flash during refresh */
 #sbAdminBootCover{position:fixed;inset:0;z-index:2147483647;background:#050505;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .14s ease,visibility 0s linear .14s}
 #sbAdminBootCover.sb-ready{opacity:0;visibility:hidden;pointer-events:none}
+
+#sbAdminLiveTrackerPage{position:fixed;inset:0;z-index:100000;background:#050505;color:#f4f4f4;display:none;overflow:auto;padding-bottom:110px}
+#sbAdminLiveTrackerPage.show{display:block}
+.sb-tracker-page-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:16px;padding:18px 18px 14px;background:rgba(5,5,5,.96);border-bottom:1px solid #222;backdrop-filter:blur(18px)}
+.sb-tracker-page-bar button{width:auto!important;margin:0!important;min-height:42px;padding:0 14px!important;background:#111!important;color:#fff!important;border:1px solid #333!important}
+.sb-tracker-page-bar small{display:block;font-size:7px;letter-spacing:2px;color:#666;margin-bottom:4px}
+.sb-tracker-page-bar strong{font-size:12px;letter-spacing:1.4px}
+.sb-tracker-page-body{max-width:760px;margin:0 auto;padding:26px 18px}
+.sb-tracker-page-title{font-size:24px;font-weight:800;margin-bottom:18px}
+.sb-livejob-page{margin-top:0!important;border-radius:18px!important;padding:18px!important}
+.sb-livejob-page .sb-livejob-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sb-livejob-page .sb-livejob-actions button{width:100%!important;min-height:48px!important}
+.sb-livejob-page .sb-livejob-stages{gap:9px}
+.sb-livejob-page .sb-livejob-stage{padding:13px}
+.sb-livejob button,.sb-livejob input{pointer-events:auto!important;position:relative;z-index:3}
+[data-open-livejob-page]{background:#f4f4f4!important;color:#080808!important}
+@media(max-width:600px){.sb-livejob-page .sb-livejob-actions{grid-template-columns:1fr}.sb-tracker-page-body{padding:20px 14px}}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2138,6 +2155,60 @@ async function loadChats(){
 
 
 
+
+async function sbCopyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(_){}
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.opacity='0';
+    ta.style.pointerEvents='none';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0,ta.value.length);
+    const ok=document.execCommand('copy');
+    ta.remove();
+    return !!ok;
+  }catch(_){return false}
+}
+
+function sbEnsureLiveTrackerPage(){
+  let page=document.querySelector('#sbAdminLiveTrackerPage');
+  if(page)return page;
+  page=document.createElement('div');
+  page.id='sbAdminLiveTrackerPage';
+  page.innerHTML=`<div class="sb-tracker-page-bar">
+      <button type="button" data-live-tracker-close>‹ BACK</button>
+      <div><small>STANCEBOUND</small><strong>LIVE JOB TRACKER</strong></div>
+    </div>
+    <div class="sb-tracker-page-body">
+      <div class="sb-tracker-page-title" data-live-tracker-title>LIVE JOB TRACKER</div>
+      <div data-live-tracker-page-host></div>
+    </div>`;
+  document.body.appendChild(page);
+  page.querySelector('[data-live-tracker-close]').onclick=()=>page.classList.remove('show');
+  return page;
+}
+
+async function sbOpenLiveTrackerPage(enquiryId,customerName=''){
+  const page=sbEnsureLiveTrackerPage();
+  page.querySelector('[data-live-tracker-title]').textContent=customerName?`${customerName} · LIVE JOB TRACKER`:'LIVE JOB TRACKER';
+  const host=page.querySelector('[data-live-tracker-page-host]');
+  host.dataset.livejob=enquiryId;
+  host.className='sb-livejob sb-livejob-page';
+  host.innerHTML='<div class="sb-livejob-head"><strong>LIVE JOB TRACKING</strong><span>LOADING</span></div><div class="status">Loading tracker…</div>';
+  page.classList.add('show');
+  await sbHydrateLiveJobPanel(host,enquiryId);
+}
+
 async function sbGetLiveJob(enquiryId){
   const {data,error}=await supabase.from('live_jobs').select('*').eq('enquiry_id',enquiryId).maybeSingle();
   if(error)throw error;
@@ -2175,6 +2246,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         status.textContent='ENABLING LIVE JOB TRACKING…';
         try{
           await sbCreateLiveJob(enquiryId);
+          delete host.dataset.livejobLoading;
           await sbHydrateLiveJobPanel(host,enquiryId);
           const send=host.querySelector('[data-send-livejob]');
           if(send){
@@ -2202,6 +2274,7 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         <label>STATUS<input value="${escapeHtml(job.status||'not_started')}" disabled></label>
       </div>
       <div class="sb-livejob-actions">
+        <button type="button" data-open-livejob-page>OPEN LIVE TRACKER</button>
         ${job.status==='not_started'?'<button type="button" data-start-livejob>START JOB</button>':''}
         <button type="button" data-save-livejob>UPDATE ETA</button>
         <button type="button" data-send-livejob>SEND LIVE TRACKING LINK</button>
@@ -2209,11 +2282,16 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       </div>
       <div class="sb-livejob-stages">${stages.map((s,i)=>`
         <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
-          <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.label||s.stage_name||'Stage')}</b>
+          <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.title||'Stage')}</b>
           <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'DONE':s.status==='active'?'COMPLETE':'START'}</button>
         </div>`).join('')}</div><div class="status"></div>`;
 
     const statusEl=host.querySelector('.status');
+    host.querySelector('[data-open-livejob-page]')?.addEventListener('click',e=>{
+      e.stopPropagation();
+      const customer=host.closest('.completed-card')?.querySelector('h3')?.textContent?.trim()||'';
+      sbOpenLiveTrackerPage(enquiryId,customer);
+    });
     host.querySelector('[data-start-livejob]')?.addEventListener('click',async()=>{
       const {error}=await supabase.from('live_jobs').update({status:'in_progress',started_at:new Date().toISOString()}).eq('id',job.id);
       if(error){statusEl.textContent=error.message;return} await sbHydrateLiveJobPanel(host,enquiryId);
@@ -2236,8 +2314,9 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
     host.querySelector('[data-copy-livejob]')?.addEventListener('click',async()=>{
       const token=job.tracking_token;
       if(!token){statusEl.textContent='This tracker has no customer token.';return}
-      await navigator.clipboard.writeText(`${location.origin}/?track=${encodeURIComponent(token)}`);
-      statusEl.textContent='CUSTOMER TRACKING LINK COPIED ✓';
+      const url=`https://www.stancebound.com/?track=${encodeURIComponent(token)}`;
+      const copied=await sbCopyText(url);
+      statusEl.textContent=copied?'CUSTOMER TRACKING LINK COPIED ✓':'COPY FAILED · '+url;
     });
     host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.onclick=async()=>{
       const current=btn.dataset.stageStatus;
