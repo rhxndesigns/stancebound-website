@@ -505,6 +505,11 @@ body{padding-bottom:88px}
 .sb-livejob-page .sb-livejob-stage.completed{opacity:1!important}
 .sb-livejob-page .sb-livejob-stage.completed b,.sb-livejob-page .sb-livejob-stage.completed em{color:#64df86!important}
 .sb-livejob-page .sb-livejob-stage.completed button{background:#123d20!important;color:#78ee99!important;border:1px solid #287341!important}
+
+.sb-livejob-page .sb-job-finish{margin-top:24px;padding-top:20px;border-top:1px solid #202020}
+.sb-livejob-page [data-complete-livejob]{width:100%!important;min-height:58px!important;background:#123d20!important;color:#78ee99!important;border:1px solid #287341!important;font-weight:950!important;letter-spacing:1.2px!important}
+.sb-livejob-page [data-undo-livejob]{width:100%!important;min-height:52px!important;background:#171717!important;color:#ffb45b!important;border:1px solid #5b3a0d!important;font-weight:900!important;letter-spacing:1px!important}
+.sb-livejob-page .sb-finish-note{display:block;margin-top:8px;text-align:center;font-size:8px;line-height:1.5;color:#666}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2417,7 +2422,13 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
         <div class="sb-livejob-stage ${escapeHtml(s.status||'pending')}">
           <em>${String(i+1).padStart(2,'0')}</em><b>${escapeHtml(s.title||'Stage')}</b>
           <button type="button" data-stage-id="${escapeHtml(s.id)}" data-stage-status="${escapeHtml(s.status||'pending')}">${s.status==='completed'?'COMPLETED':(s.status==='in_progress'||s.status==='active')?'IN PROGRESS':'START'}</button>
-        </div>`).join('')}</div><div class="status"></div>`;
+        </div>`).join('')}</div>
+      <div class="sb-job-finish">
+        ${job.status==='completed'
+          ?'<button type="button" data-undo-livejob>UNDO JOB COMPLETION</button><small class="sb-finish-note">Reopens the live tracker if the job was completed by mistake.</small>'
+          :'<button type="button" data-complete-livejob>COMPLETE JOB</button><small class="sb-finish-note">Finishes the live tracker and shows the customer the completion message.</small>'}
+      </div>
+      <div class="status"></div>`;
 
     const statusEl=host.querySelector('.status');
     const actionFeedback=(key,msg,bad=false)=>{
@@ -2475,6 +2486,57 @@ async function sbHydrateLiveJobPanel(host,enquiryId){
       if(copied){actionFeedback('copy','TRACKING LINK COPIED ✓');actionSuccess(btn,'COPIED ✓')}
       else{actionFeedback('copy','COPY FAILED',true)}
     });
+
+    host.querySelector('[data-complete-livejob]')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;
+      if(btn.disabled)return;
+      btn.disabled=true;btn.textContent='COMPLETING…';
+      try{
+        const now=new Date().toISOString();
+        const {error:stagesError}=await supabase.from('live_job_stages')
+          .update({status:'completed',completed_at:now})
+          .eq('live_job_id',job.id);
+        if(stagesError)throw stagesError;
+        const {error:jobError}=await supabase.from('live_jobs')
+          .update({status:'completed',completed_at:now})
+          .eq('id',job.id);
+        if(jobError)throw jobError;
+        delete host.dataset.livejobLoading;
+        await sbHydrateLiveJobPanel(host,enquiryId);
+      }catch(err){
+        statusEl.textContent=err?.message||'Could not complete job.';
+        btn.disabled=false;btn.textContent='COMPLETE JOB';
+      }
+    });
+
+    host.querySelector('[data-undo-livejob]')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;
+      if(btn.disabled)return;
+      btn.disabled=true;btn.textContent='REOPENING…';
+      try{
+        const {data:last,error:lastError}=await supabase.from('live_job_stages')
+          .select('id,stage_order').eq('live_job_id',job.id)
+          .order('stage_order',{ascending:false}).limit(1);
+        if(lastError)throw lastError;
+        const lastStage=last?.[0];
+        if(lastStage){
+          const {error:stageError}=await supabase.from('live_job_stages')
+            .update({status:'in_progress',completed_at:null})
+            .eq('id',lastStage.id);
+          if(stageError)throw stageError;
+        }
+        const {error:jobError}=await supabase.from('live_jobs')
+          .update({status:'in_progress',completed_at:null})
+          .eq('id',job.id);
+        if(jobError)throw jobError;
+        delete host.dataset.livejobLoading;
+        await sbHydrateLiveJobPanel(host,enquiryId);
+      }catch(err){
+        statusEl.textContent=err?.message||'Could not reopen job.';
+        btn.disabled=false;btn.textContent='UNDO JOB COMPLETION';
+      }
+    });
+
     host.querySelectorAll('[data-stage-id]').forEach(btn=>btn.onclick=async()=>{
       if(btn.disabled || btn.dataset.stageStatus==='completed')return;
       const current=btn.dataset.stageStatus;
