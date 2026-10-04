@@ -4069,6 +4069,30 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
   #accessParkingOtherWrap[hidden]{display:none!important}
 </style>
 
+
+<style id="stancebound-public-v18-live-tracker">
+#sbJobTracker{position:fixed;inset:0;z-index:2147483000;background:#050505;color:#f2f2f2;overflow:auto;font-family:inherit}
+#sbJobTracker[hidden]{display:none!important}
+.sbt-wrap{width:min(760px,calc(100% - 30px));margin:0 auto;padding:34px 0 70px}
+.sbt-brand{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222;padding-bottom:18px}
+.sbt-brand img{width:118px;height:auto}.sbt-secure{font-size:8px;letter-spacing:1.5px;color:#777}
+.sbt-kicker{margin-top:38px;font-size:8px;letter-spacing:2px;color:#777}.sbt-title{font-size:clamp(31px,8vw,58px);line-height:.94;margin:8px 0 12px;letter-spacing:-1.5px}
+.sbt-sub{color:#929292;font-size:12px;line-height:1.6}
+.sbt-card{border:1px solid #242424;background:#090909;padding:18px;margin-top:18px}
+.sbt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.sbt-cell{border:1px solid #1e1e1e;padding:12px}
+.sbt-cell span,.sbt-progress-head span{display:block;font-size:7px;letter-spacing:1.3px;color:#666;margin-bottom:6px}.sbt-cell strong{font-size:11px}
+.sbt-progress-head{display:flex;justify-content:space-between;align-items:end;gap:15px}.sbt-progress-head strong{font-size:27px}
+.sbt-bar{height:4px;background:#1c1c1c;margin-top:13px;overflow:hidden}.sbt-bar i{display:block;height:100%;background:#f1f1f1;transition:width .55s ease}
+.sbt-current{margin-top:12px;font-size:9px;letter-spacing:1px;color:#aaa}
+.sbt-stage{display:grid;grid-template-columns:35px 1fr auto;gap:10px;align-items:center;padding:14px 0;border-bottom:1px solid #1d1d1d}
+.sbt-stage:last-child{border-bottom:0}.sbt-stage-num{font-size:8px;color:#555}.sbt-stage-name{font-size:10px;letter-spacing:.7px}
+.sbt-stage-state{font-size:7px;letter-spacing:1px;color:#666}.sbt-stage.completed .sbt-stage-state{color:#bdbdbd}.sbt-stage.active{padding-left:10px;border-left:2px solid #eee}.sbt-stage.active .sbt-stage-state{color:#fff}
+.sbt-pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:#fff;margin-right:6px;animation:sbtPulse 1.4s infinite}
+@keyframes sbtPulse{50%{opacity:.25;transform:scale(.72)}}.sbt-error{border:1px solid #552929;padding:16px;color:#ff8585;margin-top:22px}
+.sbt-foot{text-align:center;color:#555;font-size:7px;letter-spacing:1.4px;margin-top:28px}.sbt-refresh{border:1px solid #333;background:#0b0b0b;color:#ddd;padding:11px 15px;font:inherit;font-size:8px;letter-spacing:1px;margin-top:14px}
+@media(max-width:560px){.sbt-grid{grid-template-columns:1fr}.sbt-wrap{padding-top:22px}.sbt-brand img{width:100px}}
+</style>
+
 </head>
 
 
@@ -5588,7 +5612,9 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
       // Private customer conversations are a dedicated route.
       // Never let the normal site SPA/hash router take over this URL.
       if (window.__STANCEBOUND_CONVERSATION_ROUTE__ ||
-          new URLSearchParams(window.location.search).has("conversation")) {
+          window.__STANCEBOUND_TRACK_ROUTE__ ||
+          new URLSearchParams(window.location.search).has("conversation") ||
+          new URLSearchParams(window.location.search).has("track")) {
         return;
       }
 
@@ -5897,14 +5923,18 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
     const isConversationRoute =
       window.__STANCEBOUND_CONVERSATION_ROUTE__ ||
       new URLSearchParams(window.location.search).has("conversation");
+    const isTrackRoute =
+      window.__STANCEBOUND_TRACK_ROUTE__ ||
+      new URLSearchParams(window.location.search).has("track");
+    const isPrivateRoute = isConversationRoute || isTrackRoute;
 
-    if (!isConversationRoute && allowedPages.includes(requestedPage)) {
+    if (!isPrivateRoute && allowedPages.includes(requestedPage)) {
       showPage(requestedPage, false);
     }
 
     // Browser Back/Forward moves through normal STANCEBOUND sections only.
     // Customer chat owns its URL completely and must never inherit a site hash.
-    if (!isConversationRoute) {
+    if (!isPrivateRoute) {
       window.addEventListener("popstate", () => {
         if (document.getElementById("lightbox").classList.contains("open")) return;
         const pageFromHistory = window.location.hash.replace("#", "");
@@ -5916,7 +5946,7 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
       }
     } else if (window.location.hash) {
       history.replaceState(
-        { stanceboundConversation: true },
+        { stanceboundPrivateRoute: true },
         "",
         window.location.pathname + window.location.search
       );
@@ -8041,6 +8071,99 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
      enter();
    }
  });
+})();
+</script>
+
+
+<section id="sbJobTracker" hidden>
+  <div class="sbt-wrap">
+    <div class="sbt-brand"><img src="/images/stanceboundlogo.png?v=30" alt="STANCEBOUND"><span class="sbt-secure">PRIVATE JOB PROGRESS</span></div>
+    <div id="sbtContent">
+      <div class="sbt-kicker">STANCEBOUND / LIVE DETAIL</div>
+      <h1 class="sbt-title">LOADING<br>YOUR DETAIL.</h1>
+      <p class="sbt-sub">Fetching the latest progress from your booking…</p>
+    </div>
+  </div>
+</section>
+<script id="stancebound-public-v18-live-tracker-js">
+(()=>{
+  const params=new URLSearchParams(location.search);
+  const token=params.get('track');
+  if(!token)return;
+
+  window.__STANCEBOUND_TRACK_ROUTE__=true;
+  document.documentElement.setAttribute('data-stancebound-route','track');
+  if(location.hash)history.replaceState({stanceboundTrack:true},'',location.pathname+location.search);
+
+  const tracker=document.getElementById('sbJobTracker');
+  const content=document.getElementById('sbtContent');
+  tracker.hidden=false;
+  document.documentElement.style.background='#050505';
+
+  // This route owns the viewport. Hide the ordinary site without deleting it.
+  [...document.body.children].forEach(el=>{
+    if(el!==tracker && el.tagName!=='SCRIPT' && el.tagName!=='STYLE') el.style.display='none';
+  });
+
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const niceDate=v=>{
+    if(!v)return'—';
+    const d=new Date(v+'T12:00:00');
+    return Number.isNaN(d.getTime())?v:d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  };
+  const niceTime=v=>{
+    if(!v)return'—';
+    const m=String(v).match(/^(\d\d):(\d\d)/);
+    if(!m)return v;
+    const d=new Date();d.setHours(+m[1],+m[2],0,0);
+    return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  };
+  const stateLabel=v=>String(v||'pending').replaceAll('_',' ').toUpperCase();
+
+  async function load(){
+    try{
+      const r=await fetch('https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/get-live-job',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({token}),
+        cache:'no-store'
+      });
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d?.success)throw new Error(d?.error||'Could not load this tracker.');
+
+      const j=d.job||{},b=d.booking||{},stages=d.stages||[];
+      const progress=Math.max(0,Math.min(100,Number(j.progress)||0));
+      const current=j.current_stage || (j.status==='completed'?'Detail complete':j.status==='not_started'?'Waiting to begin':'Detail in progress');
+
+      content.innerHTML=`
+        <div class="sbt-kicker">STANCEBOUND / LIVE DETAIL</div>
+        <h1 class="sbt-title">${j.status==='completed'?'DETAIL<br>COMPLETE.':'YOUR CAR.<br>IN PROGRESS.'}</h1>
+        <p class="sbt-sub">This page updates automatically while STANCEBOUND works through your detail.</p>
+        <div class="sbt-card sbt-grid">
+          <div class="sbt-cell"><span>VEHICLE</span><strong>${esc(b.vehicle||'Your vehicle')}</strong></div>
+          <div class="sbt-cell"><span>SERVICE</span><strong>${esc(b.service||'STANCEBOUND Detail')}</strong></div>
+          <div class="sbt-cell"><span>BOOKING</span><strong>${esc(niceDate(b.booking_date))}${b.booking_time?' · '+esc(niceTime(b.booking_time)):''}</strong></div>
+          <div class="sbt-cell"><span>ESTIMATED FINISH</span><strong>${esc(niceTime(j.eta_time))}</strong></div>
+        </div>
+        <div class="sbt-card">
+          <div class="sbt-progress-head"><div><span>DETAIL PROGRESS</span><strong>${progress}%</strong></div><div><span>STATUS</span><strong style="font-size:10px">${esc(stateLabel(j.status))}</strong></div></div>
+          <div class="sbt-bar"><i style="width:${progress}%"></i></div>
+          <div class="sbt-current">${j.status==='in_progress'?'<i class="sbt-pulse"></i>':''}CURRENT · ${esc(current)}</div>
+        </div>
+        <div class="sbt-card">
+          <div class="sbt-progress-head"><div><span>WORKFLOW</span><strong style="font-size:15px">DETAIL STAGES</strong></div><div><span>${stages.filter(x=>x.status==='completed').length}/${stages.length} COMPLETE</span></div></div>
+          <div>${stages.map((s,i)=>`<div class="sbt-stage ${esc(s.status)}"><span class="sbt-stage-num">${String(s.number??i+1).padStart(2,'0')}</span><span class="sbt-stage-name">${esc(s.label)}</span><span class="sbt-stage-state">${s.status==='active'?'<i class="sbt-pulse"></i>':''}${esc(stateLabel(s.status))}</span></div>`).join('')}</div>
+          <button class="sbt-refresh" type="button" id="sbtRefresh">REFRESH PROGRESS</button>
+        </div>
+        <div class="sbt-foot">STANCEBOUND · CLEANER · HIGHER · FURTHER<br>Progress refreshes automatically every 30 seconds.</div>`;
+      document.getElementById('sbtRefresh')?.addEventListener('click',load);
+    }catch(err){
+      content.innerHTML=`<div class="sbt-kicker">STANCEBOUND / PRIVATE TRACKER</div><h1 class="sbt-title">TRACKER<br>UNAVAILABLE.</h1><div class="sbt-error">${esc(err?.message||'This tracking link could not be opened.')}</div><button class="sbt-refresh" type="button" id="sbtRefresh">TRY AGAIN</button>`;
+      document.getElementById('sbtRefresh')?.addEventListener('click',load);
+    }
+  }
+  load();
+  setInterval(()=>{if(!document.hidden)load()},30000);
 })();
 </script>
 
