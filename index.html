@@ -1863,6 +1863,12 @@
   border-color:rgba(255,255,255,.28);
 }
 
+
+.sbt-complete{position:relative;overflow:hidden;margin-top:18px;padding:30px 20px;border:1px solid rgba(88,223,124,.38);border-radius:18px;background:radial-gradient(circle at 50% 0,rgba(88,223,124,.13),transparent 48%),#090909;text-align:center}
+.sbt-complete-mark{width:64px;height:64px;margin:0 auto 18px;border:1px solid #287341;border-radius:50%;display:grid;place-items:center;color:var(--green);font-size:25px;box-shadow:0 0 32px rgba(88,223,124,.14)}
+.sbt-complete-kicker{font-size:7px;font-weight:900;letter-spacing:2px;color:var(--green)}
+.sbt-complete h2{margin:10px 0 12px;font-size:27px;letter-spacing:-.7px}.sbt-complete p{max-width:470px;margin:0 auto;color:#999;font-size:11px;line-height:1.7}
+.sbt-complete-line{width:46px;height:2px;margin:20px auto;background:var(--green);box-shadow:0 0 14px rgba(88,223,124,.5)}
 </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -8161,6 +8167,14 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
         <div class="sbt-card">
           <div class="sbt-progress-head"><div><span>WORKFLOW</span><strong style="font-size:15px">DETAIL STAGES</strong></div><div><span>${stages.filter(x=>x.status==='completed').length}/${stages.length} COMPLETE</span></div></div>
           <div>${stages.map((s,i)=>`<div class="sbt-stage ${esc(s.status)}"><span class="sbt-stage-num">${String(s.number??s.stage_order??i+1).padStart(2,'0')}</span><span class="sbt-stage-name">${esc(s.title||s.label||'Detail stage')}</span><span class="sbt-stage-state">${(s.status==='in_progress'||s.status==='active')?'<i class="sbt-pulse"></i>':''}${esc(s.status==='in_progress'?'IN PROGRESS':s.status==='completed'?'COMPLETED':stateLabel(s.status))}</span></div>`).join('')}</div>
+          ${j.status==='completed'?`<section class="sbt-complete">
+            <div class="sbt-complete-mark">✓</div>
+            <div class="sbt-complete-kicker">DETAIL COMPLETE</div>
+            <h2>THANK YOU${b.name?' '+esc(b.name).split(' ')[0].toUpperCase():''}.</h2>
+            <p>Your vehicle's STANCEBOUND detail is complete. Thank you for trusting us with your car. We hope you love the finished result.</p>
+            <div class="sbt-complete-line"></div>
+            <p>CLEANER · HIGHER · FURTHER</p>
+          </section>`:''}
           <button class="sbt-refresh" type="button" id="sbtRefresh">REFRESH PROGRESS</button>
         </div>
         <div class="sbt-foot">STANCEBOUND · CLEANER · HIGHER · FURTHER<br>Progress refreshes automatically every 30 seconds.</div>`;
