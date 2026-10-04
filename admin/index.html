@@ -490,6 +490,10 @@ body{padding-bottom:88px}
   .sb-livejob-page .sb-livejob-actions{grid-template-columns:1fr!important}
   .sb-livejob-page .sb-livejob-meta{grid-template-columns:1fr 1fr}
 }
+
+#sbTrackerToast{position:fixed;left:14px;right:14px;bottom:92px;z-index:2147483647;padding:14px 16px;border-radius:12px;background:#10351d;color:#aaffbf;border:1px solid #256c3b;font:800 11px/1.3 Arial,sans-serif;letter-spacing:.7px;text-align:center;opacity:0;transform:translateY(12px);pointer-events:none;transition:.18s}
+#sbTrackerToast.show{opacity:1;transform:translateY(0)}
+#sbTrackerToast.bad{background:#351010;color:#ffb3b3;border-color:#6b2525}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -2257,6 +2261,22 @@ async function loadChats(){
   document.addEventListener('pointerdown',protect,true);
   document.addEventListener('touchstart',protect,{capture:true,passive:true});
 })();
+
+
+let sbTrackerToastTimer;
+function sbTrackerToast(message,bad=false){
+  let el=document.getElementById('sbTrackerToast');
+  if(!el){
+    el=document.createElement('div');
+    el.id='sbTrackerToast';
+    document.body.appendChild(el);
+  }
+  el.textContent=message;
+  el.classList.toggle('bad',!!bad);
+  el.classList.add('show');
+  clearTimeout(sbTrackerToastTimer);
+  sbTrackerToastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
 
 async function sbCopyText(text){
   try{
