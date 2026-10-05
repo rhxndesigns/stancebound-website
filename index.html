@@ -2,6 +2,22 @@
 <html lang="en">
 
 <head>
+<script id="stancebound-track-route-guard">
+(()=>{
+  const p=new URLSearchParams(location.search);
+  if(!p.get('track'))return;
+  window.__STANCEBOUND_TRACK_ROUTE__=true;
+  document.documentElement.setAttribute('data-stancebound-route','track');
+  document.documentElement.classList.add('sb-track-route');
+  if(location.hash)history.replaceState({stanceboundTrack:true},'',location.pathname+location.search);
+})();
+</script>
+<style id="stancebound-track-route-guard-css">
+html.sb-track-route body > *:not(#sbJobTracker):not(script):not(style){display:none!important}
+html.sb-track-route #sbJobTracker{display:block!important}
+html.sb-track-route,html.sb-track-route body{background:#050505!important}
+</style>
+
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -8133,7 +8149,9 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
 
   window.__STANCEBOUND_TRACK_ROUTE__=true;
   document.documentElement.setAttribute('data-stancebound-route','track');
+  /* The tracker owns this URL. Never allow the site's #home router to win. */
   if(location.hash)history.replaceState({stanceboundTrack:true},'',location.pathname+location.search);
+  document.documentElement.classList.add('sb-track-route');
 
   const tracker=document.getElementById('sbJobTracker');
   const content=document.getElementById('sbtContent');
@@ -8246,6 +8264,14 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
  ignition.addEventListener('keydown',e=>{
    if((e.key==='Enter'||e.key===' ')&&!opening){e.preventDefault();enter(e)}
  });
+})();
+</script>
+<script id="stancebound-track-route-lock">
+(()=>{
+ if(!new URLSearchParams(location.search).get('track'))return;
+ const clean=()=>{if(location.hash)history.replaceState({stanceboundTrack:true},'',location.pathname+location.search)};
+ window.addEventListener('hashchange',e=>{clean()},true);
+ document.addEventListener('DOMContentLoaded',clean,{once:true,capture:true});
 })();
 </script>
 </body>
