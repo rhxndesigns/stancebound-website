@@ -1254,6 +1254,43 @@ body.sb-job-modal-lock #sbJobQuickModal,
 body.sb-job-modal-lock #sbJobQuickModal .sb-job-modal-sheet{touch-action:auto}
 </style>
 
+
+<style id="sb-v45-boxes-only">
+#upcomingList .pipeline-card{
+  min-height:118px!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+#upcomingList .pipeline-card > :not(.completed-card-head){
+  display:none!important;
+}
+#upcomingList .completed-card-head{
+  display:flex!important;
+  min-height:118px!important;
+  height:100%!important;
+  padding:13px!important;
+  border:0!important;
+  cursor:pointer!important;
+}
+#upcomingList .completed-card-head:after{
+  content:"TAP TO VIEW";
+  position:absolute;left:13px;bottom:10px;z-index:2;
+  font-size:6px;font-weight:900;letter-spacing:.16em;color:#555;
+}
+#upcomingList .sb-job-art{inset:0!important}
+#upcomingList .completed-meta{padding-bottom:16px}
+</style>
+
+
+<style id="sb-v45-popup-controls">
+#sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel,
+#sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel *,
+#sbJobModalBody .sb-prep-panel,
+#sbJobModalBody .pipeline-details,
+#sbJobModalBody .pipeline-note{visibility:visible}
+#sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel{display:block!important}
+</style>
+
 </head>
 
 <body>
