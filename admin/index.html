@@ -1102,7 +1102,13 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 <style id="sb-reset-style-v37">
 .sb-reset-livejob{margin-top:12px!important;background:transparent!important;border:1px solid #4b2828!important;color:#d98787!important}
 .sb-reset-livejob:hover{background:#160c0c!important;border-color:#704040!important}
-</style></head>
+</style>
+<style id="sb-v38-enquiry-badge-fix">
+.mobile-nav [data-mobile-target="bookings"]::after,
+.mobile-nav [data-mobile-target="bookings"] .badge,
+.mobile-nav [data-mobile-target="bookings"] [id*="Badge"]{display:none!important;content:none!important}
+</style>
+</head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -2108,7 +2114,7 @@ async function loadEnquiries(){
   const activeStatuses=['new','awaiting_reply','ongoing','booked'];
   const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted && !String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
-  document.querySelector('#enquiryBadge').textContent=contactEnquiries.filter(r=>r.status==='new').length||'';
+  const legacyEnquiryBadge=document.querySelector('#enquiryBadge'); if(legacyEnquiryBadge)legacyEnquiryBadge.textContent='';
   renderBookingRequests();
   loadChats();
   renderDashboard();
