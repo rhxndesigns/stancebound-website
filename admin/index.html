@@ -1124,6 +1124,49 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 .sb-paid-badge{display:inline-flex;align-items:center;padding:6px 9px;border:1px solid rgba(100,220,130,.3);border-radius:999px;background:rgba(70,180,100,.08);font-size:8px}
 .sb-take-payment.sb-paid-button{opacity:1!important;color:#9ce5aa!important;background:rgba(58,175,89,.14)!important;border-color:rgba(83,213,116,.42)!important;cursor:default!important}
 </style>
+
+<style id="sb-v41-compact-jobs">
+/* V41 compact Jobs list: scan many bookings quickly, expand only the one being worked on. */
+#upcomingList{display:grid;gap:9px}
+#upcomingList .pipeline-card{
+  margin:0!important;padding:13px 14px!important;border-radius:13px!important;
+  background:linear-gradient(180deg,rgba(12,12,12,.96),rgba(7,7,7,.96))!important;
+}
+#upcomingList .completed-card-head{align-items:center!important;gap:10px!important;margin:0!important}
+#upcomingList .completed-card-head h3{font-size:15px!important;line-height:1.15!important;margin:0 0 4px!important}
+#upcomingList .completed-meta{font-size:10px!important;line-height:1.45!important;color:#8d8d8d!important}
+#upcomingList .completed-price{font-size:17px!important;white-space:nowrap}
+#upcomingList .sb-flow-state{font-size:7px!important;padding:3px 6px!important;margin-top:4px!important}
+#upcomingList .pipeline-details{
+  display:flex!important;flex-wrap:wrap!important;gap:5px 16px!important;
+  margin:9px 0 0!important;padding:8px 0!important;border-top:1px solid rgba(255,255,255,.055)!important;
+  border-bottom:1px solid rgba(255,255,255,.055)!important;
+}
+#upcomingList .pipeline-details>div{min-width:0!important;display:flex!important;gap:5px!important;align-items:baseline!important}
+#upcomingList .pipeline-details small{font-size:7px!important;letter-spacing:.1em!important;color:#626262!important}
+#upcomingList .pipeline-details strong{font-size:9px!important;line-height:1.3!important}
+#upcomingList .sb-prep-panel{margin:8px 0 0!important;padding:8px 10px!important;border-radius:9px!important}
+#upcomingList .sb-prep-head{margin:0!important}
+#upcomingList .sb-prep-head strong{font-size:10px!important}
+#upcomingList .sb-prep-state{font-size:7px!important}
+#upcomingList .sb-prep-grid{display:none!important}
+#upcomingList .sb-prep-alerts{margin-top:6px!important}
+#upcomingList .sb-prep-alert,#upcomingList .sb-prep-ready{padding:6px 8px!important;font-size:7px!important;line-height:1.25!important}
+#upcomingList .pipeline-note{display:none!important}
+#upcomingList .completed-actions{display:grid!important;grid-template-columns:1fr auto!important;gap:7px!important;margin-top:9px!important}
+#upcomingList .completed-actions button{min-height:36px!important;padding:8px 12px!important;font-size:8px!important;letter-spacing:.1em!important}
+#upcomingList .sb-live-job-panel{margin-top:8px!important}
+#upcomingList .sb-job-control{margin:9px 0 0!important}
+#upcomingList .sb-job-control:not([hidden]) + .sb-live-job-panel{margin-top:9px!important}
+@media(max-width:600px){
+ #upcomingList .pipeline-card{padding:12px!important}
+ #upcomingList .completed-card-head h3{font-size:14px!important}
+ #upcomingList .completed-price{font-size:15px!important}
+ #upcomingList .pipeline-details{gap:4px 12px!important}
+ #upcomingList .completed-actions button{min-height:34px!important}
+}
+</style>
+
 </head>
 
 <body>
@@ -3486,7 +3529,7 @@ function renderUpcoming(){
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div><div><small>PAYMENT</small><strong>${sbPaymentFor(r.id)?.status==='paid'?`<span class="sb-paid-text">PAID${sbPaymentFor(r.id)?.payment_method?' · '+escapeHtml(String(sbPaymentFor(r.id).payment_method).toUpperCase()):''}</span>`:'NOT PAID'}</strong></div></div>${sbPrepPanel(r)}
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br><strong>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</strong></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>PAYMENT</small><strong>${sbPaymentFor(r.id)?.status==='paid'?`<span class="sb-paid-text">PAID${sbPaymentFor(r.id)?.payment_method?' · '+escapeHtml(String(sbPaymentFor(r.id).payment_method).toUpperCase()):''}</span>`:'NOT PAID'}</strong></div></div>${sbPrepPanel(r)}
 <div class="sb-job-control" id="job-control-${r.id}" hidden>
   <div class="sb-job-control-head"><div><small>JOB CONTROL</small><strong>Edit preparation & job details</strong></div><span>BOOKED</span></div>
   <div class="booking-grid">
