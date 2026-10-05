@@ -1202,6 +1202,36 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 @media(min-width:760px){#upcomingList{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 </style>
 
+
+<style id="sb-v43-job-popup">
+/* Tiles are now intentionally minimal. Tap anywhere on the identity area for the details. */
+#upcomingList .pipeline-card{cursor:pointer}
+#upcomingList .pipeline-details,
+#upcomingList .sb-prep-panel,
+#upcomingList .pipeline-note{display:none!important}
+#upcomingList .completed-card-head{min-height:96px}
+#upcomingList .completed-actions{border-top:1px solid rgba(255,255,255,.06)}
+.sb-job-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:flex-end;justify-content:center}
+.sb-job-modal.show{display:flex}.sb-job-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}
+.sb-job-modal-sheet{position:relative;z-index:1;width:min(620px,100%);max-height:86dvh;overflow:auto;padding:10px 18px 24px;border:1px solid #282828;border-bottom:0;border-radius:22px 22px 0 0;background:linear-gradient(180deg,#101010,#060606);box-shadow:0 -25px 70px rgba(0,0,0,.65);animation:sbJobSheetIn .24s ease-out}
+.sb-job-modal-handle{width:38px;height:3px;border-radius:3px;background:#3a3a3a;margin:1px auto 17px}
+.sb-job-modal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid #222}
+.sb-job-modal-top small{font-size:7px;font-weight:900;letter-spacing:.2em;color:#666}.sb-job-modal-top h2{margin:5px 0 0;font-size:24px;letter-spacing:-.035em}
+.sb-job-modal-x{width:36px;height:36px;border:1px solid #2b2b2b;border-radius:50%;background:#111;color:#aaa;font-size:21px}
+.sb-job-modal-summary{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:17px 0}
+.sb-job-modal-summary .completed-meta{font-size:11px;line-height:1.65;color:#999}.sb-job-modal-summary .completed-price{font-size:20px;font-weight:900}
+#sbJobModalBody .pipeline-details{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px!important;padding:0!important;border:0!important}
+#sbJobModalBody .pipeline-details>div{display:block!important;padding:12px;border:1px solid #252525;background:#090909}
+#sbJobModalBody .pipeline-details small{display:block;font-size:7px;color:#666;letter-spacing:.13em;margin-bottom:5px}
+#sbJobModalBody .pipeline-details strong{font-size:10px}
+#sbJobModalBody .sb-prep-panel{display:block!important;margin:10px 0!important;padding:14px!important;border:1px solid #292929!important;border-radius:12px!important}
+#sbJobModalBody .sb-prep-grid{display:grid!important}
+#sbJobModalBody .pipeline-note{display:block!important;margin:10px 0!important}
+.sb-job-modal-open{width:100%;min-height:46px;margin-top:10px;border:0;background:#f1f1f1;color:#050505;font-size:9px;font-weight:950;letter-spacing:.13em}
+.sb-job-modal-lock{overflow:hidden}
+@keyframes sbJobSheetIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+</style>
+
 </head>
 
 <body>
@@ -3570,7 +3600,7 @@ function renderUpcoming(){
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card" data-job-search="${escapeHtml([r.name,r.vehicle,r.service,r.booking_location,d,time,end].filter(Boolean).join(' ').toLowerCase())}"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br><strong>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</strong></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>PAYMENT</small><strong>${sbPaymentFor(r.id)?.status==='paid'?`<span class="sb-paid-text">PAID${sbPaymentFor(r.id)?.payment_method?' · '+escapeHtml(String(sbPaymentFor(r.id).payment_method).toUpperCase()):''}</span>`:'NOT PAID'}</strong></div></div>${sbPrepPanel(r)}
+    return `<article class="completed-card pipeline-card" data-job-id="${r.id}" data-job-name="${escapeHtml(r.name)}" data-job-search="${escapeHtml([r.name,r.vehicle,r.service,r.booking_location,d,time,end].filter(Boolean).join(' ').toLowerCase())}"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br><strong>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}</strong></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>PAYMENT</small><strong>${sbPaymentFor(r.id)?.status==='paid'?`<span class="sb-paid-text">PAID${sbPaymentFor(r.id)?.payment_method?' · '+escapeHtml(String(sbPaymentFor(r.id).payment_method).toUpperCase()):''}</span>`:'NOT PAID'}</strong></div></div>${sbPrepPanel(r)}
 <div class="sb-job-control" id="job-control-${r.id}" hidden>
   <div class="sb-job-control-head"><div><small>JOB CONTROL</small><strong>Edit preparation & job details</strong></div><span>BOOKED</span></div>
   <div class="booking-grid">
@@ -5384,6 +5414,66 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
  const obs=new MutationObserver(filter);
  const list=document.querySelector('#upcomingList');if(list)obs.observe(list,{childList:true});
  setTimeout(filter,0);
+})();
+</script>
+
+
+<div id="sbJobQuickModal" class="sb-job-modal" aria-hidden="true">
+  <div class="sb-job-modal-backdrop" data-job-modal-close></div>
+  <section class="sb-job-modal-sheet" role="dialog" aria-modal="true" aria-label="Job details">
+    <div class="sb-job-modal-handle"></div>
+    <div class="sb-job-modal-top">
+      <div><small>STANCEBOUND / JOB</small><h2 id="sbJobModalName">JOB DETAILS</h2></div>
+      <button type="button" class="sb-job-modal-x" data-job-modal-close aria-label="Close">×</button>
+    </div>
+    <div id="sbJobModalBody"></div>
+    <button type="button" class="sb-job-modal-open" id="sbJobModalOpen">OPEN FULL JOB</button>
+  </section>
+</div>
+
+
+<script id="sb-v43-job-modal-js">
+(()=>{
+ const modal=document.querySelector('#sbJobQuickModal');
+ const body=document.querySelector('#sbJobModalBody');
+ const title=document.querySelector('#sbJobModalName');
+ const full=document.querySelector('#sbJobModalOpen');
+ if(!modal||!body)return;
+ let activeId=null;
+
+ function open(card){
+   activeId=card.dataset.jobId||null;
+   title.textContent=card.dataset.jobName||'JOB DETAILS';
+   body.innerHTML='';
+   const meta=card.querySelector('.completed-meta')?.cloneNode(true);
+   const price=card.querySelector('.completed-price')?.cloneNode(true);
+   const details=card.querySelector('.pipeline-details')?.cloneNode(true);
+   const prep=card.querySelector('.sb-prep-panel')?.cloneNode(true);
+   const note=card.querySelector('.pipeline-note')?.cloneNode(true);
+   const summary=document.createElement('div');summary.className='sb-job-modal-summary';
+   if(meta)summary.appendChild(meta);if(price)summary.appendChild(price);
+   body.appendChild(summary);
+   if(details)body.appendChild(details);
+   if(prep){prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');body.appendChild(prep)}
+   if(note){note.style.display='block';body.appendChild(note)}
+   modal.classList.add('show');modal.setAttribute('aria-hidden','false');
+   document.body.classList.add('sb-job-modal-lock');
+ }
+ function close(){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.classList.remove('sb-job-modal-lock')}
+ document.addEventListener('click',e=>{
+   if(e.target.closest('[data-job-modal-close]')){close();return}
+   const card=e.target.closest('#upcomingList .pipeline-card');
+   if(!card)return;
+   if(e.target.closest('button,input,select,textarea,a,.sb-job-control,.sb-live-job-panel'))return;
+   open(card);
+ });
+ full?.addEventListener('click',()=>{
+   if(!activeId)return;
+   close();
+   const btn=document.querySelector(`#upcomingList [data-open-job-control="${CSS.escape(String(activeId))}"]`);
+   btn?.click();
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('show'))close()});
 })();
 </script>
 
