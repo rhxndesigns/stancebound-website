@@ -1291,6 +1291,35 @@ body.sb-job-modal-lock #sbJobQuickModal .sb-job-modal-sheet{touch-action:auto}
 #sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel{display:block!important}
 </style>
 
+
+<style id="sb-v46-popup-and-icons">
+/* The booking grid stays boxes-only. Operational controls exist in the popup only. */
+#upcomingList .pipeline-card > :not(.completed-card-head){display:none!important}
+
+/* Make the close X impossible to disappear due to inherited button/text styling. */
+.sb-job-modal-x{
+ display:grid!important;place-items:center!important;flex:0 0 38px!important;
+ width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+ padding:0!important;margin:0!important;border:1px solid #343434!important;border-radius:12px!important;
+ background:#0b0b0b!important;color:#f2f2f2!important;opacity:1!important;
+}
+.sb-job-modal-x span{display:block!important;color:#f2f2f2!important;font:400 25px/1 Arial,sans-serif!important;transform:translateY(-1px)}
+
+/* Same treatment for the top-right Security/Admin control: real dots, not a fragile text glyph. */
+#moreBtn.sb-security-button{display:grid!important;place-items:center!important;padding:0!important}
+#moreBtn .sb-more-dots{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;width:100%!important;height:100%!important}
+#moreBtn .sb-more-dots i{display:block!important;width:5px!important;height:5px!important;border-radius:50%!important;background:#bdbdbd!important;opacity:1!important}
+
+/* Popup gets the actual live controls, including the buttons removed from the cards. */
+#sbJobModalBody .sb-modal-live-wrap{display:block!important;margin:14px 0 0!important}
+#sbJobModalBody .sb-modal-live-wrap .sb-livejob{display:block!important}
+#sbJobModalBody .sb-modal-live-wrap .sb-livejob-head,
+#sbJobModalBody .sb-modal-live-wrap .sb-livejob-actions,
+#sbJobModalBody .sb-modal-live-wrap .sb-livejob-stages,
+#sbJobModalBody .sb-modal-live-wrap .sb-job-finish{display:block}
+#sbJobModalBody .sb-modal-live-wrap button{visibility:visible!important}
+</style>
+
 </head>
 
 <body>
@@ -1811,7 +1840,7 @@ Save Changes
     <button type="button" data-mobile-target="upcoming"><span>03</span>Jobs</button>
     <button type="button" id="inboxBtn" class="sb-inbox-nav"><span>✉</span>Inbox <b id="inboxBadge"></b></button>
   </nav>
-  <button type="button" id="moreBtn" class="sb-security-button" aria-label="Security and Admin"><span>•••</span></button>
+  <button type="button" id="moreBtn" class="sb-security-button" aria-label="Security and Admin"><span class="sb-more-dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
   <div class="more-sheet hidden" id="moreSheet"><div class="sheet-card"><div class="sheet-grab"></div>
     <div class="sheet-title">Security & Admin</div>
     <div class="sheet-section-label">SECURITY</div><div class="sheet-grid">
@@ -5483,7 +5512,7 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
     <div class="sb-job-modal-handle"></div>
     <div class="sb-job-modal-top">
       <div><small>STANCEBOUND / JOB</small><h2 id="sbJobModalName">JOB DETAILS</h2></div>
-      <button type="button" class="sb-job-modal-x" data-job-modal-close aria-label="Close">×</button>
+      <button type="button" class="sb-job-modal-x" data-job-modal-close aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <div id="sbJobModalBody"></div>
     <button type="button" class="sb-job-modal-open" id="sbJobModalOpen">OPEN FULL JOB</button>
@@ -5491,7 +5520,7 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
 </div>
 
 
-<script id="sb-v44-job-modal-js">
+<script id="sb-v46-job-modal-js">
 (()=>{
  const modal=document.querySelector('#sbJobQuickModal');
  const body=document.querySelector('#sbJobModalBody');
@@ -5504,23 +5533,17 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
    lockedY=window.scrollY||document.documentElement.scrollTop||0;
    document.documentElement.classList.add('sb-job-modal-lock');
    document.body.classList.add('sb-job-modal-lock');
-   document.body.style.position='fixed';
-   document.body.style.top=`-${lockedY}px`;
-   document.body.style.left='0';
-   document.body.style.right='0';
-   document.body.style.width='100%';
+   document.body.style.position='fixed';document.body.style.top=`-${lockedY}px`;
+   document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';
  }
  function unlockPage(){
    document.documentElement.classList.remove('sb-job-modal-lock');
    document.body.classList.remove('sb-job-modal-lock');
-   document.body.style.position='';
-   document.body.style.top='';
-   document.body.style.left='';
-   document.body.style.right='';
-   document.body.style.width='';
+   document.body.style.position='';document.body.style.top='';document.body.style.left='';
+   document.body.style.right='';document.body.style.width='';
    window.scrollTo(0,lockedY);
  }
- function open(card){
+ async function open(card){
    activeId=card.dataset.jobId||null;
    title.textContent=card.dataset.jobName||'JOB DETAILS';
    body.innerHTML='';
@@ -5530,38 +5553,35 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
    const details=card.querySelector('.pipeline-details')?.cloneNode(true);
    const prep=card.querySelector('.sb-prep-panel')?.cloneNode(true);
    const note=card.querySelector('.pipeline-note')?.cloneNode(true);
-   const live=card.querySelector('.sb-live-job-panel')?.cloneNode(true);
 
-   const summary=document.createElement('div');
-   summary.className='sb-job-modal-summary';
-   if(meta)summary.appendChild(meta);
-   if(price)summary.appendChild(price);
-   body.appendChild(summary);
+   const summary=document.createElement('div');summary.className='sb-job-modal-summary';
+   if(meta)summary.appendChild(meta);if(price)summary.appendChild(price);body.appendChild(summary);
    if(details)body.appendChild(details);
-   if(prep){
-     prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');
-     body.appendChild(prep);
-   }
+   if(prep){prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');body.appendChild(prep)}
    if(note){note.style.display='block';body.appendChild(note)}
-   if(live){
-     const wrap=document.createElement('div');
-     wrap.className='sb-modal-live-wrap';
-     live.removeAttribute('id');
-     live.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-     wrap.appendChild(live);
-     body.appendChild(wrap);
-   }
 
-   lockPage();
-   modal.classList.add('show');
-   modal.setAttribute('aria-hidden','false');
+   const liveWrap=document.createElement('div');
+   liveWrap.className='sb-modal-live-wrap';
+   liveWrap.innerHTML=`<div class="sb-livejob" data-livejob="${String(activeId||'').replace(/"/g,'&quot;')}"><div class="sb-livejob-head"><strong>LIVE JOB TRACKING</strong><span>LOADING</span></div><div class="status">Loading tracker controls…</div></div>`;
+   body.appendChild(liveWrap);
+
+   lockPage();modal.classList.add('show');modal.setAttribute('aria-hidden','false');
    modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
+
+   const host=liveWrap.querySelector('.sb-livejob');
+   if(host&&activeId){
+     try{
+       delete host.dataset.livejobLoading;
+       await sbHydrateLiveJobPanel(host,activeId);
+     }catch(err){
+       const st=host.querySelector('.status');
+       if(st)st.textContent=err?.message||'Could not load live tracker controls.';
+     }
+   }
  }
  function close(){
    if(!modal.classList.contains('show'))return;
-   modal.classList.remove('show');
-   modal.setAttribute('aria-hidden','true');
-   unlockPage();
+   modal.classList.remove('show');modal.setAttribute('aria-hidden','true');unlockPage();
  }
  document.addEventListener('click',e=>{
    if(e.target.closest('[data-job-modal-close]')){close();return}
@@ -5571,9 +5591,7 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
    open(card);
  });
  full?.addEventListener('click',()=>{
-   if(!activeId)return;
-   const id=activeId;
-   close();
+   if(!activeId)return;const id=activeId;close();
    const btn=document.querySelector(`#upcomingList [data-open-job-control="${CSS.escape(String(id))}"]`);
    btn?.click();
  });
