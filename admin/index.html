@@ -1320,7 +1320,7 @@ body.sb-job-modal-lock #sbJobQuickModal .sb-job-modal-sheet{touch-action:auto}
 #sbJobModalBody .sb-modal-live-wrap button{visibility:visible!important}
 </style>
 
-</head>
+<style id="sb-v47-all-in-one-popup">#sbJobModalBody .sb-popup-section{margin:14px 0;padding:14px;border:1px solid #272727;border-radius:14px;background:#080808}#sbJobModalBody .sb-popup-section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px;padding-bottom:10px;border-bottom:1px solid #222}#sbJobModalBody .sb-popup-section-head b{font-size:10px;letter-spacing:.14em}#sbJobModalBody .sb-popup-section-head span{font-size:7px;color:#777;letter-spacing:.14em}#sbJobModalBody .sb-popup-editor input,#sbJobModalBody .sb-popup-editor select,#sbJobModalBody .sb-popup-editor textarea{width:100%;box-sizing:border-box;background:#050505;border:1px solid #303030;color:#fff;padding:11px;font:inherit}#sbJobModalBody .sb-popup-editor label{display:block;margin:0 0 5px;color:#777;font-size:7px;letter-spacing:.13em;text-transform:uppercase}#sbJobModalBody .sb-popup-editor textarea{min-height:78px}.sb-popup-save{width:100%;margin-top:11px}.sb-popup-payment{margin:0 0 10px!important}#sbJobModalBody .sb-modal-live-wrap .sb-livejob{display:block!important}</style></head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -4843,6 +4843,11 @@ async function loadAnalytics(){
 document.querySelector('#analyticsRange')?.addEventListener('change',loadAnalytics);
 document.addEventListener('click',e=>{if(e.target.closest('[data-open-admin="analytics"],[data-admin-target="analytics"],[data-sheet-target="analytics"]'))setTimeout(loadAnalytics,80)});
 
+
+window.sbHydrateLiveJobPanel=(...args)=>sbHydrateLiveJobPanel(...args);
+window.sbV47SaveJob=async(id,payload)=>{const {error}=await supabase.from('enquiries').update(payload).eq('id',id);if(error)throw error;await loadEnquiries();return true};
+window.sbV47CachedEnquiry=id=>cachedEnquiries.find(r=>String(r.id)===String(id))||null;
+window.sbV47ParseAccess=row=>sbParseDetailingAccess(row?.message||'');
 </script>
 
 
@@ -5515,88 +5520,18 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
       <button type="button" class="sb-job-modal-x" data-job-modal-close aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <div id="sbJobModalBody"></div>
-    <button type="button" class="sb-job-modal-open" id="sbJobModalOpen">OPEN FULL JOB</button>
+    
   </section>
 </div>
 
 
-<script id="sb-v46-job-modal-js">
-(()=>{
- const modal=document.querySelector('#sbJobQuickModal');
- const body=document.querySelector('#sbJobModalBody');
- const title=document.querySelector('#sbJobModalName');
- const full=document.querySelector('#sbJobModalOpen');
- if(!modal||!body)return;
- let activeId=null,lockedY=0;
-
- function lockPage(){
-   lockedY=window.scrollY||document.documentElement.scrollTop||0;
-   document.documentElement.classList.add('sb-job-modal-lock');
-   document.body.classList.add('sb-job-modal-lock');
-   document.body.style.position='fixed';document.body.style.top=`-${lockedY}px`;
-   document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';
- }
- function unlockPage(){
-   document.documentElement.classList.remove('sb-job-modal-lock');
-   document.body.classList.remove('sb-job-modal-lock');
-   document.body.style.position='';document.body.style.top='';document.body.style.left='';
-   document.body.style.right='';document.body.style.width='';
-   window.scrollTo(0,lockedY);
- }
- async function open(card){
-   activeId=card.dataset.jobId||null;
-   title.textContent=card.dataset.jobName||'JOB DETAILS';
-   body.innerHTML='';
-
-   const meta=card.querySelector('.completed-meta')?.cloneNode(true);
-   const price=card.querySelector('.completed-price')?.cloneNode(true);
-   const details=card.querySelector('.pipeline-details')?.cloneNode(true);
-   const prep=card.querySelector('.sb-prep-panel')?.cloneNode(true);
-   const note=card.querySelector('.pipeline-note')?.cloneNode(true);
-
-   const summary=document.createElement('div');summary.className='sb-job-modal-summary';
-   if(meta)summary.appendChild(meta);if(price)summary.appendChild(price);body.appendChild(summary);
-   if(details)body.appendChild(details);
-   if(prep){prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');body.appendChild(prep)}
-   if(note){note.style.display='block';body.appendChild(note)}
-
-   const liveWrap=document.createElement('div');
-   liveWrap.className='sb-modal-live-wrap';
-   liveWrap.innerHTML=`<div class="sb-livejob" data-livejob="${String(activeId||'').replace(/"/g,'&quot;')}"><div class="sb-livejob-head"><strong>LIVE JOB TRACKING</strong><span>LOADING</span></div><div class="status">Loading tracker controls…</div></div>`;
-   body.appendChild(liveWrap);
-
-   lockPage();modal.classList.add('show');modal.setAttribute('aria-hidden','false');
-   modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
-
-   const host=liveWrap.querySelector('.sb-livejob');
-   if(host&&activeId){
-     try{
-       delete host.dataset.livejobLoading;
-       await sbHydrateLiveJobPanel(host,activeId);
-     }catch(err){
-       const st=host.querySelector('.status');
-       if(st)st.textContent=err?.message||'Could not load live tracker controls.';
-     }
-   }
- }
- function close(){
-   if(!modal.classList.contains('show'))return;
-   modal.classList.remove('show');modal.setAttribute('aria-hidden','true');unlockPage();
- }
- document.addEventListener('click',e=>{
-   if(e.target.closest('[data-job-modal-close]')){close();return}
-   const card=e.target.closest('#upcomingList .pipeline-card');
-   if(!card)return;
-   if(e.target.closest('button,input,select,textarea,a,.sb-job-control'))return;
-   open(card);
- });
- full?.addEventListener('click',()=>{
-   if(!activeId)return;const id=activeId;close();
-   const btn=document.querySelector(`#upcomingList [data-open-job-control="${CSS.escape(String(id))}"]`);
-   btn?.click();
- });
- document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
-})();
+<script id="sb-v47-job-modal-js">
+(()=>{const modal=document.querySelector('#sbJobQuickModal'),body=document.querySelector('#sbJobModalBody'),title=document.querySelector('#sbJobModalName');if(!modal||!body)return;let activeId=null,lockedY=0;const esc=v=>String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function lock(){lockedY=scrollY||0;document.documentElement.classList.add('sb-job-modal-lock');document.body.classList.add('sb-job-modal-lock');Object.assign(document.body.style,{position:'fixed',top:`-${lockedY}px`,left:'0',right:'0',width:'100%'})}function unlock(){document.documentElement.classList.remove('sb-job-modal-lock');document.body.classList.remove('sb-job-modal-lock');['position','top','left','right','width'].forEach(k=>document.body.style[k]='');scrollTo(0,lockedY)}function close(){if(!modal.classList.contains('show'))return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');unlock()}
+async function open(card){activeId=card.dataset.jobId||null;const row=window.sbV47CachedEnquiry?.(activeId);if(!row)return;title.textContent=row.name||'JOB DETAILS';const access=window.sbV47ParseAccess?.(row)||{};const pay=card.querySelector('.pipeline-details')?.cloneNode(true);body.innerHTML=`<div class="sb-job-modal-summary"><div class="completed-meta">${esc(row.vehicle)} · ${esc(row.service)}<br><strong>${esc(row.booking_date||'')} · ${esc((row.booking_time||'').slice(0,5))}${row.booking_end_time?'–'+esc(row.booking_end_time.slice(0,5)):''}</strong></div><div class="completed-price">${row.quoted_price!=null?'£'+Number(row.quoted_price).toFixed(2):'—'}</div></div><section class="sb-popup-section"><div class="sb-popup-section-head"><b>JOB DETAILS & PREPARATION</b><span>EDITABLE</span></div><div class="booking-grid sb-popup-editor"><div><label>Date</label><input type="date" data-p-date value="${esc(row.booking_date||'')}"></div><div><label>Start</label><input type="time" data-p-time value="${esc((row.booking_time||'').slice(0,5))}"></div><div><label>Finish</label><input type="time" data-p-end value="${esc((row.booking_end_time||'').slice(0,5))}"></div><div><label>Price (£)</label><input type="number" min="0" step="0.01" data-p-price value="${row.quoted_price??''}"></div><div class="full"><label>Service</label><input data-p-service value="${esc(row.service||'')}"></div><div class="full"><label>Location</label><input data-p-location value="${esc(row.booking_location||'')}"></div><div><label>Water</label><select data-p-water><option value="">NOT SET</option><option>Yes</option><option>No</option><option>Not sure</option></select></div><div><label>Power</label><select data-p-power><option value="">NOT SET</option><option>Yes</option><option>No</option><option>Not sure</option></select></div><div class="full"><label>Working room</label><select data-p-space><option value="">NOT SET</option><option>Yes</option><option>No</option><option>Not sure</option></select></div><div class="full"><label>Job prep / private notes</label><textarea data-p-notes>${esc(row.admin_notes||'')}</textarea></div></div><button type="button" class="sb-popup-save" data-popup-save>SAVE JOB DETAILS</button><div class="status" data-popup-status></div></section><section class="sb-popup-section"><div class="sb-popup-section-head"><b>LIVE JOB TRACKING</b><span>CONTROL</span></div><div class="sb-modal-live-wrap"><div class="sb-livejob" data-livejob="${esc(activeId)}"><div class="status">Loading tracker controls…</div></div></div></section>`;
+const set=(q,v)=>{const e=body.querySelector(q);if(e)e.value=/^yes$/i.test(v||'')?'Yes':/^no$/i.test(v||'')?'No':/not sure/i.test(v||'')?'Not sure':''};set('[data-p-water]',access.water);set('[data-p-power]',access.power);set('[data-p-space]',access.space);if(pay){pay.classList.add('sb-popup-payment');body.querySelector('.sb-job-modal-summary').after(pay)}lock();modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);const host=body.querySelector('.sb-livejob');if(host&&window.sbHydrateLiveJobPanel){delete host.dataset.livejobLoading;await window.sbHydrateLiveJobPanel(host,activeId)}
+body.querySelector('[data-popup-save]')?.addEventListener('click',async e=>{const btn=e.currentTarget,st=body.querySelector('[data-popup-status]');btn.disabled=true;st.textContent='Saving…';const water=body.querySelector('[data-p-water]').value,power=body.querySelector('[data-p-power]').value,space=body.querySelector('[data-p-space]').value;const strip=t=>String(t||'').replace(/\n?\[STANCEBOUND JOB ACCESS\][\s\S]*?\[\/STANCEBOUND JOB ACCESS\]\n?/g,'').trim();const message=(strip(row.message)+`\n\n[STANCEBOUND JOB ACCESS]\nWater: ${water||'Not supplied'}\nPower: ${power||'Not supplied'}\nWorking room: ${space||'Not supplied'}\n[/STANCEBOUND JOB ACCESS]`).trim();const payload={booking_date:body.querySelector('[data-p-date]').value||null,booking_time:body.querySelector('[data-p-time]').value||null,booking_end_time:body.querySelector('[data-p-end]').value||null,quoted_price:body.querySelector('[data-p-price]').value===''?null:Number(body.querySelector('[data-p-price]').value),service:body.querySelector('[data-p-service]').value.trim(),booking_location:body.querySelector('[data-p-location]').value.trim(),admin_notes:body.querySelector('[data-p-notes]').value.trim(),message};try{await window.sbV47SaveJob(activeId,payload);st.textContent='JOB DETAILS SAVED ✓'}catch(err){st.textContent=err?.message||'Could not save job details.'}finally{btn.disabled=false}})}
+document.addEventListener('click',e=>{if(e.target.closest('[data-job-modal-close]')){close();return}const card=e.target.closest('#upcomingList .pipeline-card');if(!card)return;if(e.target.closest('button,input,select,textarea,a'))return;open(card)});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();
 </script>
 
 </body>
