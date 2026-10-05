@@ -1232,6 +1232,28 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 @keyframes sbJobSheetIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
 </style>
 
+
+<style id="sb-v44-clean-job-cards">
+/* V44: nothing operational lives in the collapsed Jobs grid. */
+#upcomingList .pipeline-card>.sb-live-job-panel,
+#upcomingList .pipeline-card>.sb-job-control,
+#upcomingList .pipeline-card>.pipeline-details,
+#upcomingList .pipeline-card>.sb-prep-panel,
+#upcomingList .pipeline-card>.pipeline-note{display:none!important}
+#upcomingList .completed-actions{border-top:1px solid rgba(255,255,255,.06)!important}
+#upcomingList .completed-actions [data-open-job-control]{display:none!important}
+#upcomingList .completed-actions:after{content:"VIEW JOB";display:grid;place-items:center;width:100%;min-height:32px;background:#f2f2f2;color:#080808;border-radius:8px;font-size:7px;font-weight:950;letter-spacing:.14em}
+#sbJobQuickModal{overscroll-behavior:contain}
+#sbJobQuickModal .sb-job-modal-backdrop{touch-action:none}
+#sbJobQuickModal .sb-job-modal-sheet{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#sbJobModalBody .sb-modal-live-wrap{margin-top:12px}
+#sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel{display:block!important;margin:0!important}
+#sbJobModalBody .sb-modal-live-wrap .sb-live-job-panel>*{max-width:100%}
+html.sb-job-modal-lock,body.sb-job-modal-lock{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none}
+body.sb-job-modal-lock #sbJobQuickModal,
+body.sb-job-modal-lock #sbJobQuickModal .sb-job-modal-sheet{touch-action:auto}
+</style>
+
 </head>
 
 <body>
@@ -5432,48 +5454,93 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
 </div>
 
 
-<script id="sb-v43-job-modal-js">
+<script id="sb-v44-job-modal-js">
 (()=>{
  const modal=document.querySelector('#sbJobQuickModal');
  const body=document.querySelector('#sbJobModalBody');
  const title=document.querySelector('#sbJobModalName');
  const full=document.querySelector('#sbJobModalOpen');
  if(!modal||!body)return;
- let activeId=null;
+ let activeId=null,lockedY=0;
 
+ function lockPage(){
+   lockedY=window.scrollY||document.documentElement.scrollTop||0;
+   document.documentElement.classList.add('sb-job-modal-lock');
+   document.body.classList.add('sb-job-modal-lock');
+   document.body.style.position='fixed';
+   document.body.style.top=`-${lockedY}px`;
+   document.body.style.left='0';
+   document.body.style.right='0';
+   document.body.style.width='100%';
+ }
+ function unlockPage(){
+   document.documentElement.classList.remove('sb-job-modal-lock');
+   document.body.classList.remove('sb-job-modal-lock');
+   document.body.style.position='';
+   document.body.style.top='';
+   document.body.style.left='';
+   document.body.style.right='';
+   document.body.style.width='';
+   window.scrollTo(0,lockedY);
+ }
  function open(card){
    activeId=card.dataset.jobId||null;
    title.textContent=card.dataset.jobName||'JOB DETAILS';
    body.innerHTML='';
+
    const meta=card.querySelector('.completed-meta')?.cloneNode(true);
    const price=card.querySelector('.completed-price')?.cloneNode(true);
    const details=card.querySelector('.pipeline-details')?.cloneNode(true);
    const prep=card.querySelector('.sb-prep-panel')?.cloneNode(true);
    const note=card.querySelector('.pipeline-note')?.cloneNode(true);
-   const summary=document.createElement('div');summary.className='sb-job-modal-summary';
-   if(meta)summary.appendChild(meta);if(price)summary.appendChild(price);
+   const live=card.querySelector('.sb-live-job-panel')?.cloneNode(true);
+
+   const summary=document.createElement('div');
+   summary.className='sb-job-modal-summary';
+   if(meta)summary.appendChild(meta);
+   if(price)summary.appendChild(price);
    body.appendChild(summary);
    if(details)body.appendChild(details);
-   if(prep){prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');body.appendChild(prep)}
+   if(prep){
+     prep.querySelectorAll('.sb-prep-grid').forEach(x=>x.style.display='grid');
+     body.appendChild(prep);
+   }
    if(note){note.style.display='block';body.appendChild(note)}
-   modal.classList.add('show');modal.setAttribute('aria-hidden','false');
-   document.body.classList.add('sb-job-modal-lock');
+   if(live){
+     const wrap=document.createElement('div');
+     wrap.className='sb-modal-live-wrap';
+     live.removeAttribute('id');
+     live.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+     wrap.appendChild(live);
+     body.appendChild(wrap);
+   }
+
+   lockPage();
+   modal.classList.add('show');
+   modal.setAttribute('aria-hidden','false');
+   modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
  }
- function close(){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.classList.remove('sb-job-modal-lock')}
+ function close(){
+   if(!modal.classList.contains('show'))return;
+   modal.classList.remove('show');
+   modal.setAttribute('aria-hidden','true');
+   unlockPage();
+ }
  document.addEventListener('click',e=>{
    if(e.target.closest('[data-job-modal-close]')){close();return}
    const card=e.target.closest('#upcomingList .pipeline-card');
    if(!card)return;
-   if(e.target.closest('button,input,select,textarea,a,.sb-job-control,.sb-live-job-panel'))return;
+   if(e.target.closest('button,input,select,textarea,a,.sb-job-control'))return;
    open(card);
  });
  full?.addEventListener('click',()=>{
    if(!activeId)return;
+   const id=activeId;
    close();
-   const btn=document.querySelector(`#upcomingList [data-open-job-control="${CSS.escape(String(activeId))}"]`);
+   const btn=document.querySelector(`#upcomingList [data-open-job-control="${CSS.escape(String(id))}"]`);
    btn?.click();
  });
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('show'))close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
 </script>
 
