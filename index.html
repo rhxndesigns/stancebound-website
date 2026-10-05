@@ -1863,6 +1863,12 @@
   border-color:rgba(255,255,255,.28);
 }
 
+
+.sbt-complete{position:relative;overflow:hidden;margin-top:18px;padding:30px 20px;border:1px solid rgba(88,223,124,.38);border-radius:18px;background:radial-gradient(circle at 50% 0,rgba(88,223,124,.13),transparent 48%),#090909;text-align:center}
+.sbt-complete-mark{width:64px;height:64px;margin:0 auto 18px;border:1px solid #287341;border-radius:50%;display:grid;place-items:center;color:var(--green);font-size:25px;box-shadow:0 0 32px rgba(88,223,124,.14)}
+.sbt-complete-kicker{font-size:7px;font-weight:900;letter-spacing:2px;color:var(--green)}
+.sbt-complete h2{margin:10px 0 12px;font-size:27px;letter-spacing:-.7px}.sbt-complete p{max-width:470px;margin:0 auto;color:#999;font-size:11px;line-height:1.7}
+.sbt-complete-line{width:46px;height:2px;margin:20px auto;background:var(--green);box-shadow:0 0 14px rgba(88,223,124,.5)}
 </style>
 
   <link rel="icon" type="image/png" href="/images/stanceboundlogo.png?v=30">
@@ -2266,6 +2272,16 @@ html[data-theme="light"] #conversationPage{background:#efefec;color:#111}html[da
   // Mark this request as the customer conversation route before the rest of the site boots.
   document.documentElement.setAttribute('data-stancebound-route', 'conversation');
   window.__STANCEBOUND_CONVERSATION_ROUTE__ = true;
+
+  // Conversation links never use normal site hashes. Remove any stale hash
+  // immediately so #dashboard/#home cannot leak into the customer route.
+  if (window.location.hash) {
+    history.replaceState(
+      { stanceboundConversation: true },
+      "",
+      window.location.pathname + window.location.search
+    );
+  }
 
   // Keep the customer on the public site. Never inherit or construct an /admin/ route.
   if (window.location.pathname.startsWith('/admin')) {
@@ -4044,6 +4060,79 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 @keyframes sbEntryTapProgress{to{width:100%}}
 </style>
 
+
+<style id="stancebound-v16-site-access">
+  .sb-site-access-heading{
+    margin-top:8px;
+    padding:18px 18px 16px;
+    border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    border-radius:18px;
+  }
+  .sb-site-access-heading .eyebrow{margin-bottom:7px}
+  .sb-site-access-title{font-size:1rem;font-weight:800;letter-spacing:.02em}
+  .sb-site-access-copy{margin-top:5px;font-size:.82rem;line-height:1.45;opacity:.68}
+  #accessParkingOtherWrap[hidden]{display:none!important}
+</style>
+
+
+<style id="stancebound-public-v20-live-tracker">
+#sbJobTracker{position:fixed;inset:0;z-index:2147483000;background:#030303;color:#f4f4f4;overflow:auto;font-family:inherit;--amber:#ff9b21;--green:#58df7c}
+#sbJobTracker[hidden]{display:none!important}
+#sbJobTracker:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 85% 12%,rgba(255,155,33,.10),transparent 24%),linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:auto,34px 34px,34px 34px}
+.sbt-wrap{position:relative;width:min(760px,calc(100% - 28px));margin:0 auto;padding:28px 0 72px}
+.sbt-brand{display:flex;align-items:center;justify-content:space-between;padding:0 2px 18px;border-bottom:1px solid #202020}.sbt-brand img{width:112px}.sbt-secure{font-size:7px;letter-spacing:1.8px;color:#777}
+.sbt-kicker{margin-top:32px;font-size:8px;font-weight:800;letter-spacing:2.3px;color:#777}.sbt-title{font-size:clamp(36px,10vw,68px);line-height:.88;margin:10px 0 15px;letter-spacing:-2px}.sbt-sub{max-width:560px;color:#929292;font-size:12px;line-height:1.65}
+.sbt-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:linear-gradient(145deg,rgba(17,17,17,.94),rgba(7,7,7,.96));padding:18px;margin-top:16px;box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.sbt-card:before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)}
+.sbt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sbt-cell{border:0;border-radius:12px;background:#0b0b0b;padding:13px}
+.sbt-cell span,.sbt-progress-head span{display:block;font-size:7px;letter-spacing:1.4px;color:#666;margin-bottom:6px}.sbt-cell strong{font-size:11px}
+.sbt-progress-head{display:flex;justify-content:space-between;align-items:end;gap:15px}.sbt-progress-head strong{font-size:29px}.sbt-bar{height:7px;border-radius:99px;background:#171717;margin-top:15px;overflow:hidden}.sbt-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#d6d6d6,#fff);transition:width .55s ease}
+.sbt-current{margin-top:13px;padding:11px 12px;border-radius:10px;background:#0b0b0b;font-size:9px;font-weight:800;letter-spacing:1px;color:#aaa}
+.sbt-stage{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;margin:8px 0;padding:15px 12px 15px 15px;border:1px solid #1c1c1c;border-radius:13px;background:#090909;overflow:hidden;transition:.28s ease}
+.sbt-stage:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#2a2a2a}.sbt-stage-num{font-size:8px;color:#555}.sbt-stage-name{font-size:10px;font-weight:800;letter-spacing:.65px}.sbt-stage-state{font-size:7px;font-weight:900;letter-spacing:1px;color:#666;white-space:nowrap}
+.sbt-stage.pending{opacity:.48}
+.sbt-stage.in_progress,.sbt-stage.active{opacity:1;border-color:rgba(255,155,33,.45);background:linear-gradient(90deg,rgba(255,155,33,.15),#0a0a0a 44%);box-shadow:inset 0 0 28px rgba(255,155,33,.035);animation:sbtLive 2.2s ease-in-out infinite}
+.sbt-stage.in_progress:before,.sbt-stage.active:before{background:var(--amber);box-shadow:0 0 18px rgba(255,155,33,.75)}.sbt-stage.in_progress .sbt-stage-num,.sbt-stage.in_progress .sbt-stage-state,.sbt-stage.active .sbt-stage-num,.sbt-stage.active .sbt-stage-state{color:var(--amber)}
+.sbt-stage.completed{opacity:1;border-color:rgba(88,223,124,.32);background:linear-gradient(90deg,rgba(88,223,124,.11),#0a0a0a 44%)}.sbt-stage.completed:before{background:var(--green);box-shadow:0 0 15px rgba(88,223,124,.55)}.sbt-stage.completed .sbt-stage-num,.sbt-stage.completed .sbt-stage-state{color:var(--green)}
+.sbt-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;box-shadow:0 0 10px currentColor;animation:sbtPulse 1.25s infinite}
+.sbt-refresh{width:100%;min-height:48px;border:1px solid #292929;border-radius:12px;background:#111;color:#eee;padding:12px 15px;font:inherit;font-size:8px;font-weight:900;letter-spacing:1.2px;margin-top:14px;touch-action:manipulation}.sbt-refresh:active{transform:scale(.985);background:#181818}
+.sbt-error{border:1px solid #552929;border-radius:14px;padding:16px;color:#ff8585;margin-top:22px}.sbt-foot{text-align:center;color:#555;font-size:7px;line-height:1.7;letter-spacing:1.4px;margin-top:28px}
+@keyframes sbtPulse{50%{opacity:.28;transform:scale(.72)}}@keyframes sbtLive{50%{transform:translateY(-2px)}}
+@media(max-width:560px){.sbt-grid{grid-template-columns:1fr 1fr}.sbt-wrap{padding-top:20px}.sbt-brand img{width:98px}.sbt-stage{grid-template-columns:27px minmax(0,1fr) auto;padding:14px 10px}.sbt-stage-state{font-size:6.5px}}
+@media(max-width:380px){.sbt-grid{grid-template-columns:1fr}.sbt-stage{grid-template-columns:24px minmax(0,1fr)}.sbt-stage-state{grid-column:2}}
+@media(prefers-reduced-motion:reduce){.sbt-stage,.sbt-pulse{animation:none!important}}
+</style>
+
+<style id="stancebound-ignition-entry-v22">
+/* V22: automotive ignition entry. No hold gesture, no fingerprint metaphor. */
+#sbIgnition{
+ position:relative;z-index:5;width:132px;height:132px;margin:23px auto 12px;display:grid;place-items:center;
+ border:1px solid rgba(255,255,255,.15);border-radius:50%;background:radial-gradient(circle at 50% 45%,#111 0 31%,#080808 32% 55%,#030303 72%);
+ color:#fff;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+ box-shadow:0 0 0 1px rgba(255,255,255,.025),0 18px 45px rgba(0,0,0,.5),inset 0 0 30px rgba(255,255,255,.025);
+ transition:transform .18s ease,border-color .25s ease,box-shadow .25s ease;
+}
+#sbIgnition:active{transform:scale(.965)}
+#sbIgnition:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:7px}
+.sb-ignition-rings{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
+.sb-ignition-rings:before,.sb-ignition-rings:after{content:"";position:absolute;border-radius:50%;inset:9px;border:1px dashed rgba(255,255,255,.07)}
+.sb-ignition-rings:after{inset:22px;border-style:solid;border-color:rgba(255,255,255,.1)}
+.sb-ignition-ticks{position:absolute;inset:-5px;border-radius:50%;opacity:.55;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.28) 0 1deg,transparent 1deg 12deg);-webkit-mask:radial-gradient(circle,transparent 0 64%,#000 65% 69%,transparent 70%);mask:radial-gradient(circle,transparent 0 64%,#000 65% 69%,transparent 70%);animation:sbIgnitionTicks 22s linear infinite}
+.sb-ignition-core{position:relative;z-index:2;width:67px;height:67px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#121212,#070707 68%);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 0 22px #000,0 0 18px rgba(255,255,255,.02)}
+.sb-ignition-core img{width:47px;max-height:47px;object-fit:contain;filter:grayscale(1) brightness(1.45);pointer-events:none;user-select:none;-webkit-user-drag:none}
+.sb-ignition-sweep{position:absolute;inset:-2px;border-radius:50%;opacity:0;background:conic-gradient(from -90deg,transparent 0 12%,rgba(255,255,255,.9) 17%,transparent 22% 100%);-webkit-mask:radial-gradient(circle,transparent 0 72%,#000 73% 76%,transparent 77%);mask:radial-gradient(circle,transparent 0 72%,#000 73% 76%,transparent 77%)}
+#sbEntryGate.sb-igniting #sbIgnition{border-color:rgba(255,255,255,.48);box-shadow:0 0 34px rgba(255,255,255,.1),inset 0 0 30px rgba(255,255,255,.05)}
+#sbEntryGate.sb-igniting .sb-ignition-sweep{opacity:1;animation:sbIgnitionSweep .7s cubic-bezier(.2,.8,.2,1) 1}
+#sbEntryGate.sb-igniting .sb-ignition-core{animation:sbIgnitionCore .7s ease 1}
+#sbEntryGate.sb-igniting .sb-entry-scan{animation-duration:.75s}
+#sbEntryGate.sb-igniting .sb-entry-progress i{animation:sbIgnitionProgress .72s cubic-bezier(.25,.8,.2,1) forwards!important}
+@keyframes sbIgnitionTicks{to{transform:rotate(360deg)}}
+@keyframes sbIgnitionSweep{to{transform:rotate(360deg)}}
+@keyframes sbIgnitionCore{45%{transform:scale(.91);box-shadow:inset 0 0 22px #000,0 0 32px rgba(255,255,255,.14)}100%{transform:scale(1)}}
+@keyframes sbIgnitionProgress{from{width:0}to{width:100%}}
+@media(prefers-reduced-motion:reduce){.sb-ignition-ticks{animation:none!important}}
+</style>
 </head>
 
 
@@ -4824,6 +4913,58 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
               <div class="enquiry-field full"><label for="bookingLocation">Location / postcode</label><input id="bookingLocation" name="booking_location" type="text" maxlength="160" placeholder="Where will the vehicle be?" required></div>
+
+              <div class="enquiry-field full sb-site-access-heading">
+                <div class="eyebrow">DETAILING ACCESS</div>
+                <div class="sb-site-access-title">Help STANCEBOUND arrive prepared</div>
+                <div class="sb-site-access-copy">Tell us what is available where the vehicle will be cleaned.</div>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessWater">Outside water tap / hose</label>
+                <select id="accessWater" name="access_water" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessPower">Outdoor electrical socket</label>
+                <select id="accessPower" name="access_power" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessParking">Where will the vehicle be?</label>
+                <select id="accessParking" name="access_parking" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="private_driveway">Private driveway</option>
+                  <option value="private_parking">Private parking area</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field">
+                <label for="accessSpace">Enough room to work around the vehicle?</label>
+                <select id="accessSpace" name="access_space" required>
+                  <option value="" selected disabled>Select one</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="not_sure">Not sure</option>
+                </select>
+              </div>
+
+              <div class="enquiry-field full" id="accessParkingOtherWrap" hidden>
+                <label for="accessParkingOther">Tell us where the vehicle will be parked</label>
+                <input id="accessParkingOther" name="access_parking_other" type="text" maxlength="180" placeholder="e.g. allocated bay beside the house">
+              </div>
+
               <div class="enquiry-field full"><label for="enquiryMessage">What would you like done?</label><textarea id="enquiryMessage" name="message" maxlength="2000" required placeholder="Tell me what you'd like done, the condition of the car and any useful details."></textarea></div>
               <div class="hp-field" aria-hidden="true"><label for="enquiryWebsite">Website</label><input id="enquiryWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             </div>
@@ -4854,44 +4995,6 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
             <div id="verifyBox" class="verify-box"><div class="enquiry-head"><div class="eyebrow">ONE LAST CHECK</div><h2>Verify Your Email</h2><p>Enter the 6-digit code we just sent you.</p></div><div class="verify-row"><input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000"><button class="btn" id="verifyEnquiryBtn" type="button">Verify</button></div></div>
           </form>
         </div>
-      </div>
-    </section>
-
-    <section id="bookingPrecheck" class="page">
-      <div class="content sb-precheck-content">
-        <div class="eyebrow">BEFORE YOUR REQUEST IS FINISHED</div>
-        <h1>QUICK ACCESS CHECK</h1>
-        <div class="heading-line"></div>
-        <p class="sb-precheck-intro">A proper detail needs time, space and access to the equipment required to do the job properly. Please check these before finishing your request.</p>
-
-        <div class="sb-duration-warning">
-          <span class="sb-duration-kicker">PLEASE PLAN AHEAD</span>
-          <strong>YOUR DETAIL CAN TAKE UP TO 9 HOURS</strong>
-          <p>Depending on the vehicle and its condition, a STANCEBOUND detail can take up to 9 hours to complete. Please make sure you will not need the vehicle for work, appointments, school runs, shopping or any other travel during the booking. The vehicle needs to remain available for the full detail.</p>
-        </div>
-
-        <form id="bookingPrecheckForm">
-          <div class="sb-precheck-grid">
-            <label class="sb-precheck-card">
-              <span class="sb-precheck-number">01</span>
-              <span><strong>OUTDOOR WATER ACCESS</strong><small>Will there be access to a suitable outdoor water supply / tap at the vehicle?</small></span>
-              <select id="precheckWater" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
-            </label>
-            <label class="sb-precheck-card">
-              <span class="sb-precheck-number">02</span>
-              <span><strong>POWER ACCESS</strong><small>Will there be access to a suitable electricity supply for detailing equipment?</small></span>
-              <select id="precheckPower" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
-            </label>
-            <label class="sb-precheck-card">
-              <span class="sb-precheck-number">03</span>
-              <span><strong>WORKING SPACE</strong><small>Will there be enough safe space around the vehicle for equipment and for the detail to be carried out properly?</small></span>
-              <select id="precheckSpace" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
-            </label>
-          </div>
-          <label class="sb-precheck-confirm"><input id="precheckDuration" type="checkbox" required><span>I understand that the detail can take <strong>up to 9 hours</strong> and I will make sure I do not need the vehicle for travel during the booking.</span></label>
-          <div id="precheckStatus" class="enquiry-status" aria-live="polite"></div>
-          <button class="btn" type="submit">FINISH BOOKING REQUEST</button>
-        </form>
       </div>
     </section>
 
@@ -5369,6 +5472,20 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
     clearAgreementSignature?.addEventListener("click",clearSignature);
     window.addEventListener("resize",()=>{if(signatureWrap?.classList.contains("show"))resizeSignatureCanvas();},{passive:true});
 
+    const accessParking=document.getElementById("accessParking");
+    const accessParkingOtherWrap=document.getElementById("accessParkingOtherWrap");
+    const accessParkingOther=document.getElementById("accessParkingOther");
+    function syncAccessParkingOther(){
+      const show=accessParking?.value==="other";
+      if(accessParkingOtherWrap)accessParkingOtherWrap.hidden=!show;
+      if(accessParkingOther){
+        accessParkingOther.required=!!show;
+        if(!show)accessParkingOther.value="";
+      }
+    }
+    accessParking?.addEventListener("change",syncAccessParkingOther);
+    syncAccessParkingOther();
+
     if(enquiryForm){
       enquiryForm.addEventListener("submit",async(event)=>{
         event.preventDefault();
@@ -5393,10 +5510,23 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
           vehicle:document.getElementById("enquiryVehicle").value.trim(),
           message:[
             document.getElementById("enquiryMessage").value.trim(),
-            "Booking location: "+document.getElementById("bookingLocation").value.trim()
+            "Booking location: "+document.getElementById("bookingLocation").value.trim(),
+            "DETAILING ACCESS",
+            "Outside water tap / hose: "+document.getElementById("accessWater").selectedOptions[0].text,
+            "Outdoor electrical socket: "+document.getElementById("accessPower").selectedOptions[0].text,
+            "Vehicle location: "+document.getElementById("accessParking").selectedOptions[0].text+
+              (document.getElementById("accessParking").value==="other" && document.getElementById("accessParkingOther").value.trim()
+                ? " — "+document.getElementById("accessParkingOther").value.trim()
+                : ""),
+            "Enough room to work around vehicle: "+document.getElementById("accessSpace").selectedOptions[0].text
           ].filter(Boolean).join("\n\n"),
           booking_date:document.getElementById("bookingDate").value,
           booking_time:document.getElementById("bookingTime").value||null,
+          access_water:document.getElementById("accessWater").value,
+          access_power:document.getElementById("accessPower").value,
+          access_parking:document.getElementById("accessParking").value,
+          access_parking_other:document.getElementById("accessParkingOther").value.trim()||null,
+          access_space:document.getElementById("accessSpace").value,
           agreement_accepted:document.getElementById("agreementAccepted").checked,
           agreement_version:"STANCEBOUND-BOOKING-REQUEST-NOTICE-V1",
           agreement_text:"Booking request only. Customer acknowledges that the booking is not final until the STANCEBOUND confirmation and customer terms are reviewed and signed.",
@@ -5450,7 +5580,7 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
           pendingEnquiryId=null;
           if(window.turnstile)window.turnstile.reset();
 
-          showPage("bookingPrecheck");
+          showPage("bookingThanks");
         }catch(error){
           enquiryStatus.classList.remove("success");
           enquiryStatus.classList.add("error");
@@ -5518,6 +5648,15 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
        ======================================== */
 
     function showPage(pageName, addToHistory = true) {
+
+      // Private customer conversations are a dedicated route.
+      // Never let the normal site SPA/hash router take over this URL.
+      if (window.__STANCEBOUND_CONVERSATION_ROUTE__ ||
+          window.__STANCEBOUND_TRACK_ROUTE__ ||
+          new URLSearchParams(window.location.search).has("conversation") ||
+          new URLSearchParams(window.location.search).has("track")) {
+        return;
+      }
 
       const pages =
         document.querySelectorAll(".page");
@@ -5821,30 +5960,36 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
     ];
 
 
-    if (
-      allowedPages.includes(
-        requestedPage
-      )
-    ) {
+    const isConversationRoute =
+      window.__STANCEBOUND_CONVERSATION_ROUTE__ ||
+      new URLSearchParams(window.location.search).has("conversation");
+    const isTrackRoute =
+      window.__STANCEBOUND_TRACK_ROUTE__ ||
+      new URLSearchParams(window.location.search).has("track");
+    const isPrivateRoute = isConversationRoute || isTrackRoute;
 
-      showPage(
-        requestedPage,
-        false
-      );
-
+    if (!isPrivateRoute && allowedPages.includes(requestedPage)) {
+      showPage(requestedPage, false);
     }
 
+    // Browser Back/Forward moves through normal STANCEBOUND sections only.
+    // Customer chat owns its URL completely and must never inherit a site hash.
+    if (!isPrivateRoute) {
+      window.addEventListener("popstate", () => {
+        if (document.getElementById("lightbox").classList.contains("open")) return;
+        const pageFromHistory = window.location.hash.replace("#", "");
+        showPage(allowedPages.includes(pageFromHistory) ? pageFromHistory : "home", false);
+      });
 
-
-    // Browser Back/Forward now moves through STANCEBOUND sections.
-    window.addEventListener("popstate", () => {
-      if (document.getElementById("lightbox").classList.contains("open")) return;
-      const pageFromHistory = window.location.hash.replace("#", "");
-      showPage(allowedPages.includes(pageFromHistory) ? pageFromHistory : "home", false);
-    });
-
-    if (!requestedPage) {
-      history.replaceState({ stanceboundPage: "home" }, "", "#home");
+      if (!requestedPage) {
+        history.replaceState({ stanceboundPage: "home" }, "", "#home");
+      }
+    } else if (window.location.hash) {
+      history.replaceState(
+        { stanceboundPrivateRoute: true },
+        "",
+        window.location.pathname + window.location.search
+      );
     }
 
 
@@ -7970,35 +8115,109 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
 </script>
 
 
-<style id="stancebound-ignition-entry-v22">
-/* V22: automotive ignition entry. No hold gesture, no fingerprint metaphor. */
-#sbIgnition{
- position:relative;z-index:5;width:132px;height:132px;margin:23px auto 12px;display:grid;place-items:center;
- border:1px solid rgba(255,255,255,.15);border-radius:50%;background:radial-gradient(circle at 50% 45%,#111 0 31%,#080808 32% 55%,#030303 72%);
- color:#fff;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
- box-shadow:0 0 0 1px rgba(255,255,255,.025),0 18px 45px rgba(0,0,0,.5),inset 0 0 30px rgba(255,255,255,.025);
- transition:transform .18s ease,border-color .25s ease,box-shadow .25s ease;
-}
-#sbIgnition:active{transform:scale(.965)}
-#sbIgnition:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:7px}
-.sb-ignition-rings{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
-.sb-ignition-rings:before,.sb-ignition-rings:after{content:"";position:absolute;border-radius:50%;inset:9px;border:1px dashed rgba(255,255,255,.07)}
-.sb-ignition-rings:after{inset:22px;border-style:solid;border-color:rgba(255,255,255,.1)}
-.sb-ignition-ticks{position:absolute;inset:-5px;border-radius:50%;opacity:.55;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.28) 0 1deg,transparent 1deg 12deg);-webkit-mask:radial-gradient(circle,transparent 0 64%,#000 65% 69%,transparent 70%);mask:radial-gradient(circle,transparent 0 64%,#000 65% 69%,transparent 70%);animation:sbIgnitionTicks 22s linear infinite}
-.sb-ignition-core{position:relative;z-index:2;width:67px;height:67px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#121212,#070707 68%);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 0 22px #000,0 0 18px rgba(255,255,255,.02)}
-.sb-ignition-core img{width:47px;max-height:47px;object-fit:contain;filter:grayscale(1) brightness(1.45);pointer-events:none;user-select:none;-webkit-user-drag:none}
-.sb-ignition-sweep{position:absolute;inset:-2px;border-radius:50%;opacity:0;background:conic-gradient(from -90deg,transparent 0 12%,rgba(255,255,255,.9) 17%,transparent 22% 100%);-webkit-mask:radial-gradient(circle,transparent 0 72%,#000 73% 76%,transparent 77%);mask:radial-gradient(circle,transparent 0 72%,#000 73% 76%,transparent 77%)}
-#sbEntryGate.sb-igniting #sbIgnition{border-color:rgba(255,255,255,.48);box-shadow:0 0 34px rgba(255,255,255,.1),inset 0 0 30px rgba(255,255,255,.05)}
-#sbEntryGate.sb-igniting .sb-ignition-sweep{opacity:1;animation:sbIgnitionSweep .7s cubic-bezier(.2,.8,.2,1) 1}
-#sbEntryGate.sb-igniting .sb-ignition-core{animation:sbIgnitionCore .7s ease 1}
-#sbEntryGate.sb-igniting .sb-entry-scan{animation-duration:.75s}
-#sbEntryGate.sb-igniting .sb-entry-progress i{animation:sbIgnitionProgress .72s cubic-bezier(.25,.8,.2,1) forwards!important}
-@keyframes sbIgnitionTicks{to{transform:rotate(360deg)}}
-@keyframes sbIgnitionSweep{to{transform:rotate(360deg)}}
-@keyframes sbIgnitionCore{45%{transform:scale(.91);box-shadow:inset 0 0 22px #000,0 0 32px rgba(255,255,255,.14)}100%{transform:scale(1)}}
-@keyframes sbIgnitionProgress{from{width:0}to{width:100%}}
-@media(prefers-reduced-motion:reduce){.sb-ignition-ticks{animation:none!important}}
-</style>
+<section id="sbJobTracker" hidden>
+  <div class="sbt-wrap">
+    <div class="sbt-brand"><img src="/images/stanceboundlogo.png?v=30" alt="STANCEBOUND"><span class="sbt-secure">PRIVATE JOB PROGRESS</span></div>
+    <div id="sbtContent">
+      <div class="sbt-kicker">STANCEBOUND / LIVE DETAIL</div>
+      <h1 class="sbt-title">LOADING<br>YOUR DETAIL.</h1>
+      <p class="sbt-sub">Fetching the latest progress from your booking…</p>
+    </div>
+  </div>
+</section>
+<script id="stancebound-public-v18-live-tracker-js">
+(()=>{
+  const params=new URLSearchParams(location.search);
+  const token=params.get('track');
+  if(!token)return;
+
+  window.__STANCEBOUND_TRACK_ROUTE__=true;
+  document.documentElement.setAttribute('data-stancebound-route','track');
+  if(location.hash)history.replaceState({stanceboundTrack:true},'',location.pathname+location.search);
+
+  const tracker=document.getElementById('sbJobTracker');
+  const content=document.getElementById('sbtContent');
+  tracker.hidden=false;
+  document.documentElement.style.background='#050505';
+
+  // This route owns the viewport. Hide the ordinary site without deleting it.
+  [...document.body.children].forEach(el=>{
+    if(el!==tracker && el.tagName!=='SCRIPT' && el.tagName!=='STYLE') el.style.display='none';
+  });
+
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const niceDate=v=>{
+    if(!v)return'—';
+    const d=new Date(v+'T12:00:00');
+    return Number.isNaN(d.getTime())?v:d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  };
+  const niceTime=v=>{
+    if(!v)return'—';
+    const m=String(v).match(/^(\d\d):(\d\d)/);
+    if(!m)return v;
+    const d=new Date();d.setHours(+m[1],+m[2],0,0);
+    return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  };
+  const stateLabel=v=>String(v||'pending').replaceAll('_',' ').toUpperCase();
+
+  async function load(){
+    try{
+      const r=await fetch('https://fxlekwzcxedkiyqfswvq.supabase.co/functions/v1/get-live-job',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({token}),
+        cache:'no-store'
+      });
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d?.success)throw new Error(d?.error||'Could not load this tracker.');
+
+      const j=d.job||{},b=d.booking||{},stages=d.stages||[];
+      const progress=Math.max(0,Math.min(100,Number(j.progress)||0));
+      const currentStage=j.current_stage;
+      const current=(currentStage&&typeof currentStage==='object')
+        ?(currentStage.title||currentStage.label||'Detail in progress')
+        :(currentStage || (j.status==='completed'?'Detail complete':j.status==='not_started'?'Waiting to begin':'Detail in progress'));
+
+      content.innerHTML=`
+        <div class="sbt-kicker">STANCEBOUND / LIVE DETAIL</div>
+        <h1 class="sbt-title">${j.status==='completed'?'DETAIL<br>COMPLETE.':'YOUR CAR.<br>IN PROGRESS.'}</h1>
+        <p class="sbt-sub">This page updates automatically while STANCEBOUND works through your detail.</p>
+        <div class="sbt-card sbt-grid">
+          <div class="sbt-cell"><span>VEHICLE</span><strong>${esc(b.vehicle||'Your vehicle')}</strong></div>
+          <div class="sbt-cell"><span>SERVICE</span><strong>${esc(b.service||'STANCEBOUND Detail')}</strong></div>
+          <div class="sbt-cell"><span>BOOKING</span><strong>${esc(niceDate(b.booking_date))}${b.booking_time?' · '+esc(niceTime(b.booking_time)):''}</strong></div>
+          <div class="sbt-cell"><span>ESTIMATED FINISH</span><strong>${esc(niceTime(j.eta_time))}</strong></div>
+        </div>
+        <div class="sbt-card">
+          <div class="sbt-progress-head"><div><span>DETAIL PROGRESS</span><strong>${progress}%</strong></div><div><span>STATUS</span><strong style="font-size:10px">${esc(stateLabel(j.status))}</strong></div></div>
+          <div class="sbt-bar"><i style="width:${progress}%"></i></div>
+          <div class="sbt-current">${j.status==='in_progress'?'<i class="sbt-pulse"></i>':''}CURRENT · ${esc(current)}</div>
+        </div>
+        <div class="sbt-card">
+          <div class="sbt-progress-head"><div><span>WORKFLOW</span><strong style="font-size:15px">DETAIL STAGES</strong></div><div><span>${stages.filter(x=>x.status==='completed').length}/${stages.length} COMPLETE</span></div></div>
+          <div>${stages.map((s,i)=>`<div class="sbt-stage ${esc(s.status)}"><span class="sbt-stage-num">${String(s.number??s.stage_order??i+1).padStart(2,'0')}</span><span class="sbt-stage-name">${esc(s.title||s.label||'Detail stage')}</span><span class="sbt-stage-state">${(s.status==='in_progress'||s.status==='active')?'<i class="sbt-pulse"></i>':''}${esc(s.status==='in_progress'?'IN PROGRESS':s.status==='completed'?'COMPLETED':stateLabel(s.status))}</span></div>`).join('')}</div>
+          ${j.status==='completed'?`<section class="sbt-complete">
+            <div class="sbt-complete-mark">✓</div>
+            <div class="sbt-complete-kicker">DETAIL COMPLETE</div>
+            <h2>THANK YOU${b.name?' '+esc(b.name).split(' ')[0].toUpperCase():''}.</h2>
+            <p>Your vehicle's STANCEBOUND detail is complete. Thank you for trusting us with your car. We hope you love the finished result.</p>
+            <div class="sbt-complete-line"></div>
+            <p>CLEANER · HIGHER · FURTHER</p>
+          </section>`:''}
+          <button class="sbt-refresh" type="button" id="sbtRefresh">REFRESH PROGRESS</button>
+        </div>
+        <div class="sbt-foot">STANCEBOUND · CLEANER · HIGHER · FURTHER<br>Progress refreshes automatically every 30 seconds.</div>`;
+      document.getElementById('sbtRefresh')?.addEventListener('click',load);
+    }catch(err){
+      content.innerHTML=`<div class="sbt-kicker">STANCEBOUND / PRIVATE TRACKER</div><h1 class="sbt-title">TRACKER<br>UNAVAILABLE.</h1><div class="sbt-error">${esc(err?.message||'This tracking link could not be opened.')}</div><button class="sbt-refresh" type="button" id="sbtRefresh">TRY AGAIN</button>`;
+      document.getElementById('sbtRefresh')?.addEventListener('click',load);
+    }
+  }
+  load();
+  setInterval(()=>{if(!document.hidden)load()},30000);
+})();
+</script>
+
 <script id="stancebound-ignition-entry-v22-js">
 (()=>{
  const gate=document.querySelector('#sbEntryGate');
@@ -8029,56 +8248,6 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
  });
 })();
 </script>
-
-
-<style id="stancebound-booking-precheck-v23">
-#bookingPrecheck .sb-precheck-content{width:min(900px,92%);margin:0 auto;padding-top:90px;padding-bottom:110px}
-#bookingPrecheck h1{font-size:clamp(34px,7vw,72px);line-height:.92;letter-spacing:-.045em;margin:12px 0 18px}
-.sb-precheck-intro{max-width:680px;color:var(--grey);line-height:1.75;margin:22px 0 28px}
-.sb-duration-warning{position:relative;padding:24px;margin:0 0 18px;border:1px solid rgba(220,154,70,.34);background:linear-gradient(135deg,rgba(220,154,70,.095),rgba(10,10,10,.7));overflow:hidden}
-.sb-duration-warning:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:#d69b51;box-shadow:0 0 18px rgba(214,155,81,.45)}
-.sb-duration-kicker{display:block;color:#d69b51;font-size:9px;font-weight:900;letter-spacing:.2em;margin-bottom:9px}
-.sb-duration-warning strong{display:block;font-size:clamp(20px,4vw,31px);letter-spacing:-.025em}
-.sb-duration-warning p{color:#b8b8b8;line-height:1.7;font-size:13px;margin:12px 0 0;max-width:760px}
-.sb-precheck-grid{display:grid;gap:10px;margin:18px 0}
-.sb-precheck-card{display:grid;grid-template-columns:42px 1fr minmax(110px,150px);gap:14px;align-items:center;padding:18px;border:1px solid var(--line);background:rgba(8,8,8,.72)}
-.sb-precheck-number{font-size:10px;font-weight:900;letter-spacing:.15em;color:#666}
-.sb-precheck-card strong{display:block;font-size:12px;letter-spacing:.09em;margin-bottom:5px}
-.sb-precheck-card small{display:block;color:#858585;font-size:11px;line-height:1.5}
-.sb-precheck-card select{width:100%;background:#050505;color:#fff;border:1px solid #303030;padding:12px;font:inherit;font-size:10px;font-weight:800;letter-spacing:.1em}
-.sb-precheck-confirm{display:flex;gap:12px;align-items:flex-start;margin:18px 0;padding:17px;border:1px solid #282828;background:#090909;color:#aaa;font-size:12px;line-height:1.65}
-.sb-precheck-confirm input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:#fff}
-.sb-precheck-confirm strong{color:#fff}
-@media(max-width:650px){
- #bookingPrecheck .sb-precheck-content{width:calc(100% - 32px);padding-top:64px}
- .sb-precheck-card{grid-template-columns:34px 1fr}
- .sb-precheck-card select{grid-column:2;width:100%;margin-top:4px}
-}
-</style>
-<script id="stancebound-booking-precheck-v23-js">
-(()=>{
- const form=document.querySelector('#bookingPrecheckForm');
- if(!form)return;
- const status=document.querySelector('#precheckStatus');
- form.addEventListener('submit',e=>{
-   e.preventDefault();
-   const water=document.querySelector('#precheckWater')?.value;
-   const power=document.querySelector('#precheckPower')?.value;
-   const space=document.querySelector('#precheckSpace')?.value;
-   const duration=document.querySelector('#precheckDuration')?.checked;
-   if(!water||!power||!space||!duration){
-     if(status){status.classList.add('error');status.textContent='Please answer all three access questions and confirm the time warning.'}
-     return;
-   }
-   /* Keep the answers for this browser session so they can be attached to the
-      booking workflow by the backend when those DB fields are available. */
-   try{sessionStorage.setItem('stanceboundBookingPrecheck',JSON.stringify({water_access:water,power_access:power,workspace_access:space,duration_acknowledged:true}))}catch(_){}
-   if(status){status.classList.remove('error');status.classList.add('success');status.textContent='ACCESS CHECK COMPLETE ✓'}
-   setTimeout(()=>showPage('bookingThanks'),260);
- });
-})();
-</script>
-
 </body>
 
 </html>
