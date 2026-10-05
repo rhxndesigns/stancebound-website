@@ -1117,6 +1117,13 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 .sb-job-control select{width:100%;background:#080808;color:#fff;border:1px solid #303030;border-radius:8px;padding:12px;font:inherit}
 [data-open-job-control]{font-weight:900!important}
 </style>
+
+<style id="sb-v40-payment-status">
+.sb-card-status-stack{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.sb-paid-badge,.sb-paid-text{color:#91e5a5!important;font-weight:900;letter-spacing:.1em}
+.sb-paid-badge{display:inline-flex;align-items:center;padding:6px 9px;border:1px solid rgba(100,220,130,.3);border-radius:999px;background:rgba(70,180,100,.08);font-size:8px}
+.sb-take-payment.sb-paid-button{opacity:1!important;color:#9ce5aa!important;background:rgba(58,175,89,.14)!important;border-color:rgba(83,213,116,.42)!important;cursor:default!important}
+</style>
 </head>
 
 <body>
@@ -2005,10 +2012,10 @@ function sbParseDetailingAccess(message=''){
     return m?m[1].trim():'';
   };
   return {
-    water:pick('Outside water tap / hose'),
-    power:pick('Outdoor electrical socket'),
-    parking:pick('Vehicle location'),
-    space:pick('Enough room to work around vehicle')
+    water:pick('Water') || pick('Outside water tap / hose'),
+    power:pick('Power') || pick('Outdoor electrical socket'),
+    parking:pick('Vehicle area') || pick('Vehicle location'),
+    space:pick('Working room') || pick('Enough room to work around vehicle')
   };
 }
 
@@ -2094,6 +2101,31 @@ function moneyValue(v){
   return v === null || v === undefined || v === '' ? '' : Number(v).toFixed(2);
 }
 
+let bookingPaymentStatus=new Map();
+
+async function loadBookingPaymentStatus(){
+  bookingPaymentStatus.clear();
+  try{
+    const {data,error}=await supabase.from('payment_requests')
+      .select('id,enquiry_id,status,payment_method,amount,paid_at,created_at')
+      .order('created_at',{ascending:false});
+    if(error)throw error;
+    (data||[]).forEach(p=>{
+      const key=String(p.enquiry_id||'');
+      if(!key)return;
+      const existing=bookingPaymentStatus.get(key);
+      if(!existing || (p.status==='paid' && existing.status!=='paid')) bookingPaymentStatus.set(key,p);
+    });
+  }catch(e){console.warn('Payment status could not be loaded',e)}
+}
+function sbPaymentFor(enquiryId){return bookingPaymentStatus.get(String(enquiryId))||null}
+function sbPaymentBadge(enquiryId){
+  const p=sbPaymentFor(enquiryId);
+  if(p?.status!=='paid')return '';
+  const method=String(p.payment_method||'').toUpperCase();
+  return `<span class="sb-paid-badge">✓ PAID${method?' · '+escapeHtml(method):''}</span>`;
+}
+
 async function loadEnquiries(){
   const list=document.querySelector('#enquiryList');
   const status=document.querySelector('#enquiryAdminStatus');
@@ -2112,6 +2144,7 @@ async function loadEnquiries(){
 
   cachedEnquiries=data||[];
   window.cachedEnquiries=cachedEnquiries;
+  await loadBookingPaymentStatus();
   pendingConfirmationCache.clear();
   const pendingRows=cachedEnquiries.filter(r=>r.final_confirmation_status==='pending'&&r.final_confirmation_id);
   await Promise.all(pendingRows.map(async r=>{
@@ -2984,7 +3017,7 @@ function renderBookingRequests(){
     const endText=displayEnd?String(displayEnd).slice(0,5):'Not set';
 
     return `<article class="enquiry-card ${workflow==='new'?'new':''}" data-booking-request-id="${r.id}">
-      <div class="enquiry-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(displayService||'Service not set')}<br>${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>Submitted ${escapeHtml(submitted)}</div></div><span class="status-pill${confirmationPillClass}">${label}</span></div>
+      <div class="enquiry-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="enquiry-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(displayService||'Service not set')}<br>${escapeHtml(r.email||'No email')}${r.phone?' · '+escapeHtml(r.phone):''}<br>Submitted ${escapeHtml(submitted)}</div></div><div class="sb-card-status-stack"><span class="status-pill${confirmationPillClass}">${label}</span>${sbPaymentBadge(r.id)}</div></div>
 
       ${isPending?`<div class="pending-confirmation-summary">
         <div class="booking-grid">
@@ -3018,7 +3051,7 @@ function renderBookingRequests(){
           </div>
         </div>
         <div class="booking-quick-actions">
-          ${workflow==='booked'?`<button type="button" class="sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`:''}
+          ${workflow==='booked'?(sbPaymentFor(r.id)?.status==='paid'?`<button type="button" class="sb-take-payment sb-paid-button" disabled>✓ PAID</button>`:`<button type="button" class="sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`):''}
           <button type="button" class="secondary" data-chat-invite="${r.id}">CONTACT</button>
           <button type="button" class="secondary" data-toggle-booking-edit="${r.id}">${workflow==='new'?'REVIEW & CONFIRM':workflow==='confirmation'?'MANAGE CONFIRMATION':'EDIT BOOKING'}</button>
         </div>
@@ -3453,7 +3486,7 @@ function renderUpcoming(){
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div><div><small>PAYMENT</small><strong>${sbPaymentFor(r.id)?.status==='paid'?`<span class="sb-paid-text">PAID${sbPaymentFor(r.id)?.payment_method?' · '+escapeHtml(String(sbPaymentFor(r.id).payment_method).toUpperCase()):''}</span>`:'NOT PAID'}</strong></div></div>${sbPrepPanel(r)}
 <div class="sb-job-control" id="job-control-${r.id}" hidden>
   <div class="sb-job-control-head"><div><small>JOB CONTROL</small><strong>Edit preparation & job details</strong></div><span>BOOKED</span></div>
   <div class="booking-grid">
@@ -5152,6 +5185,9 @@ document.querySelector('#expenseSave')?.addEventListener('click',async()=>{const
       }
 
       const amount=Number(data.payment?.amount || 0);
+      if(paymentEnquiryId) bookingPaymentStatus.set(String(paymentEnquiryId),{
+        ...(data.payment||{}),enquiry_id:paymentEnquiryId,status:'paid',payment_method:data.payment?.payment_method||'cash'
+      });
       $('#sbCashConfirm')?.classList.remove('show');
       $('#sbPaymentQrWrap')?.classList.remove('show');
       $('#sbPaymentQrWrap')?.setAttribute('aria-hidden','true');
