@@ -4857,6 +4857,44 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
       </div>
     </section>
 
+    <section id="bookingPrecheck" class="page">
+      <div class="content sb-precheck-content">
+        <div class="eyebrow">BEFORE YOUR REQUEST IS FINISHED</div>
+        <h1>QUICK ACCESS CHECK</h1>
+        <div class="heading-line"></div>
+        <p class="sb-precheck-intro">A proper detail needs time, space and access to the equipment required to do the job properly. Please check these before finishing your request.</p>
+
+        <div class="sb-duration-warning">
+          <span class="sb-duration-kicker">PLEASE PLAN AHEAD</span>
+          <strong>YOUR DETAIL CAN TAKE UP TO 9 HOURS</strong>
+          <p>Depending on the vehicle and its condition, a STANCEBOUND detail can take up to 9 hours to complete. Please make sure you will not need the vehicle for work, appointments, school runs, shopping or any other travel during the booking. The vehicle needs to remain available for the full detail.</p>
+        </div>
+
+        <form id="bookingPrecheckForm">
+          <div class="sb-precheck-grid">
+            <label class="sb-precheck-card">
+              <span class="sb-precheck-number">01</span>
+              <span><strong>OUTDOOR WATER ACCESS</strong><small>Will there be access to a suitable outdoor water supply / tap at the vehicle?</small></span>
+              <select id="precheckWater" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
+            </label>
+            <label class="sb-precheck-card">
+              <span class="sb-precheck-number">02</span>
+              <span><strong>POWER ACCESS</strong><small>Will there be access to a suitable electricity supply for detailing equipment?</small></span>
+              <select id="precheckPower" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
+            </label>
+            <label class="sb-precheck-card">
+              <span class="sb-precheck-number">03</span>
+              <span><strong>WORKING SPACE</strong><small>Will there be enough safe space around the vehicle for equipment and for the detail to be carried out properly?</small></span>
+              <select id="precheckSpace" required><option value="">SELECT</option><option value="yes">YES</option><option value="no">NO</option></select>
+            </label>
+          </div>
+          <label class="sb-precheck-confirm"><input id="precheckDuration" type="checkbox" required><span>I understand that the detail can take <strong>up to 9 hours</strong> and I will make sure I do not need the vehicle for travel during the booking.</span></label>
+          <div id="precheckStatus" class="enquiry-status" aria-live="polite"></div>
+          <button class="btn" type="submit">FINISH BOOKING REQUEST</button>
+        </form>
+      </div>
+    </section>
+
     <section id="bookingThanks" class="page">
       <div class="content" style="max-width:980px;text-align:center;padding-top:110px;padding-bottom:110px;">
         <div class="eyebrow">BOOKING REQUEST RECEIVED</div>
@@ -5412,7 +5450,7 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
           pendingEnquiryId=null;
           if(window.turnstile)window.turnstile.reset();
 
-          showPage("bookingThanks");
+          showPage("bookingPrecheck");
         }catch(error){
           enquiryStatus.classList.remove("success");
           enquiryStatus.classList.add("error");
@@ -7988,6 +8026,55 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
  ignition.addEventListener('click',enter);
  ignition.addEventListener('keydown',e=>{
    if((e.key==='Enter'||e.key===' ')&&!opening){e.preventDefault();enter(e)}
+ });
+})();
+</script>
+
+
+<style id="stancebound-booking-precheck-v23">
+#bookingPrecheck .sb-precheck-content{width:min(900px,92%);margin:0 auto;padding-top:90px;padding-bottom:110px}
+#bookingPrecheck h1{font-size:clamp(34px,7vw,72px);line-height:.92;letter-spacing:-.045em;margin:12px 0 18px}
+.sb-precheck-intro{max-width:680px;color:var(--grey);line-height:1.75;margin:22px 0 28px}
+.sb-duration-warning{position:relative;padding:24px;margin:0 0 18px;border:1px solid rgba(220,154,70,.34);background:linear-gradient(135deg,rgba(220,154,70,.095),rgba(10,10,10,.7));overflow:hidden}
+.sb-duration-warning:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:#d69b51;box-shadow:0 0 18px rgba(214,155,81,.45)}
+.sb-duration-kicker{display:block;color:#d69b51;font-size:9px;font-weight:900;letter-spacing:.2em;margin-bottom:9px}
+.sb-duration-warning strong{display:block;font-size:clamp(20px,4vw,31px);letter-spacing:-.025em}
+.sb-duration-warning p{color:#b8b8b8;line-height:1.7;font-size:13px;margin:12px 0 0;max-width:760px}
+.sb-precheck-grid{display:grid;gap:10px;margin:18px 0}
+.sb-precheck-card{display:grid;grid-template-columns:42px 1fr minmax(110px,150px);gap:14px;align-items:center;padding:18px;border:1px solid var(--line);background:rgba(8,8,8,.72)}
+.sb-precheck-number{font-size:10px;font-weight:900;letter-spacing:.15em;color:#666}
+.sb-precheck-card strong{display:block;font-size:12px;letter-spacing:.09em;margin-bottom:5px}
+.sb-precheck-card small{display:block;color:#858585;font-size:11px;line-height:1.5}
+.sb-precheck-card select{width:100%;background:#050505;color:#fff;border:1px solid #303030;padding:12px;font:inherit;font-size:10px;font-weight:800;letter-spacing:.1em}
+.sb-precheck-confirm{display:flex;gap:12px;align-items:flex-start;margin:18px 0;padding:17px;border:1px solid #282828;background:#090909;color:#aaa;font-size:12px;line-height:1.65}
+.sb-precheck-confirm input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:#fff}
+.sb-precheck-confirm strong{color:#fff}
+@media(max-width:650px){
+ #bookingPrecheck .sb-precheck-content{width:calc(100% - 32px);padding-top:64px}
+ .sb-precheck-card{grid-template-columns:34px 1fr}
+ .sb-precheck-card select{grid-column:2;width:100%;margin-top:4px}
+}
+</style>
+<script id="stancebound-booking-precheck-v23-js">
+(()=>{
+ const form=document.querySelector('#bookingPrecheckForm');
+ if(!form)return;
+ const status=document.querySelector('#precheckStatus');
+ form.addEventListener('submit',e=>{
+   e.preventDefault();
+   const water=document.querySelector('#precheckWater')?.value;
+   const power=document.querySelector('#precheckPower')?.value;
+   const space=document.querySelector('#precheckSpace')?.value;
+   const duration=document.querySelector('#precheckDuration')?.checked;
+   if(!water||!power||!space||!duration){
+     if(status){status.classList.add('error');status.textContent='Please answer all three access questions and confirm the time warning.'}
+     return;
+   }
+   /* Keep the answers for this browser session so they can be attached to the
+      booking workflow by the backend when those DB fields are available. */
+   try{sessionStorage.setItem('stanceboundBookingPrecheck',JSON.stringify({water_access:water,power_access:power,workspace_access:space,duration_acknowledged:true}))}catch(_){}
+   if(status){status.classList.remove('error');status.classList.add('success');status.textContent='ACCESS CHECK COMPLETE ✓'}
+   setTimeout(()=>showPage('bookingThanks'),260);
  });
 })();
 </script>
