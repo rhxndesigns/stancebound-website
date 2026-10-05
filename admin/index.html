@@ -1108,6 +1108,15 @@ input,select,textarea{border-radius:11px!important;background:#080808!important;
 .mobile-nav [data-mobile-target="bookings"] .badge,
 .mobile-nav [data-mobile-target="bookings"] [id*="Badge"]{display:none!important;content:none!important}
 </style>
+
+<style id="sb-v39-job-control">
+.sb-job-control{margin:14px 0;padding:18px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(15,15,15,.96),rgba(7,7,7,.96));border-radius:16px}
+.sb-job-control[hidden]{display:none!important}
+.sb-job-control-head{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:16px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-job-control-head small{display:block;color:#777;font-size:8px;font-weight:900;letter-spacing:.2em;margin-bottom:4px}.sb-job-control-head strong{font-size:16px}.sb-job-control-head>span{font-size:8px;font-weight:900;letter-spacing:.14em;color:#86d99a;border:1px solid rgba(100,220,130,.25);padding:7px 9px;border-radius:999px}
+.sb-job-control select{width:100%;background:#080808;color:#fff;border:1px solid #303030;border-radius:8px;padding:12px;font:inherit}
+[data-open-job-control]{font-weight:900!important}
+</style>
 </head>
 
 <body>
@@ -3011,7 +3020,7 @@ function renderBookingRequests(){
         <div class="booking-quick-actions">
           ${workflow==='booked'?`<button type="button" class="sb-take-payment" data-take-payment="${r.id}">TAKE PAYMENT</button>`:''}
           <button type="button" class="secondary" data-chat-invite="${r.id}">CONTACT</button>
-          <button type="button" class="secondary" data-toggle-booking-edit="${r.id}">EDIT BOOKING</button>
+          <button type="button" class="secondary" data-toggle-booking-edit="${r.id}">${workflow==='new'?'REVIEW & CONFIRM':workflow==='confirmation'?'MANAGE CONFIRMATION':'EDIT BOOKING'}</button>
         </div>
         <div class="booking-edit-panel booking-management" id="booking-management-${r.id}" hidden>
           <div class="enquiry-actions-admin">
@@ -3049,7 +3058,7 @@ function renderBookingRequests(){
     const opening=(detail?.hidden ?? true)&&(management?.hidden ?? true);
     if(detail)detail.hidden=!opening;
     if(management)management.hidden=!opening;
-    btn.textContent=opening?'CLOSE EDITING':'EDIT BOOKING';
+    btn.textContent=opening?'CLOSE DETAILS':(bookingWorkflowStatus(cachedEnquiries.find(r=>String(r.id)===String(btn.dataset.toggleBookingEdit))||{})==='new'?'REVIEW & CONFIRM':'EDIT BOOKING');
     if(opening)detail?.scrollIntoView({behavior:'smooth',block:'nearest'});
   });
   list.querySelectorAll('[data-edit-pending]').forEach(btn=>btn.onclick=()=>{
@@ -3444,9 +3453,72 @@ function renderUpcoming(){
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     const time=(r.booking_time||'').slice(0,5), end=(r.booking_end_time||'').slice(0,5);
-    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-pipeline-open="${r.id}">Open job</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
+    return `<article class="completed-card pipeline-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)} · ${escapeHtml(time?time+(end?'–'+end:''):'Time TBC')}<br><span class="sb-flow-state booked">BOOKED JOB</span></div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="pipeline-details"><div><small>LOCATION</small><strong>${escapeHtml(r.booking_location||'Not set')}</strong></div><div><small>STATUS</small><strong>${escapeHtml((r.status||'booked').replaceAll('_',' '))}</strong></div></div>${sbPrepPanel(r)}
+<div class="sb-job-control" id="job-control-${r.id}" hidden>
+  <div class="sb-job-control-head"><div><small>JOB CONTROL</small><strong>Edit preparation & job details</strong></div><span>BOOKED</span></div>
+  <div class="booking-grid">
+    <div><label>Date</label><input type="date" data-job-date value="${escapeHtml(r.booking_date||'')}"></div>
+    <div><label>Start time</label><input type="time" data-job-time value="${escapeHtml((r.booking_time||'').slice(0,5))}"></div>
+    <div><label>Finish time</label><input type="time" data-job-end value="${escapeHtml((r.booking_end_time||'').slice(0,5))}"></div>
+    <div><label>Price (£)</label><input type="number" min="0" step="0.01" data-job-price value="${moneyValue(r.quoted_price)}"></div>
+    <div class="full"><label>Service</label><input type="text" data-job-service value="${escapeHtml(r.service||'')}"></div>
+    <div class="full"><label>Location</label><input type="text" data-job-location value="${escapeHtml(r.booking_location||'')}"></div>
+    <div><label>Water access</label><select data-job-water><option value="">NOT SET</option><option value="Yes">YES</option><option value="No">NO</option><option value="Not sure">NOT SURE</option></select></div>
+    <div><label>Power access</label><select data-job-power><option value="">NOT SET</option><option value="Yes">YES</option><option value="No">NO</option><option value="Not sure">NOT SURE</option></select></div>
+    <div class="full"><label>Working space</label><select data-job-space><option value="">NOT SET</option><option value="Yes">YES</option><option value="No">NO</option><option value="Not sure">NOT SURE</option></select></div>
+    <div class="full"><label>Job prep / private notes</label><textarea data-job-notes placeholder="Equipment to bring, access notes, things to check...">${escapeHtml(r.admin_notes||'')}</textarea></div>
+  </div>
+  <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button></div>
+  <div class="status" data-job-status></div>
+</div>
+${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-open-job-control="${r.id}">OPEN JOB</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
   }).join('');
-  list.querySelectorAll('[data-pipeline-open]').forEach(btn=>btn.onclick=()=>openEnquiryFromPipeline(btn.dataset.pipelineOpen));
+  list.querySelectorAll('[data-open-job-control]').forEach(btn=>btn.onclick=()=>{
+    const id=btn.dataset.openJobControl;
+    const panel=document.querySelector('#job-control-'+CSS.escape(String(id)));
+    const row=cachedEnquiries.find(r=>String(r.id)===String(id));
+    if(!panel||!row)return;
+    const access=sbParseDetailingAccess(row.message);
+    const setSel=(sel,val)=>{const el=panel.querySelector(sel);if(el)el.value=/^yes$/i.test(val||'')?'Yes':/^no$/i.test(val||'')?'No':/not sure/i.test(val||'')?'Not sure':''};
+    setSel('[data-job-water]',access.water);setSel('[data-job-power]',access.power);setSel('[data-job-space]',access.space);
+    panel.hidden=false;btn.textContent='JOB OPEN';
+    panel.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  list.querySelectorAll('[data-close-job]').forEach(btn=>btn.onclick=()=>{
+    const panel=document.querySelector('#job-control-'+CSS.escape(String(btn.dataset.closeJob)));
+    if(panel)panel.hidden=true;
+    const open=list.querySelector(`[data-open-job-control="${CSS.escape(String(btn.dataset.closeJob))}"]`);
+    if(open)open.textContent='OPEN JOB';
+  });
+  list.querySelectorAll('[data-save-job]').forEach(btn=>btn.onclick=async()=>{
+    const id=btn.dataset.saveJob, panel=btn.closest('.sb-job-control');
+    const row=cachedEnquiries.find(r=>String(r.id)===String(id));
+    const st=panel?.querySelector('[data-job-status]'); if(!row||!panel||!st)return;
+    const water=panel.querySelector('[data-job-water]').value;
+    const power=panel.querySelector('[data-job-power]').value;
+    const space=panel.querySelector('[data-job-space]').value;
+    const stripAccess=text=>String(text||'').replace(/\n?\[STANCEBOUND JOB ACCESS\][\s\S]*?\[\/STANCEBOUND JOB ACCESS\]\n?/g,'').trim();
+    const accessBlock=`[STANCEBOUND JOB ACCESS]\nWater: ${water||'Not supplied'}\nPower: ${power||'Not supplied'}\nWorking room: ${space||'Not supplied'}\n[/STANCEBOUND JOB ACCESS]`;
+    const message=(stripAccess(row.message)+'\n\n'+accessBlock).trim();
+    const payload={
+      booking_date:panel.querySelector('[data-job-date]').value||null,
+      booking_time:panel.querySelector('[data-job-time]').value||null,
+      booking_end_time:panel.querySelector('[data-job-end]').value||null,
+      quoted_price:panel.querySelector('[data-job-price]').value===''?null:Number(panel.querySelector('[data-job-price]').value),
+      service:panel.querySelector('[data-job-service]').value.trim(),
+      booking_location:panel.querySelector('[data-job-location]').value.trim(),
+      admin_notes:panel.querySelector('[data-job-notes]').value.trim(),
+      message
+    };
+    btn.disabled=true;st.textContent='Saving job details...';
+    try{
+      const {error}=await supabase.from('enquiries').update(payload).eq('id',id);
+      if(error)throw error;
+      st.textContent='JOB DETAILS SAVED ✓';st.classList.add('action-success-pop');
+      await loadEnquiries();
+    }catch(e){st.textContent=e?.message||'Could not save job details.'}
+    finally{btn.disabled=false}
+  });
   list.querySelectorAll('[data-upcoming-calendar]').forEach(btn=>btn.onclick=()=>{calendarCursor=new Date(btn.dataset.upcomingCalendar+'T12:00:00');calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);openAdminPage('schedule');renderSchedule();setTimeout(()=>selectScheduleDay(btn.dataset.upcomingCalendar),80)});
 
   // V20: Upcoming cards are created here, AFTER loadEnquiries() previously
