@@ -1,6 +1,65 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script id="sb-overlay-back-stability-v2">
+/* Overlay history manager. Registered in the head before page routers. */
+(()=>{
+ const specs=[['#sbNotificationPanel','open'],['#moreSheet','show'],['#quickSheet','show'],['#chatChoiceSheet','show'],['#sbJobQuickModal','show'],['#financeTransactionModal','hidden'],['#financeExpenseModal','hidden'],['#sbPaymentSheet','show']];
+ const get=()=>specs.map(([selector,flag])=>({el:document.querySelector(selector),flag})).filter(x=>x.el);
+ const shown=x=>x.flag==='hidden'?!x.el.hidden:x.el.classList.contains(x.flag);
+ let armed=null,closing=false;
+ function dismiss(x){
+   const el=x.el;
+   if(el.id==='lightbox'){
+     const close=el.querySelector('.lightbox-close');if(close){close.click();return;}
+   }
+   if(el.id==='sbJobQuickModal'){
+     const close=el.querySelector('[data-job-modal-close]');if(close){close.click();return;}
+   }
+   if(el.id==='sbPaymentSheet'){
+     const close=document.querySelector('[data-close-payment-sheet],#sbPaymentClose');if(close){close.click();return;}
+   }
+   if(el.id==='hoodieProductModal'){
+     const close=el.querySelector('.product-modal-close');if(close){close.click();return;}
+   }
+   if(el.id==='sbpModal'){
+     const close=el.querySelector('[data-sbp-close]');if(close){close.click();return;}
+   }
+   if(el.id==='financeTransactionModal'||el.id==='financeExpenseModal'){
+     const close=el.querySelector('[data-close-finance-history],[data-close-expense-history]');if(close){close.click();return;}
+   }
+   el.classList.remove('show','open');
+   if(x.flag==='hidden')el.hidden=true;
+   el.setAttribute('aria-hidden','true');
+ }
+ function sync(){
+   if(closing)return;
+   const top=get().filter(shown).at(-1)||null;
+   if(top&&!armed){
+     armed=top;
+     // Existing gallery and payment sheets manage their own history entries.
+     if(top.el.id!=='lightbox'&&top.el.id!=='sbPaymentSheet')history.pushState({...history.state,sbOverlayV2:true},'',location.href);
+   }else if(!top&&armed){
+     armed=null;
+     if(history.state?.sbOverlayV2){closing=true;history.back();setTimeout(()=>closing=false,50);}
+   }
+ }
+ window.addEventListener('popstate',event=>{
+   const top=get().filter(shown).at(-1);
+   if(!top)return;
+   armed=null;closing=true;
+   // Stop the underlying page router from changing pages while a sheet is open.
+   event.stopImmediatePropagation();
+   dismiss(top);
+   setTimeout(()=>{closing=false;sync()},70);
+ },true);
+ document.addEventListener('DOMContentLoaded',()=>{
+   const observer=new MutationObserver(sync);
+   for(const x of get())observer.observe(x.el,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});
+   sync();
+ });
+})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
@@ -1349,6 +1408,20 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
   .radial-backdrop,.radial-menu::before,.more-sheet,.quick-sheet,.chat-choice-sheet { -webkit-backdrop-filter:none!important;backdrop-filter:none!important }
   .service,.contact-card,.enquiry-shell { -webkit-backdrop-filter:none!important;backdrop-filter:none!important }
 }
+</style>
+<style id="sb-notification-styles">
+#sbNotifyBell{position:fixed;right:14px;top:82px;z-index:10030;width:45px;height:45px;border:1px solid #555;border-radius:50%;background:#151515;color:#fff;font-size:21px;cursor:pointer;display:none}
+.sb-admin-authorized #sbNotifyBell{display:block}
+#sbNotifyCount{position:absolute;right:-4px;top:-5px;background:#fff;color:#111;border-radius:20px;min-width:18px;padding:3px;font:bold 11px Arial}
+#sbNotificationPanel{position:fixed;inset:0;z-index:10031;background:rgba(0,0,0,.76);display:none;align-items:flex-start;justify-content:center;padding:70px 12px 16px}
+#sbNotificationPanel.open{display:flex}
+#sbNotificationBox{width:min(490px,100%);max-height:80vh;overflow:auto;background:#101010;color:#fff;border:1px solid #444;padding:20px;border-radius:14px}
+#sbNotificationBox header{position:static;background:none;min-height:0;padding:0;display:flex;justify-content:space-between;gap:12px}
+#sbNotificationBox button{cursor:pointer;color:#fff;background:#242424;border:1px solid #555;padding:10px;border-radius:7px}
+#sbNotificationList{margin-top:14px;display:grid;gap:8px}
+.sb-notification-item{padding:13px;background:#1c1c1c;border:1px solid #333;text-align:left;width:100%;font-size:13px}
+.sb-notification-item strong{display:block;margin-bottom:5px}.sb-notification-item small{color:#aaa}
+#sbNotifyStatus{font-size:12px;color:#aaa;margin-top:12px}
 </style>
 </head>
 
@@ -5565,45 +5638,25 @@ body.querySelector('[data-popup-open-tracker]')?.addEventListener('click',()=>{c
 document.addEventListener('click',e=>{if(e.target.closest('[data-job-modal-close]')){close();return}const card=e.target.closest('#upcomingList .pipeline-card');if(!card)return;if(e.target.closest('button,input,select,textarea,a'))return;open(card)});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();
 </script>
 
-<script id="sb-overlay-back-stability-v1">
+
+<button id="sbNotifyBell" type="button" aria-label="Notifications">♧<span id="sbNotifyCount" hidden>0</span></button>
+<div id="sbNotificationPanel" aria-hidden="true"><div id="sbNotificationBox" role="dialog" aria-modal="true" aria-label="Admin notifications"><header><strong>NOTIFICATIONS</strong><button type="button" id="sbNotifyClose">CLOSE</button></header><p id="sbNotifyStatus">Alerts while Admin is open. Background push requires a separate server setup.</p><button type="button" id="sbNotifyPermission">ENABLE DEVICE ALERTS</button> <button type="button" id="sbNotifyClear">CLEAR</button><div id="sbNotificationList"></div></div></div>
+<script id="sb-notification-controller">
 (()=>{
-  const targets=[("#moreSheet", ".show", ""), ("#quickSheet", ".show", ""), ("#chatChoiceSheet", ".show", ""), ("#sbJobQuickModal", ".show", "[data-job-modal-close]"), ("#financeTransactionModal", "visible", ""), ("#financeExpenseModal", "visible", "")];
-  const entries=targets.map(([selector,active,close])=>({el:document.querySelector(selector),active,close})).filter(x=>x.el);
-  let armed=null, suppress=false;
-  const isOpen=x=>x.active==='visible'?!x.el.hidden:x.el.classList.contains(x.active.slice(1));
-  function dismiss(x){
-    if(!x||!isOpen(x))return;
-    const btn=x.close&&x.el.querySelector(x.close);
-    if(btn){btn.click();return}
-    if(x.el.id==='financeTransactionModal'&&typeof window.closeFinanceHistory==='function'){window.closeFinanceHistory();return}
-    if(x.el.id==='financeExpenseModal'&&typeof window.closeExpenseHistory==='function'){window.closeExpenseHistory();return}
-    x.el.classList.remove('show','open');
-    if(x.active==='visible')x.el.hidden=true;
-    x.el.setAttribute('aria-hidden','true');
-    if(!entries.some(y=>y!==x&&isOpen(y)))document.body.style.overflow='';
-  }
-  function sync(){
-    if(suppress)return;
-    const top=entries.slice().reverse().find(isOpen);
-    if(top&&!armed){
-      armed=top;
-      history.pushState({...history.state,sbOverlayGuard:true},'',location.href);
-    } else if(!top&&armed){
-      armed=null;
-      if(history.state?.sbOverlayGuard){suppress=true;history.back();setTimeout(()=>suppress=false,0)}
-    }
-  }
-  window.addEventListener('popstate',e=>{
-    if(!armed)return;
-    const active=armed;armed=null;suppress=true;
-    dismiss(active);
-    // Prevent page navigation handlers from interpreting a modal-close as a page change.
-    e.stopImmediatePropagation();
-    queueMicrotask(()=>{suppress=false;sync()});
-  },true);
-  for(const x of entries)new MutationObserver(sync).observe(x.el,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const x=entries.slice().reverse().find(isOpen);if(x){dismiss(x);}}});
-  sync();
+const bell=document.getElementById('sbNotifyBell'),panel=document.getElementById('sbNotificationPanel'),list=document.getElementById('sbNotificationList'),count=document.getElementById('sbNotifyCount'),status=document.getElementById('sbNotifyStatus');
+let client=null,channels=[],ready=false,seen=new Set(),items=[];
+const safe=(v)=>String(v||'').slice(0,160);
+function render(){list.replaceChildren();count.hidden=!items.length;count.textContent=String(Math.min(items.length,99));for(const n of items){const b=document.createElement('button');b.className='sb-notification-item';const title=document.createElement('strong');title.textContent=n.title;const date=document.createElement('small');date.textContent=new Date(n.time).toLocaleString('en-GB');b.append(title,date);b.onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');if(n.page){document.querySelector('[data-page="'+n.page+'"], [data-admin-page-target="'+n.page+'"]')?.click();location.hash=n.page;}};list.append(b)}if(!items.length){const t=document.createElement('p');t.textContent='No new notifications.';list.append(t)}}
+function add(title,page,key){if(seen.has(key))return;seen.add(key);items.unshift({title:safe(title),page,time:Date.now()});items=items.slice(0,50);render();if(document.visibilityState==='visible'&&'Notification' in window&&Notification.permission==='granted'){try{new Notification('STANCEBOUND Admin',{body:safe(title),tag:key})}catch(_){}}}
+function stop(){for(const ch of channels)client?.removeChannel(ch);channels=[];ready=false;seen.clear();items=[];render()}
+async function start(){client=window.sbAdminSupabase;if(!client||!document.documentElement.classList.contains('sb-admin-authorized'))return;if(ready)return;const {data:{session}}=await client.auth.getSession();if(!session)return;ready=true;
+const definitions=[{table:'enquiries',label:'New booking enquiry',page:'enquiries',filter:(r)=>r.email_verified===true},{table:'conversation_messages',label:'New customer chat',page:'chats',filter:(r)=>r.sender==='customer'},{table:'shop_orders',label:'New shop order',page:'orders',filter:()=>true}];
+for(const def of definitions){const ch=client.channel('sb-admin-alert-'+def.table+'-'+Math.random().toString(36).slice(2)).on('postgres_changes',{event:'INSERT',schema:'public',table:def.table},(payload)=>{if(!document.documentElement.classList.contains('sb-admin-authorized'))return;const r=payload.new||{};if(def.filter(r))add(def.label,def.page,def.table+':'+(r.id||r.created_at||Date.now()))}).subscribe();channels.push(ch)}
+const update=client.channel('sb-admin-booking-status-'+Math.random().toString(36).slice(2)).on('postgres_changes',{event:'UPDATE',schema:'public',table:'enquiries'},(payload)=>{const a=payload.new||{},b=payload.old||{};if(a.final_confirmation_status==='accepted'&&b.final_confirmation_status!=='accepted')add('Booking confirmation accepted','enquiries','accepted:'+a.id+':'+a.final_confirmation_status)}).subscribe();channels.push(update);
+status.textContent='Live alerts are enabled while Admin is open. Background push still needs server configuration.';
+}
+bell.onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false')};document.getElementById('sbNotifyClose').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};panel.onclick=e=>{if(e.target===panel)document.getElementById('sbNotifyClose').click()};document.getElementById('sbNotifyClear').onclick=()=>{items=[];render()};document.getElementById('sbNotifyPermission').onclick=async()=>{if(!('Notification' in window)){status.textContent='Notifications are not supported by this browser.';return}const p=await Notification.requestPermission();status.textContent=p==='granted'?'Device alerts enabled while Admin is open.':'Permission: '+p};
+const observer=new MutationObserver(()=>{if(document.documentElement.classList.contains('sb-admin-authorized'))start().catch(()=>{});else if(ready)stop()});observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});window.addEventListener('pageshow',()=>start().catch(()=>{}));setTimeout(()=>start().catch(()=>{}),1200);render();
 })();
 </script>
 </body>
