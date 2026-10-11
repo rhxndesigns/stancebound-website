@@ -1423,6 +1423,10 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 .sb-notification-item strong{display:block;margin-bottom:5px}.sb-notification-item small{color:#aaa}
 #sbNotifyStatus{font-size:12px;color:#aaa;margin-top:12px}
 </style>
+<style id="sb-v7-enquiry-indicator">
+.mobile-nav [data-mobile-target="bookings"] #mobileNewEnquiryCount{font-size:20px;line-height:1;font-weight:600;color:#777}
+.mobile-nav [data-mobile-target="bookings"].sb-has-new-enquiries #mobileNewEnquiryCount{color:#fff}
+</style>
 </head>
 
 <body>
@@ -1938,7 +1942,7 @@ Save Changes
 
   <nav class="mobile-nav hidden" id="mobileAdminNav" aria-label="Admin navigation">
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
-    <button type="button" data-mobile-target="bookings"><span>01</span>Enquiries</button>
+    <button type="button" data-mobile-target="bookings"><span id="mobileNewEnquiryCount" aria-label="New enquiries">•</span>Enquiries</button>
     <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Website editing tools"><img src="/images/stanceboundlogo.png" alt="STANCEBOUND"></button>
     <button type="button" data-mobile-target="upcoming"><span>03</span>Jobs</button>
     <button type="button" id="inboxBtn" class="sb-inbox-nav"><span>✉</span>Inbox <b id="inboxBadge"></b></button>
@@ -3274,16 +3278,36 @@ function isBookingRecord(r){
   return !!(r?.agreement_accepted || r?.booking_date || r?.final_confirmation_status || r?.final_confirmation_id || ['booked','completed'].includes(r?.status) || String(r?.message||'').includes('Manual booking created in STANCEBOUND Admin'));
 }
 
+function isGenuineNewBookingEnquiry(r){
+  return isBookingRecord(r) && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status && !r.agreement_accepted;
+}
 function updateBookingMetrics(){
   const bookingRows=cachedEnquiries.filter(isBookingRecord);
-  const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new' && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status).length;
+  const needs=bookingRows.filter(isGenuineNewBookingEnquiry).length;
   const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='confirmation').length;
   const jobs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='booked').length;
   const a=document.querySelector('#metricBookingRequests'); if(a)a.textContent=awaiting;
   const newMetric=document.querySelector('#metricNew'); if(newMetric)newMetric.textContent=needs;
   const badge=document.querySelector('#bookingBadge'); if(badge)badge.textContent=needs||'';
+  const mobileCount=document.querySelector('#mobileNewEnquiryCount'); if(mobileCount){mobileCount.textContent=needs?String(needs):'•';mobileCount.setAttribute('aria-label',needs?`${needs} new enquiries`:'No new enquiries');}
+  const mobileButton=document.querySelector('[data-mobile-target="bookings"]');if(mobileButton)mobileButton.classList.toggle('sb-has-new-enquiries',needs>0);
   const cb=document.querySelector('#confirmationBadge'); if(cb)cb.textContent=awaiting||'';
   const jb=document.querySelector('#jobsBadge'); if(jb)jb.textContent=jobs||'';
+}
+
+async function sbDeleteBookingRecord(id){
+  const {data,error}=await supabase.from('enquiries').delete().eq('id',id).select('id');
+  if(error)throw error;
+  if(!Array.isArray(data)||!data.some(r=>String(r.id)===String(id))){
+    throw new Error('Booking was NOT deleted. Supabase may be blocking DELETE permission (RLS), or a linked record prevents deletion. Check the enquiries DELETE policy and related foreign keys.');
+  }
+  await loadEnquiries();
+}
+async function sbConfirmAndDeleteBooking(id, label, button){
+  if(!confirm(`Permanently delete ${label||'this booking'}?\n\nThis cannot be undone.`))return;
+  if(button)button.disabled=true;
+  try{await sbDeleteBookingRecord(id);}
+  catch(e){alert(e?.message||'Could not delete booking.');if(button)button.disabled=false;}
 }
 
 function pdfSafeFilename(value='agreement'){
@@ -3355,7 +3379,7 @@ function renderBookingRequests(){
   updateBookingMetrics();
 
   const rows=cachedEnquiries
-    .filter(r=>isBookingRecord(r) && bookingWorkflowStatus(r)==='new')
+    .filter(isGenuineNewBookingEnquiry)
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
   if(count)count.textContent=`${rows.length} new`;
@@ -3635,17 +3659,11 @@ function renderBookingRequests(){
     st.textContent='Deleting...';
 
     try{
-      const {error}=await supabase
-        .from('enquiries')
-        .delete()
-        .eq('id',btn.dataset.deleteBooking);
-
-      if(error) throw error;
-
+      await sbDeleteBookingRecord(btn.dataset.deleteBooking);
       st.textContent='Deleted ✓';
-      await loadEnquiries();
     }catch(e){
       st.textContent=e?.message||'Could not delete booking.';
+      alert(st.textContent);
     }finally{
       btn.disabled=false;
     }
@@ -3770,7 +3788,7 @@ function renderDashboard(){
   const bookedMonth=active.filter(r=>r.booking_date?.startsWith(month) && r.quoted_price!=null);
   const revenue=bookedMonth.reduce((sum,r)=>sum+Number(r.quoted_price||0),0);
   const set=(id,v)=>{const el=document.querySelector(id);if(el)el.textContent=v};
-  set('#metricNew',cachedEnquiries.filter(r=>isBookingRecord(r)&&bookingWorkflowStatus(r)==='new').length);
+  set('#metricNew',cachedEnquiries.filter(isGenuineNewBookingEnquiry).length);
   set('#metricUpcoming',upcoming.length);
   set('#metricCompleted',completedMonth.length);
   set('#metricRevenue','£'+revenue.toFixed(0));
@@ -3871,7 +3889,7 @@ function renderUpcoming(){
     <div class="full"><label>Working space</label><select data-job-space><option value="">NOT SET</option><option value="Yes">YES</option><option value="No">NO</option><option value="Not sure">NOT SURE</option></select></div>
     <div class="full"><label>Job prep / private notes</label><textarea data-job-notes placeholder="Equipment to bring, access notes, things to check...">${escapeHtml(r.admin_notes||'')}</textarea></div>
   </div>
-  <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button></div>
+  <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button><button type="button" class="secondary danger" data-delete-upcoming="${r.id}">DELETE BOOKING</button></div>
   <div class="status" data-job-status></div>
 </div>
 ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-open-job-control="${r.id}">OPEN JOB</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
@@ -3893,6 +3911,7 @@ ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>P
     const open=list.querySelector(`[data-open-job-control="${CSS.escape(String(btn.dataset.closeJob))}"]`);
     if(open)open.textContent='OPEN JOB';
   });
+  list.querySelectorAll('[data-delete-upcoming]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteUpcoming));sbConfirmAndDeleteBooking(btn.dataset.deleteUpcoming,r?.name?`${r.name}'s booking`:'this booking',btn);});
   list.querySelectorAll('[data-save-job]').forEach(btn=>btn.onclick=async()=>{
     const id=btn.dataset.saveJob, panel=btn.closest('.sb-job-control');
     const row=cachedEnquiries.find(r=>String(r.id)===String(id));
@@ -3941,7 +3960,7 @@ function renderCompleted(){
   list.querySelectorAll('[data-completed-more]').forEach(btn=>btn.onclick=()=>document.querySelector('#completed-more-'+btn.dataset.completedMore)?.classList.toggle('show'));
   list.querySelectorAll('[data-completed-contact]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.completedContact));if(r?.email){location.href='mailto:'+r.email}else if(r?.phone){location.href='tel:'+r.phone}else alert('No contact details are stored for this customer.');});
   list.querySelectorAll('[data-complete-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
-  list.querySelectorAll('[data-delete-completed]').forEach(btn=>btn.onclick=async()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteCompleted));if(!r||!confirm(`Delete ${r.name}'s completed booking? Financial records are kept separately.`))return;btn.disabled=true;const {error}=await supabase.from('enquiries').delete().eq('id',r.id);if(error){alert(error.message||'Could not delete booking.');btn.disabled=false;return;}await loadEnquiries();});
+  list.querySelectorAll('[data-delete-completed]').forEach(btn=>btn.onclick=async()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteCompleted));if(!r||!confirm(`Delete ${r.name}'s completed booking? Financial records are kept separately.`))return;btn.disabled=true;try{await sbDeleteBookingRecord(r.id)}catch(e){alert(e?.message||'Could not delete booking.');btn.disabled=false;}});
 }
 
 document.querySelector('#enquiryFilters')?.addEventListener('click',e=>{const btn=e.target.closest('[data-filter]');if(!btn)return;enquiryFilter=btn.dataset.filter;document.querySelectorAll('#enquiryFilters .filter-pill').forEach(x=>x.classList.toggle('active',x===btn));loadEnquiries();});
