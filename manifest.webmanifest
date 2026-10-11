@@ -1,5 +1,5 @@
 {
-  "id": "/",
+  "id": "/stancebound-public-app",
   "name": "STANCEBOUND",
   "short_name": "STANCEBOUND",
   "start_url": "/",
@@ -8,7 +8,15 @@
   "background_color": "#080808",
   "theme_color": "#080808",
   "icons": [
-    {"src": "/app-icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "/app-icons/icon-512.png", "sizes": "512x512", "type": "image/png"}
+    {
+      "src": "/app-icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/app-icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
