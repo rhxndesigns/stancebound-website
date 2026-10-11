@@ -2724,8 +2724,10 @@ async function loadChats(){
   if(bookingStatus)bookingStatus.textContent='';
   if(generalStatus)generalStatus.textContent='';
 
+  // Keep a stable inbox renderer even after the thread DOM has been replaced.
   const renderInbox=(host,threads,searchEl,type)=>{
     if(!host)return;
+    host.dataset.sbThreadOpen='';
     const q=(searchEl?.value||'').trim().toLowerCase();
     const filtered=threads.filter(t=>{
       if(!q)return true;
@@ -2753,6 +2755,7 @@ async function loadChats(){
 
   const renderThread=(host,t,type,searchEl)=>{
     if(!t)return;
+    host.dataset.sbThreadOpen=String(t.id);
     const r=t.enquiry||{};
     host.innerHTML=`<div class="chat-thread-view">
       <button type="button" class="secondary chat-back" data-chat-back>← Back to conversations</button>
@@ -2760,7 +2763,10 @@ async function loadChats(){
       <div class="chat-thread">${t.messages.map(m=>{const at=Array.isArray(m.attachments)?m.attachments.filter(a=>a.url):[];const rawMessage=String(m.message||'').trim();const text=(at.length&&/^photo attachment$/i.test(rawMessage))?'':rawMessage;return `<div class="chat-bubble ${m.sender==='stancebound'?'stancebound':'customer'}">${text?`<div>${escapeHtml(text)}</div>`:''}${at.length?`<div class="chat-attachment-grid ${at.length===1?'single':''}">${at.map(a=>`<button type="button" class="chat-attachment" data-chat-image="${escapeHtml(a.url)}" aria-label="Open image"><img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.name||'Chat image')}" loading="lazy"></button>`).join('')}</div>`:''}<span class="chat-time">${m.sender==='stancebound'?'STANCEBOUND':'Customer'} · ${escapeHtml(chatDate(m.created_at))}</span></div>`;}).join('')}</div>
       <div class="chat-compose"><textarea maxlength="4000" placeholder="Reply to ${escapeHtml(r.name||((r.email||'').split('@')[0])||'customer')}..."></textarea><input class="chat-file-input" data-thread-files type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="chat-upload-previews" data-thread-previews></div><div class="chat-actions"><button type="button" class="secondary chat-attach-btn" data-thread-attach aria-label="Add photos">📎 Photos</button><button type="button" data-thread-send>Send</button><button type="button" class="chat-delete-btn" data-thread-delete>Delete Chat</button></div><div class="chat-upload-note">JPG, PNG or WebP · up to 5 images · 10 MB each</div><div class="status"></div></div>
     </div>`;
-    host.querySelector('[data-chat-back]').onclick=()=>renderInbox(host,threads,searchEl,type);
+    host.querySelector('[data-chat-back]').addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      renderInbox(host,threads,searchEl,type);
+    });
     host.querySelectorAll('[data-chat-image]').forEach(btn=>btn.onclick=()=>openChatImage(btn.dataset.chatImage));
     const fileInput=host.querySelector('[data-thread-files]');
     const attachBtn=host.querySelector('[data-thread-attach]');
@@ -2818,8 +2824,16 @@ async function loadChats(){
 
   const generalSearch=document.querySelector('#generalChatSearch');
   const bookingSearch=document.querySelector('#bookingChatSearch');
-  renderInbox(generalList,generalThreads,generalSearch,'general');
-  renderInbox(bookingList,bookingThreads,bookingSearch,'booking');
+  // Refresh without unexpectedly throwing the user out of an open conversation.
+  const restore=(host,threads,search,type)=>{
+    if(!host)return;
+    const openId=host.dataset.sbThreadOpen;
+    const thread=openId?threads.find(t=>String(t.id)===openId):null;
+    if(thread)renderThread(host,thread,type,search);
+    else renderInbox(host,threads,search,type);
+  };
+  restore(generalList,generalThreads,generalSearch,'general');
+  restore(bookingList,bookingThreads,bookingSearch,'booking');
   if(generalSearch&&!generalSearch.dataset.bound){generalSearch.dataset.bound='1';generalSearch.addEventListener('input',()=>renderInbox(generalList,generalThreads,generalSearch,'general'));}
   if(bookingSearch&&!bookingSearch.dataset.bound){bookingSearch.dataset.bound='1';bookingSearch.addEventListener('input',()=>renderInbox(bookingList,bookingThreads,bookingSearch,'booking'));}
 }
@@ -3233,7 +3247,10 @@ function bookingWorkflowStatus(r){
   if(r.status==='completed') return 'completed';
   if(r.final_confirmation_status==='signed' || r.status==='booked') return 'booked';
   if(r.final_confirmation_status==='pending' && r.final_confirmation_id) return 'confirmation';
-  return 'new';
+  // A legacy/ongoing record is not automatically a brand-new enquiry.
+  // Only genuinely unreviewed booking requests should raise the New counter.
+  if(r.status==='new' || r.status==='awaiting_reply' || !r.status) return 'new';
+  return 'ongoing';
 }
 function isBookingRecord(r){
   return !!(r?.agreement_accepted || r?.booking_date || r?.final_confirmation_status || r?.final_confirmation_id || ['booked','completed'].includes(r?.status) || String(r?.message||'').includes('Manual booking created in STANCEBOUND Admin'));
