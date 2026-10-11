@@ -4151,11 +4151,48 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 </style>
 
 <!-- STANCEBOUND installable app -->
-<link rel="manifest" href="/manifest.webmanifest?v=20261011-2">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/app-icons/icon-192.png">
+
+<!-- STANCEBOUND readability refinement v1: additive CSS only, no feature removal -->
+<style id="sb-readability-refinement-v1">
+/* Keep cinematic imagery, interactive graphics, JS, forms and existing themes intact. */
+.hero-subtitle { font-size: clamp(12px, 2.8vw, 14px); letter-spacing: .16em; color: #b5b5b5; line-height: 1.55; }
+.hero-description { font-size: clamp(16px, 2vw, 18px); line-height: 1.65; color: #c7c7c7; }
+.eyebrow, .section-label, .feature-kicker, .home-kicker { font-size: 12px; letter-spacing: .13em; line-height: 1.5; }
+.home-choice p, .home-feature-compact p, .home-final-compact p { font-size: clamp(15px, 1.8vw, 17px); line-height: 1.65; }
+.home-choice-kicker, .home-choice-link, .home-link { font-size: 12px; letter-spacing: .1em; line-height: 1.5; }
+.home-choice-link, .home-link { padding-block: 7px; }
+.home-feature-compact, .home-final-compact { line-height: 1.55; }
+.home-feature-compact p, .home-final-compact p { color: #c6c6c6; }
+.home-choice p { color: #e0e0e0; }
+.home-choice-kicker, .home-kicker { color: #c4c4c4; }
+.home-choice { isolation: isolate; }
+.home-choice img { filter: brightness(.48) saturate(.84); }
+.home-choice:hover img, .home-choice:focus-visible img { filter: brightness(.65) saturate(.92); }
+.btn { font-size: 13px; letter-spacing: .1em; line-height: 1.35; min-height: 44px; }
+nav button { font-size: 12px; letter-spacing: .1em; }
+.enquiry-field label, .enquiry-note, .enquiry-status, .social-handle, .location { font-size: 13px; line-height: 1.5; }
+.enquiry-head p, .social-name { font-size: 14px; line-height: 1.5; }
+footer { font-size: 12px; line-height: 1.6; }
+/* Keep the technical camera HUD tiny by design, rather than scaling overlays into the photograph. */
+@media (max-width: 600px) {
+  .hero-subtitle { letter-spacing: .11em; }
+  .hero-description { width: min(580px, 92%); }
+  .home-choice { min-height: 340px; }
+  .home-choice p, .home-feature-compact p, .home-final-compact p { font-size: 16px; }
+  .home-choice-link, .home-link { font-size: 12px; }
+  .home-final-compact { padding: 25px 20px; gap: 16px; }
+  .btn { min-height: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
+
 </head>
 
 
