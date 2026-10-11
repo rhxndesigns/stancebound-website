@@ -3325,6 +3325,9 @@ async function sbConfirmAndDeleteBooking(id, label, button){
   catch(e){alert(e?.message||'Could not delete booking.');if(button)button.disabled=false;}
 }
 
+// Expose the verified delete flow to the separate long-press menu script.
+window.sbConfirmAndDeleteBooking = sbConfirmAndDeleteBooking;
+
 function pdfSafeFilename(value='agreement'){
   return String(value||'agreement').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()||'agreement';
 }
@@ -5748,7 +5751,7 @@ const menu=document.createElement('div');menu.id='sbJobHoldMenu';menu.setAttribu
 function hideMenu(){menu.classList.remove('show');menu.setAttribute('aria-hidden','true')}
 function showMenu(card){holdCard=card;lastLongPress=Date.now();const row=window.sbV47CachedEnquiry?.(card.dataset.jobId);document.getElementById('sbHoldName').textContent=row?.name||'Booking';menu.classList.add('show');menu.setAttribute('aria-hidden','false')}
 const jobs=document.querySelector('#upcomingList');if(jobs){jobs.addEventListener('selectstart',e=>{if(e.target.closest('.pipeline-card'))e.preventDefault()});jobs.addEventListener('dragstart',e=>{if(e.target.closest('.pipeline-card'))e.preventDefault()});jobs.addEventListener('touchstart',e=>{const card=e.target.closest('.pipeline-card');if(!card||e.target.closest('button,input,textarea,select,a'))return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{holdTimer=null;showMenu(card)},550)},{passive:true});jobs.addEventListener('touchmove',e=>{if(e.touches.length&&Math.hypot(e.touches[0].clientX-startX,e.touches[0].clientY-startY)>12)clearTimeout(holdTimer)},{passive:true});['touchend','touchcancel'].forEach(t=>jobs.addEventListener(t,()=>clearTimeout(holdTimer),{passive:true}));jobs.addEventListener('contextmenu',e=>{const card=e.target.closest('.pipeline-card');if(card){e.preventDefault();if(!menu.classList.contains('show'))showMenu(card)}})}
-menu.addEventListener('click',async e=>{if(e.target.closest('[data-hold-close]')){hideMenu();return}const action=e.target.closest('[data-hold-action]')?.dataset.holdAction;if(!action||!holdCard)return;const card=holdCard,id=card.dataset.jobId,row=window.sbV47CachedEnquiry?.(id);hideMenu();if(action==='edit'){open(card,'edit')}else if(action==='delete'){if(window.sbConfirmAndDeleteBooking)await window.sbConfirmAndDeleteBooking(id,row?.name||'this booking');else alert('Delete is unavailable.')}else if(action==='message'){if(typeof window.openAdminPage==='function')window.openAdminPage('enquiries');else document.querySelector('[data-mobile-target="bookings"]')?.click();setTimeout(()=>{const btn=document.querySelector('[data-chat-invite="'+CSS.escape(String(id))+'"]');if(btn)btn.click();else alert('Open the customer record in Enquiries to message this customer.')},350)}});
+menu.addEventListener('click',async e=>{if(e.target.closest('[data-hold-close]')){hideMenu();return}const action=e.target.closest('[data-hold-action]')?.dataset.holdAction;if(!action||!holdCard)return;const card=holdCard,id=card.dataset.jobId,row=window.sbV47CachedEnquiry?.(id);hideMenu();if(action==='edit'){open(card,'edit')}else if(action==='delete'){if(window.sbConfirmAndDeleteBooking)await window.sbConfirmAndDeleteBooking(id,row?.name||'this booking');else alert('Delete is unavailable.')}else if(action==='message'){window.sbOpenJobChat?.(id)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();
 </script>
 
@@ -5771,6 +5774,30 @@ status.textContent='Live alerts are enabled while Admin is open. Background push
 }
 bell.onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false')};document.getElementById('sbNotifyClose').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};panel.onclick=e=>{if(e.target===panel)document.getElementById('sbNotifyClose').click()};document.getElementById('sbNotifyClear').onclick=()=>{items=[];render()};document.getElementById('sbNotifyPermission').onclick=async()=>{if(!('Notification' in window)){status.textContent='Notifications are not supported by this browser.';return}const p=await Notification.requestPermission();status.textContent=p==='granted'?'Device alerts enabled while Admin is open.':'Permission: '+p};
 const observer=new MutationObserver(()=>{if(document.documentElement.classList.contains('sb-admin-authorized'))start().catch(()=>{});else if(ready)stop()});observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});window.addEventListener('pageshow',()=>start().catch(()=>{}));setTimeout(()=>start().catch(()=>{}),1200);render();
+})();
+</script>
+
+<style id="sb-job-chat-v12-style">
+#sbJobChatOverlay{position:fixed;inset:0;z-index:2147483000;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.75)}
+#sbJobChatOverlay.show{display:flex}
+#sbJobChatPanel{width:min(100%,560px);background:#111113;border:1px solid #363638;border-radius:22px 22px 0 0;padding:24px 20px max(24px,env(safe-area-inset-bottom));color:#fff;box-shadow:0 -12px 45px #0009;max-height:90dvh;overflow-y:auto}
+#sbJobChatPanel h2{margin:8px 0 6px;font-size:23px}#sbJobChatPanel p{color:#aaa;font-size:13px;line-height:1.5}
+#sbJobChatPanel textarea{width:100%;min-height:135px;resize:vertical;box-sizing:border-box;background:#19191c;border:1px solid #424247;border-radius:12px;padding:14px;color:#fff;font:inherit;margin:14px 0}
+#sbJobChatPanel button{border:1px solid #494949;border-radius:10px;background:#242426;color:#fff;padding:13px 15px;font:inherit;cursor:pointer}
+#sbJobChatPanel #sbJobChatSend{background:#f2f2f2;color:#111;font-weight:700;flex:1}
+#sbJobChatPanel .sb-job-chat-buttons{display:flex;gap:10px}#sbJobChatStatus{min-height:22px;margin-top:10px;font-size:13px;color:#ddd}
+</style>
+<div id="sbJobChatOverlay" aria-hidden="true"><section id="sbJobChatPanel" role="dialog" aria-modal="true" aria-label="Secure customer chat"><small>STANCEBOUND / SECURE CHAT</small><h2 id="sbJobChatName">Message customer</h2><p>Send a message through your existing secure customer conversation. The customer will receive the email notification and secure chat link handled by your existing server functions.</p><textarea id="sbJobChatText" maxlength="4000" placeholder="Write your message..."></textarea><div class="sb-job-chat-buttons"><button type="button" id="sbJobChatCancel">CANCEL</button><button type="button" id="sbJobChatSend">SEND MESSAGE</button></div><div id="sbJobChatStatus" role="status"></div></section></div>
+<script id="sb-job-chat-v12-script">
+(()=>{
+const overlay=document.getElementById('sbJobChatOverlay'),name=document.getElementById('sbJobChatName'),textarea=document.getElementById('sbJobChatText'),status=document.getElementById('sbJobChatStatus'),send=document.getElementById('sbJobChatSend');let currentId=null;
+function close(){overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');currentId=null;}
+window.sbOpenJobChat=(id)=>{const row=window.sbV47CachedEnquiry?.(id);if(!row){alert('Could not load this booking. Refresh the Jobs page and try again.');return}if(!row.email){alert('This customer has no email address.');return}currentId=id;name.textContent='Message '+(row.name||'customer');textarea.value='';status.textContent='';overlay.classList.add('show');overlay.setAttribute('aria-hidden','false');setTimeout(()=>textarea.focus(),80)};
+document.getElementById('sbJobChatCancel').addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show')){e.stopImmediatePropagation();close()}},true);
+send.addEventListener('click',async()=>{const reply=textarea.value.trim(),row=window.sbV47CachedEnquiry?.(currentId),client=window.sbAdminSupabase;if(!reply){status.textContent='Write a message first.';textarea.focus();return}if(!row||!client){status.textContent='Booking or secure connection unavailable. Refresh Admin and retry.';return}send.disabled=true;status.textContent='Sending securely…';try{
+if(!row.conversation_token){const {data,error}=await client.functions.invoke('send-chat-invite',{body:{enquiry_id:row.id}});if(error)throw error;if(!data?.success)throw new Error(data?.error||'Could not create secure chat.');if(data.conversation_token)row.conversation_token=data.conversation_token;}
+const {data,error}=await client.functions.invoke('reply-enquiry',{body:{enquiry_id:row.id,reply}});if(error)throw error;if(!data?.success)throw new Error(data?.error||'Message was not sent.');textarea.value='';status.textContent='Message sent successfully ✓';setTimeout(close,900);
+}catch(err){status.textContent=err?.message||'Unable to send the message.'}finally{send.disabled=false}});
 })();
 </script>
 </body>
