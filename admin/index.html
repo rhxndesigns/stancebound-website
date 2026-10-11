@@ -1330,6 +1330,15 @@ body.sb-job-modal-lock #sbJobQuickModal .sb-job-modal-sheet{touch-action:auto}
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/app-icons/icon-192.png">
+<style id="sb-auth-privacy-guard">
+html:not(.sb-admin-authorized) #editor,
+html:not(.sb-admin-authorized) #mobileAdminNav,
+html:not(.sb-admin-authorized) #moreSheet,
+html:not(.sb-admin-authorized) #quickSheet,
+html:not(.sb-admin-authorized) #chatChoiceSheet,
+html:not(.sb-admin-authorized) .admin-nav,
+html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibility:hidden!important;pointer-events:none!important;}
+</style>
 </head>
 
 <body>
@@ -4111,6 +4120,7 @@ function revealAdminAfterAuth(){
 function applyAdminSession(session) {
   const loggedIn = !!session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com';
 
+  document.documentElement.classList.toggle('sb-admin-authorized', loggedIn);
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
@@ -4154,8 +4164,9 @@ async function showCorrectScreen() {
     if (status) status.textContent = 'Could not check login: ' + error.message;
   }
 
-  const loggedIn = !!session;
+  const loggedIn = !!session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com';
 
+  document.documentElement.classList.toggle('sb-admin-authorized', loggedIn);
   login.classList.toggle('hidden', loggedIn);
   editor.classList.toggle('hidden', !loggedIn);
   document.querySelector('#mobileAdminNav')?.classList.toggle('hidden', !loggedIn);
@@ -4764,7 +4775,7 @@ document.querySelector('#copyDiagnosticsBtn')?.addEventListener('click',async()=
 supabase.auth.onAuthStateChange((event, session) => {
   applyAdminSession(session);
 
-  if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  if (session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com' && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
   }
 });
@@ -4776,11 +4787,8 @@ if(adminTodayFinal)adminTodayFinal.textContent=new Date().toLocaleDateString('en
 // RLS still protects all database data; this only prevents the login screen
 // flashing/sticking while Supabase restores its client state.
 setTimeout(revealAdminAfterAuth,2500);
-const storedAdminSession = getStoredAdminSession();
-applyAdminSession(storedAdminSession);
-if (storedAdminSession) {
-  setTimeout(loadAdminData, 250);
-}
+// Wait for Supabase auth to confirm the session before revealing protected UI.
+applyAdminSession(null);
 
 
 // ---------- STANCEBOUND Analytics ----------
