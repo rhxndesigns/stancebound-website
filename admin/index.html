@@ -1430,6 +1430,18 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 <style id="sb-v8-job-actions-style">
 #sbJobHoldMenu{position:fixed;inset:0;z-index:2147483600;display:none}#sbJobHoldMenu.show{display:block}.sb-hold-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.76)}.sb-hold-sheet{position:absolute;bottom:0;left:0;right:0;max-width:600px;margin:auto;padding:24px 20px max(28px,env(safe-area-inset-bottom));background:#111;border:1px solid #444;border-radius:22px 22px 0 0;display:grid;gap:10px}.sb-hold-sheet small{color:#999;letter-spacing:2px}.sb-hold-sheet h3{margin:0 0 12px;color:white}.sb-hold-sheet button{background:#222;border:1px solid #444;color:white;border-radius:12px;padding:17px;text-align:left;font-weight:700;letter-spacing:.5px}.sb-hold-sheet button.sb-hold-danger{color:#ff8888;border-color:#6a3030}#upcomingList .pipeline-card{touch-action:pan-y}
 </style>
+<style id="sb-job-hold-selection-fix-v9">
+/* Booking cards behave like touch controls, not selectable paragraphs. */
+#upcomingList .pipeline-card,
+#upcomingList .pipeline-card *:not(input):not(textarea):not(select) {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+#upcomingList .pipeline-card { touch-action: pan-y; cursor: pointer; }
+#upcomingList .pipeline-card button,
+#upcomingList .pipeline-card a { touch-action: manipulation; }
+</style>
 </head>
 
 <body>
@@ -5735,7 +5747,7 @@ let holdTimer=null,lastLongPress=0,holdCard=null,startX=0,startY=0;
 const menu=document.createElement('div');menu.id='sbJobHoldMenu';menu.setAttribute('aria-hidden','true');menu.innerHTML='<div class="sb-hold-backdrop" data-hold-close></div><div class="sb-hold-sheet" role="dialog" aria-modal="true" aria-label="Booking actions"><small>BOOKING ACTIONS</small><h3 id="sbHoldName"></h3><button type="button" data-hold-action="edit">EDIT BOOKING</button><button type="button" data-hold-action="message">MESSAGE CUSTOMER</button><button type="button" data-hold-action="delete" class="sb-hold-danger">DELETE BOOKING</button><button type="button" data-hold-close>CANCEL</button></div>';document.body.append(menu);
 function hideMenu(){menu.classList.remove('show');menu.setAttribute('aria-hidden','true')}
 function showMenu(card){holdCard=card;lastLongPress=Date.now();const row=window.sbV47CachedEnquiry?.(card.dataset.jobId);document.getElementById('sbHoldName').textContent=row?.name||'Booking';menu.classList.add('show');menu.setAttribute('aria-hidden','false');if(navigator.vibrate)navigator.vibrate(25)}
-const jobs=document.querySelector('#upcomingList');if(jobs){jobs.addEventListener('touchstart',e=>{const card=e.target.closest('.pipeline-card');if(!card||e.target.closest('button,input,textarea,select,a'))return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{holdTimer=null;showMenu(card)},550)},{passive:true});jobs.addEventListener('touchmove',e=>{if(e.touches.length&&Math.hypot(e.touches[0].clientX-startX,e.touches[0].clientY-startY)>12)clearTimeout(holdTimer)},{passive:true});['touchend','touchcancel'].forEach(t=>jobs.addEventListener(t,()=>clearTimeout(holdTimer),{passive:true}));jobs.addEventListener('contextmenu',e=>{const card=e.target.closest('.pipeline-card');if(card){e.preventDefault();showMenu(card)}})}
+const jobs=document.querySelector('#upcomingList');if(jobs){jobs.addEventListener('selectstart',e=>{if(e.target.closest('.pipeline-card'))e.preventDefault()});jobs.addEventListener('dragstart',e=>{if(e.target.closest('.pipeline-card'))e.preventDefault()});jobs.addEventListener('touchstart',e=>{const card=e.target.closest('.pipeline-card');if(!card||e.target.closest('button,input,textarea,select,a'))return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{holdTimer=null;showMenu(card)},550)},{passive:true});jobs.addEventListener('touchmove',e=>{if(e.touches.length&&Math.hypot(e.touches[0].clientX-startX,e.touches[0].clientY-startY)>12)clearTimeout(holdTimer)},{passive:true});['touchend','touchcancel'].forEach(t=>jobs.addEventListener(t,()=>clearTimeout(holdTimer),{passive:true}));jobs.addEventListener('contextmenu',e=>{const card=e.target.closest('.pipeline-card');if(card){e.preventDefault();if(!menu.classList.contains('show'))showMenu(card)}})}
 menu.addEventListener('click',async e=>{if(e.target.closest('[data-hold-close]')){hideMenu();return}const action=e.target.closest('[data-hold-action]')?.dataset.holdAction;if(!action||!holdCard)return;const card=holdCard,id=card.dataset.jobId,row=window.sbV47CachedEnquiry?.(id);hideMenu();if(action==='edit'){open(card,'edit')}else if(action==='delete'){if(window.sbConfirmAndDeleteBooking)await window.sbConfirmAndDeleteBooking(id,row?.name||'this booking');else alert('Delete is unavailable.')}else if(action==='message'){if(typeof window.openAdminPage==='function')window.openAdminPage('enquiries');else document.querySelector('[data-mobile-target="bookings"]')?.click();setTimeout(()=>{const btn=document.querySelector('[data-chat-invite="'+CSS.escape(String(id))+'"]');if(btn)btn.click();else alert('Open the customer record in Enquiries to message this customer.')},350)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();
 </script>
