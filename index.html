@@ -4193,6 +4193,43 @@ footer { font-size: 12px; line-height: 1.6; }
 }
 </style>
 
+
+<!-- STANCEBOUND refinement v2: pricing legibility and conservative mobile paint savings -->
+<style id="sb-refinement-v2">
+/* Keep the footer intentionally understated. */
+footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
+/* Pricing: information must be readable; micro-labels can stay compact. */
+#pricing .sbp-hero-main p { font-size: clamp(15px, 1.7vw, 17px) !important; line-height: 1.55 !important; max-width: 42ch; }
+#pricing .sbp-hero-main small, #pricing .sbp-price span,
+#pricing .sbp-live, #pricing .sbp-cinema-head,
+#pricing .sbp-cinema-head small { font-size: 11px !important; line-height: 1.4; letter-spacing: .08em; }
+#pricing .sbp-cinema-copy p { font-size: clamp(14px, 1.65vw, 16px) !important; line-height: 1.55; color: #dedede; }
+#pricing .sbp-cinema-status, #pricing .sbp-swipe-cue,
+#pricing .sbp-cinema-nav button { font-size: 11px; }
+#pricing .sbp-actions button, #pricing .sbp-explore-btn { font-size: 12px !important; letter-spacing: .065em; min-height: 46px; }
+#pricing .process-box strong { font-size: clamp(13px, 1.6vw, 16px) !important; line-height: 1.35 !important; }
+#pricing .process-box small { font-size: 12px !important; line-height: 1.45 !important; }
+#pricing .detail-fact p { font-size: 14px !important; line-height: 1.6 !important; max-width: 65ch; }
+#pricing .detail-fact > span { font-size: 11px !important; letter-spacing: .08em; }
+#pricing .sbp-detail-source { overflow-wrap: anywhere; }
+/* Keep legal notes and decorative HUD labels small, rather than scaling everything. */
+@media (max-width: 600px) {
+  #pricing .sbp-hero-main { gap: 12px; }
+  #pricing .sbp-hero-main p { font-size: 15px !important; max-width: 29ch; }
+  #pricing .sbp-cinema-copy p { font-size: 14px !important; }
+  #pricing .sbp-actions button { font-size: 11px !important; min-height: 46px; }
+  #pricing .process-box small { font-size: 12px !important; }
+  #pricing .detail-fact p { font-size: 14px !important; }
+  #pricing .sbp-cinema-head { min-height: 44px; height: auto; }
+  /* Mobile GPU: avoid multiple live glass blurs on static cards. The menu,
+     theme wipe, scanner, camera and cinematic transitions remain intact. */
+  .service, .contact-card, .enquiry-shell { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pricing .service-light-orbit, #pricing .service-scanline { animation: none !important; }
+}
+</style>
+
 </head>
 
 
@@ -5328,10 +5365,6 @@ footer { font-size: 12px; line-height: 1.6; }
     ·
 
     South Wales
-
-    <div class="footer-admin-access">
-      <a href="/admin/?lock=1" aria-label="Admin login">Admin</a>
-    </div>
 
   </footer>
 
