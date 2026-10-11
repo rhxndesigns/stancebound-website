@@ -1339,6 +1339,17 @@ html:not(.sb-admin-authorized) #chatChoiceSheet,
 html:not(.sb-admin-authorized) .admin-nav,
 html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibility:hidden!important;pointer-events:none!important;}
 </style>
+<style id="sb-mobile-stability-v1">
+/* Keep the cinematic styling on desktop, but avoid costly full-screen repaints on phones. */
+@media (hover:none) and (pointer:coarse) {
+  html {scroll-behavior:auto!important}
+  .page.active,.admin-page.active {animation:none!important}
+  .page.page-enter-detail,.admin-page.sb-page-entering,.admin-page.sb-page-leaving {animation:none!important}
+  .home-reveal,.home-showcase .home-feature-video,.home-showcase .home-feature-compact>div:last-child {will-change:auto!important}
+  .radial-backdrop,.radial-menu::before,.more-sheet,.quick-sheet,.chat-choice-sheet { -webkit-backdrop-filter:none!important;backdrop-filter:none!important }
+  .service,.contact-card,.enquiry-shell { -webkit-backdrop-filter:none!important;backdrop-filter:none!important }
+}
+</style>
 </head>
 
 <body>
@@ -5554,5 +5565,46 @@ body.querySelector('[data-popup-open-tracker]')?.addEventListener('click',()=>{c
 document.addEventListener('click',e=>{if(e.target.closest('[data-job-modal-close]')){close();return}const card=e.target.closest('#upcomingList .pipeline-card');if(!card)return;if(e.target.closest('button,input,select,textarea,a'))return;open(card)});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();
 </script>
 
+<script id="sb-overlay-back-stability-v1">
+(()=>{
+  const targets=[("#moreSheet", ".show", ""), ("#quickSheet", ".show", ""), ("#chatChoiceSheet", ".show", ""), ("#sbJobQuickModal", ".show", "[data-job-modal-close]"), ("#financeTransactionModal", "visible", ""), ("#financeExpenseModal", "visible", "")];
+  const entries=targets.map(([selector,active,close])=>({el:document.querySelector(selector),active,close})).filter(x=>x.el);
+  let armed=null, suppress=false;
+  const isOpen=x=>x.active==='visible'?!x.el.hidden:x.el.classList.contains(x.active.slice(1));
+  function dismiss(x){
+    if(!x||!isOpen(x))return;
+    const btn=x.close&&x.el.querySelector(x.close);
+    if(btn){btn.click();return}
+    if(x.el.id==='financeTransactionModal'&&typeof window.closeFinanceHistory==='function'){window.closeFinanceHistory();return}
+    if(x.el.id==='financeExpenseModal'&&typeof window.closeExpenseHistory==='function'){window.closeExpenseHistory();return}
+    x.el.classList.remove('show','open');
+    if(x.active==='visible')x.el.hidden=true;
+    x.el.setAttribute('aria-hidden','true');
+    if(!entries.some(y=>y!==x&&isOpen(y)))document.body.style.overflow='';
+  }
+  function sync(){
+    if(suppress)return;
+    const top=entries.slice().reverse().find(isOpen);
+    if(top&&!armed){
+      armed=top;
+      history.pushState({...history.state,sbOverlayGuard:true},'',location.href);
+    } else if(!top&&armed){
+      armed=null;
+      if(history.state?.sbOverlayGuard){suppress=true;history.back();setTimeout(()=>suppress=false,0)}
+    }
+  }
+  window.addEventListener('popstate',e=>{
+    if(!armed)return;
+    const active=armed;armed=null;suppress=true;
+    dismiss(active);
+    // Prevent page navigation handlers from interpreting a modal-close as a page change.
+    e.stopImmediatePropagation();
+    queueMicrotask(()=>{suppress=false;sync()});
+  },true);
+  for(const x of entries)new MutationObserver(sync).observe(x.el,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const x=entries.slice().reverse().find(isOpen);if(x){dismiss(x);}}});
+  sync();
+})();
+</script>
 </body>
 </html>
