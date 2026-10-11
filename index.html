@@ -2,6 +2,65 @@
 <html lang="en">
 
 <head>
+<script id="sb-overlay-back-stability-v2">
+/* Overlay history manager. Registered in the head before page routers. */
+(()=>{
+ const specs=[['#hoodieProductModal','open'],['#sbpModal','open'],['#lightbox','open']];
+ const get=()=>specs.map(([selector,flag])=>({el:document.querySelector(selector),flag})).filter(x=>x.el);
+ const shown=x=>x.flag==='hidden'?!x.el.hidden:x.el.classList.contains(x.flag);
+ let armed=null,closing=false;
+ function dismiss(x){
+   const el=x.el;
+   if(el.id==='lightbox'){
+     const close=el.querySelector('.lightbox-close');if(close){close.click();return;}
+   }
+   if(el.id==='sbJobQuickModal'){
+     const close=el.querySelector('[data-job-modal-close]');if(close){close.click();return;}
+   }
+   if(el.id==='sbPaymentSheet'){
+     const close=document.querySelector('[data-close-payment-sheet],#sbPaymentClose');if(close){close.click();return;}
+   }
+   if(el.id==='hoodieProductModal'){
+     const close=el.querySelector('.product-modal-close');if(close){close.click();return;}
+   }
+   if(el.id==='sbpModal'){
+     const close=el.querySelector('[data-sbp-close]');if(close){close.click();return;}
+   }
+   if(el.id==='financeTransactionModal'||el.id==='financeExpenseModal'){
+     const close=el.querySelector('[data-close-finance-history],[data-close-expense-history]');if(close){close.click();return;}
+   }
+   el.classList.remove('show','open');
+   if(x.flag==='hidden')el.hidden=true;
+   el.setAttribute('aria-hidden','true');
+ }
+ function sync(){
+   if(closing)return;
+   const top=get().filter(shown).at(-1)||null;
+   if(top&&!armed){
+     armed=top;
+     // Existing gallery and payment sheets manage their own history entries.
+     if(top.el.id!=='lightbox'&&top.el.id!=='sbPaymentSheet')history.pushState({...history.state,sbOverlayV2:true},'',location.href);
+   }else if(!top&&armed){
+     armed=null;
+     if(history.state?.sbOverlayV2){closing=true;history.back();setTimeout(()=>closing=false,50);}
+   }
+ }
+ window.addEventListener('popstate',event=>{
+   const top=get().filter(shown).at(-1);
+   if(!top)return;
+   armed=null;closing=true;
+   // Stop the underlying page router from changing pages while a sheet is open.
+   event.stopImmediatePropagation();
+   dismiss(top);
+   setTimeout(()=>{closing=false;sync()},70);
+ },true);
+ document.addEventListener('DOMContentLoaded',()=>{
+   const observer=new MutationObserver(sync);
+   for(const x of get())observer.observe(x.el,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});
+   sync();
+ });
+})();
+</script>
 <script id="stancebound-track-route-guard">
 (()=>{
   const p=new URLSearchParams(location.search);
@@ -8362,46 +8421,7 @@ finger.addEventListener('pointerdown',start);['pointerup','pointercancel','point
  document.addEventListener('DOMContentLoaded',clean,{once:true,capture:true});
 })();
 </script>
-<script id="sb-overlay-back-stability-v1">
-(()=>{
-  const targets=[("#hoodieProductModal", ".open", ".product-modal-close"), ("#sbpModal", ".open", "[data-sbp-close]")];
-  const entries=targets.map(([selector,active,close])=>({el:document.querySelector(selector),active,close})).filter(x=>x.el);
-  let armed=null, suppress=false;
-  const isOpen=x=>x.active==='visible'?!x.el.hidden:x.el.classList.contains(x.active.slice(1));
-  function dismiss(x){
-    if(!x||!isOpen(x))return;
-    const btn=x.close&&x.el.querySelector(x.close);
-    if(btn){btn.click();return}
-    if(x.el.id==='hoodieProductModal'&&typeof window.closeHoodieProduct==='function'){window.closeHoodieProduct();return}
-    x.el.classList.remove('show','open');
-    if(x.active==='visible')x.el.hidden=true;
-    x.el.setAttribute('aria-hidden','true');
-    if(!entries.some(y=>y!==x&&isOpen(y)))document.body.style.overflow='';
-  }
-  function sync(){
-    if(suppress)return;
-    const top=entries.slice().reverse().find(isOpen);
-    if(top&&!armed){
-      armed=top;
-      history.pushState({...history.state,sbOverlayGuard:true},'',location.href);
-    } else if(!top&&armed){
-      armed=null;
-      if(history.state?.sbOverlayGuard){suppress=true;history.back();setTimeout(()=>suppress=false,0)}
-    }
-  }
-  window.addEventListener('popstate',e=>{
-    if(!armed)return;
-    const active=armed;armed=null;suppress=true;
-    dismiss(active);
-    // Prevent page navigation handlers from interpreting a modal-close as a page change.
-    e.stopImmediatePropagation();
-    queueMicrotask(()=>{suppress=false;sync()});
-  },true);
-  for(const x of entries)new MutationObserver(sync).observe(x.el,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const x=entries.slice().reverse().find(isOpen);if(x){dismiss(x);}}});
-  sync();
-})();
-</script>
+
 </body>
 
 </html>
