@@ -2127,6 +2127,34 @@ document.querySelector('#moreLogoutBtn')?.addEventListener('click',()=>{moreShee
 
 const ADMIN_PAGE_NAMES=adminPages.map(p=>p.dataset.adminPage);
 window.addEventListener('popstate',()=>{
+  // Standalone Android PWA safeguard: never change the page behind an overlay.
+  const overlays=[
+    ['sbNotificationPanel','open'],['sbJobQuickModal','show'],
+    ['sbPaymentSheet','show'],['financeTransactionModal','hidden'],
+    ['financeExpenseModal','hidden'],['chatChoiceSheet','show'],
+    ['quickSheet','show'],['moreSheet','show']
+  ];
+  const active=overlays.map(([id,cls])=>({el:document.getElementById(id),cls}))
+    .find(({el,cls})=>el&&(cls==='hidden'?!el.hidden:el.classList.contains(cls)));
+  if(active){
+    const {el,cls}=active;
+    if(el.id==='sbPaymentSheet'){
+      document.querySelector('#sbPaymentBackdrop')?.classList.remove('show');
+      el.classList.remove('show');
+    }else if(el.id==='sbJobQuickModal'){
+      el.querySelector('.sb-job-modal-x')?.click();
+      el.classList.remove('show');
+      document.body.classList.remove('sb-job-modal-lock');
+      document.documentElement.classList.remove('sb-job-modal-lock');
+    }else if(cls==='hidden'){el.hidden=true;}
+    else el.classList.remove(cls);
+    el.setAttribute('aria-hidden','true');
+    // Keep the currently visible page and URL aligned, even if Android
+    // consumed a page entry instead of the overlay's history entry.
+    const visible=document.querySelector('.admin-page.active')?.dataset.adminPage||'dashboard';
+    history.replaceState({stanceboundAdmin:visible},'','#'+visible);
+    return;
+  }
   const name=location.hash.replace('#','');
   openAdminPage(ADMIN_PAGE_NAMES.includes(name)?name:'dashboard',false);
 });
