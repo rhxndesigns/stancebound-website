@@ -2658,7 +2658,23 @@ function chatDate(value){
   catch{return value;}
 }
 
+let sbChatLoadSequence=0;
+// Chat Back is handled before page-level delegated click handlers.
+// This deliberately restores the inbox rather than navigating the admin router.
+document.addEventListener('click',function sbChatBackToInbox(e){
+  const back=e.target.closest?.('[data-chat-back]');
+  if(!back)return;
+  const host=back.closest('#chatList,#generalChatList');
+  if(!host)return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  host.dataset.sbThreadOpen='';
+  host.innerHTML='<div class="empty-state">Loading conversations…</div>';
+  loadChats();
+},true);
+
 async function loadChats(){
+  const sbLoadId=++sbChatLoadSequence;
   const bookingList=document.querySelector('#chatList');
   const generalList=document.querySelector('#generalChatList');
   const bookingStatus=document.querySelector('#chatAdminStatus');
@@ -2677,7 +2693,7 @@ async function loadChats(){
     return;
   }
 
-  cachedConversationMessages=await Promise.all((data||[]).map(async m=>{
+  const loadedMessages=await Promise.all((data||[]).map(async m=>{
     const raw=Array.isArray(m.attachments)?m.attachments:[];
     const attachments=[];
     for(const a of raw){
@@ -2687,6 +2703,8 @@ async function loadChats(){
     }
     return {...m,attachments};
   }));
+  if(sbLoadId!==sbChatLoadSequence)return; // Ignore older refreshes arriving after newer navigation.
+  cachedConversationMessages=loadedMessages;
   const groups=new Map();
   cachedConversationMessages.forEach(m=>{
     const key=String(m.enquiry_id);
@@ -3258,7 +3276,7 @@ function isBookingRecord(r){
 
 function updateBookingMetrics(){
   const bookingRows=cachedEnquiries.filter(isBookingRecord);
-  const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new').length;
+  const needs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='new' && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status).length;
   const awaiting=bookingRows.filter(r=>bookingWorkflowStatus(r)==='confirmation').length;
   const jobs=bookingRows.filter(r=>bookingWorkflowStatus(r)==='booked').length;
   const a=document.querySelector('#metricBookingRequests'); if(a)a.textContent=awaiting;
