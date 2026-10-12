@@ -2486,12 +2486,19 @@ async function loadEnquiries(){
   const status=document.querySelector('#enquiryAdminStatus');
   if(status)status.textContent='Loading customer data...';
 
-  const {data,error}=await supabase
-    .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,agreement_signed_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token,original_booking_date,original_booking_time,original_booking_end_time,original_booking_location,original_service,original_quoted_price,final_confirmation_status,final_confirmation_id,completed_at')
-    .eq('email_verified',true)
-    .order('created_at',{ascending:false});
-
+  // completed_at is an optional migration. Do not hide ALL bookings if it has
+  // not yet been added to the database or the schema cache is still updating.
+  const enquiryFields='id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,agreement_signed_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token,original_booking_date,original_booking_time,original_booking_end_time,original_booking_location,original_service,original_quoted_price,final_confirmation_status,final_confirmation_id';
+  let result=await supabase.from('enquiries')
+    .select(enquiryFields+',completed_at')
+    .eq('email_verified',true).order('created_at',{ascending:false});
+  if(result.error && (/completed_at/i.test(String(result.error.message||'')) || ['42703','PGRST204'].includes(String(result.error.code||'')))){
+    console.warn('STANCEBOUND: completed_at is not available yet; loading bookings without it.');
+    result=await supabase.from('enquiries')
+      .select(enquiryFields)
+      .eq('email_verified',true).order('created_at',{ascending:false});
+  }
+  const {data,error}=result;
   if(error){
     if(status)status.textContent=error.message;
     const bookingStatus=document.querySelector('#bookingRequestStatus');
@@ -4026,7 +4033,7 @@ ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>P
         .update({status:'completed',completed_at:completedAt})
         .eq('id',id).neq('status','completed')
         .select('id,status,completed_at').maybeSingle();
-      if(error)throw error;
+      if(error){if(/completed_at/i.test(String(error.message||'')))throw new Error('The completed_at database column is missing. Run the V23 SQL migration in Supabase before completing jobs.');throw error;}
       if(!data)throw new Error('The job was already completed or could not be updated. Refresh to check its status.');
       await loadEnquiries();
       openAdminPage('completed');
