@@ -2488,7 +2488,7 @@ async function loadEnquiries(){
 
   const {data,error}=await supabase
     .from('enquiries')
-    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,agreement_signed_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token,original_booking_date,original_booking_time,original_booking_end_time,original_booking_location,original_service,original_quoted_price,final_confirmation_status,final_confirmation_id')
+    .select('id,name,email,phone,service,vehicle,message,status,created_at,verified_at,booking_date,booking_time,booking_end_time,booking_location,quoted_price,admin_notes,last_reply_at,agreement_accepted,agreement_version,agreement_accepted_at,agreement_signed_at,media_consent,alternative_booking_date,alternative_booking_time,conversation_token,original_booking_date,original_booking_time,original_booking_end_time,original_booking_location,original_service,original_quoted_price,final_confirmation_status,final_confirmation_id,completed_at')
     .eq('email_verified',true)
     .order('created_at',{ascending:false});
 
@@ -3991,7 +3991,7 @@ function renderUpcoming(){
     <div class="full"><label>Working space</label><select data-job-space><option value="">NOT SET</option><option value="Yes">YES</option><option value="No">NO</option><option value="Not sure">NOT SURE</option></select></div>
     <div class="full"><label>Job prep / private notes</label><textarea data-job-notes placeholder="Equipment to bring, access notes, things to check...">${escapeHtml(r.admin_notes||'')}</textarea></div>
   </div>
-  <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button><button type="button" class="secondary danger" data-delete-upcoming="${r.id}">DELETE BOOKING</button></div>
+  <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button><button type="button" class="sb-complete-job-btn" data-mark-job-completed="${r.id}">COMPLETE JOB</button><button type="button" class="secondary danger" data-delete-upcoming="${r.id}">DELETE BOOKING</button></div>
   <div class="status" data-job-status></div>
 </div>
 ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-open-job-control="${r.id}">OPEN JOB</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
@@ -4012,6 +4012,29 @@ ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>P
     if(panel)panel.hidden=true;
     const open=list.querySelector(`[data-open-job-control="${CSS.escape(String(btn.dataset.closeJob))}"]`);
     if(open)open.textContent='OPEN JOB';
+  });
+  list.querySelectorAll('[data-mark-job-completed]').forEach(btn=>btn.onclick=async()=>{
+    const id=btn.dataset.markJobCompleted;
+    const r=cachedEnquiries.find(x=>String(x.id)===String(id));
+    if(!r || r.status==='completed')return;
+    if(!window.confirm(`Complete ${r.name || 'this customer'}'s job?\n\nIt will move from Upcoming to Completed. Payment status will NOT change.`))return;
+    const st=btn.closest('.sb-job-control')?.querySelector('[data-job-status]');
+    btn.disabled=true;btn.textContent='COMPLETING…';
+    try{
+      const completedAt=new Date().toISOString();
+      const {data,error}=await supabase.from('enquiries')
+        .update({status:'completed',completed_at:completedAt})
+        .eq('id',id).neq('status','completed')
+        .select('id,status,completed_at').maybeSingle();
+      if(error)throw error;
+      if(!data)throw new Error('The job was already completed or could not be updated. Refresh to check its status.');
+      await loadEnquiries();
+      openAdminPage('completed');
+    }catch(e){
+      if(st)st.textContent=e?.message||'Could not complete job.';
+      else alert(e?.message||'Could not complete job.');
+      btn.disabled=false;btn.textContent='COMPLETE JOB';
+    }
   });
   list.querySelectorAll('[data-delete-upcoming]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteUpcoming));sbConfirmAndDeleteBooking(btn.dataset.deleteUpcoming,r?.name?`${r.name}'s booking`:'this booking',btn);});
   list.querySelectorAll('[data-save-job]').forEach(btn=>btn.onclick=async()=>{
@@ -4052,15 +4075,27 @@ ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>P
 
 function renderCompleted(){
   const list=document.querySelector('#completedList'); if(!list)return;
-  const rows=cachedEnquiries.filter(r=>r.status==='completed').sort((a,b)=>(b.booking_date||b.created_at).localeCompare(a.booking_date||a.created_at));
+  const rows=cachedEnquiries.filter(r=>r.status==='completed').sort((a,b)=>String(b.completed_at||b.booking_date||b.created_at||'').localeCompare(String(a.completed_at||a.booking_date||a.created_at||'')));
   const count=document.querySelector('#completedCount'); if(count)count.textContent=`${rows.length} job${rows.length===1?'':'s'}`;
-  const total=rows.reduce((s,r)=>s+Number(r.quoted_price||0),0);
+  const total=rows.reduce((sum,r)=>sum+Number(r.quoted_price||0),0);
   const summary=document.querySelector('#completedSummary');
-  if(summary)summary.innerHTML=`<div class="metric-card"><div class="metric-label">Completed jobs</div><div class="metric-value">${rows.length}</div><div class="metric-sub">Finished work</div></div><div class="metric-card"><div class="metric-label">Completed value</div><div class="metric-value">£${total.toFixed(0)}</div><div class="metric-sub">Booking values</div></div>`;
+  if(summary)summary.innerHTML=`<div class="metric-card"><div class="metric-label">Completed jobs</div><div class="metric-value">${rows.length}</div><div class="metric-sub">Finished work</div></div><div class="metric-card"><div class="metric-label">Completed value</div><div class="metric-value">£${total.toFixed(0)}</div><div class="metric-sub">Job values, not payments received</div></div>`;
   if(!rows.length){list.innerHTML='<div class="empty-state">No completed jobs yet.</div>';return;}
-  list.innerHTML=rows.map(r=>{const d=r.booking_date?new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Completed job';return `<article class="completed-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name)}</h3><div class="completed-meta">${escapeHtml(r.vehicle)} · ${escapeHtml(r.service)}<br>${escapeHtml(d)}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="completed-actions-clean"><button type="button" data-completed-contact="${r.id}">CONTACT CUSTOMER</button><button type="button" class="secondary" data-completed-more="${r.id}">MORE</button></div><div class="completed-more" id="completed-more-${r.id}">${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="enquiry-actions-admin"><button type="button" class="secondary" data-complete-schedule="${r.id}">VIEW SCHEDULE</button><button type="button" class="secondary danger" data-delete-completed="${r.id}">DELETE BOOKING</button></div></div></article>`}).join('');
-  list.querySelectorAll('[data-completed-more]').forEach(btn=>btn.onclick=()=>document.querySelector('#completed-more-'+btn.dataset.completedMore)?.classList.toggle('show'));
+  list.innerHTML=rows.map(r=>{
+    const date=r.completed_at?new Date(r.completed_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}):'Completion time not recorded';
+    const booked=r.booking_date?new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB'):'Not set';
+    const paid=sbPaymentFor(r.id)?.status==='paid';
+    const hasAgreement=!!r.final_confirmation_id && ['signed','accepted'].includes(String(r.final_confirmation_status||'').toLowerCase());
+    return `<article class="completed-card"><div class="completed-card-head"><div><h3>${escapeHtml(r.name||'Customer')}</h3><div class="completed-meta">${escapeHtml(r.vehicle||'Vehicle not recorded')} · ${escapeHtml(r.service||'Service not recorded')}<br>COMPLETED: ${escapeHtml(date)}<br>BOOKED: ${escapeHtml(booked)}<br>PAYMENT: ${paid?'PAID':'NOT PAID'}</div></div><div class="completed-price">${r.quoted_price!=null?'£'+Number(r.quoted_price).toFixed(2):'—'}</div></div><div class="completed-actions-clean"><button type="button" data-completed-contact="${r.id}">CONTACT CUSTOMER</button><button type="button" class="secondary" data-completed-more="${r.id}">MORE</button></div><div class="completed-more" id="completed-more-${r.id}"><div class="completed-meta">${escapeHtml(r.booking_location||'Location not recorded')}</div>${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="enquiry-actions-admin">${hasAgreement?`<button type="button" data-completed-agreement="${r.id}">VIEW SIGNED CONTRACT / DOWNLOAD PDF</button>`:'<div class="status">No signed final agreement is linked to this booking.</div>'}<button type="button" class="secondary" data-complete-schedule="${r.id}">VIEW SCHEDULE</button><button type="button" class="secondary danger" data-delete-completed="${r.id}">DELETE BOOKING</button></div></div></article>`;
+  }).join('');
+  list.querySelectorAll('[data-completed-more]').forEach(btn=>btn.onclick=()=>document.querySelector('#completed-more-'+CSS.escape(btn.dataset.completedMore))?.classList.toggle('show'));
   list.querySelectorAll('[data-completed-contact]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.completedContact));if(r?.email){location.href='mailto:'+r.email}else if(r?.phone){location.href='tel:'+r.phone}else alert('No contact details are stored for this customer.');});
+  list.querySelectorAll('[data-completed-agreement]').forEach(btn=>btn.onclick=async()=>{
+    const handler=window.sbDownloadSignedAgreementPdf;
+    if(typeof handler!=='function'){alert('The contract preview is not available. Please refresh Admin.');return;}
+    btn.disabled=true;
+    try{await handler(btn.dataset.completedAgreement,btn)}catch(e){alert(e?.message||'Could not open the signed contract.')}finally{btn.disabled=false;}
+  });
   list.querySelectorAll('[data-complete-schedule]').forEach(btn=>btn.onclick=()=>openAdminPage('schedule'));
   list.querySelectorAll('[data-delete-completed]').forEach(btn=>btn.onclick=async()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteCompleted));if(!r||!confirm(`Delete ${r.name}'s completed booking? Financial records are kept separately.`))return;btn.disabled=true;try{await sbDeleteBookingRecord(r.id)}catch(e){alert(e?.message||'Could not delete booking.');btn.disabled=false;}});
 }
