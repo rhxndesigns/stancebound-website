@@ -3343,17 +3343,49 @@ function pdfSafeFilename(value='agreement'){
   return String(value||'agreement').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()||'agreement';
 }
 
+function sbAgreementPreview(blob, filename){
+  document.getElementById('sbAgreementPreviewModal')?.remove();
+  const url=URL.createObjectURL(blob);
+  const modal=document.createElement('div');
+  modal.id='sbAgreementPreviewModal';
+  modal.setAttribute('role','dialog');
+  modal.setAttribute('aria-modal','true');
+  modal.setAttribute('aria-label','Signed agreement PDF preview');
+  modal.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.9);display:flex;flex-direction:column;padding:env(safe-area-inset-top,12px) 10px env(safe-area-inset-bottom,12px);gap:10px';
+  const bar=document.createElement('div');bar.style.cssText='display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:white;padding:8px';
+  const title=document.createElement('strong');title.textContent='SIGNED CUSTOMER AGREEMENT';
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px';
+  const download=document.createElement('button');download.type='button';download.textContent='DOWNLOAD PDF';
+  const close=document.createElement('button');close.type='button';close.textContent='CLOSE';
+  for(const b of [download,close])b.style.cssText='padding:10px 14px;border-radius:8px;border:1px solid #777;background:#242424;color:white;font-weight:700';
+  actions.append(download,close);bar.append(title,actions);
+  const frame=document.createElement('iframe');frame.title='Signed agreement preview';frame.src=url;frame.style.cssText='width:100%;flex:1;min-height:0;border:0;background:white;border-radius:8px';
+  const hint=document.createElement('div');hint.textContent='If your browser cannot display the preview, use DOWNLOAD PDF.';hint.style.cssText='color:#bbb;text-align:center;font-size:12px';
+  modal.append(bar,frame,hint);document.body.append(modal);
+  let closed=false;
+  const dismiss=()=>{if(closed)return;closed=true;document.removeEventListener('keydown',onKey,true);modal.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)};
+  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();dismiss()}};
+  document.addEventListener('keydown',onKey,true);
+  close.addEventListener('click',dismiss);
+  download.addEventListener('click',()=>{const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove()});
+}
+async function sbAgreementWithTimeout(promise, ms, message){
+  let timer;
+  try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms)})]);}
+  finally{clearTimeout(timer)}
+}
+
 async function downloadSignedAgreementPdf(enquiryId, button){
   const card=button.closest('[data-booking-request-id]');
   const st=card?.querySelector('[data-request-status]');
   button.disabled=true;
   if(st)st.textContent='Preparing signed agreement PDF...';
   try{
-    const {data,error}=await supabase.functions.invoke('get-final-agreement',{body:{enquiry_id:enquiryId}});
+    const {data,error}=await sbAgreementWithTimeout(supabase.functions.invoke('get-final-agreement',{body:{enquiry_id:enquiryId}}),20000,'The signed agreement request timed out. Please try again.');
     if(error)throw error;
     if(!data?.success||!data?.agreement)throw new Error(data?.error||'Signed agreement could not be loaded.');
     const a=data.agreement;
-    const {jsPDF}=await import('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/+esm');
+    const {jsPDF}=await sbAgreementWithTimeout(import('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/+esm'),15000,'The PDF library could not load. Check your internet connection and try again.');
     const doc=new jsPDF({unit:'mm',format:'a4'});
     const W=210,H=297,M=16,CW=W-M*2;
     let y=18;
@@ -3393,8 +3425,8 @@ async function downloadSignedAgreementPdf(enquiryId, button){
     line('User agent',a.customer_user_agent||'Not recorded');
     need(14);doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.text('This PDF is generated from the frozen signed STANCEBOUND confirmation record. Later booking edits do not alter this signed record.',M,y,{maxWidth:CW});
     const filename=`stancebound-${pdfSafeFilename(a.customer_name)}-${pdfSafeFilename(a.proposed_booking_date||'agreement')}-signed-agreement.pdf`;
-    doc.save(filename);
-    if(st)st.textContent='SIGNED AGREEMENT PDF DOWNLOADED ✓';
+    sbAgreementPreview(doc.output('blob'),filename);
+    if(st)st.textContent='Signed agreement preview opened.';
     return true;
   }catch(e){if(st)st.textContent=e?.message||'Could not download signed agreement.';return false;}
   finally{button.disabled=false;}
@@ -5765,7 +5797,7 @@ if(mode==="view"){
       const status=pdfSection.querySelector('[data-job-pdf-status]');
       status.textContent='Preparing signed contract...';
       const saved=await downloadSignedAgreementPdf(row.id,button);
-      status.textContent=saved?'PDF download requested. Check your Downloads folder.':'Could not download the signed contract. Check the agreement record and try again.';
+      status.textContent=saved?'Signed agreement preview opened. Select DOWNLOAD PDF to save it.':'Unable to prepare the signed agreement. See the error in the booking request, or check the browser console.';
     });
   }
 }
