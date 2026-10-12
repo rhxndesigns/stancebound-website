@@ -3626,83 +3626,96 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 <style id="stancebound-sb-smooth-red-motion-v2">
 /* One SB emblem; soft continuously travelling crimson illumination. No strobing. */
 #sbBoot .sb-boot-kinetic {
+  width:min(52vw,280px);
+  margin:0 auto 6px;
   animation:sbKineticIntro .85s cubic-bezier(.16,.9,.3,1) both,
-            sbCrownGentleFloat 7s ease-in-out .85s infinite alternate;
+            sbCrownGentleFloat 8.5s ease-in-out .85s infinite alternate;
 }
 @keyframes sbCrownGentleFloat {
   0% {transform:translateY(0) scale(1)}
-  100% {transform:translateY(-4px) scale(1.008)}
+  100% {transform:translateY(-3px) scale(1.006)}
 }
 #sbBoot .sb-boot-logo-art {
-  filter:drop-shadow(0 12px 18px rgba(0,0,0,.76)) contrast(1.05);
+  filter:drop-shadow(0 12px 20px rgba(0,0,0,.82)) contrast(1.04) brightness(.99);
 }
 #sbBoot .sb-boot-logo-halo {
-  opacity:.34;
-  filter:blur(16px) saturate(1.2) brightness(1.06) drop-shadow(0 0 10px rgba(147,12,30,.34));
-  animation:sbGentleHalo 10s ease-in-out infinite alternate;
+  opacity:.26;
+  filter:blur(18px) saturate(1.08) brightness(1.04)
+         drop-shadow(0 0 8px rgba(140,12,28,.20));
+  animation:sbHaloBreathe 12s ease-in-out infinite alternate;
 }
-@keyframes sbGentleHalo {
-  from {opacity:.32;transform:translateZ(-10px) scale(1.035)}
-  to {opacity:.43;transform:translateZ(-10px) scale(1.045)}
+@keyframes sbHaloBreathe {
+  from {opacity:.22;transform:translateZ(-10px) scale(1.02)}
+  to {opacity:.32;transform:translateZ(-10px) scale(1.04)}
 }
-/* The red sheen takes six seconds to cross the metallic emblem, without brightness jumps. */
+/* Remove the bold red scan and replace it with a soft drifting inner glow. */
 #sbBoot .sb-boot-logo-redscan {
-  background-image:linear-gradient(104deg,
-    transparent 0%,transparent 36%,
-    rgba(255,35,63,0) 41%,
-    rgba(236,32,53,.12) 45%,
-    rgba(255,80,91,.33) 50%,
-    rgba(236,32,53,.12) 55%,
-    rgba(255,35,63,0) 60%,
-    transparent 65%,transparent 100%);
-  background-size:320% 100%;
+  background-image:linear-gradient(110deg,
+    transparent 0%,
+    rgba(255,42,66,0) 38%,
+    rgba(255,54,74,.07) 47%,
+    rgba(255,82,97,.16) 50%,
+    rgba(255,54,74,.07) 53%,
+    rgba(255,42,66,0) 62%,
+    transparent 100%);
+  background-size:260% 100%;
   background-repeat:no-repeat;
   mix-blend-mode:screen;
-  opacity:.65;
-  animation:sbRedGlide 6s linear infinite;
+  opacity:.24;
+  animation:sbInnerGlowDrift 11s linear infinite;
 }
-@keyframes sbRedGlide {
-  0% {background-position:170% center}
-  100% {background-position:-170% center}
+@keyframes sbInnerGlowDrift {
+  0% {background-position:155% center}
+  100% {background-position:-155% center}
 }
-/* A dim red light travels around the contours. Steady speed, never blinking. */
+/* Main moving red glow: a single bright segment with a soft tail circling the emblem like a snake. */
 #sbBoot .sb-boot-logo-orbit {
   background:conic-gradient(from 0deg,
-    rgba(193,25,49,.05) 0deg,
-    rgba(255,43,65,.30) 45deg,
-    rgba(201,15,43,.04) 105deg,
-    rgba(227,22,47,.08) 160deg,
-    rgba(255,65,75,.24) 230deg,
-    rgba(186,22,42,.05) 285deg,
-    rgba(193,25,49,.05) 360deg);
-  opacity:.46;
-  filter:blur(12px);
+    rgba(255,40,66,0) 0deg 300deg,
+    rgba(255,46,71,.05) 314deg,
+    rgba(255,52,76,.16) 326deg,
+    rgba(255,73,94,.40) 337deg,
+    rgba(255,112,126,.78) 346deg,
+    rgba(255,82,100,.55) 352deg,
+    rgba(255,50,72,.18) 358deg,
+    rgba(255,40,66,0) 360deg);
+  opacity:.72;
+  filter:blur(10px) saturate(1.12);
   mix-blend-mode:screen;
-  animation:sbRedSoftOrbit 9s linear infinite;
+  transform:translateZ(8px) scale(1.048);
+  animation:sbSnakeOrbit 8.8s linear infinite;
 }
-@keyframes sbRedSoftOrbit {
-  from {transform:translateZ(8px) scale(1.04) rotate(0deg)}
-  to {transform:translateZ(8px) scale(1.04) rotate(360deg)}
+@keyframes sbSnakeOrbit {
+  from {transform:translateZ(8px) scale(1.048) rotate(0deg)}
+  to {transform:translateZ(8px) scale(1.048) rotate(360deg)}
 }
+/* Keep chrome motion, but much gentler and slower. */
 #sbBoot .sb-boot-logo-sweep {
   background-image:linear-gradient(110deg,
-    transparent 35%,rgba(255,255,255,.02) 45%,
-    rgba(255,255,255,.17) 50%,
-    rgba(255,255,255,.02) 55%,transparent 65%);
-  background-size:310% 100%;
-  opacity:.27;
-  animation:sbRedGlide 9s linear infinite;
+    transparent 36%,rgba(255,255,255,.015) 46%,
+    rgba(255,255,255,.11) 50%,
+    rgba(255,255,255,.015) 54%,transparent 64%);
+  background-size:280% 100%;
+  opacity:.16;
+  animation:sbSoftChromeSweep 13s linear infinite;
 }
-#sbBoot .sb-boot-logo-lumina {opacity:.22}
+@keyframes sbSoftChromeSweep {
+  0% {background-position:150% center}
+  100% {background-position:-150% center}
+}
+#sbBoot .sb-boot-logo-lumina {opacity:.14}
 #sbBoot .sb-boot-kinetic.sb-kinetic-tap .sb-boot-logo-halo {
-  animation:sbGentleHalo 10s ease-in-out infinite alternate;
+  animation:sbHaloBreathe 12s ease-in-out infinite alternate;
 }
-/* Avoid fast scanning/glitching/flares on the loading screen. */
 #sbBoot .sb-boot-scan,
+#sbBoot .sb-boot-title,
 #sbBoot .sb-boot-title::after,
 #sbBoot .sb-boot-spark {display:none!important;animation:none!important}
-#sbBoot .sb-boot-readout::after {animation:sbReadoutTravel 6s linear infinite alternate}
-/* Respect visitors who have enabled reduced motion. */
+#sbBoot .sb-boot-rule {margin:10px auto 14px}
+@media (max-width:600px) {
+  #sbBoot .sb-boot-kinetic {width:min(56vw,250px); margin-bottom:8px;}
+  #sbBoot .sb-boot-rule {max-width:210px}
+}
 @media(prefers-reduced-motion:reduce) {
   #sbBoot .sb-boot-kinetic,
   #sbBoot .sb-boot-logo-halo,
@@ -4571,7 +4584,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
     <div class="sb-boot-logo-lumina"></div>
     
   </div>
-</div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><h1 class="sb-boot-title">STANCEBOUND</h1><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
+</div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
 <script id="stancebound-first-visit-boot-js">
 (()=>{
  const root=document.documentElement,boot=document.querySelector('#sbBoot');
