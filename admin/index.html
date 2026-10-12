@@ -2491,6 +2491,9 @@ async function loadEnquiries(){
 
   if(error){
     if(status)status.textContent=error.message;
+    const bookingStatus=document.querySelector('#bookingRequestStatus');
+    if(bookingStatus)bookingStatus.textContent='Could not load enquiries: '+error.message;
+    console.error('STANCEBOUND enquiry loading failed',error);
     return;
   }
 
@@ -3290,7 +3293,11 @@ function bookingWorkflowStatus(r){
   return 'ongoing';
 }
 function isBookingRecord(r){
-  return !!(r?.agreement_accepted || r?.booking_date || r?.final_confirmation_status || r?.final_confirmation_id || ['booked','completed'].includes(r?.status) || String(r?.message||'').includes('Manual booking created in STANCEBOUND Admin'));
+  if(!r)return false;
+  // A new verified booking may not yet have a date or signed agreement.
+  // Service/vehicle details identify the booking form without misclassifying general chat.
+  const hasBookingDetails=Boolean(String(r.service||'').trim() || String(r.vehicle||'').trim() || r.alternative_booking_date || r.original_booking_date);
+  return !!(hasBookingDetails || r.agreement_accepted || r.booking_date || r.final_confirmation_status || r.final_confirmation_id || ['booked','completed'].includes(r.status) || String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
 }
 
 function isGenuineNewBookingEnquiry(r){
