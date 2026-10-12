@@ -2506,7 +2506,7 @@ async function loadEnquiries(){
     }catch(_){/* Keep Admin usable if one pending record cannot be loaded. */}
   }));
   const activeStatuses=['new','awaiting_reply','ongoing','booked'];
-  const contactEnquiries=cachedEnquiries.filter(r=>!r.agreement_accepted && !String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
+  const contactEnquiries=cachedEnquiries.filter(r=>!String(r.message||'').includes('Manual booking created in STANCEBOUND Admin'));
   const rows=contactEnquiries.filter(r=> enquiryFilter==='active' ? activeStatuses.includes(r.status) : r.status===enquiryFilter);
   const legacyEnquiryBadge=document.querySelector('#enquiryBadge'); if(legacyEnquiryBadge)legacyEnquiryBadge.textContent='';
   renderBookingRequests();
@@ -3294,7 +3294,7 @@ function isBookingRecord(r){
 }
 
 function isGenuineNewBookingEnquiry(r){
-  return isBookingRecord(r) && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status && !r.agreement_accepted;
+  return isBookingRecord(r) && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status;
 }
 function updateBookingMetrics(){
   const bookingRows=cachedEnquiries.filter(isBookingRecord);
