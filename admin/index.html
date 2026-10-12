@@ -3377,7 +3377,7 @@ async function sbAgreementWithTimeout(promise, ms, message){
 
 async function downloadSignedAgreementPdf(enquiryId, button){
   const card=button.closest('[data-booking-request-id]');
-  const st=card?.querySelector('[data-request-status]');
+  const st=button.closest('section')?.querySelector('[data-job-pdf-status]') || card?.querySelector('[data-request-status]');
   button.disabled=true;
   if(st)st.textContent='Preparing signed agreement PDF...';
   try{
@@ -3428,7 +3428,7 @@ async function downloadSignedAgreementPdf(enquiryId, button){
     sbAgreementPreview(doc.output('blob'),filename);
     if(st)st.textContent='Signed agreement preview opened.';
     return true;
-  }catch(e){if(st)st.textContent=e?.message||'Could not download signed agreement.';return false;}
+  }catch(e){const msg=e?.message||String(e)||'Could not prepare signed agreement.';console.error('[STANCEBOUND signed PDF]',e);if(st)st.textContent='PDF ERROR: '+msg;return false;}
   finally{button.disabled=false;}
 }
 
@@ -5797,7 +5797,8 @@ if(mode==="view"){
       const status=pdfSection.querySelector('[data-job-pdf-status]');
       status.textContent='Preparing signed contract...';
       const saved=await downloadSignedAgreementPdf(row.id,button);
-      status.textContent=saved?'Signed agreement preview opened. Select DOWNLOAD PDF to save it.':'Unable to prepare the signed agreement. See the error in the booking request, or check the browser console.';
+      if(saved)status.textContent='Signed agreement preview opened. Select DOWNLOAD PDF to save it.';
+      else if(!status.textContent.startsWith('PDF ERROR:'))status.textContent='Unable to prepare signed agreement. Check the browser console.';
     });
   }
 }
