@@ -4,7 +4,7 @@
 <script id="sb-overlay-back-stability-v2">
 /* Overlay history manager. Registered in the head before page routers. */
 (()=>{
- const specs=[['#sbNotificationPanel','open'],['#moreSheet','show'],['#quickSheet','show'],['#chatChoiceSheet','show'],['#sbJobQuickModal','show'],['#financeTransactionModal','hidden'],['#financeExpenseModal','hidden'],['#sbPaymentSheet','show']];
+ const specs=[['#sbNotificationPanel','open'],['#moreSheet','show'],['#quickSheet','show'],['#chatChoiceSheet','show'],['#sbJobQuickModal','show'],['#financeTransactionModal','hidden'],['#financeExpenseModal','hidden'],['#sbPaymentSheet','show'],['#sbJobChatOverlay','show']];
  const get=()=>specs.map(([selector,flag])=>({el:document.querySelector(selector),flag})).filter(x=>x.el);
  const shown=x=>x.flag==='hidden'?!x.el.hidden:x.el.classList.contains(x.flag);
  let armed=null,closing=false;
@@ -12,6 +12,9 @@
    const el=x.el;
    if(el.id==='lightbox'){
      const close=el.querySelector('.lightbox-close');if(close){close.click();return;}
+   }
+   if(el.id==='sbJobChatOverlay'){
+     const close=el.querySelector('#sbJobChatCancel');if(close){close.click();return;}
    }
    if(el.id==='sbJobQuickModal'){
      const close=el.querySelector('[data-job-modal-close]');if(close){close.click();return;}
@@ -2148,7 +2151,7 @@ const ADMIN_PAGE_NAMES=adminPages.map(p=>p.dataset.adminPage);
 window.addEventListener('popstate',()=>{
   // Standalone Android PWA safeguard: never change the page behind an overlay.
   const overlays=[
-    ['sbNotificationPanel','open'],['sbJobQuickModal','show'],
+    ['sbJobChatOverlay','show'],['sbNotificationPanel','open'],['sbJobQuickModal','show'],
     ['sbPaymentSheet','show'],['financeTransactionModal','hidden'],
     ['financeExpenseModal','hidden'],['chatChoiceSheet','show'],
     ['quickSheet','show'],['moreSheet','show']
@@ -3392,7 +3395,8 @@ async function downloadSignedAgreementPdf(enquiryId, button){
     const filename=`stancebound-${pdfSafeFilename(a.customer_name)}-${pdfSafeFilename(a.proposed_booking_date||'agreement')}-signed-agreement.pdf`;
     doc.save(filename);
     if(st)st.textContent='SIGNED AGREEMENT PDF DOWNLOADED ✓';
-  }catch(e){if(st)st.textContent=e?.message||'Could not download signed agreement.';}
+    return true;
+  }catch(e){if(st)st.textContent=e?.message||'Could not download signed agreement.';return false;}
   finally{button.disabled=false;}
 }
 
@@ -3477,7 +3481,7 @@ function renderBookingRequests(){
         </div>
         <div class="booking-edit-panel booking-management" id="booking-management-${r.id}" hidden>
           <div class="enquiry-actions-admin">
-            ${r.final_confirmation_status==='signed'&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
+            ${['signed','accepted'].includes(String(r.final_confirmation_status||'').toLowerCase())&&r.final_confirmation_id?`<button type="button" class="secondary" data-download-agreement="${r.id}">DOWNLOAD SIGNED PDF</button>`:''}
             ${workflow==='booked'?`<button type="button" class="secondary" data-open-schedule="${r.id}">OPEN SCHEDULE</button>`:''}
             ${!isPending?`<button type="button" class="secondary" data-reply-request="${r.id}">${workflow==='booked'?'EMAIL CUSTOMER':'REPLY / SUGGEST DATE'}</button>`:''}
             ${workflow==='booked'?`<button type="button" class="secondary danger" data-cancel-booking="${r.id}">CANCEL BOOKING</button>`:''}
@@ -5750,6 +5754,20 @@ if(mode==="view"){
   const payment=document.createElement('button');payment.type='button';payment.className='sb-popup-track-button';payment.textContent='OPEN PAYMENT OPTIONS';payment.setAttribute('data-popup-pay','');
   const section=document.createElement('section');section.className='sb-popup-section';section.innerHTML='<div class="sb-popup-section-head"><b>PAYMENT</b><span>JOB CHECKOUT</span></div>';
   section.append(payment);body.append(section);
+  // Keep the frozen signed agreement accessible from an accepted job.
+  if(row.final_confirmation_id && ['signed','accepted'].includes(String(row.final_confirmation_status||'').toLowerCase())){
+    const pdfSection=document.createElement('section');
+    pdfSection.className='sb-popup-section';
+    pdfSection.innerHTML='<div class="sb-popup-section-head"><b>SIGNED AGREEMENT</b><span>CUSTOMER CONTRACT</span></div><button type="button" class="sb-popup-track-button" data-job-signed-pdf>DOWNLOAD SIGNED CONTRACT PDF</button><div class="status" data-job-pdf-status></div>';
+    body.append(pdfSection);
+    pdfSection.querySelector('[data-job-signed-pdf]').addEventListener('click',async event=>{
+      const button=event.currentTarget;
+      const status=pdfSection.querySelector('[data-job-pdf-status]');
+      status.textContent='Preparing signed contract...';
+      const saved=await downloadSignedAgreementPdf(row.id,button);
+      status.textContent=saved?'PDF download requested. Check your Downloads folder.':'Could not download the signed contract. Check the agreement record and try again.';
+    });
+  }
 }
 const set=(q,v)=>{const e=body.querySelector(q);if(e)e.value=/^yes$/i.test(v||'')?'Yes':/^no$/i.test(v||'')?'No':/not sure/i.test(v||'')?'Not sure':''};set('[data-p-water]',access.water);set('[data-p-power]',access.power);set('[data-p-space]',access.space);if(pay){pay.classList.add('sb-popup-payment');body.querySelector('.sb-job-modal-summary').after(pay)}lock();modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
 body.querySelector('[data-popup-pay]')?.addEventListener('click',()=>{const id=activeId;close();if(window.sbOpenPaymentForJob)window.sbOpenPaymentForJob(id);else alert('Payment options are not available yet.');});body.querySelector('[data-popup-open-tracker]')?.addEventListener('click',()=>{const id=activeId,name=row.name||'';close();if(window.sbOpenLiveTrackerPage)window.sbOpenLiveTrackerPage(id,name)});body.querySelector('[data-popup-save]')?.addEventListener('click',async e=>{const btn=e.currentTarget,st=body.querySelector('[data-popup-status]');btn.disabled=true;st.textContent='Saving…';const water=body.querySelector('[data-p-water]').value,power=body.querySelector('[data-p-power]').value,space=body.querySelector('[data-p-space]').value;const strip=t=>String(t||'').replace(/\n?\[STANCEBOUND JOB ACCESS\][\s\S]*?\[\/STANCEBOUND JOB ACCESS\]\n?/g,'').trim();const message=(strip(row.message)+`\n\n[STANCEBOUND JOB ACCESS]\nWater: ${water||'Not supplied'}\nPower: ${power||'Not supplied'}\nWorking room: ${space||'Not supplied'}\n[/STANCEBOUND JOB ACCESS]`).trim();const payload={booking_date:body.querySelector('[data-p-date]').value||null,booking_time:body.querySelector('[data-p-time]').value||null,booking_end_time:body.querySelector('[data-p-end]').value||null,quoted_price:body.querySelector('[data-p-price]').value===''?null:Number(body.querySelector('[data-p-price]').value),service:body.querySelector('[data-p-service]').value.trim(),booking_location:body.querySelector('[data-p-location]').value.trim(),admin_notes:body.querySelector('[data-p-notes]').value.trim(),message};try{await window.sbV47SaveJob(activeId,payload);st.textContent='JOB DETAILS SAVED ✓'}catch(err){st.textContent=err?.message||'Could not save job details.'}finally{btn.disabled=false}})}
@@ -5800,6 +5818,7 @@ const observer=new MutationObserver(()=>{if(document.documentElement.classList.c
 (()=>{
 const overlay=document.getElementById('sbJobChatOverlay'),name=document.getElementById('sbJobChatName'),textarea=document.getElementById('sbJobChatText'),status=document.getElementById('sbJobChatStatus'),send=document.getElementById('sbJobChatSend');let currentId=null;
 function close(){overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');currentId=null;}
+window.addEventListener('hashchange',()=>{if(overlay.classList.contains('show'))close()});
 window.sbJobDeleteDirect=async(id,label)=>{
  if(!confirm(`Permanently delete ${label}?\n\nThis cannot be undone.`))return;
  const client=window.sbAdminSupabase;
