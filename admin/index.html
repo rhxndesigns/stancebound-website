@@ -3343,7 +3343,7 @@ function pdfSafeFilename(value='agreement'){
   return String(value||'agreement').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()||'agreement';
 }
 
-function sbAgreementPreview(blob, filename){
+async function sbAgreementPreview(blob, filename){
   document.getElementById('sbAgreementPreviewModal')?.remove();
   const url=URL.createObjectURL(blob);
   const modal=document.createElement('div');
@@ -3351,24 +3351,61 @@ function sbAgreementPreview(blob, filename){
   modal.setAttribute('role','dialog');
   modal.setAttribute('aria-modal','true');
   modal.setAttribute('aria-label','Signed agreement PDF preview');
-  modal.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.9);display:flex;flex-direction:column;padding:env(safe-area-inset-top,12px) 10px env(safe-area-inset-bottom,12px);gap:10px';
-  const bar=document.createElement('div');bar.style.cssText='display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:white;padding:8px';
+  modal.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.96);display:flex;flex-direction:column;padding:env(safe-area-inset-top,12px) 10px env(safe-area-inset-bottom,12px);gap:10px';
+  const bar=document.createElement('div');
+  bar.style.cssText='display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:white;padding:8px';
   const title=document.createElement('strong');title.textContent='SIGNED CUSTOMER AGREEMENT';
   const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px';
   const download=document.createElement('button');download.type='button';download.textContent='DOWNLOAD PDF';
   const close=document.createElement('button');close.type='button';close.textContent='CLOSE';
-  for(const b of [download,close])b.style.cssText='padding:10px 14px;border-radius:8px;border:1px solid #777;background:#242424;color:white;font-weight:700';
+  for(const button of [download,close])button.style.cssText='padding:10px 14px;border-radius:8px;border:1px solid #777;background:#242424;color:white;font-weight:700';
   actions.append(download,close);bar.append(title,actions);
-  const frame=document.createElement('iframe');frame.title='Signed agreement preview';frame.src=url;frame.style.cssText='width:100%;flex:1;min-height:0;border:0;background:white;border-radius:8px';
-  const hint=document.createElement('div');hint.textContent='If your browser cannot display the preview, use DOWNLOAD PDF.';hint.style.cssText='color:#bbb;text-align:center;font-size:12px';
-  modal.append(bar,frame,hint);document.body.append(modal);
+  const viewer=document.createElement('div');
+  viewer.style.cssText='flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;background:#202124;border-radius:8px;padding:12px 6px;text-align:center';
+  const status=document.createElement('p');status.textContent='Rendering signed agreement pages…';status.style.cssText='color:white;padding:24px 8px';
+  viewer.append(status);modal.append(bar,viewer);document.body.append(modal);
   let closed=false;
   const dismiss=()=>{if(closed)return;closed=true;document.removeEventListener('keydown',onKey,true);modal.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)};
   const onKey=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();dismiss()}};
   document.addEventListener('keydown',onKey,true);
   close.addEventListener('click',dismiss);
-  download.addEventListener('click',()=>{const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove()});
+  download.addEventListener('click',()=>{const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove()});
+  try{
+    // Canvas-render the actual generated PDF: Android WebView often cannot embed PDFs in iframes.
+    if(!window.pdfjsLib){
+      await sbAgreementWithTimeout(new Promise((resolve,reject)=>{
+        const script=document.createElement('script');
+        script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        script.onload=resolve;
+        script.onerror=()=>reject(new Error('PDF viewer library could not load. Check your connection.'));
+        document.head.append(script);
+      }),15000,'PDF viewer library timed out.');
+    }
+    if(!window.pdfjsLib)throw new Error('PDF viewer did not initialise.');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    const pdf=await sbAgreementWithTimeout(window.pdfjsLib.getDocument({data:bytes}).promise,20000,'PDF pages took too long to load.');
+    if(closed)return;
+    status.remove();
+    for(let n=1;n<=pdf.numPages;n++){
+      if(closed)return;
+      const page=await pdf.getPage(n);
+      const base=page.getViewport({scale:1});
+      const available=Math.max(260,Math.min(viewer.clientWidth-18,850));
+      const scale=Math.min(2.5,available/base.width)*Math.min(window.devicePixelRatio||1,2);
+      const viewport=page.getViewport({scale});
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+      canvas.style.cssText='display:block;width:min(100%,850px);height:auto;margin:0 auto 12px;background:white;box-shadow:0 2px 12px #0008';
+      viewer.append(canvas);
+      await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+    }
+  }catch(error){
+    console.error('[STANCEBOUND PDF preview]',error);
+    if(!closed){status.textContent='Could not display PDF pages: '+(error?.message||String(error))+'. You can still try DOWNLOAD PDF.';status.style.color='#ffb4b4';if(!status.isConnected)viewer.prepend(status);}
+  }
 }
+
 async function sbAgreementWithTimeout(promise, ms, message){
   let timer;
   try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms)})]);}
@@ -3425,7 +3462,7 @@ async function downloadSignedAgreementPdf(enquiryId, button){
     line('User agent',a.customer_user_agent||'Not recorded');
     need(14);doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.text('This PDF is generated from the frozen signed STANCEBOUND confirmation record. Later booking edits do not alter this signed record.',M,y,{maxWidth:CW});
     const filename=`stancebound-${pdfSafeFilename(a.customer_name)}-${pdfSafeFilename(a.proposed_booking_date||'agreement')}-signed-agreement.pdf`;
-    sbAgreementPreview(doc.output('blob'),filename);
+    await sbAgreementPreview(doc.output('blob'),filename);
     if(st)st.textContent='Signed agreement preview opened.';
     return true;
   }catch(e){const msg=e?.message||String(e)||'Could not prepare signed agreement.';console.error('[STANCEBOUND signed PDF]',e);if(st)st.textContent='PDF ERROR: '+msg;return false;}
