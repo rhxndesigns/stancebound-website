@@ -4051,7 +4051,12 @@ function renderConfirmation(){
     </article>`;
   }).join('');
   list.querySelectorAll('[data-confirmation-manage]').forEach(btn=>btn.onclick=()=>openWorkflowBooking(btn.dataset.confirmationManage,'confirmation'));
-  list.querySelectorAll('[data-confirmation-chat]').forEach(btn=>btn.onclick=()=>openWorkflowBooking(btn.dataset.confirmationChat,'chat'));
+  list.querySelectorAll('[data-confirmation-chat]').forEach(btn=>btn.onclick=()=>{
+    // Confirmation CHAT must stay on the Confirmation page and open the existing secure customer chat dialog.
+    const openChat=window.sbOpenJobChat;
+    if(typeof openChat==='function') openChat(btn.dataset.confirmationChat);
+    else alert('Secure customer chat is still loading. Please reopen Admin and try again.');
+  });
 }
 
 function openWorkflowBooking(id,mode='edit'){
