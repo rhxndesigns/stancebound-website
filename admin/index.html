@@ -4030,28 +4030,42 @@ ${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>P
     const open=list.querySelector(`[data-open-job-control="${CSS.escape(String(btn.dataset.closeJob))}"]`);
     if(open)open.textContent='OPEN JOB';
   });
-  list.querySelectorAll('[data-mark-job-completed]').forEach(btn=>btn.onclick=async()=>{
-    const id=btn.dataset.markJobCompleted;
+  // V27: one completion action shared by the card and the job-details popup.
+  // Verify the persisted row before changing the UI; never pretend a failed update worked.
+  window.sbCompleteBookedJob = async (id) => {
     const r=cachedEnquiries.find(x=>String(x.id)===String(id));
-    if(!r || r.status==='completed')return;
-    if(!window.confirm(`Complete ${r.name || 'this customer'}'s job?\n\nIt will move from Upcoming to Completed. Payment status will NOT change.`))return;
-    const st=btn.closest('.sb-job-control')?.querySelector('[data-job-status]');
-    btn.disabled=true;btn.textContent='COMPLETING…';
-    try{
-      const completedAt=new Date().toISOString();
-      const {data,error}=await supabase.from('enquiries')
-        .update({status:'completed',completed_at:completedAt})
-        .eq('id',id).neq('status','completed')
-        .select('id,status,completed_at').maybeSingle();
-      if(error){if(/completed_at/i.test(String(error.message||'')))throw new Error('The completed_at database column is missing. Run the V23 SQL migration in Supabase before completing jobs.');throw error;}
-      if(!data)throw new Error('The job was already completed or could not be updated. Refresh to check its status.');
-      await loadEnquiries();
-      openAdminPage('completed');
-    }catch(e){
-      if(st)st.textContent=e?.message||'Could not complete job.';
-      else alert(e?.message||'Could not complete job.');
-      btn.disabled=false;btn.textContent='COMPLETE JOB';
+    if(!r)throw new Error('Booking not found in Admin. Refresh Jobs and retry.');
+    if(String(r.status).toLowerCase()==='completed'){
+      await loadEnquiries(); openAdminPage('completed'); return true;
     }
+    if(!window.confirm(`Complete ${r.name || 'this customer'}'s job?\n\nIt will move from Jobs to Completed. Payment status will NOT change.`))return false;
+    const completedAt=new Date().toISOString();
+    const {data,error}=await supabase.from('enquiries')
+      .update({status:'completed',completed_at:completedAt})
+      .eq('id',id)
+      .select('id,status,completed_at');
+    if(error){
+      if(/completed_at/i.test(String(error.message||'')))throw new Error('Completion could not be saved: the completed_at column is missing. Run the V23 SQL migration. '+error.message);
+      throw new Error('Supabase rejected completion: '+error.message);
+    }
+    if(!Array.isArray(data)||data.length!==1||String(data[0].status).toLowerCase()!=='completed'){
+      throw new Error('Supabase did not confirm the completion. Check the enquiries UPDATE permission (RLS). No changes have been assumed.');
+    }
+    // Confirm a fresh read sees the completed status, not just the response to UPDATE.
+    const {data:verified,error:readError}=await supabase.from('enquiries')
+      .select('id,status').eq('id',id).single();
+    if(readError || String(verified?.status||'').toLowerCase()!=='completed'){
+      throw new Error('Completion update returned, but a fresh database read did not confirm it. Refresh Admin and inspect this booking before retrying.');
+    }
+    await loadEnquiries();
+    openAdminPage('completed');
+    return true;
+  };
+  list.querySelectorAll('[data-mark-job-completed]').forEach(btn=>btn.onclick=async()=>{
+    btn.disabled=true;const original=btn.textContent;btn.textContent='COMPLETING…';
+    try{await window.sbCompleteBookedJob(btn.dataset.markJobCompleted)}
+    catch(e){console.error('[STANCEBOUND completion]',e);alert(e?.message||'Could not complete job.');}
+    finally{btn.disabled=false;btn.textContent=original;}
   });
   list.querySelectorAll('[data-delete-upcoming]').forEach(btn=>btn.onclick=()=>{const r=cachedEnquiries.find(x=>String(x.id)===String(btn.dataset.deleteUpcoming));sbConfirmAndDeleteBooking(btn.dataset.deleteUpcoming,r?.name?`${r.name}'s booking`:'this booking',btn);});
   list.querySelectorAll('[data-save-job]').forEach(btn=>btn.onclick=async()=>{
@@ -5906,15 +5920,22 @@ if(mode==="view"){
     completionSection.className='sb-popup-section sb-popup-completion';
     completionSection.innerHTML='<div class="sb-popup-section-head"><b>JOB MANAGEMENT</b><span>FINALISE BOOKING</span></div><button type="button" class="sb-popup-track-button" data-popup-complete-job>COMPLETE JOB</button><div class="status" data-popup-complete-status></div>';
     body.append(completionSection);
-    completionSection.querySelector('[data-popup-complete-job]').addEventListener('click',()=>{
+    completionSection.querySelector('[data-popup-complete-job]').addEventListener('click',async(event)=>{
+      const button=event.currentTarget;
       const status=completionSection.querySelector('[data-popup-complete-status]');
-      // Reuse the existing V25 completion handler. It owns the confirmation,
-      // Supabase update, reload, and navigation to Completed.
-      const existing=[...document.querySelectorAll('#upcomingList [data-mark-job-completed]')]
-        .find(b=>String(b.dataset.markJobCompleted)===String(row.id) && !b.disabled);
-      if(!existing){status.textContent='Completion action unavailable. Refresh Jobs and try again.';return;}
-      close();
-      existing.click();
+      if(typeof window.sbCompleteBookedJob!=='function'){
+        status.textContent='Completion handler is not ready. Refresh Admin and try again.';return;
+      }
+      button.disabled=true;button.textContent='COMPLETING…';status.textContent='';
+      try{
+        const completed=await window.sbCompleteBookedJob(row.id);
+        if(completed){close();}
+      }catch(err){
+        console.error('[STANCEBOUND popup completion]',err);
+        status.textContent='COULD NOT COMPLETE JOB: '+(err?.message||String(err));
+      }finally{
+        button.disabled=false;button.textContent='COMPLETE JOB';
+      }
     });
   }
 
