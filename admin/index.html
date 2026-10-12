@@ -3432,6 +3432,9 @@ async function downloadSignedAgreementPdf(enquiryId, button){
   finally{button.disabled=false;}
 }
 
+// Expose the module-scoped PDF handler to the separate job-modal script.
+window.sbDownloadSignedAgreementPdf = downloadSignedAgreementPdf;
+
 function renderBookingRequests(){
   const list=document.querySelector('#bookingRequestList');
   const status=document.querySelector('#bookingRequestStatus');
@@ -5796,7 +5799,14 @@ if(mode==="view"){
       const button=event.currentTarget;
       const status=pdfSection.querySelector('[data-job-pdf-status]');
       status.textContent='Preparing signed contract...';
-      const saved=await downloadSignedAgreementPdf(row.id,button);
+      let saved=false;
+      try {
+        if(typeof window.sbDownloadSignedAgreementPdf !== 'function') throw new Error('Signed contract handler is not ready. Refresh Admin and try again.');
+        saved=await window.sbDownloadSignedAgreementPdf(row.id,button);
+      } catch(err) {
+        console.error('[STANCEBOUND job contract]',err);
+        status.textContent='PDF ERROR: '+(err?.message||String(err));
+      }
       if(saved)status.textContent='Signed agreement preview opened. Select DOWNLOAD PDF to save it.';
       else if(!status.textContent.startsWith('PDF ERROR:'))status.textContent='Unable to prepare signed agreement. Check the browser console.';
     });
