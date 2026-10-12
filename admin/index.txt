@@ -1,0 +1,179 @@
+<!-- STANCEBOUND Admin V29: Confirmation-page inline chat hotfix.
+     Paste this entire block immediately BEFORE the closing </body> of the CURRENT admin/index.html.
+     Do not replace the rest of admin/index.html. -->
+<style id="sb-confirmation-inline-chat-styles">
+  #confirmationList .sb-confirmation-chat-panel[hidden] { display: none !important; }
+  #confirmationList .sb-confirmation-chat-panel {
+    margin: 16px 0 6px; padding: 20px; border: 1px solid #383838;
+    border-radius: 14px; background: linear-gradient(145deg, #141414, #0a0a0a);
+    color: #f5f5f5; box-sizing: border-box;
+  }
+  #confirmationList .sb-confirmation-chat-heading {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 12px;
+  }
+  #confirmationList .sb-confirmation-chat-heading strong {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  }
+  #confirmationList .sb-confirmation-chat-heading span {
+    color: #83dab0; font-size: 10px; letter-spacing: .06em;
+  }
+  #confirmationList .sb-confirmation-chat-hint {
+    margin: 0 0 14px; font-size: 12px; line-height: 1.6; color: #aaa;
+  }
+  #confirmationList .sb-confirmation-chat-panel textarea {
+    display: block; width: 100%; min-height: 115px; padding: 13px; box-sizing: border-box;
+    resize: vertical; border: 1px solid #404040; border-radius: 9px;
+    background: #080808; color: #fff; font: inherit; line-height: 1.5;
+  }
+  #confirmationList .sb-confirmation-chat-panel textarea:focus {
+    outline: 2px solid #8d8d8d; outline-offset: 2px;
+  }
+  #confirmationList .sb-confirmation-chat-bottom {
+    margin: 8px 0 14px; text-align: right; color: #999; font-size: 11px;
+  }
+  #confirmationList .sb-confirmation-chat-send {
+    width: 100%; min-height: 44px; border: 0; border-radius: 8px;
+    background: #f0f0f0; color: #090909; font: inherit; font-size: 11px;
+    font-weight: 800; letter-spacing: .12em; cursor: pointer;
+  }
+  #confirmationList .sb-confirmation-chat-send:disabled {
+    cursor: wait; opacity: .55;
+  }
+  #confirmationList .sb-confirmation-chat-status {
+    margin-top: 12px; min-height: 15px; font-size: 12px; line-height: 1.5; color: #bbb;
+  }
+  #confirmationList .sb-confirmation-chat-status.is-error { color: #ff9696; }
+  #confirmationList .sb-confirmation-chat-status.is-success { color: #88dda9; }
+  html[data-theme="light"] #confirmationList .sb-confirmation-chat-panel {
+    background: #f7f7f7; color: #151515; border-color: #ccc;
+  }
+  html[data-theme="light"] #confirmationList .sb-confirmation-chat-panel textarea {
+    background: #fff; color: #111; border-color: #bbb;
+  }
+  html[data-theme="light"] #confirmationList .sb-confirmation-chat-hint,
+  html[data-theme="light"] #confirmationList .sb-confirmation-chat-bottom { color: #555; }
+  html[data-theme="light"] #confirmationList .sb-confirmation-chat-send {
+    background: #141414; color: #fff;
+  }
+</style>
+<script id="sb-confirmation-inline-chat-script">
+(() => {
+  'use strict';
+  const list = document.querySelector('#confirmationList');
+  if (!list || list.dataset.sbInlineChatInstalled === '1') return;
+  list.dataset.sbInlineChatInstalled = '1';
+
+  const getClient = () => window.sbAdminSupabase;
+  const getBooking = id => (window.cachedEnquiries || []).find(row => String(row.id) === String(id));
+
+  function buildComposer(card, booking) {
+    const box = document.createElement('section');
+    box.className = 'sb-confirmation-chat-panel';
+    box.hidden = true;
+    box.setAttribute('aria-label', 'Send secure customer chat message');
+    box.innerHTML = `
+      <div class="sb-confirmation-chat-heading">
+        <strong>Customer chat</strong><span>SECURE MESSAGE</span>
+      </div>
+      <p class="sb-confirmation-chat-hint"></p>
+      <textarea maxlength="4000" aria-label="Your message to the customer"
+        placeholder="Write a message to the customer…"></textarea>
+      <div class="sb-confirmation-chat-bottom"><span data-chat-counter>0 / 4000</span></div>
+      <button type="button" class="sb-confirmation-chat-send">SEND MESSAGE</button>
+      <div class="sb-confirmation-chat-status" role="status" aria-live="polite"></div>`;
+
+    const firstName = String(booking.name || 'the customer').trim().split(/\s+/)[0];
+    box.querySelector('.sb-confirmation-chat-hint').textContent =
+      `Message ${firstName} without leaving this confirmation. They'll receive a secure chat link by email if a conversation has not already been started.`;
+    const input = box.querySelector('textarea');
+    const counter = box.querySelector('[data-chat-counter]');
+    const button = box.querySelector('.sb-confirmation-chat-send');
+    const status = box.querySelector('.sb-confirmation-chat-status');
+    input.addEventListener('input', () => {
+      counter.textContent = `${input.value.length} / 4000`;
+    });
+
+    button.addEventListener('click', async () => {
+      const id = card.dataset.confirmationId;
+      const row = getBooking(id);
+      const client = getClient();
+      const message = input.value.trim();
+      const setStatus = (text, kind = '') => {
+        status.textContent = text;
+        status.classList.toggle('is-error', kind === 'error');
+        status.classList.toggle('is-success', kind === 'success');
+      };
+      if (!row || !client) {
+        setStatus('Booking details are unavailable. Refresh Admin and retry.', 'error');
+        return;
+      }
+      if (!row.email) {
+        setStatus('This customer has no email address for secure chat.', 'error');
+        return;
+      }
+      if (!message) {
+        setStatus('Write a message first.', 'error');
+        return;
+      }
+      button.disabled = true;
+      button.textContent = 'SENDING…';
+      setStatus('Sending your message…');
+      try {
+        if (!row.conversation_token) {
+          const { data, error } = await client.functions.invoke('send-chat-invite', {
+            body: { enquiry_id: row.id }
+          });
+          if (error) throw error;
+          if (!data?.success) throw new Error(data?.error || 'Could not create secure chat.');
+          if (data.conversation_token) row.conversation_token = data.conversation_token;
+        }
+        const { data, error } = await client.functions.invoke('reply-enquiry', {
+          body: { enquiry_id: row.id, reply: message }
+        });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'Could not send the message.');
+        input.value = '';
+        counter.textContent = '0 / 4000';
+        setStatus('MESSAGE SENT ✓  ·  Booking remains awaiting signature.', 'success');
+      } catch (error) {
+        console.error('[STANCEBOUND Confirmation Chat]', error);
+        setStatus(error?.message || 'Message could not be sent. Please retry.', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'SEND MESSAGE';
+      }
+    });
+    card.appendChild(box);
+    return box;
+  }
+
+  // Capture before the existing V29 onclick handler, which navigates to Bookings.
+  // This listener also survives re-rendering the confirmation list.
+  list.addEventListener('click', event => {
+    const opener = event.target.closest('[data-confirmation-chat]');
+    if (!opener || !list.contains(opener)) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+
+    const card = opener.closest('[data-confirmation-id]');
+    const booking = getBooking(opener.dataset.confirmationChat);
+    if (!card || !booking) {
+      window.alert('Could not find this confirmation. Refresh Admin and try again.');
+      return;
+    }
+
+    let box = card.querySelector('.sb-confirmation-chat-panel');
+    if (!box) box = buildComposer(card, booking);
+    const shouldOpen = box.hidden;
+    list.querySelectorAll('.sb-confirmation-chat-panel').forEach(panel => { panel.hidden = true; });
+    list.querySelectorAll('[data-confirmation-chat]').forEach(btn => { btn.textContent = 'CHAT'; });
+    if (shouldOpen) {
+      box.hidden = false;
+      opener.textContent = 'CLOSE CHAT';
+      requestAnimationFrame(() => box.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+    }
+  }, true);
+})();
+</script>
