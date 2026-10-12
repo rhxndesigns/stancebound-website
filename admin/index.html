@@ -4204,8 +4204,8 @@ async function setDayAvailability(isAvailable){
   const payload=dates.map(date=>({
     availability_date:date,
     is_available:isAvailable,
-    start_time:isAvailable?start:null,
-    end_time:isAvailable?end:null,
+    start_time:isAvailable?(start||'09:00'):('09:00'),
+    end_time:isAvailable?(end||'18:00'):('18:00'),
     updated_at:now
   }));
 
@@ -4296,8 +4296,9 @@ function renderSchedule(){
     const confirmed=dayBookings.some(isConfirmedBooking);
     const provisional=dayBookings.length>0 && !confirmed;
     const availability=bookingAvailability.get(key);
-    const explicitlyClosed=availability?.is_available===false;
-    const visualState=confirmed?'booked':provisional?'prebooked':explicitlyClosed?'closed':'available';
+    const manuallyOpen=availability?.is_available===true;
+    // Missing rows are CLOSED, never implicitly bookable.
+    const visualState=confirmed?'booked':provisional?'prebooked':manuallyOpen?'available':'closed';
     classes.push('sb-slot-'+visualState);
     const label=visualState==='booked'?'BOOKED':visualState==='prebooked'?'PENDING':visualState==='closed'?'CLOSED':'AVAILABLE';
     cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span><span class="calendar-availability-dot">${label}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
