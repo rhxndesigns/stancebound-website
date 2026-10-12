@@ -3301,7 +3301,8 @@ function isBookingRecord(r){
 }
 
 function isGenuineNewBookingEnquiry(r){
-  return isBookingRecord(r) && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && !r.final_confirmation_status;
+  const confirmationStatus=String(r.final_confirmation_status||'').trim().toLowerCase();
+  return isBookingRecord(r) && ['new','awaiting_reply'].includes(String(r.status||'').toLowerCase()) && !r.final_confirmation_id && (!confirmationStatus || confirmationStatus==='not_sent');
 }
 function updateBookingMetrics(){
   const bookingRows=cachedEnquiries.filter(isBookingRecord);
