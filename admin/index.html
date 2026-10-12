@@ -5900,6 +5900,24 @@ if(mode==="view"){
       else if(!status.textContent.startsWith('PDF ERROR:'))status.textContent='Unable to prepare signed agreement. Check the browser console.';
     });
   }
+  // V26: Completion control belongs inside the job-details popup, below the signed agreement.
+  if(String(row.status||'').toLowerCase()!=='completed'){
+    const completionSection=document.createElement('section');
+    completionSection.className='sb-popup-section sb-popup-completion';
+    completionSection.innerHTML='<div class="sb-popup-section-head"><b>JOB MANAGEMENT</b><span>FINALISE BOOKING</span></div><button type="button" class="sb-popup-track-button" data-popup-complete-job>COMPLETE JOB</button><div class="status" data-popup-complete-status></div>';
+    body.append(completionSection);
+    completionSection.querySelector('[data-popup-complete-job]').addEventListener('click',()=>{
+      const status=completionSection.querySelector('[data-popup-complete-status]');
+      // Reuse the existing V25 completion handler. It owns the confirmation,
+      // Supabase update, reload, and navigation to Completed.
+      const existing=[...document.querySelectorAll('#upcomingList [data-mark-job-completed]')]
+        .find(b=>String(b.dataset.markJobCompleted)===String(row.id) && !b.disabled);
+      if(!existing){status.textContent='Completion action unavailable. Refresh Jobs and try again.';return;}
+      close();
+      existing.click();
+    });
+  }
+
 }
 const set=(q,v)=>{const e=body.querySelector(q);if(e)e.value=/^yes$/i.test(v||'')?'Yes':/^no$/i.test(v||'')?'No':/not sure/i.test(v||'')?'Not sure':''};set('[data-p-water]',access.water);set('[data-p-power]',access.power);set('[data-p-space]',access.space);if(pay){pay.classList.add('sb-popup-payment');body.querySelector('.sb-job-modal-summary').after(pay)}lock();modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
 body.querySelector('[data-popup-pay]')?.addEventListener('click',()=>{const id=activeId;close();if(window.sbOpenPaymentForJob)window.sbOpenPaymentForJob(id);else alert('Payment options are not available yet.');});body.querySelector('[data-popup-open-tracker]')?.addEventListener('click',()=>{const id=activeId,name=row.name||'';close();if(window.sbOpenLiveTrackerPage)window.sbOpenLiveTrackerPage(id,name)});body.querySelector('[data-popup-save]')?.addEventListener('click',async e=>{const btn=e.currentTarget,st=body.querySelector('[data-popup-status]');btn.disabled=true;st.textContent='Saving…';const water=body.querySelector('[data-p-water]').value,power=body.querySelector('[data-p-power]').value,space=body.querySelector('[data-p-space]').value;const strip=t=>String(t||'').replace(/\n?\[STANCEBOUND JOB ACCESS\][\s\S]*?\[\/STANCEBOUND JOB ACCESS\]\n?/g,'').trim();const message=(strip(row.message)+`\n\n[STANCEBOUND JOB ACCESS]\nWater: ${water||'Not supplied'}\nPower: ${power||'Not supplied'}\nWorking room: ${space||'Not supplied'}\n[/STANCEBOUND JOB ACCESS]`).trim();const payload={booking_date:body.querySelector('[data-p-date]').value||null,booking_time:body.querySelector('[data-p-time]').value||null,booking_end_time:body.querySelector('[data-p-end]').value||null,quoted_price:body.querySelector('[data-p-price]').value===''?null:Number(body.querySelector('[data-p-price]').value),service:body.querySelector('[data-p-service]').value.trim(),booking_location:body.querySelector('[data-p-location]').value.trim(),admin_notes:body.querySelector('[data-p-notes]').value.trim(),message};try{await window.sbV47SaveJob(activeId,payload);st.textContent='JOB DETAILS SAVED ✓'}catch(err){st.textContent=err?.message||'Could not save job details.'}finally{btn.disabled=false}})}
