@@ -585,6 +585,21 @@ body{padding-bottom:88px}
   opacity:1!important;pointer-events:auto!important;
 }
 #upcomingList .completed-actions [data-mark-job-completed]:disabled{opacity:.6!important;}
+
+/* V28: booking-first schedule states. Kept after legacy .is-open overrides. */
+.calendar-day.sb-slot-booked,
+.calendar-day.muted.sb-slot-booked { border:2px solid #32b66a !important; background:#09150e !important; color:#fff !important; opacity:1 !important; }
+.calendar-day.sb-slot-prebooked,
+.calendar-day.muted.sb-slot-prebooked { border:2px solid #e4a83c !important; background:#1a1409 !important; color:#fff !important; opacity:1 !important; }
+.calendar-day.sb-slot-available,
+.calendar-day.muted.sb-slot-available { border:2px solid #f2f2f2 !important; background:#101010 !important; color:#fff !important; opacity:1 !important; }
+.calendar-day.sb-slot-closed { border:1px solid #393939 !important; background:#080808 !important; opacity:.5 !important; }
+.calendar-day.sb-slot-booked .calendar-availability-dot { color:#5cdb8b !important; }
+.calendar-day.sb-slot-prebooked .calendar-availability-dot { color:#ffc46c !important; }
+.calendar-day.sb-slot-available .calendar-availability-dot { color:#fff !important; }
+.calendar-day.sb-slot-closed .calendar-availability-dot { color:#888 !important; }
+.calendar-day.selected { outline:2px dashed #fff !important; outline-offset:-5px !important; }
+
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -4271,11 +4286,21 @@ function renderSchedule(){
     const classes=['calendar-day'];
     if(d.getMonth()!==m)classes.push('muted');
     if(key===todayKey)classes.push('today');
-    if(dayBookings.length)classes.push('has-booking');
+    // A booking takes visual priority over manually configured availability.
+    // Confirmed and completed bookings remain green, including historical dates.
+    const isConfirmedBooking=b=>{
+      const status=String(b.status||'').toLowerCase();
+      const confirmation=String(b.final_confirmation_status||'').toLowerCase();
+      return ['booked','completed'].includes(status) || ['signed','accepted'].includes(confirmation);
+    };
+    const confirmed=dayBookings.some(isConfirmedBooking);
+    const provisional=dayBookings.length>0 && !confirmed;
     const availability=bookingAvailability.get(key);
-    const isOpen=availability?.is_available===true;
-    classes.push(isOpen?'is-open':'is-closed');
-    cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span><span class="calendar-availability-dot">${isOpen?'OPEN':'CLOSED'}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
+    const explicitlyClosed=availability?.is_available===false;
+    const visualState=confirmed?'booked':provisional?'prebooked':explicitlyClosed?'closed':'available';
+    classes.push('sb-slot-'+visualState);
+    const label=visualState==='booked'?'BOOKED':visualState==='prebooked'?'PENDING':visualState==='closed'?'CLOSED':'AVAILABLE';
+    cells+=`<div class="${classes.join(' ')}" data-date="${key}"><span class="day-num">${d.getDate()}</span><span class="calendar-availability-dot">${label}</span>${dayBookings.slice(0,2).map(b=>`<span class="calendar-dot">${escapeHtml((b.booking_time||'').slice(0,5))} ${escapeHtml(b.name)}</span>`).join('')}</div>`;
   }
   calendar.innerHTML=cells;
   calendar.querySelectorAll('[data-date]').forEach(day=>day.onclick=()=>toggleScheduleDay(day.dataset.date));
