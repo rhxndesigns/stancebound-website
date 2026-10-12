@@ -6153,7 +6153,7 @@ if ('serviceWorker' in navigator) {
   toast.id='sbSuLiveIndicator';
   toast.setAttribute('role','status');
   toast.setAttribute('aria-live','polite');
-  toast.innerHTML='<div class="sb-su-toast-top"><span class="sb-su-dot" aria-hidden="true"></span><b id="sbSuToastTitle">WEBSITE UPDATE</b><button id="sbSuToastClose" type="button" aria-label="Dismiss deployment notification">×</button></div><div id="sbSuToastMessage"></div><div id="sbSuToastDetail"></div><div class="sb-su-progress"><i></i></div><a id="sbSuToastLink" target="_blank" rel="noopener noreferrer">VIEW GITHUB COMMIT</a>';
+  toast.innerHTML='<div class="sb-su-toast-top"><span class="sb-su-dot" aria-hidden="true"></span><b id="sbSuToastTitle">WEBSITE UPDATE</b><button id="sbSuToastClose" type="button" aria-label="Dismiss deployment notification">×</button></div><div id="sbSuToastMessage"></div><div id="sbSuToastDetail"></div><div class="sb-su-progress"><i></i></div><a id="sbSuToastLink" target="_blank" rel="noopener noreferrer">VIEW GITHUB DEPLOYMENT</a>';
   document.body.append(toast);
   const close=$('sbSuToastClose'),title=$('sbSuToastTitle'),message=$('sbSuToastMessage'),detail=$('sbSuToastDetail'),link=$('sbSuToastLink');
   close.addEventListener('click',()=>toast.classList.remove('show'));
@@ -6169,7 +6169,7 @@ if ('serviceWorker' in navigator) {
       spec.feedback.className='sb-su-feedback';
       spec.feedback.setAttribute('role','status');
       spec.feedback.setAttribute('aria-live','polite');
-      spec.feedback.innerHTML='<strong></strong><div data-deploy-description></div><div class="sb-su-progress"><i></i></div><small data-deploy-elapsed></small><a data-deploy-commit target="_blank" rel="noopener noreferrer" hidden>View GitHub commit</a>';
+      spec.feedback.innerHTML='<strong></strong><div data-deploy-description></div><div class="sb-su-progress"><i></i></div><small data-deploy-elapsed></small><a data-deploy-commit target="_blank" rel="noopener noreferrer" hidden>View GitHub deployment</a>';
       spec.button.insertAdjacentElement('afterend',spec.feedback);
     }
     return spec.feedback;
@@ -6239,8 +6239,11 @@ if ('serviceWorker' in navigator) {
       if(file.size<30000||file.size>900000)throw Error('Unexpected file size. Please select the real STANCEBOUND index.html.');
       html=await file.text();
       if(!/^\s*<!doctype\s+html/i.test(html)||!/<\/html>\s*$/i.test(html))throw Error('Not a complete HTML file. Nothing uploaded.');
-      const isPublic=html.includes('id="home"')&&html.includes('id="enquiryForm"')&&html.includes('id="sbBoot"');
-      const isAdmin=html.includes('data-admin-page="dashboard"')&&html.includes('id="editor"')&&html.includes('sbAdminSupabase');
+      // Inspect real HTML elements, not snippets of HTML written inside the uploader's own JavaScript.
+      // The previous string search incorrectly classified Admin as Public because the code contained public-site identifiers.
+      const parsed=new DOMParser().parseFromString(html,'text/html');
+      const isPublic=Boolean(parsed.getElementById('home')&&parsed.getElementById('enquiryForm')&&parsed.getElementById('sbBoot'));
+      const isAdmin=Boolean(parsed.querySelector('[data-admin-page=dashboard]')&&parsed.getElementById('editor')&&html.includes('sbAdminSupabase'));
       if(spec.target==='public'?(!isPublic||isAdmin):(!isAdmin||isPublic))throw Error('Wrong website file for this upload destination. Nothing uploaded.');
     }catch(e){
       setState(spec,'error','FILE REJECTED',e?.message||'Could not read this file.');return;
@@ -6262,7 +6265,7 @@ if ('serviceWorker' in navigator) {
       if(error)throw Error(await getErrorMessage(error));
       if(!data?.success)throw Error(data?.error||'The server did not confirm a GitHub commit.');
       const successPath=data.path||spec.path;
-      const commitUrl=data.commit_url;
+      const commitUrl='https://github.com/rhxndesigns/stancebound-website/actions/workflows/pages/pages-build-deployment';
       const msg=`${successPath} was saved to GitHub${data.commit?' (commit '+String(data.commit).slice(0,8)+')':''}. Hosting may need a few minutes to make the updated website visible.`;
       setState(spec,'success','GITHUB UPLOAD COMPLETED',msg,commitUrl);
       spec.input.value='';
