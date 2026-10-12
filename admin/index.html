@@ -1483,6 +1483,7 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 .sb-su-card label{font-size:10px;font-weight:800;letter-spacing:.1em;display:block;margin:20px 0 9px}
 .sb-su-card input[type=file]{display:block;max-width:100%;width:100%;padding:14px;background:#111;border:1px dashed #656565;color:#eee;border-radius:8px;font-size:12px}
 .sb-su-file{font-size:11px;color:#aaa;overflow-wrap:anywhere;padding:11px 0;min-height:39px}
+.sb-su-file .sb-su-arrow{color:#999;margin:0 5px}.sb-su-file .sb-su-destination{color:#a5edbe;font-weight:900}.sb-site-updates .sb-su-desc code{color:#fff;font-size:inherit}.sb-su-file strong{color:#bbb}
 .sb-su-deploy{display:block!important;width:100%;min-height:45px;border:1px solid #e6e6e6!important;background:#e6e6e6!important;color:#080808!important;font-size:11px!important;font-weight:900!important;letter-spacing:.06em!important}
 .sb-su-deploy:disabled{opacity:.38!important;cursor:not-allowed!important}
 .sb-su-status{margin-top:18px;border:1px solid #303030;background:#111;padding:15px;border-radius:8px;line-height:1.55;overflow-wrap:anywhere;font-size:12px}
@@ -1531,6 +1532,17 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 #sbSuLiveIndicator .sb-su-progress{margin-top:12px;margin-bottom:0}
 @media(max-width:600px){#sbSuLiveIndicator{top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;max-width:none;padding:14px 15px}}
 @media(prefers-reduced-motion:reduce){[data-state="processing"] .sb-su-progress>i{animation-duration:2.5s}#sbSuLiveIndicator{transition:none}}
+</style>
+
+<style id="sb-v36-inline-confirmation-style">
+/* Confirmation editor opens underneath its own record, never in 01 Enquiries. */
+#confirmationList .sb-confirmation-inline-editor{margin-top:18px;padding:16px 12px;border:1px solid rgba(255,255,255,.15);border-radius:15px;background:rgba(8,9,11,.88)}
+#confirmationList .sb-confirmation-inline-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+#confirmationList .sb-confirmation-inline-head strong{font-size:10px;line-height:1.6;letter-spacing:.12em;color:#dedede}
+#confirmationList .sb-confirmation-inline-head button{flex-shrink:0}
+#confirmationList .sb-confirmation-editor-content > .enquiry-card{margin:0;border:0;background:transparent;padding:0;box-shadow:none}
+#confirmationList .sb-confirmation-editor-content .booking-grid{min-width:0}
+@media(max-width:600px){#confirmationList .sb-confirmation-inline-editor{padding:12px 9px}#confirmationList .sb-confirmation-inline-head strong{font-size:9px}}
 </style>
 </head>
 
@@ -1639,22 +1651,22 @@ Log In
  <section class="panel sb-site-updates">
   <div class="admin-kicker">STANCEBOUND / DEPLOYMENT CONTROL</div>
   <h2>Website Updates</h2>
-  <p class="sb-su-desc">Replace either website from Admin. Each upload saves a new GitHub version, so previous versions remain available in GitHub history.</p>
+  <p class="sb-su-desc">Upload a complete STANCEBOUND HTML file with <strong>any filename</strong>. Admin automatically publishes it as <code>index.html</code> in the correct GitHub folder. No renaming or deleting old downloads needed.</p>
   <div class="sb-su-grid">
    <div class="sb-su-card">
     <div class="sb-su-top"><span>01 / CUSTOMER WEBSITE</span><strong>PUBLIC WEBSITE</strong></div>
     <p>Replaces <code>index.html</code> at the website root. Customers will see these changes when hosting finishes deploying.</p>
-    <label for="sbPublicUpload">SELECT PUBLIC INDEX.HTML</label>
-    <input id="sbPublicUpload" type="file" accept=".html,text/html" />
-    <div class="sb-su-file" id="sbPublicFile">No file selected</div>
+    <label for="sbPublicUpload">SELECT PUBLIC WEBSITE HTML</label>
+    <input id="sbPublicUpload" type="file" accept=".html,.htm,text/html" />
+    <div class="sb-su-file" id="sbPublicFile">No file selected · Will publish as <strong>index.html</strong></div>
     <button type="button" id="sbPublishPublic" class="sb-su-deploy" disabled>DEPLOY PUBLIC WEBSITE</button>
    </div>
    <div class="sb-su-card">
     <div class="sb-su-top"><span>02 / PRIVATE CONTROL CENTRE</span><strong>ADMIN WEBSITE</strong></div>
     <p>Replaces <code>admin/index.html</code>. Your customer website remains untouched.</p>
-    <label for="sbAdminUpload">SELECT ADMIN INDEX.HTML</label>
-    <input id="sbAdminUpload" type="file" accept=".html,text/html" />
-    <div class="sb-su-file" id="sbAdminFile">No file selected</div>
+    <label for="sbAdminUpload">SELECT ADMIN WEBSITE HTML</label>
+    <input id="sbAdminUpload" type="file" accept=".html,.htm,text/html" />
+    <div class="sb-su-file" id="sbAdminFile">No file selected · Will publish as <strong>admin/index.html</strong></div>
     <button type="button" id="sbPublishAdmin" class="sb-su-deploy" disabled>DEPLOY ADMIN WEBSITE</button>
    </div>
   </div>
@@ -3595,16 +3607,19 @@ async function downloadSignedAgreementPdf(enquiryId, button){
 // Expose the module-scoped PDF handler to the separate job-modal script.
 window.sbDownloadSignedAgreementPdf = downloadSignedAgreementPdf;
 
-function renderBookingRequests(){
-  const list=document.querySelector('#bookingRequestList');
-  const status=document.querySelector('#bookingRequestStatus');
-  const count=document.querySelector('#bookingRequestCount');
+function renderBookingRequests(focusedId=null, inlineList=null){
+  // The same fully wired editor can be displayed inline on Confirmation.
+  // Normal Enquiries continues using the original list and its existing filter.
+  const list=inlineList||document.querySelector('#bookingRequestList');
+  const status=inlineList?null:document.querySelector('#bookingRequestStatus');
+  const count=inlineList?null:document.querySelector('#bookingRequestCount');
   if(!list)return;
 
-  updateBookingMetrics();
+  if(!inlineList)updateBookingMetrics();
 
-  const rows=cachedEnquiries
-    .filter(isGenuineNewBookingEnquiry)
+  const rows=(focusedId==null
+    ? cachedEnquiries.filter(isGenuineNewBookingEnquiry)
+    : cachedEnquiries.filter(r=>String(r.id)===String(focusedId)&&isBookingRecord(r)))
     .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
   if(count)count.textContent=`${rows.length} new`;
@@ -4050,13 +4065,53 @@ function renderConfirmation(){
       <div class="completed-actions"><button type="button" data-confirmation-manage="${r.id}">OPEN / EDIT</button><button type="button" class="secondary" data-confirmation-chat="${r.id}">CHAT</button></div>
     </article>`;
   }).join('');
-  list.querySelectorAll('[data-confirmation-manage]').forEach(btn=>btn.onclick=()=>openWorkflowBooking(btn.dataset.confirmationManage,'confirmation'));
+  list.querySelectorAll('[data-confirmation-manage]').forEach(btn=>btn.onclick=()=>openConfirmationBookingEditor(btn.dataset.confirmationManage));
   list.querySelectorAll('[data-confirmation-chat]').forEach(btn=>btn.onclick=()=>{
     // Confirmation CHAT must stay on the Confirmation page and open the existing secure customer chat dialog.
     const openChat=window.sbOpenJobChat;
     if(typeof openChat==='function') openChat(btn.dataset.confirmationChat);
     else alert('Secure customer chat is still loading. Please reopen Admin and try again.');
   });
+}
+
+function openConfirmationBookingEditor(id){
+  // OPEN / EDIT stays on 02 Confirmation and reuses the existing live booking
+  // editor including the actual Save Changes & Send New Confirmation action.
+  const list=document.querySelector('#confirmationList');
+  const row=cachedEnquiries.find(r=>String(r.id)===String(id));
+  if(!list||!row)return;
+  const card=[...list.querySelectorAll('[data-confirmation-id]')]
+    .find(el=>el.dataset.confirmationId===String(id));
+  if(!card)return;
+  const trigger=card.querySelector('[data-confirmation-manage]');
+  const existing=card.querySelector('.sb-confirmation-inline-editor');
+  if(existing){
+    existing.remove();
+    if(trigger){trigger.textContent='OPEN / EDIT';trigger.setAttribute('aria-expanded','false');}
+    return;
+  }
+  // Keep one editor open at a time. Avoid a duplicate record or a tab switch.
+  list.querySelectorAll('.sb-confirmation-inline-editor').forEach(el=>el.remove());
+  list.querySelectorAll('[data-confirmation-manage]').forEach(el=>{
+    el.textContent='OPEN / EDIT';el.setAttribute('aria-expanded','false');
+  });
+  const host=document.createElement('div');
+  host.className='sb-confirmation-inline-editor';
+  host.setAttribute('data-confirmation-editor-for',String(id));
+  host.innerHTML='<div class="sb-confirmation-inline-head"><strong>BOOKING DETAILS & CUSTOMER CONFIRMATION</strong><button type="button" class="secondary" data-close-confirmation-editor>CLOSE</button></div><div class="sb-confirmation-editor-content"></div>';
+  card.appendChild(host);
+  const content=host.querySelector('.sb-confirmation-editor-content');
+  renderBookingRequests(id,content);
+  const editor=content.querySelector(`[data-booking-request-id]`);
+  if(!editor){host.remove();return;}
+  // Open the existing booking controls, not a different screen.
+  editor.querySelector('[data-toggle-booking-edit]')?.click();
+  if(trigger){trigger.textContent='CLOSE EDITOR';trigger.setAttribute('aria-expanded','true');}
+  host.querySelector('[data-close-confirmation-editor]').onclick=()=>{
+    host.remove();
+    if(trigger){trigger.textContent='OPEN / EDIT';trigger.setAttribute('aria-expanded','false');}
+  };
+  host.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function openWorkflowBooking(id,mode='edit'){
@@ -6241,7 +6296,7 @@ if ('serviceWorker' in navigator) {
     if(!file)return;
     let html='';
     try{
-      if(file.size<30000||file.size>900000)throw Error('Unexpected file size. Please select the real STANCEBOUND index.html.');
+      if(file.size<30000||file.size>900000)throw Error('Unexpected file size. Please select a complete STANCEBOUND HTML website (30–900 KB).');
       html=await file.text();
       if(!/^\s*<!doctype\s+html/i.test(html)||!/<\/html>\s*$/i.test(html))throw Error('Not a complete HTML file. Nothing uploaded.');
       // Inspect real HTML elements, not snippets of HTML written inside the uploader's own JavaScript.
@@ -6253,7 +6308,7 @@ if ('serviceWorker' in navigator) {
     }catch(e){
       setState(spec,'error','FILE REJECTED',e?.message||'Could not read this file.');return;
     }
-    if(!window.confirm(`REPLACE ${spec.path}?\n\nSelected: ${file.name}\nSize: ${(file.size/1024).toFixed(0)} KB\n\nThis creates a GitHub commit. Continue?`))return;
+    if(!window.confirm(`DEPLOY ${spec.target.toUpperCase()} WEBSITE?\n\nYour file: ${file.name}\nPublished as: ${spec.path} (automatic)\nSize: ${(file.size/1024).toFixed(0)} KB\n\nGitHub will replace only ${spec.path}. Continue?`))return;
     busy=true;startedAt=Date.now();
     releaseButtons();
     spec.button.textContent='● DEPLOYING · PLEASE WAIT';
@@ -6274,7 +6329,7 @@ if ('serviceWorker' in navigator) {
       const msg=`${successPath} was saved to GitHub${data.commit?' (commit '+String(data.commit).slice(0,8)+')':''}. Hosting may need a few minutes to make the updated website visible.`;
       setState(spec,'success','GITHUB UPLOAD COMPLETED',msg,commitUrl);
       spec.input.value='';
-      spec.details.textContent='Deployment completed. Select another file for a new update.';
+      spec.details.textContent=`Saved as ${successPath}. No filename changes required.`;
     }catch(e){
       const msg=e?.message||'Deployment failed unexpectedly.';
       console.error('[STANCEBOUND deployment]',e);
@@ -6287,7 +6342,18 @@ if ('serviceWorker' in navigator) {
   for(const spec of specs){
     spec.input.addEventListener('change',()=>{
       const file=spec.input.files?.[0];
-      spec.details.textContent=file?`${file.name} · ${(file.size/1024).toFixed(0)} KB`:'No file selected';
+      if(file){
+        // A file's *name* never determines its GitHub destination.
+        // Only spec.target selects root index.html or admin/index.html.
+        spec.details.replaceChildren();
+        spec.details.append(document.createTextNode(`${file.name} · ${(file.size/1024).toFixed(0)} KB`));
+        const arrow=document.createElement('span');arrow.className='sb-su-arrow';arrow.textContent=' → ';
+        const destination=document.createElement('span');destination.className='sb-su-destination';
+        destination.textContent=spec.path;
+        spec.details.append(arrow,destination);
+      }else{
+        spec.details.textContent=`No file selected · Will publish as ${spec.path}`;
+      }
       if(!busy){spec.button.disabled=!file;writeStatus(file?'File selected. Ready to deploy.':'No file selected.','');}
     });
     spec.button.addEventListener('click',()=>{void runDeployment(spec)});
