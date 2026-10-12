@@ -575,6 +575,16 @@ body{padding-bottom:88px}
 
 .sb-livejob-page .sb-livejob-stage.completed button{cursor:pointer!important}
 .sb-livejob-page .sb-livejob-stage.completed button:active{background:#245b34!important}
+
+/* V25: Keep the completion action visible directly on each booked job card. */
+#upcomingList .completed-actions [data-mark-job-completed]{
+  display:block!important;visibility:visible!important;grid-column:1/-1!important;
+  width:100%!important;min-height:46px!important;margin-top:5px!important;
+  background:#e8e8e8!important;color:#080808!important;border:1px solid #e8e8e8!important;
+  font-size:11px!important;font-weight:900!important;letter-spacing:.12em!important;
+  opacity:1!important;pointer-events:auto!important;
+}
+#upcomingList .completed-actions [data-mark-job-completed]:disabled{opacity:.6!important;}
 </style>
 
 <style id="stancebound-contract-preview-style">
@@ -4001,7 +4011,7 @@ function renderUpcoming(){
   <div class="enquiry-actions-admin"><button type="button" data-save-job="${r.id}">SAVE JOB DETAILS</button><button type="button" class="secondary" data-close-job="${r.id}">CLOSE</button><button type="button" class="sb-complete-job-btn" data-mark-job-completed="${r.id}">COMPLETE JOB</button><button type="button" class="secondary danger" data-delete-upcoming="${r.id}">DELETE BOOKING</button></div>
   <div class="status" data-job-status></div>
 </div>
-${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-open-job-control="${r.id}">OPEN JOB</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button></div></article>`;
+${sbLiveJobPanelShell(r.id)}${r.admin_notes?`<div class="pipeline-note"><small>PRIVATE NOTE</small>${escapeHtml(r.admin_notes)}</div>`:''}<div class="completed-actions"><button type="button" data-open-job-control="${r.id}">OPEN JOB</button><button type="button" class="secondary" data-upcoming-calendar="${r.booking_date}">Calendar</button><button type="button" class="sb-complete-job-btn" data-mark-job-completed="${r.id}">COMPLETE JOB</button></div></article>`;
   }).join('');
   list.querySelectorAll('[data-open-job-control]').forEach(btn=>btn.onclick=()=>{
     const id=btn.dataset.openJobControl;
