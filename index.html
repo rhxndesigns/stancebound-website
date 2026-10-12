@@ -3462,55 +3462,79 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 
 
 <style id="stancebound-boot-dark-red-3d-test">
-/* V32: textured dark-red loading wordmark with a subtle crimson glow. */
+/* V33: darker premium red wordmark with grain, depth and a restrained glow. */
 #sbBoot .sb-boot-title {
   position: relative;
-  color: #832630;
+  color: #8a2833;
   background:
+    radial-gradient(circle at 50% 16%, rgba(255,238,238,.22) 0%, rgba(255,238,238,0) 28%),
+    repeating-linear-gradient(112deg,
+      rgba(255,255,255,.07) 0 1px,
+      rgba(255,255,255,0) 1px 4px,
+      rgba(0,0,0,.12) 4px 5px,
+      rgba(0,0,0,0) 5px 9px),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.03) 0 2px,
+      rgba(0,0,0,.04) 2px 3px,
+      rgba(0,0,0,0) 3px 6px),
     linear-gradient(180deg,
-      rgba(255,255,255,.16) 0%,
-      rgba(255,255,255,0) 22%,
-      rgba(0,0,0,.15) 23%,
-      rgba(0,0,0,0) 48%,
-      rgba(255,255,255,.08) 49%,
-      rgba(255,255,255,0) 68%,
-      rgba(0,0,0,.18) 69%,
-      rgba(0,0,0,0) 100%),
-    radial-gradient(circle at 50% 14%, rgba(255,214,214,.42), rgba(255,214,214,0) 34%),
-    repeating-linear-gradient(118deg,
-      rgba(255,255,255,.08) 0 2px,
-      rgba(255,255,255,0) 2px 7px,
-      rgba(0,0,0,.12) 7px 9px,
-      rgba(0,0,0,0) 9px 15px),
-    linear-gradient(163deg,
-      #e07b81 0%, #b6424b 12%, #8f2832 30%,
-      #5e1521 54%, #3c0c15 71%, #a1323e 88%, #5c1520 100%);
-  background-size: 100% 100%, 100% 100%, 160% 160%, 100% 100%;
+      rgba(255,255,255,.12) 0%,
+      rgba(255,255,255,0) 18%,
+      rgba(0,0,0,.16) 46%,
+      rgba(255,255,255,.04) 68%,
+      rgba(0,0,0,.2) 100%),
+    linear-gradient(165deg,
+      #e28a8e 0%,
+      #bf4a54 12%,
+      #942834 28%,
+      #6d1824 46%,
+      #480f18 63%,
+      #30080f 78%,
+      #7f202b 92%,
+      #52111b 100%);
+  background-size: 100% 100%, 140% 140%, 100% 100%, 100% 100%, 100% 100%;
   background-position: center center;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow:
-    0 1px 0 rgba(255,210,210,.25),
-    0 2px 0 #56131d,
-    0 3px 0 #420e16,
-    0 4px 0 #2e090f,
-    0 8px 10px rgba(0,0,0,.82),
-    0 0 9px rgba(168,34,48,.34),
-    0 0 18px rgba(168,34,48,.25),
-    0 0 30px rgba(113,20,31,.18);
-  filter: saturate(1.07) contrast(1.03);
+    0 1px 0 rgba(255,222,222,.18),
+    0 2px 0 rgba(82,17,27,.95),
+    0 3px 0 rgba(62,12,20,.92),
+    0 4px 0 rgba(42,8,13,.9),
+    0 6px 10px rgba(0,0,0,.78),
+    0 0 10px rgba(168,38,51,.14),
+    0 0 22px rgba(168,38,51,.1);
+  filter: contrast(1.06) saturate(1.08);
+  letter-spacing: .095em;
+}
+#sbBoot .sb-boot-title::before {
+  content: "STANCEBOUND";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: transparent;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.22) 0 2%, rgba(255,255,255,0) 10%),
+    radial-gradient(circle at 74% 38%, rgba(255,255,255,.12) 0 1.6%, rgba(255,255,255,0) 8%),
+    radial-gradient(circle at 47% 70%, rgba(0,0,0,.16) 0 2%, rgba(0,0,0,0) 10%),
+    radial-gradient(circle at 84% 66%, rgba(255,255,255,.1) 0 1.2%, rgba(255,255,255,0) 7%);
+  mix-blend-mode: screen;
+  opacity: .45;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 #sbBoot.sb-boot-ready .sb-boot-title {
   text-shadow:
-    0 1px 0 rgba(255,210,210,.28),
-    0 2px 0 #56131d,
-    0 3px 0 #420e16,
-    0 4px 0 #2e090f,
-    0 8px 10px rgba(0,0,0,.82),
-    0 0 11px rgba(196,55,71,.44),
-    0 0 22px rgba(196,55,71,.3),
-    0 0 38px rgba(132,25,37,.22);
+    0 1px 0 rgba(255,224,224,.2),
+    0 2px 0 rgba(82,17,27,.95),
+    0 3px 0 rgba(62,12,20,.92),
+    0 4px 0 rgba(42,8,13,.9),
+    0 6px 10px rgba(0,0,0,.78),
+    0 0 12px rgba(184,49,64,.22),
+    0 0 26px rgba(184,49,64,.16),
+    0 0 42px rgba(120,24,37,.12);
 }
 </style>
 <style id="stancebound-boot-readable-readout">
