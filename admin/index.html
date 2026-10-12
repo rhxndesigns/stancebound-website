@@ -5820,5 +5820,18 @@ const {data,error}=await client.functions.invoke('reply-enquiry',{body:{enquiry_
 }catch(err){status.textContent=err?.message||'Unable to send the message.'}finally{send.disabled=false}});
 })();
 </script>
+<script>
+/* STANCEBOUND Admin: background push service worker registration */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' });
+      console.log('STANCEBOUND Admin service worker registered:', registration.scope);
+    } catch (error) {
+      console.error('STANCEBOUND Admin service worker registration failed:', error);
+    }
+  });
+}
+</script>
 </body>
 </html>
