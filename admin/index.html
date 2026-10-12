@@ -1470,6 +1470,28 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 #upcomingList .pipeline-card button,
 #upcomingList .pipeline-card a { touch-action: manipulation; }
 </style>
+<style id="stancebound-site-updates-v1">
+.sb-site-updates{max-width:1000px;margin:14px auto 100px!important;padding:clamp(19px,4vw,36px)!important;border:1px solid #262626;background:#080808;color:#f6f6f6}
+.sb-site-updates h2{font-weight:900!important;font-size:clamp(27px,6vw,42px)!important;letter-spacing:-.05em;margin:10px 0}
+.sb-su-desc{color:#9a9a9a;line-height:1.65;margin:0 0 25px}
+.sb-su-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.sb-su-card{background:linear-gradient(150deg,#151515,#090909);border:1px solid #313131;border-radius:14px;padding:20px;min-width:0}
+.sb-su-top span{display:block;font-size:9px;letter-spacing:.21em;color:#888;margin-bottom:7px}
+.sb-su-top strong{font-size:18px;letter-spacing:.055em}
+.sb-su-card p{min-height:62px;color:#aaa;line-height:1.6;font-size:12px}
+.sb-su-card code{color:#fff;font-size:12px}
+.sb-su-card label{font-size:10px;font-weight:800;letter-spacing:.1em;display:block;margin:20px 0 9px}
+.sb-su-card input[type=file]{display:block;max-width:100%;width:100%;padding:14px;background:#111;border:1px dashed #656565;color:#eee;border-radius:8px;font-size:12px}
+.sb-su-file{font-size:11px;color:#aaa;overflow-wrap:anywhere;padding:11px 0;min-height:39px}
+.sb-su-deploy{display:block!important;width:100%;min-height:45px;border:1px solid #e6e6e6!important;background:#e6e6e6!important;color:#080808!important;font-size:11px!important;font-weight:900!important;letter-spacing:.06em!important}
+.sb-su-deploy:disabled{opacity:.38!important;cursor:not-allowed!important}
+.sb-su-status{margin-top:18px;border:1px solid #303030;background:#111;padding:15px;border-radius:8px;line-height:1.55;overflow-wrap:anywhere;font-size:12px}
+.sb-su-status a{color:#93ceff;text-decoration:underline}
+.sb-su-status[data-ok="yes"]{border-color:#338651;color:#bff2cc}
+.sb-su-status[data-ok="error"]{border-color:#9d3a3a;color:#ffaaaa}
+.sb-su-note{font-size:10px;line-height:1.7;color:#777;margin:18px 0 0}
+@media(max-width:720px){.sb-su-grid{grid-template-columns:1fr}.sb-site-updates{margin:6px 0 90px!important}.sb-su-card p{min-height:0}}
+</style>
 </head>
 
 <body>
@@ -1569,9 +1591,39 @@ Log In
     <button type="button" class="admin-tab" id="desktopInboxBtn">Inbox <span id="desktopInboxBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
     <button type="button" class="admin-tab" data-admin-target="finance">Finance</button>
+      <button type="button" class="admin-tab" data-admin-target="siteupdates">Website Updates</button>
   </nav>
 
-  <div class="admin-page active" data-admin-page="dashboard">
+  <!-- STANCEBOUND WEBSITE UPDATES PANEL V1 -->
+<div class="admin-page" data-admin-page="siteupdates" id="sbSiteUpdatesPage">
+ <section class="panel sb-site-updates">
+  <div class="admin-kicker">STANCEBOUND / DEPLOYMENT CONTROL</div>
+  <h2>Website Updates</h2>
+  <p class="sb-su-desc">Replace either website from Admin. Each upload saves a new GitHub version, so previous versions remain available in GitHub history.</p>
+  <div class="sb-su-grid">
+   <div class="sb-su-card">
+    <div class="sb-su-top"><span>01 / CUSTOMER WEBSITE</span><strong>PUBLIC WEBSITE</strong></div>
+    <p>Replaces <code>index.html</code> at the website root. Customers will see these changes when hosting finishes deploying.</p>
+    <label for="sbPublicUpload">SELECT PUBLIC INDEX.HTML</label>
+    <input id="sbPublicUpload" type="file" accept=".html,text/html" />
+    <div class="sb-su-file" id="sbPublicFile">No file selected</div>
+    <button type="button" id="sbPublishPublic" class="sb-su-deploy" disabled>DEPLOY PUBLIC WEBSITE</button>
+   </div>
+   <div class="sb-su-card">
+    <div class="sb-su-top"><span>02 / PRIVATE CONTROL CENTRE</span><strong>ADMIN WEBSITE</strong></div>
+    <p>Replaces <code>admin/index.html</code>. Your customer website remains untouched.</p>
+    <label for="sbAdminUpload">SELECT ADMIN INDEX.HTML</label>
+    <input id="sbAdminUpload" type="file" accept=".html,text/html" />
+    <div class="sb-su-file" id="sbAdminFile">No file selected</div>
+    <button type="button" id="sbPublishAdmin" class="sb-su-deploy" disabled>DEPLOY ADMIN WEBSITE</button>
+   </div>
+  </div>
+  <div class="sb-su-status" id="sbDeployStatus" role="status" aria-live="polite">Waiting for a file. Nothing will change until you confirm deployment.</div>
+  <p class="sb-su-note">Protected by your Supabase Admin login, your user ID and a server-only GitHub token. Changes can be reverted using GitHub commit history. Both uploads are separate.</p>
+ </section>
+</div>
+
+<div class="admin-page active" data-admin-page="dashboard">
   <div class="sb-home">
     <section class="sb-home-hero">
       <div class="sb-home-scan"></div>
@@ -1997,6 +2049,7 @@ Save Changes
       <button type="button" class="more-tool-action" id="morePasskeyBtn"><strong>Passkey / Biometrics</strong><small>Secure biometric or device-PIN access</small></button>
       <button type="button" data-sheet-target="diagnostics"><strong>Diagnostics</strong><small>Check Admin health and errors</small></button>
       <button type="button" class="more-tool-action" id="moreRefreshAdminBtn"><strong>Refresh Admin Data</strong><small>Reload current system data</small></button>
+      <button type="button" data-sheet-target="siteupdates"><strong>Website Updates</strong><small>Upload public or Admin index.html</small></button>
       <button type="button" data-sheet-target="tools"><strong>System</strong><small>Account and Admin controls</small></button>
       <button type="button" class="more-tool-action danger" id="moreLogoutBtn"><strong>Log Out</strong><small>End this Admin session</small></button>
       <div id="moreToolStatus" class="status"></div>
@@ -6043,6 +6096,63 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
+</script>
+<script id="stancebound-site-updates-js">
+(()=>{
+ const $=id=>document.getElementById(id);
+ const status=$('sbDeployStatus');
+ const textStatus=(message,state)=>{if(!status)return;status.dataset.ok=state||'';status.textContent=message};
+ const specs=[
+  {target:'public',input:$('sbPublicUpload'),button:$('sbPublishPublic'),details:$('sbPublicFile'),path:'index.html'},
+  {target:'admin',input:$('sbAdminUpload'),button:$('sbPublishAdmin'),details:$('sbAdminFile'),path:'admin/index.html'}
+ ];
+ let busy=false;
+ for(const spec of specs){
+  spec.input?.addEventListener('change',()=>{
+   const file=spec.input.files?.[0];
+   spec.details.textContent=file?`${file.name} · ${(file.size/1024).toFixed(0)} KB`:'No file selected';
+   spec.button.disabled=!file||busy;
+   textStatus('File selected. Review the destination and confirm when ready.');
+  });
+  spec.button?.addEventListener('click',async()=>{
+   if(busy)return;
+   const file=spec.input.files?.[0]; if(!file)return;
+   if(file.size<30000||file.size>900000){textStatus('File size is not a valid STANCEBOUND website file. Nothing uploaded.','error');return}
+   const html=await file.text();
+   if(!/^\s*<!doctype\s+html/i.test(html)||!/<\/html>\s*$/i.test(html)){
+    textStatus('Please select a complete HTML file. Nothing uploaded.','error');return;
+   }
+   const publicOK=html.includes('id="home"')&&html.includes('id="enquiryForm"')&&html.includes('id="sbBoot"');
+   const adminOK=html.includes('data-admin-page="dashboard"')&&html.includes('id="editor"')&&html.includes('sbAdminSupabase');
+   if(spec.target==='public' ? (!publicOK||adminOK) : (!adminOK||publicOK)){
+    textStatus('Wrong website file selected for this destination. Nothing uploaded.','error');return;
+   }
+   const ok=window.confirm(`REPLACE ${spec.path}?\n\nSelected: ${file.name}\nSize: ${(file.size/1024).toFixed(0)} KB\n\nThis commits the file to GitHub and triggers a website deployment. The previous version stays in GitHub history. Continue?`);
+   if(!ok)return;
+   busy=true;specs.forEach(x=>x.button.disabled=true);
+   spec.button.textContent='DEPLOYING…';textStatus('Checking your Admin session and publishing securely to GitHub…');
+   try{
+    const sb=window.sbAdminSupabase;
+    if(!sb)throw Error('Admin session is not ready. Refresh and log in again.');
+    const {data:{session},error:sessionError}=await sb.auth.getSession();
+    if(sessionError||!session?.access_token)throw Error('Your Admin login has expired. Sign in again.');
+    const {data,error}=await sb.functions.invoke('sb-deploy-website',{body:{target:spec.target,html}});
+    if(error){
+      let message=error.message;
+      try{const details=await error.context?.json();message=details?.error||message}catch{}
+      throw new Error(message||'Server could not deploy the website.');
+    }
+    if(!data?.success)throw new Error(data?.error||'GitHub did not confirm deployment.');
+    status.dataset.ok='yes';status.replaceChildren();
+    status.append(document.createTextNode(`${spec.path} uploaded successfully to GitHub. Your hosting provider may take a few minutes to publish. `));
+    if(typeof data.commit_url==='string' && data.commit_url.startsWith('https://github.com/')){
+      const link=document.createElement('a');link.href=data.commit_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='View deployment commit / rollback';status.append(link);
+    }
+   }catch(e){textStatus(e?.message||'Could not deploy. No success confirmed.','error');console.error('[STANCEBOUND updates]',e)}
+   finally{busy=false;spec.button.textContent=spec.target==='public'?'DEPLOY PUBLIC WEBSITE':'DEPLOY ADMIN WEBSITE';for(const x of specs)x.button.disabled=!x.input?.files?.length}
+  });
+ }
+})();
 </script>
 </body>
 </html>
