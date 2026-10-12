@@ -4453,8 +4453,8 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
       <button class="radial-item active" style="--i:0;--a:-87deg" data-page="home">Home</button>
       <button class="radial-item" style="--i:1;--a:-62deg" data-page="detailing">Detailing</button>
       <button class="radial-item" style="--i:2;--a:-37deg" data-page="pricing">Prices</button>
-      <button class="radial-item" style="--i:3;--a:-12deg" data-page="photography">Photo</button>
-      <button class="radial-item" style="--i:4;--a:12deg" data-page="about">About</button>
+      <button class="radial-item" style="--i:3;--a:-17deg" data-page="photography">Photo</button>
+      <button class="radial-item" style="--i:4;--a:17deg" data-page="about">About</button>
       <button class="radial-item" style="--i:5;--a:37deg" data-page="shop">Shop</button>
       <button class="radial-item" style="--i:6;--a:62deg" data-page="booking">Booking</button>
       <button class="radial-item" style="--i:7;--a:87deg" data-page="contact">Chat</button>
@@ -5802,7 +5802,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
       window.setTimeout(() => {
         setBookingService("Detailing");
         const vehicle = document.getElementById("enquiryVehicle");
-        if(vehicle) vehicle.focus({preventScroll:true});
+        // Do not focus an input on Booking navigation (prevents Android keyboard).
       }, 520);
     }
 
