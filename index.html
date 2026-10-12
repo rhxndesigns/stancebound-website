@@ -3462,22 +3462,55 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 
 
 <style id="stancebound-boot-dark-red-3d-test">
-/* V31: Loading-screen wordmark only. All other site graphics are untouched. */
+/* V32: textured dark-red loading wordmark with a subtle crimson glow. */
 #sbBoot .sb-boot-title {
+  position: relative;
   color: #832630;
-  background: linear-gradient(163deg,
-    #d36a70 0%, #aa3a43 13%, #80232d 30%,
-    #54121e 56%, #380b14 73%, #902b36 89%, #53121c 100%);
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.16) 0%,
+      rgba(255,255,255,0) 22%,
+      rgba(0,0,0,.15) 23%,
+      rgba(0,0,0,0) 48%,
+      rgba(255,255,255,.08) 49%,
+      rgba(255,255,255,0) 68%,
+      rgba(0,0,0,.18) 69%,
+      rgba(0,0,0,0) 100%),
+    radial-gradient(circle at 50% 14%, rgba(255,214,214,.42), rgba(255,214,214,0) 34%),
+    repeating-linear-gradient(118deg,
+      rgba(255,255,255,.08) 0 2px,
+      rgba(255,255,255,0) 2px 7px,
+      rgba(0,0,0,.12) 7px 9px,
+      rgba(0,0,0,0) 9px 15px),
+    linear-gradient(163deg,
+      #e07b81 0%, #b6424b 12%, #8f2832 30%,
+      #5e1521 54%, #3c0c15 71%, #a1323e 88%, #5c1520 100%);
+  background-size: 100% 100%, 100% 100%, 160% 160%, 100% 100%;
+  background-position: center center;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow:
-    0 1px 0 rgba(240,124,131,.18),
-    0 2px 0 #481018,
-    0 3px 0 #360b12,
-    0 4px 0 #28080e,
-    0 7px 8px rgba(0,0,0,.85),
-    0 0 20px rgba(137,30,42,.16);
+    0 1px 0 rgba(255,210,210,.25),
+    0 2px 0 #56131d,
+    0 3px 0 #420e16,
+    0 4px 0 #2e090f,
+    0 8px 10px rgba(0,0,0,.82),
+    0 0 9px rgba(168,34,48,.34),
+    0 0 18px rgba(168,34,48,.25),
+    0 0 30px rgba(113,20,31,.18);
+  filter: saturate(1.07) contrast(1.03);
+}
+#sbBoot.sb-boot-ready .sb-boot-title {
+  text-shadow:
+    0 1px 0 rgba(255,210,210,.28),
+    0 2px 0 #56131d,
+    0 3px 0 #420e16,
+    0 4px 0 #2e090f,
+    0 8px 10px rgba(0,0,0,.82),
+    0 0 11px rgba(196,55,71,.44),
+    0 0 22px rgba(196,55,71,.3),
+    0 0 38px rgba(132,25,37,.22);
 }
 </style>
 <style id="stancebound-boot-readable-readout">
