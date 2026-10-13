@@ -4301,11 +4301,50 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
   .service,.contact-card,.enquiry-shell { -webkit-backdrop-filter:none!important;backdrop-filter:none!important }
 }
 </style>
+
+<style id="stancebound-public-v43-professional-polish">
+/* STANCEBOUND V43: non-invasive mobile usability and accessibility polish. */
+.sb-v43-skip{position:fixed;left:14px;top:-100px;z-index:2147483647;
+  padding:12px 16px;background:#f5f5f5;color:#070707;border:2px solid #070707;
+  font:700 13px/1.3 Arial,Helvetica,sans-serif;text-decoration:none;}
+.sb-v43-skip:focus-visible{top:12px;}
+.header-logo{border:0;appearance:none;background:transparent;padding:0;flex-shrink:0;
+  text-align:left;color:inherit;font:inherit;}
+/* Visible focus for real keyboard navigation; doesn't appear on normal taps. */
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible,
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid #f4f4f4!important;outline-offset:3px!important;
+  box-shadow:0 0 0 4px rgba(0,0,0,.8)!important;}
+.photo[role="button"]:focus-visible{outline-offset:-5px!important;}
+/* More forgiving controls with no change to booking data or calendar rules. */
+#booking .calendar-controls button{width:44px;height:44px;min-width:44px;}
+#pricing .sbp-cinema-nav>button{min-width:44px;min-height:44px;justify-content:center;}
+#home .hero-socials a{display:inline-flex;align-items:center;min-height:44px;padding:8px 6px;
+  font-size:max(10px, .73rem);line-height:1.35;}
+#home .home-link{display:inline-flex;align-items:center;min-height:44px;}
+/* Legible microcopy in the actual booking flow, not in decorative technical HUDs. */
+#booking .sb-package-trigger small{font-size:10px;line-height:1.4;letter-spacing:.12em;}
+#booking .sb-package-trigger strong{font-size:13px;line-height:1.45;}
+#booking .service-choice span{font-size:11px;line-height:1.5;}
+#booking .service-choice small{font-size:11px;line-height:1.45;}
+#booking .calendar-key{font-size:11px;line-height:1.5;}
+#booking .calendar-note{font-size:12px;line-height:1.6;}
+@media(max-width:600px){
+  #pricing .sbp-cinema-nav{grid-template-columns:minmax(52px,auto) minmax(0,1fr) minmax(48px,auto);}
+  #booking .enquiry-shell{max-width:100%;}
+  #booking .calendar-controls{gap:6px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .radial-toggle,.radial-item,.sbp-swipe-cue i,#home .sb-home-techfield{
+    animation:none!important;transition:none!important;}
+}
+</style>
 </head>
 
 
 
 <body class="intro-running">
+<button class="sb-v43-skip" type="button" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});">Skip to main content</button>
 <div id="sbBoot" aria-hidden="true"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br>UI CORE / ONLINE<br>MOTION / ACTIVE</div>
  <div class="sb-boot-data right">SB-01<br>SECURE SESSION<br>SOUTH WALES</div>
  <div class="sb-boot-core"><div class="sb-boot-mark"><img src="/images/stanceboundlogo.png?v=30" alt=""></div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
@@ -4350,22 +4389,22 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
 
   <header>
 
-    <div
+    <button
       class="header-logo"
-      onclick="showPage('home')"
-    >
+      onclick="showPage('home')" type="button" aria-label="Go to STANCEBOUND home">
 
       <img
         src="images/stanceboundlogo.png?v=30"
         alt="STANCEBOUND"
       >
 
-    </div>
+    </button>
 
 
     <button
       class="menu-button"
       onclick="toggleMenu()"
+      type="button" aria-controls="navigation" aria-expanded="false"
       aria-label="Open navigation"
     >
       ☰
@@ -4449,7 +4488,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
   </header>
   <div class="radial-backdrop" id="radialBackdrop"></div>
   <div class="radial-nav" id="radialNav" aria-label="Site menu">
-    <div class="radial-items">
+    <div class="radial-items" id="radialItemsV43" inert>
       <button class="radial-item active" style="--i:0;--a:-87deg" data-page="home">Home</button>
       <button class="radial-item" style="--i:1;--a:-62deg" data-page="detailing">Detailing</button>
       <button class="radial-item" style="--i:2;--a:-37deg" data-page="pricing">Prices</button>
@@ -4459,13 +4498,13 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
       <button class="radial-item" style="--i:6;--a:62deg" data-page="booking">Booking</button>
       <button class="radial-item" style="--i:7;--a:87deg" data-page="contact">Chat</button>
     </div>
-    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
+    <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="radialItemsV43"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
   </div>
 
 
 
 
-  <main>
+  <main id="sbPublicMain" tabindex="-1">
 
 
     <!-- ========================================
@@ -4646,13 +4685,13 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
           </div>
 
           <div class="gallery swipe-gallery" id="detailing-process-gallery">
-            <div class="photo large" onclick="openLightbox('images/STANCEBOUND4.jpg')">
+            <div class="photo large" onclick="openLightbox('images/STANCEBOUND4.jpg')" role="button" tabindex="0" aria-label="Open gallery image: Mercedes detailing by STANCEBOUND" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
               <img loading="lazy" decoding="async" src="images/STANCEBOUND4.jpg" alt="Mercedes detailing by STANCEBOUND">
             </div>
-            <div class="photo" onclick="openLightbox('images/STANCEBOUND5.jpg')">
+            <div class="photo" onclick="openLightbox('images/STANCEBOUND5.jpg')" role="button" tabindex="0" aria-label="Open gallery image: Mercedes exterior detailing process" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
               <img loading="lazy" decoding="async" src="images/STANCEBOUND5.jpg" alt="Mercedes exterior detailing process">
             </div>
-            <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')">
+            <div class="photo" onclick="openLightbox('images/STANCEBOUND6.jpg')" role="button" tabindex="0" aria-label="Open gallery image: Mercedes wheel and exterior detail" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
               <img loading="lazy" decoding="async" src="images/STANCEBOUND6.jpg" alt="Mercedes wheel and exterior detail">
             </div>
           </div>
@@ -4875,7 +4914,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
                 'images/STANCEBOUND3.jpg'
               )
             "
-          >
+           role="button" tabindex="0" aria-label="Open gallery image: STANCEBOUND automotive photography" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
 
             <img
               loading="lazy" decoding="async"
@@ -4894,7 +4933,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
                 'images/STANCEBOUND8.jpg'
               )
             "
-          >
+           role="button" tabindex="0" aria-label="Open gallery image: Car show photography" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
 
             <img
               loading="lazy" decoding="async"
@@ -4913,7 +4952,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
                 'images/STANCEBOUND9.jpg'
               )
             "
-          >
+           role="button" tabindex="0" aria-label="Open gallery image: Modified car photography" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
 
             <img
               loading="lazy" decoding="async"
@@ -5041,7 +5080,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
                 <label>Service / package</label>
                 <input id="enquiryService" name="service" type="hidden">
                 <div class="sb-package-picker" id="sbPackagePicker">
-                  <button type="button" class="sb-package-trigger" id="sbPackageTrigger" aria-expanded="false">
+                  <button type="button" class="sb-package-trigger" id="sbPackageTrigger" aria-expanded="false" aria-controls="serviceChoiceGrid">
                     <span><small>SELECT A PACKAGE</small><strong id="sbPackageSelected">Choose the service you want</strong></span>
                     <i aria-hidden="true">⌄</i>
                   </button>
@@ -5159,7 +5198,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
               <div id="enquiryStatus" class="enquiry-status" aria-live="polite"></div>
               <div class="enquiry-note">A verification code will be sent to your email before your request reaches STANCEBOUND.</div>
             </div>
-            <div id="verifyBox" class="verify-box"><div class="enquiry-head"><div class="eyebrow">ONE LAST CHECK</div><h2>Verify Your Email</h2><p>Enter the 6-digit code we just sent you.</p></div><div class="verify-row"><input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000"><button class="btn" id="verifyEnquiryBtn" type="button">Verify</button></div></div>
+            <div id="verifyBox" class="verify-box"><div class="enquiry-head"><div class="eyebrow">ONE LAST CHECK</div><h2>Verify Your Email</h2><p>Enter the 6-digit code we just sent you.</p></div><div class="verify-row"><input id="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" aria-label="6-digit verification code"><button class="btn" id="verifyEnquiryBtn" type="button">Verify</button></div></div>
           </form>
         </div>
       </div>
@@ -5233,7 +5272,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
             <h3>Verify it's you.</h3>
             <p>Enter the 6-digit code sent to your email.</p>
             <div class="sb-chat-code-row">
-              <input id="customerChatCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000">
+              <input id="customerChatCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" aria-label="6-digit verification code">
               <button class="btn" id="customerChatVerifyBtn" type="button">OPEN PRIVATE CHAT</button>
             </div>
           </div>
@@ -6614,7 +6653,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       <button type="button" id="convRequestCode">SEND VERIFICATION CODE</button>
       <div id="convCodeWrap" hidden>
         <div class="conv-verify-row">
-          <input id="convCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+          <input id="convCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="6-digit verification code">
           <button type="button" id="convVerifyCode">VERIFY</button>
         </div>
       </div>
@@ -8434,6 +8473,47 @@ if(sys)sys.textContent='SYS / STARTING';
 })();
 </script>
 
+
+<script id="stancebound-v43-a11y-sync">
+(() => {
+  const radial = document.getElementById('radialNav');
+  const radialItems = document.getElementById('radialItemsV43');
+  const radialToggle = document.getElementById('radialToggle');
+  const headerNav = document.getElementById('navigation');
+  const headerToggle = document.querySelector('header .menu-button');
+  const syncMenus = () => {
+    const radialOpen = !!radial?.classList.contains('open');
+    if(radialItems) radialItems.inert = !radialOpen;
+    radialToggle?.setAttribute('aria-expanded', String(radialOpen));
+    radialToggle?.setAttribute('aria-label',radialOpen ? 'Close menu' : 'Open menu');
+    const headerOpen = !!headerNav?.classList.contains('open');
+    headerToggle?.setAttribute('aria-expanded',String(headerOpen));
+    headerToggle?.setAttribute('aria-label',headerOpen ? 'Close navigation' : 'Open navigation');
+  };
+  const syncCurrentPage = () => {
+    const page = document.querySelector('main > .page.active')?.id;
+    if(!page) return;
+    document.querySelectorAll('#navigation [data-page], #radialItemsV43 [data-page]').forEach(button => {
+      if(button.dataset.page === page) button.setAttribute('aria-current','page');
+      else button.removeAttribute('aria-current');
+    });
+  };
+  if(radial && headerNav){
+    const observer = new MutationObserver(syncMenus);
+    observer.observe(radial,{attributes:true,attributeFilter:['class']});
+    observer.observe(headerNav,{attributes:true,attributeFilter:['class']});
+  }
+  const pages = document.querySelectorAll('main > .page');
+  const pageObserver = new MutationObserver(syncCurrentPage);
+  pages.forEach(page => pageObserver.observe(page,{attributes:true,attributeFilter:['class']}));
+  document.addEventListener('keydown', event => {
+    if(event.key !== 'Escape') return;
+    if(radial?.classList.contains('open')) radialToggle?.click();
+    if(headerNav?.classList.contains('open')) headerNav.classList.remove('open');
+  });
+  syncMenus(); syncCurrentPage();
+})();
+</script>
 </body>
 
 </html>
