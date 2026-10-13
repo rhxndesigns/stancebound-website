@@ -81,6 +81,7 @@ html.sb-track-route,html.sb-track-route body{background:#050505!important}
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
   <meta charset="UTF-8">
+<link rel="preload" as="image" href="/images/stanceboundlogo.png?v=30" fetchpriority="high">
 
   <meta
     name="viewport"
@@ -4537,7 +4538,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
 
         <section class="home-shop-teaser home-reveal">
           <div class="home-shop-image">
-            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001" loading="lazy">
+            <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001" loading="lazy" decoding="async">
           </div>
           <div class="home-shop-copy">
             <div class="home-kicker">STANCEBOUND STORE · DROP 001</div>
@@ -5327,7 +5328,7 @@ footer { font-size: 11px !important; letter-spacing: .035em; line-height: 1.6; }
         <div class="shop-grid">
           <article class="product-card is-live" data-printful-product-id="474862785" role="button" tabindex="0" onclick="openHoodieProduct(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openHoodieProduct(event)}">
             <div class="product-visual product-image">
-              <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" loading="lazy">
+              <img src="images/hoodiedrop001.png" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" loading="lazy" decoding="async">
             </div>
             <div class="product-info">
               <div>
@@ -6057,12 +6058,35 @@ card.addEventListener("pointercancel",cancel,{passive:true});
     }, { threshold: 0.12, rootMargin: "0px 0px -35px" });
     document.querySelectorAll(".home-reveal").forEach(el => homeRevealObserver.observe(el));
 
-    const homeMercVideo=document.getElementById("homeMercVideo");
-    if(homeMercVideo){
-      const loadHomeMercVideo=()=>{const source=homeMercVideo.querySelector("source[data-src]");if(source){source.src=source.dataset.src;source.removeAttribute("data-src");homeMercVideo.load();}homeMercVideo.play().catch(()=>{});};
-      const homeVideoObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){loadHomeMercVideo();homeVideoObserver.disconnect();}});},{rootMargin:"250px 0px"});
-      homeVideoObserver.observe(homeMercVideo);
+    // V42: load each feature video on approach, and stop decoding it as soon
+    // as visitors leave the section/page. Keeps Android resources for UI.
+    function sbManageFeatureVideo(video){
+      if(!video)return;
+      const page=video.closest('.page');
+      let nearViewport=false;
+      let prepared=false;
+      const sync=()=>{
+        const visible=nearViewport && !document.hidden && (!page || page.classList.contains('active'));
+        if(!visible){if(!video.paused)video.pause();return;}
+        if(!prepared){
+          const source=video.querySelector('source[data-src]');
+          if(source){source.src=source.dataset.src;source.removeAttribute('data-src');video.load();}
+          prepared=true;
+        }
+        if(video.paused){
+          const playback=video.play();
+          if(playback && typeof playback.catch==='function')playback.catch(()=>{});
+        }
+      };
+      const observer=new IntersectionObserver(entries=>{
+        for(const entry of entries){if(entry.target===video){nearViewport=entry.isIntersecting;sync();}}
+      },{rootMargin:'80px 0px',threshold:0.05});
+      observer.observe(video);
+      document.addEventListener('visibilitychange',sync);
+      window.addEventListener('pagehide',()=>{if(!video.paused)video.pause();},{passive:true});
+      if(page)new MutationObserver(sync).observe(page,{attributes:true,attributeFilter:['class']});
     }
+    sbManageFeatureVideo(document.getElementById('homeMercVideo'));
 
 
     // Site-wide cinematic scroll reveals. Applied automatically so future content inherits the motion system.
@@ -6164,18 +6188,7 @@ card.addEventListener("pointercancel",cancel,{passive:true});
     ).textContent =
       new Date().getFullYear();
 
-    const mercVideo=document.getElementById("mercFeatureVideo");
-    if(mercVideo){
-      const loadMercVideo=()=>{
-        const source=mercVideo.querySelector("source[data-src]");
-        if(source){source.src=source.dataset.src;source.removeAttribute("data-src");mercVideo.load();}
-        mercVideo.play().catch(()=>{});
-      };
-      const videoObserver=new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{if(entry.isIntersecting){loadMercVideo();videoObserver.disconnect();}});
-      },{rootMargin:"250px 0px"});
-      videoObserver.observe(mercVideo);
-    }
+    sbManageFeatureVideo(document.getElementById('mercFeatureVideo'));
 
     const siteIntro=document.getElementById("site-intro");
     const introLogo=siteIntro?.querySelector(".intro-logo");
@@ -6708,7 +6721,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   function renderMessages(messages){
     const signature=messages.map(m=>`${m.id}:${m.read_at||''}:${(m.attachments||[]).map(a=>a.path||'').join(',')}`).join('|');
     if(signature===lastMessageSignature)return;lastMessageSignature=signature;
-    $('convMessages').innerHTML=messages.length?messages.map(m=>{let receipt='';if(m.sender==='customer')receipt=m.read_at?`<span class="conv-receipt">Read ${esc(niceTime(m.read_at))}</span>`:`<span class="conv-receipt">Sent</span>`;const at=Array.isArray(m.attachments)?m.attachments:[];const rawMessage=String(m.message||'').trim();const text=(at.length&&/^photo attachment$/i.test(rawMessage))?'':rawMessage;return `<div class="conv-msg ${m.sender==='customer'?'customer':''}"><div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div>${text?`<div class="conv-body">${esc(text)}</div>`:''}${at.length?`<div class="conv-image-grid ${at.length===1?'single':''}">${at.map(a=>`<img src="${esc(a.url||a)}" alt="Chat image" loading="lazy" data-conv-image="${esc(a.url||a)}">`).join('')}</div>`:''}<div class="conv-time">${esc(niceTime(m.created_at))}</div>${receipt}</div>`}).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
+    $('convMessages').innerHTML=messages.length?messages.map(m=>{let receipt='';if(m.sender==='customer')receipt=m.read_at?`<span class="conv-receipt">Read ${esc(niceTime(m.read_at))}</span>`:`<span class="conv-receipt">Sent</span>`;const at=Array.isArray(m.attachments)?m.attachments:[];const rawMessage=String(m.message||'').trim();const text=(at.length&&/^photo attachment$/i.test(rawMessage))?'':rawMessage;return `<div class="conv-msg ${m.sender==='customer'?'customer':''}"><div class="conv-who">${m.sender==='customer'?'YOU':'STANCEBOUND'}</div>${text?`<div class="conv-body">${esc(text)}</div>`:''}${at.length?`<div class="conv-image-grid ${at.length===1?'single':''}">${at.map(a=>`<img src="${esc(a.url||a)}" alt="Chat image" loading="lazy" data-conv-image="${esc(a.url||a)}" decoding="async">`).join('')}</div>`:''}<div class="conv-time">${esc(niceTime(m.created_at))}</div>${receipt}</div>`}).join(''):'<div class="conv-msg"><div class="conv-who">STANCEBOUND</div><div class="conv-body">Your private conversation is ready.</div></div>';
     $('convMessages').lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
@@ -7592,7 +7605,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 
 <style id="stancebound-global-interaction-motion">
   :root{--sb-ease:cubic-bezier(.22,.8,.22,1);--sb-fast:180ms;--sb-page:340ms}
-  .page{will-change:opacity,transform,filter}
+  .page{will-change:auto}.page.sb-page-entering,.page.sb-page-leaving{will-change:opacity,transform}
   .page.sb-page-leaving{display:block!important;opacity:0!important;transform:translateY(10px) scale(.995)!important;filter:blur(2px);pointer-events:none;transition:opacity 180ms ease,transform 220ms var(--sb-ease),filter 180ms ease!important}
   .page.sb-page-entering{display:block!important;animation:sbPageEnter var(--sb-page) var(--sb-ease) both}
   @keyframes sbPageEnter{from{opacity:0;transform:translateY(14px) scale(.994);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
