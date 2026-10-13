@@ -2174,7 +2174,7 @@ Save Changes
     <button type="button" data-mobile-target="dashboard" class="active"><span>⌂</span>Home</button>
     <button type="button" data-mobile-target="bookings"><span id="mobileNewEnquiryCount" aria-label="New enquiries">•</span>Enquiries</button>
     <button type="button" class="nav-plus" id="quickAddBtn" aria-label="Website editing tools"><img src="/images/stanceboundlogo.png" alt="STANCEBOUND"></button>
-    <button type="button" data-mobile-target="upcoming"><span>03</span>Jobs</button>
+    <button type="button" data-mobile-target="upcoming"><span id="mobileBookedJobsCount" aria-label="Booked jobs" aria-live="polite">0</span>Jobs</button>
     <button type="button" id="inboxBtn" class="sb-inbox-nav"><span>✉</span>Inbox <b id="inboxBadge"></b></button>
   </nav>
   <button type="button" id="moreBtn" class="sb-security-button" aria-label="Security and Admin"><span class="sb-more-dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
@@ -4265,6 +4265,13 @@ function renderUpcoming(){
   const today=new Date().toISOString().slice(0,10);
   const rows=cachedEnquiries.filter(r=>r.booking_date && bookingWorkflowStatus(r)==='booked').sort((a,b)=>(a.booking_date+(a.booking_time||'')).localeCompare(b.booking_date+(b.booking_time||'')));
   const count=document.querySelector('#upcomingCount'); if(count)count.textContent=`${rows.length} booked`;
+  // V40: Mobile Jobs navigation displays the same real booked-job count as the Jobs page.
+  // Stage 03 in the workflow header remains a stage number, not a count.
+  const mobileCount=document.querySelector('#mobileBookedJobsCount');
+  if(mobileCount){
+    mobileCount.textContent=String(rows.length);
+    mobileCount.setAttribute('aria-label',`${rows.length} booked ${rows.length===1?'job':'jobs'}`);
+  }
   if(!rows.length){list.innerHTML='<div class="empty-state">No confirmed jobs are waiting to be completed.</div>';return;}
   list.innerHTML=rows.map(r=>{
     const d=new Date(r.booking_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
