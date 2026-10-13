@@ -67,7 +67,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
 
-<title>STANCEBOUND Admin</title>
+<title>STANCEBOUND Admin · V37</title>
 
 <style>
 
@@ -1534,6 +1534,9 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 @media(prefers-reduced-motion:reduce){[data-state="processing"] .sb-su-progress>i{animation-duration:2.5s}#sbSuLiveIndicator{transition:none}}
 </style>
 
+<style id="sb-v37-confirmation-marker-style">
+.sb-confirmation-version-stamp{font-size:9px;letter-spacing:.13em;color:#929292;font-weight:700;opacity:.8;margin:10px 0 15px}
+</style>
 <style id="sb-v36-inline-confirmation-style">
 /* Confirmation editor opens underneath its own record, never in 01 Enquiries. */
 #confirmationList .sb-confirmation-inline-editor{margin-top:18px;padding:16px 12px;border:1px solid rgba(255,255,255,.15);border-radius:15px;background:rgba(8,9,11,.88)}
@@ -1815,6 +1818,7 @@ Log In
       <div class="section-title-row"><h2>Confirmation</h2><span class="status-pill" id="confirmationCount">0 waiting</span></div>
       <p class="help">Only bookings waiting for the customer's final signature appear here. Edit and resend if something changes, or open Chat without losing where the booking is in the process.</p>
       <div class="sb-workflow-strip" aria-label="Booking workflow"><b>01 ENQUIRY</b><span>›</span><b class="active">02 CONFIRMATION</b><span>›</span><b>03 BOOKED</b><span>›</span><b>04 LIVE</b><span>›</span><b>05 COMPLETE</b></div>
+      <div id="sbConfirmationVersion" class="sb-confirmation-version-stamp" aria-label="Confirmation editor software version">CONFIRMATION EDITOR · V37</div>
       <div id="confirmationList" class="enquiry-list"></div>
     </div>
   </div>
@@ -4065,7 +4069,21 @@ function renderConfirmation(){
       <div class="completed-actions"><button type="button" data-confirmation-manage="${r.id}">OPEN / EDIT</button><button type="button" class="secondary" data-confirmation-chat="${r.id}">CHAT</button></div>
     </article>`;
   }).join('');
-  list.querySelectorAll('[data-confirmation-manage]').forEach(btn=>btn.onclick=()=>openConfirmationBookingEditor(btn.dataset.confirmationManage));
+  // V37: capture the actual Confirmation OPEN / EDIT tap before legacy
+  // handlers or card-level delegation can interpret it as an Enquiries action.
+  // Delegation survives every data refresh and rebinding of Confirmation cards.
+  if (!list.__sbConfirmEditCaptureInstalled) {
+    list.__sbConfirmEditCaptureInstalled = true;
+    list.addEventListener('click', function sbConfirmEditClickCapture(event) {
+      const button=event.target.closest?.('[data-confirmation-manage]');
+      if (!button || !list.contains(button)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id=button.dataset.confirmationManage;
+      if(!id)return;
+      openConfirmationBookingEditor(id);
+    }, true);
+  }
   list.querySelectorAll('[data-confirmation-chat]').forEach(btn=>btn.onclick=()=>{
     // Confirmation CHAT must stay on the Confirmation page and open the existing secure customer chat dialog.
     const openChat=window.sbOpenJobChat;
