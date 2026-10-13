@@ -67,7 +67,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
 
-<title>STANCEBOUND Admin · V37</title>
+<title>STANCEBOUND Admin · V39</title>
 
 <style>
 
@@ -1537,23 +1537,94 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
 <style id="sb-v37-confirmation-marker-style">
 .sb-confirmation-version-stamp{font-size:9px;letter-spacing:.13em;color:#929292;font-weight:700;opacity:.8;margin:10px 0 15px}
 </style>
-<style id="sb-v38-inline-confirmation-style">
-/* Confirmation editor opens underneath its own record, never in 01 Enquiries. */
-#confirmationList .sb-confirmation-inline-editor{margin-top:16px;padding:14px 11px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:rgba(8,9,11,.84)}
-#confirmationList .sb-confirmation-inline-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-#confirmationList .sb-confirmation-inline-head strong{font-size:10px;line-height:1.4;letter-spacing:.14em;color:#dedede}
-#confirmationList .sb-confirmation-inline-head button{flex-shrink:0;min-height:38px;padding:10px 14px}
-#confirmationList .sb-confirmation-editor-content > .enquiry-card{margin:0;border:0;background:transparent;padding:0;box-shadow:none}
-#confirmationList .sb-confirmation-editor-content .booking-grid{min-width:0}
+<style id="sb-v39-confirmation-clean-editor">
+/* Only one confirmation record and ONE editable form, without duplicated customer summary. */
+#confirmationList .sb-confirmation-inline-editor{
+  margin-top:18px;
+  padding:0;
+  border:0;
+  border-top:1px solid rgba(255,255,255,.13);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+#confirmationList .sb-confirmation-inline-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin:0 0 16px;padding:14px 0 0;border:0;
+}
+#confirmationList .sb-confirmation-inline-head strong{
+  font-size:11px;font-weight:750;line-height:1.4;letter-spacing:.11em;
+  color:#eaeaea;
+}
+#confirmationList .sb-confirmation-inline-head button{
+  flex:0 0 80px!important;width:80px!important;max-width:80px!important;min-height:36px;min-width:0;padding:9px 11px!important;
+  margin:0;border-radius:8px;border:1px solid #3a3a3a;
+  background:#191919;color:#ddd;font-size:10px;letter-spacing:.09em;
+}
+#confirmationList .sb-confirmation-editor-content > [data-booking-request-id]{
+  margin:0!important;padding:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+}
+#confirmationList .sb-confirmation-editor-content .booking-editor{
+  margin:0;padding:0;border:0;background:transparent;
+}
+#confirmationList .sb-confirmation-editor-content .booking-edit-panel:not(.booking-management){
+  display:block;margin:0!important;padding:0!important;
+  background:transparent;border:0;box-shadow:none;animation:none;
+}
+#confirmationList .sb-confirmation-editor-content .booking-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px 11px;min-width:0;margin:0;
+}
+#confirmationList .sb-confirmation-editor-content .booking-grid>div{min-width:0}
+#confirmationList .sb-confirmation-editor-content .booking-grid label{
+  margin-bottom:6px;font-size:9px;letter-spacing:.13em;color:#999;
+}
+#confirmationList .sb-confirmation-editor-content .booking-grid input,
+#confirmationList .sb-confirmation-editor-content .booking-grid textarea{
+  width:100%;min-width:0;border:1px solid #292929!important;
+  background:#101010!important;color:#f2f2f2!important;
+  border-radius:10px!important;box-shadow:none!important;
+  min-height:43px!important;padding:11px 12px!important;
+  font-size:13px!important;
+}
+#confirmationList .sb-confirmation-editor-content .booking-grid textarea{min-height:66px!important}
+#confirmationList .sb-confirmation-editor-content .booking-grid .full{grid-column:1/-1}
+#confirmationList .sb-confirmation-editor-content .booking-email-choice{
+  border:0!important;border-radius:8px;background:#111;
+  padding:11px 12px;margin:15px 0 13px!important;
+  font-size:11px;line-height:1.6;color:#b7b7b7;
+}
+#confirmationList .sb-confirmation-editor-content .booking-edit-panel .enquiry-actions-admin{
+  display:block!important;margin:0;padding:0;border:0;
+}
+#confirmationList .sb-confirmation-editor-content .booking-edit-panel .enquiry-actions-admin button{
+  width:100%!important;min-height:46px!important;border-radius:9px;
+  padding:12px!important;font-size:10px;line-height:1.3;letter-spacing:.12em;
+}
+#confirmationList .sb-confirmation-editor-content [data-request-status]{
+  display:block;margin-top:12px;font-size:11px;line-height:1.4;
+}
 #confirmationList .sb-confirmation-editor-content .booking-quick-actions,
+#confirmationList .sb-confirmation-editor-content .booking-management,
+#confirmationList .sb-confirmation-editor-content .pending-confirmation-summary,
+#confirmationList .sb-confirmation-editor-content .enquiry-message,
+#confirmationList .sb-confirmation-editor-content .enquiry-card-head,
+#confirmationList .sb-confirmation-editor-content .job-details,
 #confirmationList .sb-confirmation-editor-content .booking-chat-composer,
-#confirmationList .sb-confirmation-editor-content [id^="booking-reply-"]{display:none!important}
-#confirmationList .sb-confirmation-editor-content .enquiry-message{margin:10px 0;padding:11px 12px;background:#0a0a0a;border:1px solid #1b1b1b}
-#confirmationList .sb-confirmation-editor-content .pending-confirmation-summary{margin-top:10px}
-#confirmationList .sb-confirmation-editor-content .booking-edit-panel{margin-top:10px}
-#confirmationList .sb-confirmation-editor-content .booking-email-choice{margin:12px 0 10px!important}
-#confirmationList .sb-confirmation-editor-content .booking-management{display:none!important}
-@media(max-width:600px){#confirmationList .sb-confirmation-inline-editor{padding:12px 9px}#confirmationList .sb-confirmation-inline-head strong{font-size:9px}}
+#confirmationList .sb-confirmation-editor-content [id^="booking-reply-"]{
+  display:none!important;
+}
+#confirmationList .sb-confirmation-editing > .completed-actions{
+  grid-template-columns:1fr;
+}
+#confirmationList .sb-confirmation-editing [data-confirmation-manage][hidden]{display:none!important}
+#sbConfirmationVersion{color:#bcbcbc;opacity:1}
+@media(max-width:600px){
+  #confirmationList .sb-confirmation-editor-content .booking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #confirmationList .sb-confirmation-editor-content .booking-grid .full{grid-column:1/-1}
+  #confirmationList .sb-confirmation-inline-head strong{font-size:10px}
+}
 </style>
 </head>
 
@@ -1826,7 +1897,7 @@ Log In
       <div class="section-title-row"><h2>Confirmation</h2><span class="status-pill" id="confirmationCount">0 waiting</span></div>
       <p class="help">Only bookings waiting for the customer's final signature appear here. Edit and resend if something changes, or open Chat without losing where the booking is in the process.</p>
       <div class="sb-workflow-strip" aria-label="Booking workflow"><b>01 ENQUIRY</b><span>›</span><b class="active">02 CONFIRMATION</b><span>›</span><b>03 BOOKED</b><span>›</span><b>04 LIVE</b><span>›</span><b>05 COMPLETE</b></div>
-      <div id="sbConfirmationVersion" class="sb-confirmation-version-stamp" aria-label="Confirmation editor software version">CONFIRMATION EDITOR · V37</div>
+      <div id="sbConfirmationVersion" class="sb-confirmation-version-stamp" aria-label="Confirmation editor software version">CONFIRMATION EDITOR · V39 CLEAN LAYOUT</div>
       <div id="confirmationList" class="enquiry-list"></div>
     </div>
   </div>
@@ -4101,8 +4172,8 @@ function renderConfirmation(){
 }
 
 function openConfirmationBookingEditor(id){
-  // OPEN / EDIT stays on 02 Confirmation and reuses the existing live booking
-  // editor underneath the matching confirmation record.
+  // V39: render just the existing functional form inside Confirmation.
+  // No cloned customer card, secondary contact, or competing close controls.
   const list=document.querySelector('#confirmationList');
   const row=cachedEnquiries.find(r=>String(r.id)===String(id));
   if(!list||!row)return;
@@ -4110,38 +4181,46 @@ function openConfirmationBookingEditor(id){
     .find(el=>el.dataset.confirmationId===String(id));
   if(!card)return;
   const trigger=card.querySelector('[data-confirmation-manage]');
-  const existing=card.querySelector('.sb-confirmation-inline-editor');
-  if(existing){
-    existing.remove();
-    if(trigger){trigger.textContent='OPEN / EDIT';trigger.setAttribute('aria-expanded','false');}
+  const resetCard=(item)=>{
+    item.querySelector('.sb-confirmation-inline-editor')?.remove();
+    item.classList.remove('sb-confirmation-editing');
+    const button=item.querySelector('[data-confirmation-manage]');
+    if(button){button.hidden=false;button.textContent='OPEN / EDIT';button.setAttribute('aria-expanded','false');}
+  };
+  if(card.classList.contains('sb-confirmation-editing')){
+    resetCard(card);
     return;
   }
-  // Keep one editor open at a time. Avoid a duplicate record or a tab switch.
-  list.querySelectorAll('.sb-confirmation-inline-editor').forEach(el=>el.remove());
-  list.querySelectorAll('[data-confirmation-manage]').forEach(el=>{
-    el.textContent='OPEN / EDIT';el.setAttribute('aria-expanded','false');
-  });
-  const host=document.createElement('div');
+  list.querySelectorAll('[data-confirmation-id].sb-confirmation-editing').forEach(resetCard);
+  const host=document.createElement('section');
   host.className='sb-confirmation-inline-editor';
   host.setAttribute('data-confirmation-editor-for',String(id));
-  host.innerHTML='<div class="sb-confirmation-inline-head"><strong>EDIT BOOKING DETAILS</strong><button type="button" class="secondary" data-close-confirmation-editor>DONE</button></div><div class="sb-confirmation-editor-content"></div>';
+  host.innerHTML='<div class="sb-confirmation-inline-head"><strong>EDIT BOOKING</strong><button type="button" class="secondary" data-close-confirmation-editor aria-label="Close booking editor">CLOSE</button></div><div class="sb-confirmation-editor-content"></div>';
   card.appendChild(host);
   const content=host.querySelector('.sb-confirmation-editor-content');
   renderBookingRequests(id,content);
-  const editor=content.querySelector(`[data-booking-request-id]`);
+  const editor=content.querySelector('[data-booking-request-id]');
   if(!editor){host.remove();return;}
-  // Open the existing booking controls, not a different screen.
-  const inlineOpenButton=editor.querySelector('[data-toggle-booking-edit]');
-  inlineOpenButton?.click();
-  // This inline version should be cleaner than the full booking page.
+  // Bindings are attached by renderBookingRequests. Activate form before removing
+  // its old toggle so every save handler continues to receive the correct card.
+  editor.querySelector('[data-toggle-booking-edit]')?.click();
+  const form=editor.querySelector('.booking-edit-panel:not(.booking-management)');
+  if(!form){host.remove();return;}
+  form.hidden=false;
+  // Physically discard duplicate content. CSS hides it too as a fallback.
+  editor.querySelector('.enquiry-card-head')?.remove();
+  editor.querySelector('.pending-confirmation-summary')?.remove();
+  editor.querySelector('.job-details')?.remove();
+  editor.querySelector('.enquiry-message')?.remove();
   editor.querySelector('.booking-quick-actions')?.remove();
+  editor.querySelector('.booking-management')?.remove();
   editor.querySelector('.booking-chat-composer')?.remove();
   editor.querySelector('[id^="booking-reply-"]')?.remove();
-  if(trigger){trigger.textContent='OPEN / EDIT';trigger.setAttribute('aria-expanded','true');}
-  host.querySelector('[data-close-confirmation-editor]').onclick=()=>{
-    host.remove();
-    if(trigger){trigger.textContent='OPEN / EDIT';trigger.setAttribute('aria-expanded','false');}
-  };
+  // Closing the editor never cancels or modifies customer data.
+  form.querySelector('[data-cancel-edit]')?.remove();
+  card.classList.add('sb-confirmation-editing');
+  if(trigger){trigger.hidden=true;trigger.setAttribute('aria-expanded','true');}
+  host.querySelector('[data-close-confirmation-editor]').onclick=()=>resetCard(card);
   host.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
