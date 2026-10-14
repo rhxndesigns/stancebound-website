@@ -4,7 +4,7 @@
 <script id="sb-overlay-back-stability-v2">
 /* Overlay history manager. Registered in the head before page routers. */
 (()=>{
- const specs=[['#sbNotificationPanel','open'],['#moreSheet','show'],['#quickSheet','show'],['#chatChoiceSheet','show'],['#sbJobQuickModal','show'],['#financeTransactionModal','hidden'],['#financeExpenseModal','hidden'],['#sbPaymentSheet','show'],['#sbJobChatOverlay','show']];
+ const specs=[['#sbNotificationPanel','open'],['#moreSheet','show'],['#quickSheet','show'],['#chatChoiceSheet','show'],['#sbJobQuickModal','show'],['#sbInspectionModal','show'],['#financeTransactionModal','hidden'],['#financeExpenseModal','hidden'],['#sbPaymentSheet','show'],['#sbJobChatOverlay','show']];
  const get=()=>specs.map(([selector,flag])=>({el:document.querySelector(selector),flag})).filter(x=>x.el);
  const shown=x=>x.flag==='hidden'?!x.el.hidden:x.el.classList.contains(x.flag);
  let armed=null,closing=false;
@@ -16,6 +16,7 @@
    if(el.id==='sbJobChatOverlay'){
      const close=el.querySelector('#sbJobChatCancel');if(close){close.click();return;}
    }
+   if(el.id==='sbInspectionModal'){const btn=el.querySelector('[data-sbi-close]');if(btn){btn.click();return;}}
    if(el.id==='sbJobQuickModal'){
      const close=el.querySelector('[data-job-modal-close]');if(close){close.click();return;}
    }
@@ -67,7 +68,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
 
-<title>STANCEBOUND Admin · V39</title>
+<title>STANCEBOUND Admin · V42 Inspection</title>
 
 <style>
 
@@ -1642,6 +1643,55 @@ html:not(.sb-admin-authorized) [data-admin-page] {display:none!important;visibil
   #upcomingList .pipeline-card,#upcomingList .completed-card-head{animation:none!important;transition:none!important}
 }
 </style>
+
+<style id="sb-v42-chromebook-and-inspection-css">
+html:not(.sb-admin-authorized) #sbInspectionModal{display:none!important}
+/* Spacious two-pane desktop admin. Existing phone interface remains untouched. */
+@media(min-width:1024px){
+  body:has(#editor:not(.hidden)) main{width:auto!important;max-width:none!important;margin:0 24px 0 253px!important;padding:24px 0 90px!important}
+  #editor .admin-tabs{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important;position:fixed!important;left:15px!important;top:15px!important;bottom:15px!important;right:auto!important;z-index:50!important;width:220px!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-width:thin!important;padding:55px 9px 12px!important;margin:0!important;border:1px solid #242424!important;border-radius:18px!important;background:#0b0b0b!important;box-shadow:0 15px 45px #0005!important}
+  #editor .admin-tabs:before{content:'SB / CONTROL CENTRE';position:absolute;top:19px;left:18px;color:#a4a4a4;font-weight:800;font-size:9px;letter-spacing:.17em}
+  #editor .admin-tab{display:flex!important;align-items:center!important;justify-content:space-between!important;flex:none!important;min-height:35px!important;width:100%!important;text-align:left!important;padding:10px 12px!important;margin:0!important;white-space:normal!important;line-height:1.2!important;font-size:10px!important;letter-spacing:.055em!important;border-radius:9px!important}
+  #editor .admin-tab.active{background:#252525!important;box-shadow:inset 3px 0 #eee!important}
+  #editor .dashboard-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #editor #upcomingList{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #sbJobQuickModal .sb-job-modal-sheet{width:min(830px,calc(100vw - 280px))!important;max-height:90dvh!important;border-radius:19px!important;margin:4vh auto!important;border:1px solid #333!important}
+  #sbInspectionModal .sbi-panel{width:min(1000px,calc(100vw - 275px))!important}
+}
+@media(min-width:721px) and (max-width:1023px){
+  #editor .admin-tabs{display:flex!important;flex-wrap:wrap!important;overflow:visible!important;position:relative!important;top:auto!important;gap:5px!important}
+  #editor .admin-tab{flex:1 1 128px!important;min-width:108px!important}
+}
+#sbInspectionModal{display:none;position:fixed;inset:0;z-index:100010;background:rgba(0,0,0,.84);padding:12px;align-items:center;justify-content:center}
+#sbInspectionModal.show{display:flex}
+#sbInspectionModal[aria-hidden="true"]{pointer-events:none}
+.sbi-panel{display:flex;flex-direction:column;width:min(800px,100%);max-height:94dvh;min-height:0;background:#0b0b0b;border:1px solid #353535;border-radius:18px;overflow:hidden;color:#f7f7f7;box-shadow:0 32px 100px #0009}
+.sbi-header{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:18px 20px;border-bottom:1px solid #272727;flex-shrink:0}
+.sbi-header small{font-size:9px;letter-spacing:.18em;color:#888}.sbi-header h2{font-size:22px;margin:6px 0 3px}.sbi-header p{margin:0;color:#aaa;font-size:12px;line-height:1.5}
+.sbi-close{width:42px!important;height:42px!important;min-width:42px!important;padding:0!important;margin:0!important;background:#191919!important;color:#fff!important;border:1px solid #444!important;font-size:26px!important;letter-spacing:0!important}
+.sbi-scroll{flex:1;min-height:0;overflow-y:auto;padding:18px 20px 25px;overscroll-behavior:contain}
+.sbi-progress{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.05em;margin:3px 0 9px;color:#bcbcbc}
+.sbi-progress-track{height:6px;background:#292929;border-radius:99px;overflow:hidden;margin-bottom:20px}.sbi-progress-track div{height:100%;background:#f2f2f2;width:0;transition:width .2s}
+.sbi-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.sbi-fields label,.sbi-note-label{font-size:10px!important;letter-spacing:.05em!important;line-height:1.4!important;color:#aaa!important;margin:0!important;text-transform:none!important}
+.sbi-fields input,.sbi-fields select,.sbi-fields textarea,.sbi-group textarea,.sbi-item select,.sbi-note-label textarea{margin-top:6px!important;padding:10px!important;min-height:42px;font-size:14px!important;line-height:1.5}
+.sbi-fields .wide{grid-column:1/-1}
+.sbi-group{border:1px solid #252525;border-radius:12px;overflow:hidden;margin:0 0 14px;background:#0d0d0d}
+.sbi-group h3{font-size:14px;letter-spacing:.04em;margin:0;padding:13px 14px;background:#141414;border-bottom:1px solid #292929}
+.sbi-item{display:grid;grid-template-columns: minmax(0,1fr) minmax(120px,175px);gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid #222}
+.sbi-item label{display:flex;gap:10px;align-items:center;margin:0!important;color:#eee!important;font-size:12px!important;line-height:1.45!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer}
+.sbi-item input[type="checkbox"]{width:20px!important;height:20px!important;flex:none;accent-color:#dedede;margin:0!important}
+.sbi-item select{width:100%!important;margin:0!important;font-size:12px!important}
+.sbi-item select:disabled{opacity:.5}
+.sbi-group .sbi-group-note{display:block;padding:13px 14px;margin:0!important;color:#aaa!important;font-size:10px!important;letter-spacing:0!important;text-transform:none!important}
+.sbi-group .sbi-group-note textarea{margin-top:7px!important;resize:vertical;min-height:65px}
+.sbi-note-label{display:block;margin-top:15px!important}.sbi-note-label textarea{width:100%;min-height:85px}
+.sbi-footer{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid #333;flex-shrink:0;background:#101010}
+.sbi-footer button{flex:1 1 160px;width:auto!important;min-height:45px;margin:0!important;font-size:10px!important;letter-spacing:.06em!important;padding:11px!important}
+.sbi-footer .sbi-status{flex:1 1 100%;font-size:11px;line-height:1.5;color:#bcbcbc;min-height:16px}
+.sbi-warn{color:#ffc280!important}.sbi-good{color:#9ce6bc!important}
+@media(max-width:600px){#sbInspectionModal{padding:0;align-items:stretch}.sbi-panel{width:100%;height:100dvh;max-height:100dvh;border:0;border-radius:0}.sbi-header{padding:15px}.sbi-header h2{font-size:19px}.sbi-scroll{padding:14px}.sbi-fields{grid-template-columns:1fr}.sbi-item{grid-template-columns:minmax(0,1fr) 114px;gap:6px;padding:10px 9px}.sbi-item label{font-size:11px!important}.sbi-footer{padding:12px 14px calc(12px + env(safe-area-inset-bottom))}}
+</style>
 </head>
 
 <body>
@@ -1742,6 +1792,13 @@ Log In
     <button type="button" class="admin-tab" data-admin-target="schedule">Schedule</button>
     <button type="button" class="admin-tab" data-admin-target="finance">Finance</button>
       <button type="button" class="admin-tab" data-admin-target="siteupdates">Website Updates</button>
+    <button type="button" class="admin-tab" data-admin-target="manual-booking">New Booking</button>
+    <button type="button" class="admin-tab" data-admin-target="analytics">Analytics</button>
+    <button type="button" class="admin-tab" data-admin-target="orders">Shop Orders</button>
+    <button type="button" class="admin-tab" data-admin-target="photos">Photography</button>
+    <button type="button" class="admin-tab" data-admin-target="text">Website Content</button>
+    <button type="button" class="admin-tab" data-admin-target="tools">Tools</button>
+    <button type="button" class="admin-tab" data-admin-target="diagnostics">Diagnostics</button>
   </nav>
 
   <!-- STANCEBOUND WEBSITE UPDATES PANEL V1 -->
@@ -2319,7 +2376,7 @@ editor?.classList.add('admin-soft-refresh');
 }
 
 
-adminTabs.forEach(tab => tab.addEventListener('click', () => transitionAdminPage(tab.dataset.adminTarget)));
+adminTabs.forEach(tab => tab.addEventListener('click', () => { if(tab.dataset.adminTarget) transitionAdminPage(tab.dataset.adminTarget); }));
 document.querySelectorAll('[data-open-admin]').forEach(card => {
   card.addEventListener('click', () => transitionAdminPage(card.dataset.openAdmin));
 });
@@ -6283,6 +6340,11 @@ if(mode==="view"){
   }
 
 }
+const preInspectionSection=document.createElement('section');
+preInspectionSection.className='sb-popup-section sb-inspection-launch';
+preInspectionSection.innerHTML='<div class="sb-popup-section-head"><b>PRE-INSPECTION</b><span>PRIVATE · PER BOOKING</span></div><p>Record vehicle condition and pre-existing defects before starting work. This does not change the booking status.</p><button type="button" class="sb-popup-track-button" data-popup-pre-inspection>OPEN PRE-INSPECTION CHECKLIST</button>';
+body.append(preInspectionSection);
+preInspectionSection.querySelector('[data-popup-pre-inspection]').addEventListener('click',()=>window.sbOpenPreInspection?.(row.id,row.name,row.vehicle));
 const set=(q,v)=>{const e=body.querySelector(q);if(e)e.value=/^yes$/i.test(v||'')?'Yes':/^no$/i.test(v||'')?'No':/not sure/i.test(v||'')?'Not sure':''};set('[data-p-water]',access.water);set('[data-p-power]',access.power);set('[data-p-space]',access.space);if(pay){pay.classList.add('sb-popup-payment');body.querySelector('.sb-job-modal-summary').after(pay)}lock();modal.classList.add('show');modal.setAttribute('aria-hidden','false');modal.querySelector('.sb-job-modal-sheet')?.scrollTo(0,0);
 body.querySelector('[data-popup-pay]')?.addEventListener('click',()=>{const id=activeId;close();if(window.sbOpenPaymentForJob)window.sbOpenPaymentForJob(id);else alert('Payment options are not available yet.');});body.querySelector('[data-popup-open-tracker]')?.addEventListener('click',()=>{const id=activeId,name=row.name||'';close();if(window.sbOpenLiveTrackerPage)window.sbOpenLiveTrackerPage(id,name)});body.querySelector('[data-popup-save]')?.addEventListener('click',async e=>{const btn=e.currentTarget,st=body.querySelector('[data-popup-status]');btn.disabled=true;st.textContent='Saving…';const water=body.querySelector('[data-p-water]').value,power=body.querySelector('[data-p-power]').value,space=body.querySelector('[data-p-space]').value;const strip=t=>String(t||'').replace(/\n?\[STANCEBOUND JOB ACCESS\][\s\S]*?\[\/STANCEBOUND JOB ACCESS\]\n?/g,'').trim();const message=(strip(row.message)+`\n\n[STANCEBOUND JOB ACCESS]\nWater: ${water||'Not supplied'}\nPower: ${power||'Not supplied'}\nWorking room: ${space||'Not supplied'}\n[/STANCEBOUND JOB ACCESS]`).trim();const payload={booking_date:body.querySelector('[data-p-date]').value||null,booking_time:body.querySelector('[data-p-time]').value||null,booking_end_time:body.querySelector('[data-p-end]').value||null,quoted_price:body.querySelector('[data-p-price]').value===''?null:Number(body.querySelector('[data-p-price]').value),service:body.querySelector('[data-p-service]').value.trim(),booking_location:body.querySelector('[data-p-location]').value.trim(),admin_notes:body.querySelector('[data-p-notes]').value.trim(),message};try{await window.sbV47SaveJob(activeId,payload);st.textContent='JOB DETAILS SAVED ✓'}catch(err){st.textContent=err?.message||'Could not save job details.'}finally{btn.disabled=false}})}
 document.addEventListener('click',e=>{if(e.target.closest('[data-job-modal-close]')){close();return}const card=e.target.closest('#upcomingList .pipeline-card');if(!card)return;if(e.target.closest('button,input,select,textarea,a'))return;if(Date.now()-lastLongPress<850){e.preventDefault();e.stopImmediatePropagation();return;}open(card,'view')});
@@ -6527,6 +6589,51 @@ if ('serviceWorker' in navigator) {
     });
     spec.button.addEventListener('click',()=>{void runDeployment(spec)});
   }
+})();
+</script>
+
+<section id="sbInspectionModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Vehicle pre-inspection">
+  <div class="sbi-panel">
+    <div class="sbi-header"><div><small>STANCEBOUND / VEHICLE INTAKE</small><h2>Pre-Inspection</h2><p id="sbiCustomer">Loading booking…</p></div><button type="button" class="sbi-close" data-sbi-close aria-label="Close pre-inspection">×</button></div>
+    <div class="sbi-scroll" id="sbiScroll"><div class="sbi-progress"><span id="sbiProgressText">0 items checked</span><span id="sbiProgressPercent">0%</span></div><div class="sbi-progress-track"><div id="sbiProgressBar"></div></div><div id="sbiFields"></div><div id="sbiGroups"></div><label class="sbi-note-label">Summary of existing damage, locations and special precautions<textarea id="sbiSummary" placeholder="E.g. existing scratch on left front wing, loose passenger-side trim…"></textarea></label><label class="sbi-note-label">Customer belongings / agreement notes<textarea id="sbiHandover" placeholder="E.g. valuables removed, customer informed of existing damage…"></textarea></label></div>
+    <div class="sbi-footer"><div id="sbiStatus" class="sbi-status" role="status" aria-live="polite"></div><button type="button" class="secondary" id="sbiSaveDraft">SAVE DRAFT</button><button type="button" id="sbiComplete">COMPLETE INSPECTION</button></div>
+  </div>
+</section>
+<script id="sb-v42-pre-inspection">
+(()=>{
+'use strict';
+const modal=document.getElementById('sbInspectionModal'),fields=document.getElementById('sbiFields'),groups=document.getElementById('sbiGroups'),msg=document.getElementById('sbiStatus');
+if(!modal||!fields||!groups)return;
+const sections=[
+ ['EXTERIOR / PAINTWORK',[['front_bumper','Front bumper / splitter'],['bonnet','Bonnet / paint chips'],['front_wings','Front wings / arches'],['roof','Roof / aerial'],['left_doors','Left doors / handles'],['right_doors','Right doors / handles'],['rear_quarters','Rear quarter panels'],['boot','Tailgate / boot lid'],['rear_bumper','Rear bumper / diffuser'],['mirrors','Mirrors / housings'],['sills','Sills / lower trims'],['wrap_ppf','Wrap, PPF, ceramic coating / decals']]],
+ ['GLASS / LIGHTING',[['windscreen','Windscreen / stone chips'],['windows','Side windows / tint'],['rear_glass','Rear glass / demister'],['headlights','Headlights / lenses'],['rear_lights','Rear lights / lenses']]],
+ ['WHEELS / TYRES',[['wheel_fl','Front left wheel / kerbing'],['wheel_fr','Front right wheel / kerbing'],['wheel_rl','Rear left wheel / kerbing'],['wheel_rr','Rear right wheel / kerbing'],['tyres','Visible tyre sidewall damage'],['wheel_finish','Wheel finishes / aftermarket parts']]],
+ ['INTERIOR / CABIN',[['seats','Seats / wear / tears'],['carpets','Carpets / floor mats'],['dashboard','Dashboard / console'],['doorcards','Door cards / trims'],['headlining','Roof lining / pillars'],['screens','Screens / controls'],['boot_interior','Boot / load area'],['stains','Stains / spills / odours'],['pet_hair','Pet hair / excessive debris']]],
+ ['RISKS / CUSTOMER HANDOVER',[['existing_damage','Existing damage documented'],['loose_parts','Loose / fragile trims identified'],['valuables','Valuables and belongings discussed'],['water_power','Water / electricity / access checked'],['photos_taken','Pre-work evidence photographs taken'],['special_surfaces','Sensitive coatings / finishes identified']]]
+];
+const allIds=sections.flatMap(s=>s[1].map(p=>p[0]));
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const stable=v=>JSON.stringify(v,(_,o)=>o&&typeof o==='object'&&!Array.isArray(o)?Object.fromEntries(Object.entries(o).sort(([a],[b])=>a.localeCompare(b))):o);
+let bookingId=null, savedState=null, busy=false;
+fields.innerHTML=`<div class="sbi-fields"><label>Registration<input data-sbi-meta="registration" placeholder="Vehicle registration" maxlength="30"></label><label>Mileage<input data-sbi-meta="mileage" placeholder="Mileage on arrival" maxlength="40"></label><label>Vehicle colour<input data-sbi-meta="colour" placeholder="Colour / finish" maxlength="80"></label><label>Inspection date and time<input type="datetime-local" data-sbi-meta="inspection_time"></label><label>Inspector name<input data-sbi-meta="inspector" placeholder="Who checked the vehicle?" maxlength="100"></label><label>Weather / lighting<select data-sbi-meta="weather"><option value="">Not recorded</option><option>Dry / daylight</option><option>Wet / daylight</option><option>Low light / indoors</option><option>Other</option></select></label></div>`;
+groups.innerHTML=sections.map(([section,items],index)=>`<section class="sbi-group"><h3>${esc(String(index+1).padStart(2,'0'))} / ${esc(section)}</h3>${items.map(([id,label])=>`<div class="sbi-item" data-sbi-item="${id}"><label><input type="checkbox" data-sbi-checked="${id}"> ${esc(label)}</label><select data-sbi-result="${id}" aria-label="Condition: ${esc(label)}" disabled><option value="">Select condition</option><option value="ok">No issue noted</option><option value="issue">Existing issue</option><option value="care">Needs extra care</option><option value="na">N/A</option></select></div>`).join('')}<label class="sbi-group-note">${esc(section)} / damage or condition notes<textarea data-sbi-section="${index}" placeholder="Location, size, severity and any observations..."></textarea></label></section>`).join('');
+function snapshot(){const meta={};fields.querySelectorAll('[data-sbi-meta]').forEach(x=>meta[x.dataset.sbiMeta]=x.value.trim());const items={};for(const id of allIds){const checked=groups.querySelector(`[data-sbi-checked="${id}"]`);const result=groups.querySelector(`[data-sbi-result="${id}"]`);items[id]={checked:!!checked.checked,condition:checked.checked?result.value:''}}const notes={};groups.querySelectorAll('[data-sbi-section]').forEach(x=>notes[x.dataset.sbiSection]=x.value.trim());return {version:1,meta,items,notes,summary:document.getElementById('sbiSummary').value.trim(),handover:document.getElementById('sbiHandover').value.trim()};}
+function progress(){let checked=0,complete=0;for(const id of allIds){const row=groups.querySelector(`[data-sbi-item="${id}"]`);const cb=row.querySelector('input'),select=row.querySelector('select');select.disabled=!cb.checked;if(cb.checked)checked++;if(cb.checked&&select.value)complete++;}const percent=Math.round(complete/allIds.length*100);document.getElementById('sbiProgressText').textContent=`${complete} of ${allIds.length} conditions recorded`;document.getElementById('sbiProgressPercent').textContent=`${percent}%`;document.getElementById('sbiProgressBar').style.width=percent+'%';return complete;}
+function hydrate(data){fields.querySelectorAll('[data-sbi-meta]').forEach(x=>x.value=data?.meta?.[x.dataset.sbiMeta]||'');for(const id of allIds){const cb=groups.querySelector(`[data-sbi-checked="${id}"]`),select=groups.querySelector(`[data-sbi-result="${id}"]`),item=data?.items?.[id]||{};cb.checked=!!item.checked;select.value=item.condition||'';}groups.querySelectorAll('[data-sbi-section]').forEach(x=>x.value=data?.notes?.[x.dataset.sbiSection]||'');document.getElementById('sbiSummary').value=data?.summary||'';document.getElementById('sbiHandover').value=data?.handover||'';progress();}
+function status(t,kind=''){msg.textContent=t;msg.className='sbi-status'+(kind?' sbi-'+kind:'');}
+function isChanged(){return savedState!==null&&JSON.stringify(snapshot())!==savedState;}
+function close(){if(busy)return;if(isChanged()&&!confirm('Discard unsaved pre-inspection changes?'))return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.classList.remove('sbi-open');document.body.style.overflow='';bookingId=null;savedState=null;}
+modal.querySelectorAll('[data-sbi-close]').forEach(x=>x.addEventListener('click',close));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('show')){e.stopPropagation();close()}},true);
+modal.addEventListener('click',e=>{if(e.target===modal)close()});
+groups.addEventListener('change',progress);
+const client=()=>window.sbAdminSupabase;
+window.sbOpenPreInspection=async(id,name,vehicle)=>{if(!id||!client()){alert('Admin connection is not ready. Refresh and try again.');return}bookingId=id;document.getElementById('sbiCustomer').textContent=[name||'Customer',vehicle||'', 'Booking '+String(id).slice(0,8)].filter(Boolean).join(' · ');status('Loading inspection…');hydrate({});fields.querySelector('[data-sbi-meta="inspection_time"]').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);savedState=null;modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('sbi-open');document.body.style.overflow='hidden';document.getElementById('sbiScroll').scrollTop=0;
+  try{const {data,error}=await client().from('job_pre_inspections').select('inspection_data,status,updated_at,completed_at').eq('booking_id',id).maybeSingle();if(bookingId!==id)return;if(error)throw error;if(data){hydrate(data.inspection_data);status('Loaded: '+(data.status==='completed'?'completed inspection':'saved draft')+' · '+new Date(data.updated_at).toLocaleString('en-GB'),data.status==='completed'?'good':'');}else status('New inspection. Complete the checks, then save a draft or finish it.');savedState=JSON.stringify(snapshot());}
+  catch(e){status(/job_pre_inspections|does not exist|42P01/i.test(e.message||'')?'Database setup required: run the supplied pre-inspection SQL in Supabase.':'Could not load inspection: '+(e.message||e),'warn');savedState=JSON.stringify(snapshot());}
+};
+async function save(completed){if(busy||!bookingId)return;const completedCount=progress();if(completed&&completedCount!==allIds.length){status(`Please record the condition of all ${allIds.length} checklist items, or mark N/A where applicable. ${allIds.length-completedCount} remaining.`,'warn');return}if(completed&&!confirm('Mark this pre-inspection complete? You can reopen it later, but this is not a customer signature.'))return;busy=true;const buttons=modal.querySelectorAll('.sbi-footer button');buttons.forEach(x=>x.disabled=true);const id=bookingId;status('Saving securely to this booking…');try{const payload=snapshot(),now=new Date().toISOString();const {data,error}=await client().from('job_pre_inspections').upsert({booking_id:id,inspection_data:payload,status:completed?'completed':'draft',inspected_at:now,completed_at:completed?now:null,updated_at:now},{onConflict:'booking_id'}).select('booking_id,status,updated_at').single();if(error)throw error;if(String(data.booking_id)!==String(id))throw Error('Save verification failed: wrong booking returned.');const read=await client().from('job_pre_inspections').select('inspection_data,status').eq('booking_id',id).single();if(read.error)throw read.error;if(stable(read.data.inspection_data)!==stable(payload)||read.data.status!==(completed?'completed':'draft'))throw Error('Could not verify inspection content after saving. Please retry.');savedState=JSON.stringify(snapshot());status(completed?'INSPECTION COMPLETED AND SAVED ✓':'DRAFT SAVED ✓','good');}catch(e){console.error('[STANCEBOUND pre-inspection]',e);status('NOT SAVED · '+(e.message||'Please check the database setup and permissions.'),'warn');}finally{busy=false;buttons.forEach(x=>x.disabled=false)}}
+document.getElementById('sbiSaveDraft').addEventListener('click',()=>save(false));document.getElementById('sbiComplete').addEventListener('click',()=>save(true));
 })();
 </script>
 </body>
