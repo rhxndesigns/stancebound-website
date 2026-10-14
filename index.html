@@ -4339,6 +4339,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
     animation:none!important;transition:none!important;}
 }
 </style>
+
+<script id="sb-v44-chromebook-detection">(()=>{if(/CrOS/i.test(navigator.userAgent))document.documentElement.classList.add('sb-chromebook-performance')})();</script>
+<style id="sb-v44-chromebook-performance">
+/* ChromeOS GPU pressure relief: no live backdrop blur around the fixed dock. */
+html.sb-chromebook-performance .radial-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(0,0,0,.62)!important;transition:opacity .18s ease!important}
+html.sb-chromebook-performance .radial-nav,
+html.sb-chromebook-performance #radialToggle,
+html.sb-chromebook-performance .radial-item{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important}
+html.sb-chromebook-performance #radialToggle{transition:transform .2s ease,background-color .2s ease!important;box-shadow:0 5px 20px rgba(0,0,0,.38)!important;backface-visibility:hidden;will-change:transform}
+html.sb-chromebook-performance .radial-nav .radial-item{transition:transform .24s ease-out,opacity .16s ease-out!important;transition-delay:0ms!important;backface-visibility:hidden}
+html.sb-chromebook-performance .radial-menu:before{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important;filter:none!important;will-change:auto!important}
+@media(prefers-reduced-motion:reduce){.radial-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.radial-toggle,.radial-item{transition-duration:0.01ms!important}}
+</style>
 </head>
 
 
