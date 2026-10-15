@@ -2368,6 +2368,7 @@ function openAdminPage(name, addToHistory=true) {
   if(name==='enquiries') loadChats();
   updateBookingMetrics();
   if(name==='dashboard') renderDashboard();
+  if(name==='analytics') setTimeout(()=>loadAnalytics(),0);
   const nextHash='#'+name;
   if(addToHistory){
     if(location.hash!==nextHash) history.pushState({stanceboundAdmin:name},'',nextHash);
@@ -5535,6 +5536,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 
   if (session && String(session?.user?.email||'').toLowerCase() === 'ryan@stancebound.com' && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     setTimeout(loadAdminData, 0);
+    setTimeout(()=>{ if(document.querySelector('.admin-page.active')?.dataset.adminPage==='analytics') loadAnalytics(); }, 0);
   }
 });
 
@@ -5574,10 +5576,19 @@ async function loadAnalytics(){
   const days=Number(document.querySelector('#analyticsRange')?.value||30);
   const since=new Date(Date.now()-days*86400000).toISOString();
   status.textContent='Loading analytics…';
+  const {data:authData,error:authError}=await supabase.auth.getSession();
+  if(authError || !authData?.session){
+    status.textContent='Waiting for admin sign-in to finish before loading analytics.';
+    return;
+  }
   const {data,error}=await supabase.from('analytics_events').select('session_id,event_name,path,service,referrer,device_type,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(10000);
   if(error){
     const diag=document.querySelector('#sbAnalyticsDiagnostics');if(diag)diag.textContent='Database query failed: '+error.message;
     status.textContent=error.message.includes('analytics_events')?'Analytics table is not set up yet. Run the supplied SQL once, then refresh.':'Could not load analytics: '+error.message;
+    return;
+  }
+  if((data||[]).length===0 && analyticsLoadedOnce){
+    status.textContent='No records returned on this refresh. Previous figures retained. Press Refresh Analytics to retry.';
     return;
   }
   const rows=data||[], pageViews=rows.filter(r=>String(r.event_name||'').toLowerCase().trim()==='page_view');
