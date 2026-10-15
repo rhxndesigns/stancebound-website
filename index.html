@@ -76,6 +76,20 @@ html.sb-track-route body > *:not(#sbJobTracker):not(script):not(style){display:n
 html.sb-track-route #sbJobTracker{display:block!important}
 html.sb-track-route,html.sb-track-route body{background:#050505!important}
 .calendar-day.sb-public-booked{border:2px solid #ef4444!important;background:#210c10!important;color:#ff9b9b!important;opacity:1!important;cursor:not-allowed!important}
+
+/* STANCEBOUND calendar: clear, accessible booking states */
+.calendar-day.sb-calendar-available{border:2px solid #28b66a!important;background:rgba(27,125,72,.16)!important;color:#b9f8d3!important;opacity:1!important}
+.calendar-day.sb-public-booked{border:2px solid #ef4444!important;background:rgba(139,26,40,.20)!important;color:#ffb1b1!important;opacity:1!important}
+.calendar-day.sb-calendar-pending{border:2px solid #f5ae38!important;background:rgba(153,93,12,.18)!important;color:#ffd996!important;opacity:1!important;cursor:not-allowed!important}
+.calendar-day.sb-calendar-past,.calendar-day.sb-calendar-unavailable{border:1px solid #252525!important;background:#0b0b0b!important;color:#494949!important;opacity:1!important;cursor:not-allowed!important}
+.calendar-day.sb-calendar-available.selected{background:#d9ffe9!important;color:#082b18!important;border-color:#28b66a!important;box-shadow:0 0 0 2px rgba(40,182,106,.35)}
+.calendar-key{gap:12px 20px!important;font-size:10px!important;letter-spacing:.02em!important;color:#d4d4d4!important}
+.calendar-key span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.calendar-key .key-dot{width:13px!important;height:13px!important;display:inline-block;flex:none;margin:0!important;opacity:1!important;border-width:2px!important}
+.key-dot.sb-key-available{border-color:#28b66a!important;background:rgba(27,125,72,.20)!important}
+.key-dot.sb-key-booked{border-color:#ef4444!important;background:rgba(139,26,40,.22)!important}
+.key-dot.sb-key-pending{border-color:#f5ae38!important;background:rgba(153,93,12,.20)!important}
+.key-dot.sb-key-unavailable{border-color:#303030!important;background:#0b0b0b!important}
 </style>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -5081,7 +5095,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
               <span class="calendar-selection-label">YOUR PREFERRED DATE</span>
               <strong id="calendarSelectionText">Tap an available date above</strong>
             </div>
-            <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable / booked</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
+            <div class="calendar-key" aria-label="Calendar colour key"><span><i class="key-dot sb-key-available"></i> Available</span><span><i class="key-dot sb-key-booked"></i> Booked</span><span><i class="key-dot sb-key-pending"></i> Pending confirmation</span><span><i class="key-dot sb-key-unavailable"></i> Past / unavailable</span></div>
             <p class="calendar-note">Available dates can be requested unless already booked. Dates are subject to final confirmation.</p>
           </div>
 
@@ -6381,11 +6395,14 @@ const chosen=new Date(y,m-1,d);
   let view=new Date(now.getFullYear(),now.getMonth(),1);
   let openDates=new Map();
   let bookedDates=new Set();
+  let pendingDates=new Set();
   let calendarLoaded=false;
+  let availabilityRequestId=0;
 
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
   async function loadAvailability(){
+    const requestId=++availabilityRequestId;
     const start=iso(new Date(view.getFullYear(),view.getMonth(),1));
     const end=iso(new Date(view.getFullYear(),view.getMonth()+1,0));
     try{
@@ -6404,11 +6421,26 @@ const chosen=new Date(y,m-1,d);
       if(!bookedResponse.ok)throw new Error('Booked dates sync failed: '+bookedResponse.status);
       const occupied=await bookedResponse.json();
       bookedDates=new Set((occupied||[]).map(x=>x.booking_date).filter(Boolean));
+      // Optional status-only RPC. Until installed, retain the existing confirmed-booking sync.
+      let nextPending=new Set();
+      try{
+        const statusesResponse=await fetch('https://fxlekwzcxedkiyqfswvq.supabase.co/rest/v1/rpc/sb_public_calendar_status',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({p_start:start,p_end:end}),cache:'no-store'});
+        if(statusesResponse.ok){
+          const statuses=await statusesResponse.json();
+          const confirmed=(statuses||[]).filter(x=>x.booking_status==='booked').map(x=>x.booking_date);
+          bookedDates=new Set([...bookedDates,...confirmed]);
+          nextPending=new Set((statuses||[]).filter(x=>x.booking_status==='pending').map(x=>x.booking_date));
+        }
+      }catch(e){console.warn('Optional pending calendar status unavailable:',e)}
+      if(requestId!==availabilityRequestId)return;
+      pendingDates=new Set([...nextPending].filter(d=>!bookedDates.has(d)));
       calendarLoaded=true;
     }catch(error){
+      if(requestId!==availabilityRequestId)return;
       console.error('Availability calendar:',error);
       openDates=new Map();
       bookedDates=new Set();
+      pendingDates=new Set();
       calendarLoaded=false;
     }
     render();
@@ -6433,10 +6465,16 @@ const chosen=new Date(y,m-1,d);
       b.type='button'; b.className='calendar-day'; b.textContent=n;
 
       const isBooked=bookedDates.has(val);
-      const unavailable=d<now || !calendarLoaded || !slot || isBooked;
+      const isPending=pendingDates.has(val) && !isBooked;
+      const isPast=d<now;
+      const unavailable=isPast || !calendarLoaded || !slot || isBooked || isPending;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
-      if(isBooked){b.classList.add('sb-public-booked');b.setAttribute('aria-label',`${n}, booked and unavailable`);}
+      if(isPast){b.classList.add('sb-calendar-past');b.setAttribute('aria-label',`${n}, past date`);}
+      else if(isBooked){b.classList.add('sb-public-booked');b.setAttribute('aria-label',`${n}, booked and unavailable`);}
+      else if(isPending){b.classList.add('sb-calendar-pending');b.setAttribute('aria-label',`${n}, booking pending confirmation`);}
+      else if(!unavailable){b.classList.add('sb-calendar-available');b.setAttribute('aria-label',`${n}, available`);}
+      else{b.classList.add('sb-calendar-unavailable');b.setAttribute('aria-label',`${n}, unavailable`);}
       if(dateInput.value===val){
         b.classList.add('selected');
         b.setAttribute('aria-pressed','true');
@@ -6445,8 +6483,12 @@ const chosen=new Date(y,m-1,d);
         b.setAttribute('aria-pressed','false');
       }
 
-      if(isBooked){
+      if(isPast){
+        b.title='Past date';
+      }else if(isBooked){
         b.title='Already booked';
+      }else if(isPending){
+        b.title='Pending confirmation';
       }else if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
         b.title=[s,e].filter(Boolean).join('–') || 'Open for booking request';
@@ -6472,7 +6514,7 @@ const chosen=new Date(y,m-1,d);
     view=new Date(view.getFullYear(),view.getMonth()+1,1); loadAvailability();
   });
   dateInput.addEventListener('change',()=>{
-    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || bookedDates.has(dateInput.value))){
+    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || (bookedDates.has(dateInput.value) || pendingDates.has(dateInput.value)))){
       dateInput.value='';
       dateInput.setCustomValidity('That date is not currently available.');
       dateInput.reportValidity();
@@ -6492,7 +6534,7 @@ const chosen=new Date(y,m-1,d);
 
   // Keep the native date input from silently accepting a closed day.
   dateInput.addEventListener('input',()=>{
-    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || bookedDates.has(dateInput.value))) dateInput.value='';
+    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || (bookedDates.has(dateInput.value) || pendingDates.has(dateInput.value)))) dateInput.value='';
   });
 
   loadAvailability();
