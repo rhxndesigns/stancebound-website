@@ -1909,6 +1909,8 @@ Log In
         </select>
       </div>
 
+      <button type="button" id="sbAnalyticsRefresh" style="margin:10px 0;padding:10px 15px;border:1px solid #555;background:#111;color:#fff;cursor:pointer">Refresh analytics</button>
+      <div id="sbAnalyticsDiagnostics" style="font-size:10px;color:#999;margin:5px 0 10px;overflow-wrap:anywhere" aria-live="polite"></div>
       <div class="analytics-metrics">
         <div class="analytics-metric"><span>VISITORS</span><strong id="anVisitors">0</strong><small id="anVisitorsSub">Unique sessions</small></div>
         <div class="analytics-metric"><span>PAGE VIEWS</span><strong id="anViews">0</strong><small id="anViewsSub">Selected period</small></div>
@@ -5574,10 +5576,13 @@ async function loadAnalytics(){
   status.textContent='Loading analytics…';
   const {data,error}=await supabase.from('analytics_events').select('session_id,event_name,path,service,referrer,device_type,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(10000);
   if(error){
+    const diag=document.querySelector('#sbAnalyticsDiagnostics');if(diag)diag.textContent='Database query failed: '+error.message;
     status.textContent=error.message.includes('analytics_events')?'Analytics table is not set up yet. Run the supplied SQL once, then refresh.':'Could not load analytics: '+error.message;
     return;
   }
-  const rows=data||[], pageViews=rows.filter(r=>r.event_name==='page_view');
+  const rows=data||[], pageViews=rows.filter(r=>String(r.event_name||'').toLowerCase().trim()==='page_view');
+  const diag=document.querySelector('#sbAnalyticsDiagnostics');
+  if(diag){const counts={};rows.forEach(r=>{const k=String(r.event_name||'(missing event name)');counts[k]=(counts[k]||0)+1});diag.textContent='Database records in range: '+rows.length+' | Event types: '+(Object.entries(counts).map(([k,v])=>k+' ('+v+')').join(', ')||'none')+' | Page views counted: '+pageViews.length;}
   const sessions=new Set(pageViews.map(r=>r.session_id).filter(Boolean));
   const serviceOpens=rows.filter(r=>r.event_name==='service_open');
   const bookingStarts=rows.filter(r=>r.event_name==='booking_start');
@@ -5613,10 +5618,11 @@ async function loadAnalytics(){
 
   const labels={page_view:'Page view',service_open:'Service opened',booking_start:'Booking started',whats_included:'What’s included',service_change:'Service browsed'};
   document.querySelector('#anRecent').innerHTML=rows.slice(0,8).map(r=>`<div class="analytics-event"><div><b>${escapeHtml(labels[r.event_name]||r.event_name)}</b><span>${escapeHtml(r.service||r.path||'STANCEBOUND')}</span></div><time>${new Date(r.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</time></div>`).join('')||'<div class="analytics-empty">No activity yet.</div>';
-  status.textContent=rows.length?`${rows.length.toLocaleString()} events loaded.`:'Tracking is ready. New visits will appear here.';
+  status.textContent=rows.length?`${rows.length.toLocaleString()} events loaded.`:'No analytics events found for this period. Check public-site tracking and Supabase insert permissions.';
   analyticsLoadedOnce=true;
 }
 document.querySelector('#analyticsRange')?.addEventListener('change',loadAnalytics);
+document.querySelector('#sbAnalyticsRefresh')?.addEventListener('click',loadAnalytics);
 document.addEventListener('click',e=>{if(e.target.closest('[data-open-admin="analytics"],[data-admin-target="analytics"],[data-sheet-target="analytics"]'))setTimeout(loadAnalytics,80)});
 
 
