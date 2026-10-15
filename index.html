@@ -8551,6 +8551,35 @@ if(sys)sys.textContent='SYS / STARTING';
   syncMenus(); syncCurrentPage();
 })();
 </script>
+
+<!-- STANCEBOUND first-party analytics: no cookies or personal details -->
+<script id="sb-analytics-v1">
+(()=>{
+  'use strict';
+  const key='sb_analytics_session_v1';
+  let session;
+  try {session=sessionStorage.getItem(key);if(!session){session=crypto.randomUUID();sessionStorage.setItem(key,session)}}
+  catch(_){session='ephemeral-'+Math.random().toString(36).slice(2)}
+  const seen=new Set();
+  const device=/Mobi|Android|iPhone/i.test(navigator.userAgent)?'Mobile':(/iPad|Tablet/i.test(navigator.userAgent)?'Tablet':'Desktop');
+  function track(event,service){
+    const path=location.pathname+(location.hash||'');
+    const payload={session_id:session,event_name:event,path:path,service:service||null,referrer:document.referrer?(()=>{try{return new URL(document.referrer).hostname}catch(_){return null}})():null,device_type:device};
+    const send=()=>{const db=window.stanceboundSupabase;if(!db)return false;db.from('analytics_events').insert(payload).then(({error})=>{if(error)console.warn('STANCEBOUND analytics:',error.message)}).catch(()=>{});return true};
+    if(send())return;
+    let tries=0;const interval=setInterval(()=>{if(send()||++tries>=30)clearInterval(interval)},300);
+  }
+  function view(){const path=location.pathname+(location.hash||'');if(seen.has(path))return;seen.add(path);track('page_view')}
+  view();window.addEventListener('hashchange',view);
+  document.addEventListener('click',e=>{
+    const el=e.target.closest('button,a,[data-page],[data-sbp-service]');if(!el)return;
+    const svc=el.closest('[data-sbp-service]')?.getAttribute('data-sbp-service')||null;
+    if(svc)track('service_open',svc);
+    const target=(el.getAttribute('data-page')||el.getAttribute('href')||'').toLowerCase();
+    if(target.includes('booking')||el.closest('#booking')&&/book|enquir/i.test(el.textContent||''))track('booking_start');
+  },{passive:true});
+})();
+</script>
 </body>
 
 </html>
