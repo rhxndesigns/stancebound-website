@@ -75,6 +75,7 @@
 html.sb-track-route body > *:not(#sbJobTracker):not(script):not(style){display:none!important}
 html.sb-track-route #sbJobTracker{display:block!important}
 html.sb-track-route,html.sb-track-route body{background:#050505!important}
+.calendar-day.sb-public-booked{border:2px solid #32b66a!important;background:#09150e!important;color:#8eddb0!important;opacity:1!important;cursor:not-allowed!important}
 </style>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -5080,8 +5081,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
               <span class="calendar-selection-label">YOUR PREFERRED DATE</span>
               <strong id="calendarSelectionText">Tap an available date above</strong>
             </div>
-            <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
-            <p class="calendar-note">Only dates manually opened by STANCEBOUND can be requested. All other dates are unavailable by default.</p>
+            <div class="calendar-key"><span><i class="key-dot requestable"></i> Open for requests</span><span><i class="key-dot closed"></i> Unavailable / booked</span><span><i class="key-dot selected"></i> Your preferred date</span></div>
+            <p class="calendar-note">Available dates can be requested unless already booked. Dates are subject to final confirmation.</p>
           </div>
 
 
@@ -5196,6 +5197,14 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
               <p>This is only a <strong>booking request</strong>. It is not a final or confirmed booking yet. STANCEBOUND will review the details first.</p>
               <p>Your final booking details, price and customer terms will be sent at the confirmation stage. <strong>Your booking does not become final until you review and sign that confirmation.</strong></p>
             </div>
+
+            <div class="booking-terms-notice" aria-label="Weather and working space policy">
+              <div class="eyebrow">WEATHER &amp; SAFE WORKING</div>
+              <h3>Weather and canopy access</h3>
+              <p>STANCEBOUND may use a secured temporary canopy when carrying out mobile detailing. Work may be postponed, rescheduled or stopped if wind, rain, lightning or other conditions make the job unsafe for people, vehicles, property or equipment. Canopy weights do not make it safe to work in every weather condition.</p>
+              <p>Where unsafe weather prevents the service, we will offer another date without a rescheduling charge. If no suitable alternative can be agreed, payments for services not provided will be refunded.</p>
+            </div>
+            <div class="consent-row"><input id="canopySpaceConfirmed" name="canopy_space_confirmed" type="checkbox" required><label for="canopySpaceConfirmed">I confirm the service location has safe, accessible, reasonably level space for STANCEBOUND to work and, if needed, secure a temporary canopy. I understand STANCEBOUND will assess the space and weather on arrival.</label></div>
 
             <div class="consent-row"><input id="agreementAccepted" name="agreement_accepted" type="checkbox" required><label for="agreementAccepted">I understand this is a booking request only and that the booking is not final until I receive, review and sign the STANCEBOUND confirmation and terms.</label></div>
 
@@ -6371,6 +6380,8 @@ const chosen=new Date(y,m-1,d);
   const now=new Date(); now.setHours(0,0,0,0);
   let view=new Date(now.getFullYear(),now.getMonth(),1);
   let openDates=new Map();
+  let bookedDates=new Set();
+  let calendarLoaded=false;
 
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
@@ -6388,9 +6399,17 @@ const chosen=new Date(y,m-1,d);
       if(!res.ok)throw new Error('Availability request failed: '+res.status);
       const data=await res.json();
       openDates=new Map((data||[]).map(x=>[x.availability_date,x]));
+      // Public RPC exposes dates only, never customer names or private booking details.
+      const bookedResponse=await fetch('https://fxlekwzcxedkiyqfswvq.supabase.co/rest/v1/rpc/sb_public_booked_dates',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({p_start:start,p_end:end}),cache:'no-store'});
+      if(!bookedResponse.ok)throw new Error('Booked dates sync failed: '+bookedResponse.status);
+      const occupied=await bookedResponse.json();
+      bookedDates=new Set((occupied||[]).map(x=>x.booking_date).filter(Boolean));
+      calendarLoaded=true;
     }catch(error){
       console.error('Availability calendar:',error);
       openDates=new Map();
+      bookedDates=new Set();
+      calendarLoaded=false;
     }
     render();
   }
@@ -6413,9 +6432,11 @@ const chosen=new Date(y,m-1,d);
       const b=document.createElement('button');
       b.type='button'; b.className='calendar-day'; b.textContent=n;
 
-      const unavailable=d<now || !slot;
+      const isBooked=bookedDates.has(val);
+      const unavailable=d<now || !calendarLoaded || !slot || isBooked;
       b.disabled=unavailable;
       b.classList.add(unavailable?'closed-day':'open-day');
+      if(isBooked){b.classList.add('sb-public-booked');b.setAttribute('aria-label',`${n}, booked and unavailable`);}
       if(dateInput.value===val){
         b.classList.add('selected');
         b.setAttribute('aria-pressed','true');
@@ -6424,7 +6445,9 @@ const chosen=new Date(y,m-1,d);
         b.setAttribute('aria-pressed','false');
       }
 
-      if(slot){
+      if(isBooked){
+        b.title='Already booked';
+      }else if(slot){
         const s=(slot.start_time||'').slice(0,5), e=(slot.end_time||'').slice(0,5);
         b.title=[s,e].filter(Boolean).join('–') || 'Open for booking request';
       }else{
@@ -6449,7 +6472,7 @@ const chosen=new Date(y,m-1,d);
     view=new Date(view.getFullYear(),view.getMonth()+1,1); loadAvailability();
   });
   dateInput.addEventListener('change',()=>{
-    if(dateInput.value && !openDates.has(dateInput.value)){
+    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || bookedDates.has(dateInput.value))){
       dateInput.value='';
       dateInput.setCustomValidity('That date is not currently available.');
       dateInput.reportValidity();
@@ -6469,7 +6492,7 @@ const chosen=new Date(y,m-1,d);
 
   // Keep the native date input from silently accepting a closed day.
   dateInput.addEventListener('input',()=>{
-    if(dateInput.value && !openDates.has(dateInput.value)) dateInput.value='';
+    if(dateInput.value && (!calendarLoaded || !openDates.has(dateInput.value) || bookedDates.has(dateInput.value))) dateInput.value='';
   });
 
   loadAvailability();
