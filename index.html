@@ -4431,6 +4431,16 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 #home .sb-home-legal-bottom .sb-footer-links button{font-size:10px!important;font-weight:600!important;letter-spacing:.09em!important;text-transform:uppercase;line-height:1.6;color:#999!important;padding:6px 0!important;border-bottom:1px solid rgba(255,255,255,.18)!important;white-space:normal}
 @media(max-width:420px){#home .sb-home-legal-bottom{margin-top:42px!important}#home .sb-home-legal-bottom .sb-footer-links{gap:9px 17px}#home .sb-home-legal-bottom .sb-footer-links button{font-size:9px!important}}
 </style>
+<style>
+/* STANCEBOUND: hide collapsed menu labels completely. Prevents the
+   DETAILING label showing through behind the central SB button. */
+.radial-nav:not(.open) .radial-item {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.radial-nav.open .radial-item { visibility: visible !important; }
+</style>
 </head>
 
 
