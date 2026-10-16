@@ -4401,6 +4401,19 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 .sb-reviews-page .sb-tp-primary:hover,.sb-reviews-page .sb-tp-secondary:hover{background:rgba(149,32,43,.18);border-color:#d14b54;box-shadow:0 0 24px rgba(175,33,44,.2);transform:translateY(-2px)}
 @media(max-width:600px){.sb-reviews-page .sb-tp-primary,.sb-reviews-page .sb-tp-secondary{width:100%;padding:16px 12px;font-size:12px;letter-spacing:.08em}.sb-reviews-actions>div{width:100%}}
 </style>
+<!-- Official Trustpilot Review Collector loader -->
+<script type="text/javascript" src="https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+<style id="stancebound-trustpilot-collector-fixes">
+.sb-reviews-page .sb-reviews-content{padding-bottom:120px}
+.sb-reviews-page .sb-tp-secondary,.sb-reviews-page .sb-tp-secondary:visited{color:#fff!important;background:#66171f!important;border:1px solid #c54851!important;text-shadow:none!important}
+.sb-reviews-page .sb-tp-secondary:hover{background:#8e2530!important;color:#fff!important}
+.sb-tp-collector-wrap{margin:30px 0 20px;padding:22px 20px;border:1px solid #343434;background:linear-gradient(135deg,#151515,#090909);box-sizing:border-box}
+.sb-tp-collector-wrap .trustpilot-widget{min-height:52px}
+.sb-tp-collector-wrap .trustpilot-widget a{color:#f3f3f3}
+.sb-tp-collector-note{color:#a8a8a8;font-size:13px;line-height:1.6;margin:12px 0 0}
+.sb-reviews-page .sb-reviews-actions{margin-top:30px;padding-top:25px}
+@media(max-width:600px){.sb-tp-collector-wrap{padding:20px 12px}.sb-reviews-page .sb-reviews-content{padding-bottom:140px}}
+</style>
 </head>
 
 
@@ -5479,15 +5492,19 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         <div class="sb-reviews-eyebrow">STANCEBOUND / INDEPENDENT CUSTOMER REVIEWS</div>
         <h1 id="sbReviewsTitle">YOUR EXPERIENCE.<br>YOUR WORDS.</h1>
         <p class="sb-reviews-intro">Customer feedback matters. STANCEBOUND uses Trustpilot so you can share your experience independently and read reviews directly from the source.</p>
-        <div class="sb-reviews-empty sb-trustpilot-panel">
-          <span class="sb-reviews-count">INDEPENDENT REVIEWS / TRUSTPILOT</span>
-          <h2>REAL FEEDBACK. NO FILTER.</h2>
-          <p>Reviews are hosted on Trustpilot, not written or selected by STANCEBOUND. Follow the link to see the latest customer experiences and ratings, if any have been posted.</p>
-          <a class="btn sb-tp-primary" href="https://uk.trustpilot.com/review/stancebound.com" target="_blank" rel="noopener noreferrer">VIEW REVIEWS ON TRUSTPILOT ↗</a>
+        <div class="sb-tp-collector-wrap">
+          <span class="sb-reviews-count">SHARE YOUR EXPERIENCE / TRUSTPILOT</span>
+          <h2>HAD A SERVICE?</h2>
+          <p>I'd appreciate an honest review of your experience. Your feedback helps STANCEBOUND improve.</p>
+          <!-- Official TrustBox widget - Review Collector -->
+          <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6ad27c8d3d15140cc2638694" data-style-height="52px" data-style-width="100%" data-token="7c54681a-f806-4d17-bc64-01c8e98f8ca4">
+            <a href="https://www.trustpilot.com/review/stancebound.com" target="_blank" rel="noopener noreferrer">Write a review on Trustpilot ↗</a>
+          </div>
+          <p class="sb-tp-collector-note">Reviews are submitted independently through Trustpilot.</p>
         </div>
         <div class="sb-reviews-actions">
-          <div><h2>HAD A SERVICE?</h2><p>I'd appreciate an honest review of your experience. Positive or negative, your feedback helps STANCEBOUND improve.</p></div>
-          <a class="btn sb-tp-secondary" href="https://uk.trustpilot.com/evaluate/stancebound.com" target="_blank" rel="noopener noreferrer">LEAVE A TRUSTPILOT REVIEW ↗</a>
+          <div><h2>READ CUSTOMER REVIEWS.</h2><p>See feedback published on our independent Trustpilot profile.</p></div>
+          <a class="btn sb-tp-secondary" href="https://uk.trustpilot.com/review/stancebound.com" target="_blank" rel="noopener noreferrer">VIEW REVIEWS ON TRUSTPILOT ↗</a>
         </div>
       </div>
     </section>
