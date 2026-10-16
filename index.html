@@ -4424,6 +4424,13 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 .sb-reviews-page .sb-tp-collector-note{font-size:12px!important;line-height:1.6!important;margin:23px auto 0!important;max-width:360px;color:#999!important}
 @media(max-width:600px){.sb-reviews-page .sb-reviews-content{padding:110px 20px 190px!important}.sb-reviews-page .sb-tp-collector-wrap{padding:26px 14px!important}.sb-reviews-page .sb-tp-collector-label{font-size:9px;letter-spacing:.12em}}
 </style>
+<style id="sb-home-legal-placement-fix">
+/* Keep legal navigation discreetly at the end of the actual homepage. */
+#home .sb-home-legal-bottom{position:relative!important;display:block!important;clear:both!important;width:min(100% - 36px,800px);margin:64px auto 28px!important;padding:24px 8px 12px!important;border-top:1px solid rgba(255,255,255,.12);z-index:1;text-align:center;transform:none!important}
+#home .sb-home-legal-bottom .sb-footer-links{display:flex!important;flex-direction:row;justify-content:center;align-items:center;gap:14px 22px;flex-wrap:wrap;margin:0!important}
+#home .sb-home-legal-bottom .sb-footer-links button{font-size:10px!important;font-weight:600!important;letter-spacing:.09em!important;text-transform:uppercase;line-height:1.6;color:#999!important;padding:6px 0!important;border-bottom:1px solid rgba(255,255,255,.18)!important;white-space:normal}
+@media(max-width:420px){#home .sb-home-legal-bottom{margin-top:42px!important}#home .sb-home-legal-bottom .sb-footer-links{gap:9px 17px}#home .sb-home-legal-bottom .sb-footer-links button{font-size:9px!important}}
+</style>
 </head>
 
 
@@ -4675,6 +4682,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </div>
         </section>
       </div>
+      <!-- Legal links belong after all homepage content, not above the hero. -->
+      <div class="sb-home-legal-bottom"><nav class="sb-footer-links" aria-label="Legal information"><button type="button" onclick="sbOpenLegal('privacy-policy')">Privacy Policy</button><button type="button" onclick="sbOpenLegal('terms')">Terms & Conditions</button><button type="button" onclick="sbOpenLegal('delivery-returns')">Delivery & Returns</button></nav></div>
     </section>
 
 
@@ -5564,7 +5573,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
     ·
 
     South Wales
-    <nav class="sb-footer-links" aria-label="Legal information"><button type="button" onclick="sbOpenLegal('privacy-policy')">Privacy Policy</button><button type="button" onclick="sbOpenLegal('terms')">Terms & Conditions</button><button type="button" onclick="sbOpenLegal('delivery-returns')">Delivery & Returns</button></nav>
+
   </footer>
 
 
