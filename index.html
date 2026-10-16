@@ -4620,7 +4620,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <i></i>
             <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK <span>@STANCEBOUND</span></a>
           </div>
-          <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography across South Wales. Careful interior and exterior cleaning, honest pricing and photography that makes your car stand out.</p>
+          <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography across South Wales. Careful interior and exterior cleaning, clear pricing agreed before work starts, and photography that makes your car stand out.</p>
           <div class="hero-buttons">
             <button class="btn" onclick="showPage('booking')">Request a Booking</button>
             <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
@@ -5299,9 +5299,9 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
     <section id="bookingThanks" class="page">
       <div class="content" style="max-width:980px;text-align:center;padding-top:110px;padding-bottom:110px;">
         <div class="eyebrow">BOOKING REQUEST RECEIVED</div>
-        <h1 style="margin:14px 0 18px;">THANK YOU FOR BOOKING WITH STANCEBOUND</h1>
+        <h1 style="margin:14px 0 18px;">THANK YOU, REQUEST RECEIVED</h1>
         <div class="heading-line" style="margin-left:auto;margin-right:auto;"></div>
-        <p style="max-width:650px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. I’ll review the requested date, time and details before confirming the booking by email.</p>
+        <p style="max-width:650px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. We’ll review the requested date, time and details before confirming the booking by email.</p>
         <p style="color:var(--grey);font-size:12px;letter-spacing:.08em;">YOUR REQUEST IS NOT CONFIRMED UNTIL YOU RECEIVE A STANCEBOUND BOOKING CONFIRMATION.</p>
         <div class="booking-email-warning booking-email-warning-thanks">
           <strong>CHECK YOUR SPAM / JUNK FOLDER</strong>
@@ -5448,11 +5448,11 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           <div class="eyebrow">STANCEBOUND STORE</div>
           <h1>Shop</h1>
           <div class="heading-line"></div>
-          <p>STANCEBOUND apparel and automotive-inspired products. Explore the Signature Hoodie and contact me for current ordering information.</p>
+          <p>STANCEBOUND apparel and automotive-inspired products. Explore the Signature Hoodie and purchase securely through our online checkout.</p>
         </div>
 
         <div class="shop-hero">
-          <div><span class="shop-index">01 / STORE</span><h2>Built for the cars<br>we actually care about.</h2><p>Explore the STANCEBOUND Signature Hoodie, the first piece in the collection. Contact me for ordering details.</p></div>
+          <div><span class="shop-index">01 / STORE</span><h2>Built for the cars<br>we actually care about.</h2><p>Explore the STANCEBOUND Signature Hoodie, the first piece in our collection. Choose your size and buy securely online.</p></div>
           <div class="shop-mark">SB</div>
         </div>
 
@@ -5463,7 +5463,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             </div>
             <div class="product-info">
               <div>
-                <span>DROP 001 · ENQUIRE</span>
+                <span>DROP 001 · AVAILABLE TO ORDER</span>
                 <h3>STANCEBOUND Signature Hoodie</h3>
                 <span class="product-price">£44.99</span>
                 <span class="product-sizes">BLACK · S · M · L · XL · 2XL · 3XL</span>
@@ -5479,8 +5479,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         </div>
 
         <div class="shop-notify">
-          <div><div class="eyebrow">FIRST DROP</div><h2>Something worth putting the logo on.</h2><p>The Signature Hoodie is featured here. Please enquire to confirm ordering and availability before making a purchase.</p></div>
-          <button class="btn" onclick="showPage('contact')">Product Enquiries</button>
+          <div><div class="eyebrow">FIRST DROP</div><h2>Something worth putting the logo on.</h2><p>Our Signature Hoodie is available to order through secure checkout. Select a size to see the purchase option. For delivery, sizing and returns information, see our shop policies.</p></div>
+          <button class="btn" type="button" onclick="openHoodieProduct(event)">VIEW HOODIE · BUY NOW</button>
         </div>
       </div>
     </section>
@@ -6389,7 +6389,7 @@ card.addEventListener("pointercancel",cancel,{passive:true});
         </div>
         <button id="hoodieBuyBtn" class="product-buy-btn" type="button" disabled>SELECT A SIZE</button>
         <div id="hoodieSelectionStatus" class="product-selection-status"></div>
-        <p class="product-buy-note">Secure payment powered by Stripe. UK shipping details are collected at checkout.</p>
+        <p class="product-buy-note">Secure checkout powered by Stripe. Made to order; delivery estimates and shipping charges are confirmed at checkout. Standard online cancellation and return rights apply. <a href="#" onclick="event.preventDefault();sbOpenLegal('delivery-returns')" style="text-decoration:underline;text-underline-offset:3px;color:inherit">Delivery, returns &amp; sizing</a>.</p>
       </div>
     </div>
   </div>
