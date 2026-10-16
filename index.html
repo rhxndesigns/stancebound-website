@@ -8679,6 +8679,42 @@ if(sys)sys.textContent='SYS / STARTING';
  document.addEventListener('pointermove',e=>{if(!backdrop.classList.contains('show')||e.pointerType==='touch')return;backdrop.style.setProperty('--sb-menu-x',e.clientX+'px');backdrop.style.setProperty('--sb-menu-y',e.clientY+'px')},{passive:true});
 })();
 </script>
+
+<style id="sb-menu-red-scrolllock-v2">
+html.sb-menu-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important}
+body.sb-menu-scroll-locked{position:fixed!important;overflow:hidden!important;width:100%!important;left:0!important;right:0!important;touch-action:none!important}
+.radial-backdrop.show{overscroll-behavior:none;touch-action:none}
+.radial-backdrop.show::after{background:radial-gradient(330px circle at var(--sb-menu-x,50%) var(--sb-menu-y,65%),rgba(168,21,39,.22),rgba(115,12,23,.07) 46%,transparent 78%)!important}
+.radial-nav.open .radial-item{border-color:rgba(173,45,55,.35)!important;box-shadow:0 8px 26px #0009,inset 2px 0 rgba(164,24,39,.45)!important}
+.radial-nav.open .radial-item:hover,.radial-nav.open .radial-item:focus-visible{border-color:rgba(255,73,86,.82)!important;background:linear-gradient(125deg,rgba(89,18,28,.97),rgba(17,8,12,.95))!important;box-shadow:0 0 24px rgba(209,26,47,.27),0 12px 35px #000!important;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a))) scale(1.055)!important}
+.radial-nav.open .radial-toggle{box-shadow:0 0 0 1px rgba(220,40,55,.4),0 0 30px rgba(160,12,32,.23)!important}
+@media(hover:none){.radial-nav.open .radial-item:active{background:rgba(126,20,36,.85)!important}}
+@media(prefers-reduced-motion:reduce){.radial-nav.open .radial-item:hover{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a)))!important}}
+</style>
+<script id="sb-menu-scrolllock-v2">
+(()=>{
+ const nav=document.getElementById('radialNav'),backdrop=document.getElementById('radialBackdrop');
+ if(!nav||!backdrop)return;
+ let savedY=0,locked=false;
+ function sync(){
+  const open=nav.classList.contains('open');
+  if(open&&!locked){
+   savedY=window.scrollY||document.documentElement.scrollTop||0;
+   document.body.style.top=`-${savedY}px`;
+   document.documentElement.classList.add('sb-menu-scroll-locked');
+   document.body.classList.add('sb-menu-scroll-locked');locked=true;
+  }else if(!open&&locked){
+   document.body.classList.remove('sb-menu-scroll-locked');
+   document.documentElement.classList.remove('sb-menu-scroll-locked');
+   document.body.style.top='';locked=false;
+   window.scrollTo(0,savedY);
+  }
+ }
+ new MutationObserver(sync).observe(nav,{attributes:true,attributeFilter:['class']});
+ sync();
+ window.addEventListener('pagehide',()=>{if(locked){document.body.classList.remove('sb-menu-scroll-locked');document.documentElement.classList.remove('sb-menu-scroll-locked');document.body.style.top='';locked=false}});
+})();
+</script>
 </body>
 
 </html>
