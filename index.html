@@ -4368,6 +4368,15 @@ html.sb-chromebook-performance .radial-menu:before{backdrop-filter:none!importan
 html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important;filter:none!important;will-change:auto!important}
 @media(prefers-reduced-motion:reduce){.radial-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.radial-toggle,.radial-item{transition-duration:0.01ms!important}}
 </style>
+<style id="sb-2026-clarity-upgrade">
+.sb-trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin:28px 0 34px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.12)}
+.sb-trust-strip>div{background:#0b0b0b;padding:20px 17px;min-width:0}
+.sb-trust-strip strong,.sb-trust-strip span{display:block}.sb-trust-strip strong{font-size:10px;letter-spacing:.14em;color:#f3f3f3}.sb-trust-strip span{margin-top:9px;font-size:12px;line-height:1.55;color:#999}
+.sb-pricing-clarity{margin:28px 0 38px;padding:clamp(20px,4vw,36px);border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#111,#070707);color:#f2f2f2}
+.sb-pricing-kicker{font-size:10px;letter-spacing:.18em;color:#aaa}.sb-pricing-clarity h2{font-size:clamp(23px,4vw,37px);letter-spacing:-.04em;line-height:1.1;margin:12px 0}.sb-pricing-clarity p{color:#aaa;line-height:1.75;font-size:14px;max-width:850px}.sb-pricing-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}.sb-pricing-columns>div{padding:18px;border:1px solid #292929;background:#0b0b0b}.sb-pricing-columns strong,.sb-pricing-columns span{display:block}.sb-pricing-columns strong{font-size:10px;letter-spacing:.14em}.sb-pricing-columns span{color:#aaa;font-size:13px;line-height:1.65;margin-top:8px}.sb-pricing-clarity .sb-pricing-small{font-size:12px;color:#8e8e8e}.sb-pricing-clarity .btn{margin-top:10px}
+@media(max-width:760px){.sb-trust-strip{grid-template-columns:1fr 1fr}.sb-trust-strip>div{padding:16px 12px}.sb-trust-strip strong{font-size:9px}.sb-trust-strip span{font-size:11px}.sb-pricing-columns{grid-template-columns:1fr}}
+@media(max-width:390px){.sb-trust-strip{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 
 
@@ -4554,7 +4563,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <i></i>
             <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK <span>@STANCEBOUND</span></a>
           </div>
-          <p class="hero-description" id="home-description">Automotive detailing and photography built around modified cars, clean presentation and attention to the details that actually matter.</p>
+          <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography in Llanelli and surrounding South Wales. Careful interior and exterior cleaning, honest pricing and photography that makes your car stand out.</p>
           <div class="hero-buttons">
             <button class="btn" onclick="showPage('booking')">Request a Booking</button>
             <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
@@ -4587,7 +4596,13 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </button>
         </div>
 
-        <div class="home-showcase home-reveal">
+        <section class="sb-trust-strip home-reveal" aria-label="Why choose STANCEBOUND">
+   <div><strong>LLANELLI · SOUTH WALES</strong><span>Local mobile detailing and automotive photography</span></div>
+   <div><strong>BICSc QUALIFIED</strong><span>Cleaning qualification and a careful, methodical approach</span></div>
+   <div><strong>UPFRONT PRICING</strong><span>£40 introductory detail; extras agreed before work</span></div>
+   <div><strong>REQUEST, THEN CONFIRM</strong><span>Booking dates are reviewed before confirmation</span></div>
+  </section>
+  <div class="home-showcase home-reveal">
           <section class="home-feature-compact">
             <div class="home-feature-video">
               <video id="homeMercVideo" muted loop playsinline preload="none" aria-label="Featured Mercedes detailing video">
@@ -4756,9 +4771,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 
           <p>
 
-            Get in touch through STANCEBOUND
-            social media for availability,
-            pricing and booking enquiries.
+            Based in Llanelli and serving surrounding South Wales. Request a date online and receive confirmation after availability has been reviewed.
 
           </p>
 
@@ -4800,7 +4813,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <div>
               <small>FULL DEEP DETAIL</small>
               <h1>ONE CAR.<br>PROPERLY DONE.</h1>
-              <p>In-depth interior + exterior detailing, tailored to the vehicle.</p>
+              <p>Interior and exterior cleaning with a six-stage process. Introductory portfolio-building rate, subject to vehicle condition.</p>
             </div>
             <div class="sbp-price"><span>INTRO RATE</span><strong>£40</strong></div>
           </div>
@@ -4810,7 +4823,15 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </div>
         </section>
 
-        <section class="sbp-cinema" id="sbpCinema">
+        <section class="sb-pricing-clarity" aria-label="Detail pricing explained">
+   <div class="sb-pricing-kicker">THE £40 INTRODUCTORY DETAIL</div>
+   <h2>Know what's included before you book.</h2>
+   <p>The standard service follows the six-stage cleaning process: wheels and pre-clean, snow foam and contact wash, drying and finishing, interior vacuum and surface cleaning, glass, and final inspection.</p>
+   <div class="sb-pricing-columns"><div><strong>INCLUDED</strong><span>Standard interior and exterior detail, subject to the vehicle's condition.</span></div><div><strong>QUOTED SEPARATELY</strong><span>Heavy soiling, intensive stain or pet-hair removal, headlight restoration, scratch removal and paint correction.</span></div></div>
+   <p class="sb-pricing-small">£40 is an introductory portfolio-building rate, not a guaranteed price for every vehicle. Any additional work and cost will be discussed and agreed first. A booking request is not a confirmed appointment.</p>
+   <button class="btn" onclick="showPage('booking')" type="button">REQUEST YOUR DETAIL →</button>
+  </section>
+  <section class="sbp-cinema" id="sbpCinema">
           <div class="sbp-cinema-head">
             <span>SERVICES / <b id="sbpCinemaNum">02</b>—07</span>
             <small>EXPLORE</small>
@@ -4885,8 +4906,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <div class="process-box" data-detail-stage="6"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
           </div>
           <div class="detail-bottom-row">
-            <div class="detail-fact"><span>INTRODUCTORY RATE / £40</span><p>A limited launch rate while STANCEBOUND builds its detailing portfolio. The process and attention stay the same. The price simply reflects this early portfolio-building period.</p></div>
-            <div class="detail-fact"><span>CONDITION / ADDITIONAL WORK</span><p>Every vehicle is assessed before work begins. If its condition needs anything beyond the booked detail, it is discussed and agreed with you first.</p></div>
+            <div class="detail-fact"><span>INTRODUCTORY RATE / £40</span><p>£40 is the introductory price for the standard full interior and exterior detail while STANCEBOUND builds its portfolio. It is not a fixed price for every vehicle or for specialist restoration. Vehicle condition and any additional work are discussed and agreed before work begins.</p></div>
+            <div class="detail-fact"><span>CONDITION / ADDITIONAL WORK</span><p>The £40 detail covers the six cleaning stages shown above. Heavy soiling, stain treatment, pet hair removal or specialist work may need a separate quote. No extra charge or additional work without your agreement.</p></div>
           </div>
           <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
         </div>
