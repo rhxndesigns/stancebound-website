@@ -4369,7 +4369,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 @media(prefers-reduced-motion:reduce){.radial-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.radial-toggle,.radial-item{transition-duration:0.01ms!important}}
 </style>
 <style id="sb-2026-clarity-upgrade">
-.sb-trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin:28px 0 34px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.12)}
+.sb-trust-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:28px 0 34px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.12)}
 .sb-trust-strip>div{background:#0b0b0b;padding:20px 17px;min-width:0}
 .sb-trust-strip strong,.sb-trust-strip span{display:block}.sb-trust-strip strong{font-size:10px;letter-spacing:.14em;color:#f3f3f3}.sb-trust-strip span{margin-top:9px;font-size:12px;line-height:1.55;color:#999}
 .sb-pricing-clarity{margin:28px 0 38px;padding:clamp(20px,4vw,36px);border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#111,#070707);color:#f2f2f2}
@@ -4563,7 +4563,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <i></i>
             <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK <span>@STANCEBOUND</span></a>
           </div>
-          <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography in Llanelli and surrounding South Wales. Careful interior and exterior cleaning, honest pricing and photography that makes your car stand out.</p>
+          <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography across South Wales. Careful interior and exterior cleaning, honest pricing and photography that makes your car stand out.</p>
           <div class="hero-buttons">
             <button class="btn" onclick="showPage('booking')">Request a Booking</button>
             <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
@@ -4597,8 +4597,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         </div>
 
         <section class="sb-trust-strip home-reveal" aria-label="Why choose STANCEBOUND">
-   <div><strong>LLANELLI · SOUTH WALES</strong><span>Local mobile detailing and automotive photography</span></div>
-   <div><strong>BICSc QUALIFIED</strong><span>Cleaning qualification and a careful, methodical approach</span></div>
+   <div><strong>SOUTH WALES</strong><span>Mobile detailing and automotive photography across the region</span></div>
    <div><strong>UPFRONT PRICING</strong><span>£40 introductory detail; extras agreed before work</span></div>
    <div><strong>REQUEST, THEN CONFIRM</strong><span>Booking dates are reviewed before confirmation</span></div>
   </section>
@@ -4771,7 +4770,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 
           <p>
 
-            Based in Llanelli and serving surrounding South Wales. Request a date online and receive confirmation after availability has been reviewed.
+            Mobile detailing and automotive photography across South Wales. Request a date online and receive confirmation after availability has been reviewed.
 
           </p>
 
@@ -4898,8 +4897,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <div class="process-box" data-detail-stage="6"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
           </div>
           <div class="detail-bottom-row">
-            <div class="detail-fact"><span>INTRODUCTORY RATE / £40</span><p>£40 is the introductory price for the standard full interior and exterior detail while STANCEBOUND builds its portfolio. It is not a fixed price for every vehicle or for specialist restoration. Vehicle condition and any additional work are discussed and agreed before work begins.</p></div>
-            <div class="detail-fact"><span>CONDITION / ADDITIONAL WORK</span><p>The £40 detail covers the six cleaning stages shown above. Heavy soiling, stain treatment, pet hair removal or specialist work may need a separate quote. No extra charge or additional work without your agreement.</p></div>
+            <div class="detail-fact"><span>THE £40 INTRODUCTORY DETAIL</span><p>The six-stage cleaning process above covers a standard interior and exterior detail, subject to the vehicle’s condition. £40 is an introductory portfolio-building rate, not a guaranteed price for every vehicle.</p></div>
+            <div class="detail-fact"><span>QUOTED SEPARATELY</span><p>Heavy soiling, intensive stain or pet-hair removal, headlight restoration, scratch removal and paint correction may require a separate quote. Any additional work and cost will be discussed and agreed with you before work begins. A booking request is not a confirmed appointment.</p></div>
           </div>
           <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
         </div>
@@ -8611,6 +8610,19 @@ if(sys)sys.textContent='SYS / STARTING';
 <script id="sb-analytics-v1">
 (()=>{
   'use strict';
+  // Owner exclusion is stored on this browser only. Use ?sb_owner=1 to enable,
+  // or ?sb_owner=0 to disable. Never send analytics while owner mode is active.
+  const ownerKey='sb_analytics_owner_excluded_v1';
+  let ownerExcluded=false;
+  try {
+    const flag=new URLSearchParams(location.search).get('sb_owner');
+    if(flag==='1')localStorage.setItem(ownerKey,'1');
+    if(flag==='0')localStorage.removeItem(ownerKey);
+    ownerExcluded=localStorage.getItem(ownerKey)==='1';
+  } catch(_) {
+    ownerExcluded=new URLSearchParams(location.search).get('sb_owner')==='1';
+  }
+  if(ownerExcluded)return;
   const key='sb_analytics_session_v1';
   let session;
   try {session=sessionStorage.getItem(key);if(!session){session=crypto.randomUUID();sessionStorage.setItem(key,session)}}
