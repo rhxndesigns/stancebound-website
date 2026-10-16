@@ -4378,6 +4378,20 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 @media(max-width:390px){.sb-trust-strip{grid-template-columns:1fr 1fr}}
 </style>
 <style id="sb-cleanup-20261016">.future-service{display:none!important} .service-choice.coming-soon{display:none!important}</style>
+
+<style id="stancebound-menu-refinement-and-reviews">
+/* Compact, legible floating navigation, preserving the original SB logo control. */
+.radial-nav .radial-toggle{width:58px!important;height:58px!important;animation:none!important;box-shadow:0 6px 24px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.19)!important;}
+.radial-nav .radial-toggle::before,.radial-nav .radial-toggle::after{animation:none!important;opacity:.22!important;}
+.radial-nav .radial-toggle img{width:34px!important;height:34px!important;animation:none!important;}
+.radial-nav .radial-items{width:0;height:0;}
+.radial-nav .radial-item{--a:0deg!important;--i:0!important;min-width:116px!important;padding:10px 16px!important;text-align:center!important;background:rgba(12,12,12,.97)!important;border:1px solid rgba(255,255,255,.17)!important;border-radius:5px!important;font-size:10px!important;font-weight:750!important;letter-spacing:.13em!important;transform:translate(-50%,-50%) translateY(0) scale(.92)!important;transition:transform .24s ease,opacity .2s ease!important;transition-delay:0ms!important;}
+.radial-nav.open .radial-item{opacity:1!important;pointer-events:auto!important;transform:translate(-50%,-50%) translateY(calc(-82px - var(--sb-index) * 47px)) scale(1)!important;}
+.radial-nav .radial-item:nth-child(1){--sb-index:0}.radial-nav .radial-item:nth-child(2){--sb-index:1}.radial-nav .radial-item:nth-child(3){--sb-index:2}.radial-nav .radial-item:nth-child(4){--sb-index:3}.radial-nav .radial-item:nth-child(5){--sb-index:4}.radial-nav .radial-item:nth-child(6){--sb-index:5}.radial-nav .radial-item:nth-child(7){--sb-index:6}.radial-nav .radial-item:nth-child(8){--sb-index:7}.radial-nav .radial-item:nth-child(9){--sb-index:8}
+.radial-nav.open .radial-item.active{border-color:#fff!important;background:#e9e9e9!important;color:#080808!important;}
+@media(max-height:750px){.radial-nav.open .radial-item{transform:translate(-50%,-50%) translateY(calc(-74px - var(--sb-index) * 39px)) scale(1)!important;padding:7px 12px!important;}}
+.sb-reviews-page{background:#050505;color:#f6f6f6}.sb-reviews-content{max-width:970px;margin:0 auto;padding:clamp(105px,15vw,170px) 22px 130px!important}.sb-reviews-eyebrow,.sb-reviews-count{font-size:10px;font-weight:800;letter-spacing:.24em;color:#929292}.sb-reviews-page h1{font-size:clamp(42px,10vw,90px);line-height:.96;letter-spacing:-.04em;margin:24px 0}.sb-reviews-intro{font-size:clamp(15px,2.8vw,20px);line-height:1.7;color:#bcbcbc;max-width:650px}.sb-reviews-empty{border:1px solid #353535;padding:clamp(24px,5vw,52px);margin:45px 0;background:linear-gradient(145deg,#111,#060606)}.sb-reviews-empty h2,.sb-reviews-actions h2{font-size:clamp(19px,4vw,30px);letter-spacing:.025em;margin:22px 0 12px}.sb-reviews-empty p,.sb-reviews-actions p{color:#a7a7a7;line-height:1.75;max-width:650px}.sb-reviews-actions{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid #444;padding-top:20px;flex-wrap:wrap}.sb-reviews-actions .btn{white-space:nowrap}
+</style>
 </head>
 
 
@@ -4398,7 +4412,11 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
  const skip=document.createElement('button');skip.type='button';skip.textContent='SKIP INTRO →';skip.setAttribute('aria-label','Skip website intro');
  skip.style.cssText='position:absolute;right:22px;bottom:55px;z-index:10;background:#111;color:#fff;border:1px solid #777;padding:12px 18px;cursor:pointer;font:700 11px Inter,Arial,sans-serif;letter-spacing:.14em';
  skip.addEventListener('click',finish);boot.appendChild(skip);
- setTimeout(finish,1200);
+ const status=boot.querySelector('.sb-boot-status span:last-child');
+ const kicker=boot.querySelector('.sb-boot-kicker');
+ [[520,'SYSTEM CHECK / INTERFACE'],[1120,'VISUAL SYSTEM / ONLINE'],[1760,'DETAILING SYSTEM / READY'],[2350,'PHOTOGRAPHY SYSTEM / READY']].forEach(([ms,label],i)=>setTimeout(()=>{if(finished)return;if(kicker)kicker.textContent=label;if(status)status.textContent=i===3?'READY':'INITIALISING';},ms));
+ setTimeout(()=>{if(!finished){boot.classList.add('sb-boot-ready');if(status)status.textContent='SYSTEM READY'}},2850);
+ setTimeout(finish,3450);
 })();
 </script>
   <div id="site-intro" class="site-intro" aria-hidden="true">
@@ -4491,6 +4509,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         Shop
       </button>
 
+      <button class="nav-link" data-page="reviews" onclick="showPage('reviews')">Reviews</button>
+
       <button
         class="nav-link"
         data-page="booking"
@@ -4521,6 +4541,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
       <button class="radial-item" style="--i:4;--a:17deg" data-page="about">About</button>
       <button class="radial-item" style="--i:5;--a:37deg" data-page="shop">Shop</button>
       <button class="radial-item" style="--i:6;--a:62deg" data-page="booking">Booking</button>
+      <button class="radial-item" style="--i:8;--a:0deg" data-page="reviews">Reviews</button>
       <button class="radial-item" style="--i:7;--a:87deg" data-page="contact">Chat</button>
     </div>
     <button class="radial-toggle" id="radialToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="radialItemsV43"><img src="images/stanceboundlogo.png?v=30" alt="" aria-hidden="true"></button>
@@ -4583,15 +4604,11 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </button>
         </div>
 
-        <section class="sb-trust-strip home-reveal" aria-label="Why choose STANCEBOUND">
-   <div><strong>SOUTH WALES</strong><span>Mobile detailing and automotive photography across the region</span></div>
-   <div><strong>UPFRONT PRICING</strong><span>£40 introductory detail; extras agreed before work</span></div>
-   <div><strong>REQUEST, THEN CONFIRM</strong><span>Booking dates are reviewed before confirmation</span></div>
-  </section>
+
   <div class="home-showcase home-reveal">
           <section class="home-feature-compact">
             <div class="home-feature-video">
-              <video id="homeMercVideo" muted loop playsinline preload="none" aria-label="Featured Mercedes detailing video">
+              <video id="homeMercVideo" muted loop playsinline preload="metadata" poster="images/STANCEBOUND4.jpg" aria-label="Featured Mercedes detailing video">
                 <source data-src="Videos/merccla.mp4" type="video/mp4">
               </video>
             </div>
@@ -5443,6 +5460,24 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <div class="order-confirmation-status" id="confirmationStatus">Loading your order details…</div>
             <button class="btn" type="button" onclick="showPage('shop')">Back to Shop</button>
           </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="reviews" class="page sb-reviews-page" aria-labelledby="sbReviewsTitle">
+      <div class="content sb-reviews-content">
+        <div class="sb-reviews-eyebrow">STANCEBOUND / CUSTOMER FEEDBACK</div>
+        <h1 id="sbReviewsTitle">REAL WORK.<br>REAL REVIEWS.</h1>
+        <p class="sb-reviews-intro">I'm building STANCEBOUND across South Wales, one vehicle at a time. This page is reserved for genuine feedback from customers who've booked a service.</p>
+        <div class="sb-reviews-empty">
+          <span class="sb-reviews-count">00 / VERIFIED REVIEWS PUBLISHED</span>
+          <h2>THE FIRST REVIEWS ARE ON THEIR WAY.</h2>
+          <p>No invented ratings, borrowed testimonials or made-up five-star quotes. Verified customer feedback will appear here once received and approved.</p>
+        </div>
+        <div class="sb-reviews-actions">
+          <div><h2>HAD A SERVICE?</h2><p>I'd appreciate your honest feedback. Use the customer chat to get in touch; I'll confirm the booking before publishing anything.</p></div>
+          <button type="button" class="btn" onclick="showPage('contact')">LEAVE FEEDBACK →</button>
         </div>
       </div>
     </section>
