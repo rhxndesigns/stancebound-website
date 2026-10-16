@@ -1712,6 +1712,14 @@ html:not(.sb-admin-authorized) #sbInspectionModal{display:none!important}
 #sbInspectionModal .sbi-footer{position:relative}
 @media(max-width:600px){#sbInspectionModal .sbi-item{align-items:start}#sbInspectionModal .sbi-item-extras{padding-top:3px}#sbInspectionModal .sbi-footer button{flex:1 1 120px!important}}
 </style>
+
+<style id="sb-admin-chat-natural-scroll-v1">
+/* Prevent nested message scrolling from intercepting page scroll on mobile and desktop. */
+#chats .chat-thread,#enquiries .chat-thread,.chat-thread-view .chat-thread,.chat-thread{
+ max-height:none!important;height:auto!important;overflow:visible!important;overscroll-behavior:auto!important;
+}
+.chat-thread-view{overflow:visible!important}
+</style>
 </head>
 
 <body>
