@@ -4392,6 +4392,15 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 @media(max-height:750px){.radial-nav.open .radial-item{transform:translate(-50%,-50%) translateY(calc(-74px - var(--sb-index) * 39px)) scale(1)!important;padding:7px 12px!important;}}
 .sb-reviews-page{background:#050505;color:#f6f6f6}.sb-reviews-content{max-width:970px;margin:0 auto;padding:clamp(105px,15vw,170px) 22px 130px!important}.sb-reviews-eyebrow,.sb-reviews-count{font-size:10px;font-weight:800;letter-spacing:.24em;color:#929292}.sb-reviews-page h1{font-size:clamp(42px,10vw,90px);line-height:.96;letter-spacing:-.04em;margin:24px 0}.sb-reviews-intro{font-size:clamp(15px,2.8vw,20px);line-height:1.7;color:#bcbcbc;max-width:650px}.sb-reviews-empty{border:1px solid #353535;padding:clamp(24px,5vw,52px);margin:45px 0;background:linear-gradient(145deg,#111,#060606)}.sb-reviews-empty h2,.sb-reviews-actions h2{font-size:clamp(19px,4vw,30px);letter-spacing:.025em;margin:22px 0 12px}.sb-reviews-empty p,.sb-reviews-actions p{color:#a7a7a7;line-height:1.75;max-width:650px}.sb-reviews-actions{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid #444;padding-top:20px;flex-wrap:wrap}.sb-reviews-actions .btn{white-space:nowrap}
 </style>
+
+<style id="stancebound-trustpilot-reviews-css">
+.sb-trustpilot-panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 100% 0%,rgba(130,24,32,.16),transparent 55%),linear-gradient(145deg,#111,#060606)}
+.sb-trustpilot-panel:before{content:"";position:absolute;left:0;top:0;width:86px;height:2px;background:#a52932;box-shadow:0 0 20px rgba(185,32,45,.4)}
+.sb-reviews-page .sb-tp-primary,.sb-reviews-page .sb-tp-secondary{display:inline-flex;justify-content:center;align-items:center;text-align:center;text-decoration:none;white-space:normal;max-width:100%;transition:background .25s,border-color .25s,box-shadow .25s,transform .25s}
+.sb-reviews-page .sb-tp-primary{margin-top:22px;border-color:#9b3038}
+.sb-reviews-page .sb-tp-primary:hover,.sb-reviews-page .sb-tp-secondary:hover{background:rgba(149,32,43,.18);border-color:#d14b54;box-shadow:0 0 24px rgba(175,33,44,.2);transform:translateY(-2px)}
+@media(max-width:600px){.sb-reviews-page .sb-tp-primary,.sb-reviews-page .sb-tp-secondary{width:100%;padding:16px 12px;font-size:12px;letter-spacing:.08em}.sb-reviews-actions>div{width:100%}}
+</style>
 </head>
 
 
@@ -5467,17 +5476,18 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 
     <section id="reviews" class="page sb-reviews-page" aria-labelledby="sbReviewsTitle">
       <div class="content sb-reviews-content">
-        <div class="sb-reviews-eyebrow">STANCEBOUND / CUSTOMER FEEDBACK</div>
-        <h1 id="sbReviewsTitle">REAL WORK.<br>REAL REVIEWS.</h1>
-        <p class="sb-reviews-intro">I'm building STANCEBOUND across South Wales, one vehicle at a time. This page is reserved for genuine feedback from customers who've booked a service.</p>
-        <div class="sb-reviews-empty">
-          <span class="sb-reviews-count">00 / VERIFIED REVIEWS PUBLISHED</span>
-          <h2>THE FIRST REVIEWS ARE ON THEIR WAY.</h2>
-          <p>No invented ratings, borrowed testimonials or made-up five-star quotes. Verified customer feedback will appear here once received and approved.</p>
+        <div class="sb-reviews-eyebrow">STANCEBOUND / INDEPENDENT CUSTOMER REVIEWS</div>
+        <h1 id="sbReviewsTitle">YOUR EXPERIENCE.<br>YOUR WORDS.</h1>
+        <p class="sb-reviews-intro">Customer feedback matters. STANCEBOUND uses Trustpilot so you can share your experience independently and read reviews directly from the source.</p>
+        <div class="sb-reviews-empty sb-trustpilot-panel">
+          <span class="sb-reviews-count">INDEPENDENT REVIEWS / TRUSTPILOT</span>
+          <h2>REAL FEEDBACK. NO FILTER.</h2>
+          <p>Reviews are hosted on Trustpilot, not written or selected by STANCEBOUND. Follow the link to see the latest customer experiences and ratings, if any have been posted.</p>
+          <a class="btn sb-tp-primary" href="https://uk.trustpilot.com/review/stancebound.com" target="_blank" rel="noopener noreferrer">VIEW REVIEWS ON TRUSTPILOT ↗</a>
         </div>
         <div class="sb-reviews-actions">
-          <div><h2>HAD A SERVICE?</h2><p>I'd appreciate your honest feedback. Use the customer chat to get in touch; I'll confirm the booking before publishing anything.</p></div>
-          <button type="button" class="btn" onclick="showPage('contact')">LEAVE FEEDBACK →</button>
+          <div><h2>HAD A SERVICE?</h2><p>I'd appreciate an honest review of your experience. Positive or negative, your feedback helps STANCEBOUND improve.</p></div>
+          <a class="btn sb-tp-secondary" href="https://uk.trustpilot.com/evaluate/stancebound.com" target="_blank" rel="noopener noreferrer">LEAVE A TRUSTPILOT REVIEW ↗</a>
         </div>
       </div>
     </section>
