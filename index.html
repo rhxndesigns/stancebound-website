@@ -3452,7 +3452,7 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 .sb-boot-kicker{font-size:7px;font-weight:800;letter-spacing:.31em;color:#777;margin-bottom:9px;opacity:0;animation:sbBootText .35s ease .38s forwards}.sb-boot-title{font-size:clamp(23px,7vw,34px);font-weight:900;letter-spacing:.09em;line-height:1;margin:0;opacity:0;animation:sbBootText .38s ease .46s forwards}.sb-boot-rule{height:1px;width:0;margin:17px auto 15px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:sbBootRule .62s cubic-bezier(.16,1,.3,1) .58s forwards}.sb-boot-readout{display:flex;justify-content:center;gap:11px;align-items:center;font-size:6.5px;font-weight:800;letter-spacing:.16em;color:#686868;opacity:0;animation:sbBootText .32s ease .68s forwards}.sb-boot-readout i{width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 8px #fff;animation:sbBootPulse .8s ease-in-out infinite}.sb-boot-status{position:absolute;left:24px;right:24px;bottom:27px;display:flex;justify-content:space-between;font-size:5.5px;font-weight:800;letter-spacing:.18em;color:#4c4c4c}.sb-boot-status span:last-child{color:#9a9a9a}
 @keyframes sbBootScan{0%{top:-2%;opacity:0}10%{opacity:.9}100%{top:102%;opacity:0}}@keyframes sbBootMark{from{opacity:0;transform:scale(.82);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:none}}@keyframes sbBootText{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes sbBootRule{to{width:100%}}@keyframes sbBootDiamond{to{transform:rotate(405deg)}}@keyframes sbBootPulse{50%{opacity:.25;transform:scale(.6)}}
 @media(prefers-reduced-motion:reduce){.sb-boot-scan,.sb-boot-mark,.sb-boot-kicker,.sb-boot-title,.sb-boot-rule,.sb-boot-readout,.sb-boot-mark:before,.sb-boot-mark:after,.sb-boot-readout i{animation:none!important;opacity:1}.sb-boot-rule{width:100%}}
-</style><script id="stancebound-boot-early">(()=>{try{if(!sessionStorage.getItem('sb_boot_seen'))document.documentElement.classList.add('sb-boot-lock')}catch(e){}})();</script>
+</style><script id="stancebound-boot-early">(()=>{try{if(!new URLSearchParams(location.search).has('track'))document.documentElement.classList.add('sb-boot-lock')}catch(e){}})();</script>
 
 <style id="stancebound-boot-v2-detail">
 #sbBoot:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.065),transparent 24%);animation:sbBootCoreGlow 3.2s ease-in-out both}
@@ -4405,8 +4405,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 (()=>{
  const root=document.documentElement,boot=document.getElementById('sbBoot');
  if(!boot)return;
- let seen=false;try{seen=!!sessionStorage.getItem('sb_boot_seen')}catch(e){}
- if(seen){root.classList.remove('sb-boot-lock');boot.remove();return}
+ if(new URLSearchParams(location.search).has('track')){boot.remove();return;}
+ // Run the full original-length boot on each normal site load.
  let finished=false;
  const finish=()=>{if(finished)return;finished=true;try{sessionStorage.setItem('sb_boot_seen','1')}catch(e){}boot.classList.add('sb-boot-exit');root.classList.remove('sb-boot-lock');setTimeout(()=>boot.remove(),420)};
  const skip=document.createElement('button');skip.type='button';skip.textContent='SKIP INTRO →';skip.setAttribute('aria-label','Skip website intro');
@@ -8655,6 +8655,28 @@ if(sys)sys.textContent='SYS / STARTING';
     const target=(el.getAttribute('data-page')||el.getAttribute('href')||'').toLowerCase();
     if(target.includes('booking')||el.closest('#booking')&&/book|enquir/i.test(el.textContent||''))track('booking_start');
   },{passive:true});
+})();
+</script>
+
+<style id="stancebound-menu-cinematic-glass-v1">
+/* Dark transparent cinematic layer: page remains recognizable under the menu. */
+.radial-backdrop{background:rgba(0,0,0,.70)!important;-webkit-backdrop-filter:blur(13px) saturate(.72)!important;backdrop-filter:blur(13px) saturate(.72)!important;transition:opacity .38s ease,backdrop-filter .38s ease!important}
+.radial-backdrop.show{opacity:1!important}
+.radial-nav{z-index:10010!important}
+.radial-nav .radial-items{isolation:isolate}
+.radial-nav.open .radial-item{border:1px solid rgba(255,255,255,.14)!important;border-radius:9px!important;background:linear-gradient(125deg,rgba(24,24,27,.9),rgba(5,5,6,.72))!important;box-shadow:0 8px 25px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08)!important;padding:12px 15px!important;color:#ededed!important;letter-spacing:.14em!important;font-weight:750!important;min-width:85px;text-align:center;transition:transform .36s cubic-bezier(.2,.9,.2,1),background .25s,border-color .25s,box-shadow .25s,color .25s!important}
+.radial-nav.open .radial-item:hover,.radial-nav.open .radial-item:focus-visible{background:linear-gradient(125deg,rgba(70,70,76,.96),rgba(20,20,24,.96))!important;border-color:rgba(255,255,255,.75)!important;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 24px rgba(255,255,255,.19),0 12px 35px #000!important;color:white!important;outline:none!important}
+.radial-nav.open .radial-item:active{filter:brightness(1.5)}
+.radial-nav .radial-toggle{transition:transform .38s ease,box-shadow .3s ease!important}
+.radial-nav .radial-toggle:hover,.radial-nav .radial-toggle:focus-visible{box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 35px rgba(255,255,255,.24)!important}
+/* Pointer-reactive ambient spotlight, subtle and never blocking clicks. */
+.radial-backdrop.show:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(300px circle at var(--sb-menu-x,50%) var(--sb-menu-y,75%),rgba(255,255,255,.075),transparent 80%)}
+@media(max-width:700px){.radial-nav.open .radial-item{padding:9px 11px!important;min-width:70px;font-size:10px!important}.radial-backdrop{background:rgba(0,0,0,.76)!important;-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}}
+@media(prefers-reduced-motion:reduce){.radial-nav.open .radial-item{transition:none!important}}
+</style>
+<script id="stancebound-menu-pointer-visuals-v1">
+(()=>{const backdrop=document.getElementById('radialBackdrop');if(!backdrop)return;
+ document.addEventListener('pointermove',e=>{if(!backdrop.classList.contains('show')||e.pointerType==='touch')return;backdrop.style.setProperty('--sb-menu-x',e.clientX+'px');backdrop.style.setProperty('--sb-menu-y',e.clientY+'px')},{passive:true});
 })();
 </script>
 </body>
