@@ -4889,9 +4889,21 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </div>
         </section>
 
+  <section class="sb-headlight-live" id="headlight-restoration" aria-labelledby="sb-headlight-heading">
+    <div class="sb-headlight-top"><span><i class="sb-headlight-pulse"></i> AVAILABLE NOW <b>02</b></span><span>STANCEBOUND / RESTORATION</span></div>
+    <div class="sb-headlight-content">
+      <div class="sb-headlight-kicker">HEADLIGHT RESTORATION / LENS CLARITY</div>
+      <h2 id="sb-headlight-heading">BRING BACK<br>THE CLARITY<span>.</span></h2>
+      <p>Cloudy, yellowed or oxidised headlights? Restore the appearance and clarity of tired lenses with a dedicated restoration process. Results depend on lens condition.</p>
+      <div class="sb-headlight-rates"><div><small>SINGLE HEADLIGHT</small><strong>£25</strong></div><div><small>BOTH HEADLIGHTS</small><strong>£40</strong><em>SAVE £10</em></div></div>
+      <button type="button" class="sb-headlight-book" onclick="bookHeadlightRestoration()"><span>BOOK HEADLIGHT RESTORATION</span><span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="sb-headlight-foot"><span>EXTERIOR / RESTORATION</span><span>01 OR 02 HEADLIGHTS</span></div>
+  </section>
+
   <section class="sbp-cinema" id="sbpCinema">
           <div class="sbp-cinema-head">
-            <span>SERVICES / <b id="sbpCinemaNum">02</b>—07</span>
+            <span>SERVICES / <b id="sbpCinemaNum">03</b>—07</span>
             <small>EXPLORE</small>
           </div>
 
@@ -4907,7 +4919,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <div class="sbp-cinema-edge right" aria-hidden="true">›</div>
             <div class="sbp-cinema-copy">
               <div class="sbp-cinema-status">COMING SOON <i></i></div>
-              <div class="sbp-cinema-index" id="sbpCinemaIndex">02</div>
+              <div class="sbp-cinema-index" id="sbpCinemaIndex">03</div>
               <h2 id="sbpCinemaTitle">SALE<br>PREPARATION.</h2>
               <p id="sbpCinemaText">Detail · Photography · Listing creation</p>
               <button type="button" class="sbp-explore-btn" id="sbpCinemaMore" data-sbp-open="sale">
@@ -4919,7 +4931,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           <div class="sbp-cinema-nav">
             <button type="button" data-cinema-prev><i>←</i><span>PREVIOUS</span></button>
             <div class="sbp-cinema-progress" id="sbpCinemaProgress">
-              <b class="active">02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b><i></i><b>06</b><i></i><b>07</b>
+              <b class="active">03</b><i></i><b>04</b><i></i><b>05</b><i></i><b>06</b><i></i><b>07</b>
             </div>
             <button type="button" data-cinema-next><span>NEXT</span><i>→</i></button>
           </div>
@@ -8011,9 +8023,8 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <script id="stancebound-cinema-browser-js">
 (function(){
  const data=[
-  ['sale','02','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
-  ['scratch','03','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
-  ['headlight','04','HEADLIGHT<br>RESTORATION.','Restore clarity to tired or oxidised lenses'],
+  ['sale','03','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
+  ['scratch','04','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
   ['paint','05','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
   ['ceramic','06','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
   ['photo','07','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
@@ -8817,6 +8828,38 @@ body.sb-menu-scroll-locked{position:fixed!important;overflow:hidden!important;wi
  overlay.addEventListener('click',e=>{if(e.target===overlay)sbCloseLegal()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('sb-legal-open'))sbCloseLegal()});
 })();
+</script>
+<style id="sb-headlight-live-css">
+.sb-headlight-live{position:relative;overflow:hidden;margin:18px 0;border:1px solid rgba(255,255,255,.22);background:radial-gradient(circle at 85% 30%,rgba(255,255,255,.09),transparent 38%),linear-gradient(135deg,#101010,#050505 65%);color:#f5f5f5;font-family:inherit}
+.sb-headlight-live:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 47px,rgba(255,255,255,.018) 48px),repeating-linear-gradient(90deg,transparent 0 47px,rgba(255,255,255,.018) 48px)}
+.sb-headlight-top,.sb-headlight-foot{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.15);font-size:10px;letter-spacing:.14em;font-weight:800}
+.sb-headlight-top>span:first-child{display:flex;align-items:center;gap:8px}.sb-headlight-top b{font-size:11px;color:#aaa}.sb-headlight-top>span:last-child,.sb-headlight-foot{color:#888}
+.sb-headlight-pulse{width:7px;height:7px;border-radius:50%;background:#7fd0a3;box-shadow:0 0 12px #7fd0a3;display:inline-block}
+.sb-headlight-content{position:relative;padding:38px 28px 32px}
+.sb-headlight-kicker{color:#aaa;font-size:10px;letter-spacing:.22em;font-weight:800;margin-bottom:20px}
+.sb-headlight-live h2{font-size:clamp(34px,8vw,76px);line-height:.96;letter-spacing:-.045em;font-weight:950;margin:0 0 20px;color:white}
+.sb-headlight-live h2 span{color:#a5a5a5}.sb-headlight-live p{font-size:15px;line-height:1.65;color:#b9b9b9;max-width:570px;margin:0 0 26px}
+.sb-headlight-rates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.sb-headlight-rates>div{border:1px solid rgba(255,255,255,.19);padding:20px 15px;min-width:0;background:rgba(255,255,255,.025)}
+.sb-headlight-rates small{display:block;font-size:10px;letter-spacing:.1em;color:#aaa;font-weight:800;margin-bottom:8px}
+.sb-headlight-rates strong{font-size:clamp(32px,8vw,54px);font-weight:950;line-height:1}.sb-headlight-rates em{font-style:normal;font-size:10px;color:#93d6aa;display:block;margin-top:7px;font-weight:800;letter-spacing:.1em}
+.sb-headlight-book{display:flex;align-items:center;justify-content:space-between;width:100%;border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;padding:20px 18px;font:inherit;font-size:12px;letter-spacing:.1em;font-weight:850;cursor:pointer;text-align:left;gap:12px;transition:background .2s,color .2s}
+.sb-headlight-book:hover,.sb-headlight-book:focus-visible{background:white;color:#050505}.sb-headlight-book span:last-child{font-size:22px}
+.sb-headlight-foot{border-top:1px solid rgba(255,255,255,.15);border-bottom:0;font-size:9px}
+@media(min-width:760px){.sb-headlight-content{padding:58px 48px}.sb-headlight-rates{max-width:530px}.sb-headlight-book{max-width:530px}}
+@media(max-width:390px){.sb-headlight-top,.sb-headlight-foot{padding:15px 12px;font-size:8px}.sb-headlight-content{padding:30px 18px}.sb-headlight-rates small{font-size:9px}}
+</style>
+<script id="sb-headlight-live-booking">
+function bookHeadlightRestoration(){
+  const bookSection=document.getElementById('booking')||document.querySelector('[id*="book"]');
+  const existing=document.querySelector('[data-service="Headlight Restoration - Both Headlights (£40)"]');
+  if(bookSection){
+    if(typeof window.showPage==='function'){try{window.showPage('booking')}catch(e){}}
+    bookSection.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  if(existing){setTimeout(()=>existing.click(),250)}
+  else if(typeof window.openBooking==='function'){window.openBooking()}
+}
 </script>
 </body>
 
