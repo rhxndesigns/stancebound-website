@@ -90,6 +90,19 @@ html.sb-track-route,html.sb-track-route body{background:#050505!important}
 .key-dot.sb-key-booked{border-color:#ef4444!important;background:rgba(139,26,40,.22)!important}
 .key-dot.sb-key-pending{border-color:#f5ae38!important;background:rgba(153,93,12,.20)!important}
 .key-dot.sb-key-unavailable{border-color:#303030!important;background:#0b0b0b!important}
+
+/* STANCEBOUND multi-service booking and returning customer styling */
+.sb-multi-hint{font-size:10px;letter-spacing:.12em;font-weight:700;color:#a8a8a8;margin:6px 0 12px}
+#serviceChoiceGrid .service-choice{position:relative;padding-left:38px}
+#serviceChoiceGrid .service-choice:before{content:"";position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;border:1px solid #999}
+#serviceChoiceGrid .service-choice.selected:before{content:"✓";font-size:12px;line-height:14px;text-align:center;color:#111;background:#eee;border-color:#eee}
+.sb-booking-basket{border:1px solid #444;padding:14px;margin-top:12px;font-size:12px;line-height:1.7;letter-spacing:.025em;background:rgba(255,255,255,.035)}
+.sb-returning-panel{border:1px solid #383838;padding:16px;background:rgba(255,255,255,.025)}
+.sb-returning-toggle{display:flex!important;align-items:flex-start;gap:12px;cursor:pointer}
+.sb-returning-toggle input{width:19px;height:19px;flex:none;margin:2px 0 0;accent-color:#eee}
+.sb-returning-toggle span{display:grid;gap:5px}.sb-returning-toggle strong{font-size:12px;letter-spacing:.06em}
+.sb-returning-toggle small{font-size:11px;line-height:1.5;color:#aaa}
+#sbReturningNotice{font-size:11px;line-height:1.6;color:#bbb;margin:12px 0 0}
 </style>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -5196,12 +5209,17 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
               <div class="enquiry-field"><label for="enquiryName">Full name</label><input id="enquiryName" name="name" type="text" maxlength="80" autocomplete="name" required></div>
               <div class="enquiry-field"><label for="enquiryEmail">Email address</label><input id="enquiryEmail" name="email" type="email" maxlength="160" autocomplete="email" required></div>
               <div class="enquiry-field"><label for="enquiryPhone">Phone number</label><input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional"></div>
+              <div class="enquiry-field full sb-returning-panel">
+                <label class="sb-returning-toggle"><input type="checkbox" id="sbReturningCustomer"><span><strong>BOOKED WITH STANCEBOUND BEFORE?</strong><small>Returning customer? We can identify your request using your verified email.</small></span></label>
+                <p id="sbReturningNotice" hidden>Use the same email address as your previous booking. We'll verify it using the existing email code. Repeat-signature exemption is subject to checking your previous agreement and the terms for this appointment.</p>
+              </div>
               <div class="enquiry-field full service-choice-field">
-                <label>Service / package</label>
+                <label>Services / packages</label>
+                <p class="sb-multi-hint">SELECT ONE OR MORE SERVICES · TAP TO ADD OR REMOVE</p>
                 <input id="enquiryService" name="service" type="hidden">
                 <div class="sb-package-picker" id="sbPackagePicker">
                   <button type="button" class="sb-package-trigger" id="sbPackageTrigger" aria-expanded="false" aria-controls="serviceChoiceGrid">
-                    <span><small>SELECT A PACKAGE</small><strong id="sbPackageSelected">Choose the service you want</strong></span>
+                    <span><small>SELECT A PACKAGE</small><strong id="sbPackageSelected">Tap to select your services</strong></span>
                     <i aria-hidden="true">⌄</i>
                   </button>
                   <div class="sb-package-menu" id="serviceChoiceGrid" hidden>
@@ -5228,6 +5246,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
                     </button>
                   </div>
                 </div>
+                <div id="sbBookingBasket" class="sb-booking-basket" aria-live="polite">No services selected yet.</div>
               </div>
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
@@ -5832,6 +5851,11 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         event.preventDefault();
         enquiryStatus.classList.remove("success");
 
+        if(!document.getElementById("enquiryService").value){
+          enquiryStatus.textContent="Please select at least one service.";
+          document.getElementById("sbPackageTrigger")?.scrollIntoView({behavior:"smooth",block:"center"});
+          return;
+        }
         if(!enquiryForm.reportValidity())return;
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
@@ -5850,6 +5874,9 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           service:document.getElementById("enquiryService").value,
           vehicle:document.getElementById("enquiryVehicle").value.trim(),
           message:[
+            document.getElementById("sbReturningCustomer")?.checked?"RETURNING CUSTOMER REQUEST: Customer says they have booked previously. Verify previous signed agreement before deciding whether a new signature is required.":"",
+            "Selected services: "+document.getElementById("enquiryService").value,
+            "Estimated combined price: "+( [...sbSelectedServices].some(x=>!(x in sbServicePrices)) ? "Quote required" : "£"+[...sbSelectedServices].reduce((sum,x)=>sum+sbServicePrices[x],0) ),
             document.getElementById("enquiryMessage").value.trim(),
             "Booking location: "+document.getElementById("bookingLocation").value.trim(),
             "DETAILING ACCESS",
@@ -5918,6 +5945,8 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           enquiryStatus.classList.add("success");
           verifyBox.classList.remove("show");
           enquiryForm.reset();
+          sbSelectedServices.clear();sbRefreshServices();
+          document.getElementById("sbReturningNotice").hidden=true;
           pendingEnquiryId=null;
           if(window.turnstile)window.turnstile.reset();
 
@@ -5934,28 +5963,39 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 
 
 
-    function setBookingService(value){
+    /* Multi-service selection: existing service text field remains compatible with start-enquiry. */
+    const sbSelectedServices=new Set();
+    const sbServicePrices={
+      "Detailing":40,
+      "Headlight Restoration - One Headlight (£25)":25,
+      "Headlight Restoration - Both Headlights (£40)":40
+    };
+    function sbRefreshServices(){
+      const buttons=[...document.querySelectorAll("#serviceChoiceGrid .service-choice[data-service]")];
+      const chosen=buttons.filter(b=>sbSelectedServices.has(b.dataset.service));
       const service=document.getElementById("enquiryService");
-      const picker=document.getElementById("sbPackagePicker");
-      const label=document.getElementById("sbPackageSelected");
-      if(!service)return;
-      service.value=value||"";
-      let chosen=null;
-      document.querySelectorAll("#serviceChoiceGrid .service-choice[data-service]").forEach(btn=>{
-        const selected=btn.dataset.service===service.value;
-        btn.classList.toggle("selected",selected);
-        btn.setAttribute("aria-pressed",String(selected));
-        if(selected)chosen=btn;
+      if(service)service.value=chosen.map(b=>b.dataset.service).join(" + ");
+      buttons.forEach(b=>{
+        const selected=sbSelectedServices.has(b.dataset.service);
+        b.classList.toggle("selected",selected);
+        b.setAttribute("aria-pressed",String(selected));
       });
-      if(label)label.textContent=chosen?.querySelector("span")?.textContent || "Choose the service you want";
-      picker?.classList.remove("open");
-      const menu=document.getElementById("serviceChoiceGrid");
-      const trigger=document.getElementById("sbPackageTrigger");
-      if(menu)menu.hidden=true;
-      trigger?.setAttribute("aria-expanded","false");
-      service.dispatchEvent(new Event("change",{bubbles:true}));
+      const label=document.getElementById("sbPackageSelected");
+      if(label)label.textContent=chosen.length?chosen.length+" service"+(chosen.length===1?"":"s")+" selected":"Tap to select your services";
+      const total=chosen.reduce((sum,b)=>sum+(sbServicePrices[b.dataset.service]||0),0);
+      const unknown=chosen.some(b=>!(b.dataset.service in sbServicePrices));
+      const basket=document.getElementById("sbBookingBasket");
+      if(basket)basket.textContent=chosen.length?chosen.map(b=>"✓ "+b.querySelector("span")?.textContent.trim()).join(" · ")+" | "+(unknown?"Known services £"+total+" + quoted extras":"Estimated total £"+total):"No services selected yet.";
+      service?.dispatchEvent(new Event("change",{bubbles:true}));
     }
-
+    function setBookingService(value){
+      sbSelectedServices.clear();
+      if(value)sbSelectedServices.add(value);
+      sbRefreshServices();
+    }
+    document.getElementById("sbReturningCustomer")?.addEventListener("change",event=>{
+      document.getElementById("sbReturningNotice").hidden=!event.target.checked;
+    });
     document.addEventListener("click",event=>{
       const trigger=event.target.closest("#sbPackageTrigger");
       const picker=document.getElementById("sbPackagePicker");
@@ -5968,12 +6008,23 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
         return;
       }
       const btn=event.target.closest("#serviceChoiceGrid .service-choice[data-service]");
-      if(btn && !btn.disabled){setBookingService(btn.dataset.service);return;}
+      if(btn && !btn.disabled){
+        const value=btn.dataset.service;
+        if(sbSelectedServices.has(value))sbSelectedServices.delete(value);
+        else{
+          if(value.includes("One Headlight"))sbSelectedServices.delete("Headlight Restoration - Both Headlights (£40)");
+          if(value.includes("Both Headlights"))sbSelectedServices.delete("Headlight Restoration - One Headlight (£25)");
+          sbSelectedServices.add(value);
+        }
+        sbRefreshServices();
+        return;
+      }
       if(picker && menu && !event.target.closest("#sbPackagePicker")){
         picker.classList.remove("open");menu.hidden=true;
         document.getElementById("sbPackageTrigger")?.setAttribute("aria-expanded","false");
       }
     });
+    sbRefreshServices();
 
     function bookIntroDetail(){
       showPage("booking");
