@@ -4466,6 +4466,17 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 .product-buy-note{margin-top:10px!important;font-size:10px!important;line-height:1.6!important;color:#a6a6a6!important}
 @media(max-width:700px){.product-modal-copy{padding:24px!important}.product-policy-link{font-size:10px}.product-modal-copy .size-options{gap:7px}.product-buy-btn{min-height:48px}}
 </style>
+
+<style id="sb-returning-mobile-layout-fix">
+/* Keep the returning-customer checkbox from inheriting full-width form input rules. */
+.enquiry-grid .sb-returning-panel{min-width:0;max-width:100%;box-sizing:border-box;padding:16px;}
+.enquiry-grid .sb-returning-panel .sb-returning-toggle{display:flex!important;flex-direction:row!important;align-items:flex-start!important;justify-content:flex-start!important;gap:12px!important;width:100%;min-width:0;max-width:100%;box-sizing:border-box;cursor:pointer;text-align:left;}
+.enquiry-grid .sb-returning-panel .sb-returning-toggle input[type="checkbox"]{display:block!important;position:static!important;flex:0 0 20px!important;width:20px!important;min-width:20px!important;max-width:20px!important;height:20px!important;min-height:20px!important;max-height:20px!important;margin:1px 0 0!important;padding:0!important;box-sizing:border-box!important;appearance:auto!important;-webkit-appearance:checkbox!important;accent-color:#fff;transform:none!important;}
+.enquiry-grid .sb-returning-panel .sb-returning-toggle span{display:flex!important;flex-direction:column!important;gap:6px!important;flex:1 1 0!important;min-width:0!important;max-width:100%!important;overflow-wrap:anywhere;word-break:normal;white-space:normal;}
+.enquiry-grid .sb-returning-panel .sb-returning-toggle strong,.enquiry-grid .sb-returning-panel .sb-returning-toggle small{display:block!important;position:static!important;width:auto!important;max-width:100%!important;white-space:normal!important;overflow-wrap:break-word!important;line-height:1.5!important;text-align:left!important;}
+.enquiry-grid .sb-returning-panel #sbReturningNotice{max-width:100%;overflow-wrap:break-word;}
+@media(max-width:620px){.enquiry-grid .sb-returning-panel{padding:15px 13px;}.enquiry-grid .sb-returning-panel .sb-returning-toggle strong{font-size:11px!important;letter-spacing:.035em!important;}.enquiry-grid .sb-returning-panel .sb-returning-toggle small{font-size:11px!important;}}
+</style>
 </head>
 
 
@@ -5231,18 +5242,6 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
                     </button>
                     <button type="button" class="service-choice" data-service="Headlight Restoration - Both Headlights (£40)">
                       <span>HEADLIGHT RESTORATION · PAIR</span><small>£40 · Both headlights</small>
-                    </button>
-                    <button type="button" class="service-choice" data-service="Automotive Photography">
-                      <span>AUTOMOTIVE PHOTOGRAPHY</span><small>Available to request</small>
-                    </button>
-
-
-
-
-
-
-                    <button type="button" class="service-choice" data-service="Collaboration / Other">
-                      <span>COLLABORATION / OTHER</span><small>Tell STANCEBOUND what you have in mind</small>
                     </button>
                   </div>
                 </div>
