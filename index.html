@@ -4965,7 +4965,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
           </div>
           <div class="detail-bottom-row">
             <div class="detail-fact"><span>THE £40 INTRODUCTORY DETAIL</span><p>The six-stage cleaning process above covers a standard interior and exterior detail, subject to the vehicle’s condition. £40 is an introductory portfolio-building rate, not a guaranteed price for every vehicle.</p></div>
-            <div class="detail-fact"><span>QUOTED SEPARATELY</span><p>Heavy soiling, intensive stain or pet-hair removal, headlight restoration, scratch removal and paint correction may require a separate quote. Any additional work and cost will be discussed and agreed with you before work begins. A booking request is not a confirmed appointment.</p></div>
+            <div class="detail-fact"><span>QUOTED SEPARATELY</span><p>Heavy soiling, intensive stain or pet-hair removal, scratch removal and paint correction may require a separate quote. Any additional work and cost will be discussed and agreed with you before work begins. A booking request is not a confirmed appointment.</p></div>
           </div>
           <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
         </div>
@@ -5130,7 +5130,7 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
             <p>STANCEBOUND brings together three things I've always been drawn to: cars, creativity and attention to detail. My creative background started with Creative iMedia and Art &amp; Design at college before I went on to study Photography at university. I've always been the sort of person who can spend hours on a project, working on the smallest details until I'm genuinely happy with the result.</p>
             <p>Cars have been part of my life for as long as I can remember. I grew up loving heavily modified car culture, from wild body kits and Corsa Lambo doors to the cars my dad was passionate about, including several Subaru Imprezas and a classic Ford RS. After losing my dad, that connection with cars became even more meaningful to me.</p>
             <p>Detailing became another creative outlet. I enjoy slowing down, focusing on the tiny details and watching a car gradually come together. I'm BICSc qualified in cleaning, and I'm now developing those skills further within automotive detailing while combining them with my background in photography.</p>
-            <p>STANCEBOUND is still in its early days, and that's part of what excites me. As it grows, I'll be developing my skills in areas such as headlight restoration, scratch removal, machine polishing and paint correction. The aim is simple: keep learning, improve with every car, and build something I'm genuinely proud to put my name behind.</p>
+            <p>STANCEBOUND is still in its early days, and that's part of what excites me. As it grows, I'll be developing my skills in areas such as scratch removal, machine polishing and paint correction. The aim is simple: keep learning, improve with every car, and build something I'm genuinely proud to put my name behind.</p>
             <button class="btn" onclick="showPage('contact')">Chat With STANCEBOUND</button>
           </div>
         </div>
@@ -5195,6 +5195,12 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
                   <div class="sb-package-menu" id="serviceChoiceGrid" hidden>
                     <button type="button" class="service-choice" data-service="Detailing">
                       <span>FULL DEEP DETAIL</span><small>£40 introductory rate</small>
+                    </button>
+                    <button type="button" class="service-choice" data-service="Headlight Restoration - One Headlight (£25)">
+                      <span>HEADLIGHT RESTORATION · ONE</span><small>£25 · One headlight</small>
+                    </button>
+                    <button type="button" class="service-choice" data-service="Headlight Restoration - Both Headlights (£40)">
+                      <span>HEADLIGHT RESTORATION · PAIR</span><small>£40 · Both headlights</small>
                     </button>
                     <button type="button" class="service-choice" data-service="Automotive Photography">
                       <span>AUTOMOTIVE PHOTOGRAPHY</span><small>Available to request</small>
@@ -7944,7 +7950,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
  const services={
   sale:{n:'02',title:'SALE PREPARATION.',display:'SALE<br>PREPARATION.',text:'Deep detail, professional photography and help creating the vehicle listing.',modal:'Deep detail, sale preparation, professional automotive photography and help creating the advert from information supplied by the owner.'},
   scratch:{n:'03',title:'SCRATCH REMOVAL.',display:'SCRATCH<br>REMOVAL.',text:'Targeted improvement for suitable scratches and paint defects.',modal:'Targeted paint improvement for suitable scratches and defects. The method depends on the depth, location and condition of the paint.'},
-  headlight:{n:'04',title:'HEADLIGHT RESTORATION.',display:'HEADLIGHT<br>RESTORATION.',text:'Restore clarity to tired or oxidised headlight lenses.',modal:'A restoration process aimed at improving clarity and presentation of tired or oxidised headlight lenses.'},
+  headlight:{n:'04',title:'HEADLIGHT RESTORATION.',display:'HEADLIGHT<br>RESTORATION.',text:'Restore clarity to oxidised lenses. £25 for one headlight or £40 for both.',modal:'Headlight restoration for tired or oxidised lenses. £25 for one headlight or £40 for both headlights. Results depend on lens condition.'},
   paint:{n:'05',title:'PAINT CORRECTION.',display:'PAINT<br>CORRECTION.',text:'Machine correction for improved clarity, gloss and depth.',modal:'Machine correction focused on improving swirls, haze, gloss and paint clarity, tailored to the condition of the vehicle.'},
   ceramic:{n:'06',title:'CERAMIC COATING.',display:'CERAMIC<br>COATING.',text:'Preparation-led protection with a durable finish.',modal:'Ceramic protection built around proper preparation first, rather than simply applying a coating over existing defects.'},
   photo:{n:'07',title:'DETAIL + AUTOMOTIVE PHOTOGRAPHY.',display:'DETAIL +<br>PHOTOGRAPHY.',text:'Finish the vehicle properly, then capture it properly.',modal:'A full deep detail followed by dedicated automotive photography, combining vehicle presentation with STANCEBOUND imagery.'}
@@ -7982,7 +7988,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
    document.getElementById('sbpModalTitle').textContent="WHAT'S INCLUDED";
   }else{
    const s=services[key];if(!s)return;
-   body.innerHTML='<div class="sbp-modal-visual"></div><div class="sbp-modal-copy"><h3>'+s.title+'</h3><p>'+s.modal+'</p><div class="sbp-coming">COMING SOON</div></div>';
+   body.innerHTML='<div class="sbp-modal-visual"></div><div class="sbp-modal-copy"><h3>'+s.title+'</h3><p>'+s.modal+'</p>'+(key==='headlight'?'<div class="sbp-coming">AVAILABLE NOW · FROM £25</div>':'<div class="sbp-coming">COMING SOON</div>')+'</div>';
    document.getElementById('sbpModalKicker').textContent=s.n+' / STANCEBOUND SERVICE';
    document.getElementById('sbpModalTitle').textContent=s.title;
   }
