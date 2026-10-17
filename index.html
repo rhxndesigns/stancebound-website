@@ -1787,11 +1787,11 @@ clamp(21px, 4vw, 32px);
 
 
     /* ===== STANCEBOUND BRANDED SECTION BACKGROUNDS ===== */
-    #detailing, #photography, #shop {
+    #detailing, #photography, #shop, #reviews {
       position: relative;
       isolation: isolate;
     }
-    #detailing::before, #photography::before, #shop::before {
+    #detailing::before, #photography::before, #shop::before, #reviews::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -1805,19 +1805,21 @@ clamp(21px, 4vw, 32px);
     }
     body.light-theme #detailing::before,
     body.light-theme #photography::before,
-    body.light-theme #shop::before {
+    body.light-theme #shop::before,
+    body.light-theme #reviews::before {
       background-image: url("images/backgroundsbwhite.png");
       opacity: .10;
     }
     @media (max-width: 760px) {
-      #detailing::before, #photography::before, #shop::before {
+      #detailing::before, #photography::before, #shop::before, #reviews::before {
         background-size: 190vw auto;
         background-position: center 90px;
         opacity: .14;
 }
       body.light-theme #detailing::before,
       body.light-theme #photography::before,
-      body.light-theme #shop::before { opacity: .11; }
+      body.light-theme #shop::before,
+    body.light-theme #reviews::before { opacity: .11; }
     }
 
     /* ===== STANCEBOUND VIEWFINDER: ALL GALLERY PHOTOS ===== */
