@@ -4520,6 +4520,52 @@ body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog
 @media(max-width:600px){.radial-nav{bottom:29px!important}.radial-toggle{width:66px!important;height:66px!important}#home .hero-content{width:100%}}
 </style>
 
+<style id="sb-home-access-redesign-v3">
+/* STANCEBOUND homepage access and genuine social link treatment */
+#home .hero{min-height: min(850px, calc(100svh - 66px));padding:44px 20px 50px;overflow:visible}
+#home .hero-content{width:min(940px,100%)}
+#home .hero-logo{width:min(610px,83%);margin-bottom:14px}
+#home .hero-description{max-width:540px;margin-top:16px;line-height:1.65}
+#home .sb-hero-primary-actions{margin-top:23px;gap:10px}
+#home .sb-hero-primary-actions .btn{min-width:200px}
+#home .sb-hero-primary-actions .btn span{margin-left:10px}
+#home .sb-home-direct{margin:31px auto 0;width:min(830px,100%);text-align:left}
+#home .sb-home-direct-label{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;color:#d6d6d6;font-size:9px;font-weight:800;letter-spacing:2.1px}
+#home .sb-home-direct-label span{color:#747474;font-weight:600}
+#home .sb-home-direct-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#home .sb-home-direct-grid button{position:relative;min-width:0;min-height:92px;padding:15px 13px;text-align:left;border:1px solid rgba(255,255,255,.20);background:rgba(12,12,12,.86);color:#fff;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+#home .sb-home-direct-grid button:hover,#home .sb-home-direct-grid button:focus-visible{background:#202020;border-color:#e1474b;transform:translateY(-2px)}
+#home .sb-home-direct-grid button>span{display:block;margin-bottom:13px;color:#999;font-size:8px;font-weight:700;letter-spacing:1.1px}
+#home .sb-home-direct-grid button>b{font-size:12px;letter-spacing:1px}
+#home .sb-home-direct-grid button>i{position:absolute;right:13px;bottom:12px;font-size:15px;font-style:normal;color:#e55b5f}
+#home .sb-social-buttons{display:flex;justify-content:center;gap:8px;margin:18px auto 0;letter-spacing:normal}
+#home .sb-social-buttons>a{display:flex;align-items:center;gap:9px;min-height:48px;min-width:165px;padding:9px 12px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.045);color:#fff;text-decoration:none;opacity:1;transition:background .2s,border-color .2s,transform .2s}
+#home .sb-social-buttons>a:hover,#home .sb-social-buttons>a:focus-visible{border-color:#e65a60;background:rgba(230,90,96,.12);transform:translateY(-2px)}
+#home .sb-social-buttons .sb-social-icon{font-size:23px;line-height:1;color:#fff}
+#home .sb-social-buttons .sb-social-copy{display:flex!important;flex-direction:column;gap:3px;text-align:left;color:#fff}
+#home .sb-social-buttons .sb-social-copy strong{font-size:10px;letter-spacing:1.2px}
+#home .sb-social-buttons .sb-social-copy small{font-size:9px;letter-spacing:.3px;color:#aaa}
+#home .sb-social-buttons .sb-social-arrow{display:block!important;margin-left:auto;font-size:16px;color:#e65a60}
+#home .home-scroll-cue{display:none}
+@media(max-width:650px){
+#home .hero{min-height:0;padding:24px 14px 38px}
+#home .hero-logo{width:min(400px,85%)}
+#home .sb-home-direct-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#home .sb-home-direct-grid button{min-height:84px}
+#home .sb-home-direct{margin-top:25px}
+#home .sb-hero-primary-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+#home .sb-hero-primary-actions .btn{width:100%;min-width:0;padding:14px 8px;font-size:9px;letter-spacing:1px}
+#home .sb-social-buttons>a{min-width:0;flex:1;padding:9px 8px}
+#home .sb-social-buttons .sb-social-icon{font-size:19px}
+#home .sb-social-buttons .sb-social-copy strong{font-size:9px}
+#home .sb-social-buttons .sb-social-copy small{font-size:8px}
+}
+body.light-theme #home .sb-home-direct-grid button{background:#fff;color:#111;border-color:#bbb}
+body.light-theme #home .sb-home-direct-grid button:hover{background:#eee;border-color:#bd3539}
+body.light-theme #home .sb-home-direct-label{color:#222}
+body.light-theme #home .sb-social-buttons>a{background:#fff;color:#111;border-color:#aaa}
+body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home .sb-social-buttons .sb-social-icon{color:#111}
+</style>
 </head>
 
 
@@ -4694,16 +4740,24 @@ body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog
           <img class="hero-logo" src="images/logo(1).png?v=30" alt="STANCEBOUND Detailing">
           <div class="tagline" id="home-tagline">Cleaner · Higher · Further</div>
           <div class="hero-subtitle" id="home-subtitle">Automotive Detailing &amp; Photography</div>
-          <div class="hero-socials" aria-label="STANCEBOUND social media">
-            <a href="https://www.instagram.com/stancebound/" target="_blank" rel="noopener noreferrer">INSTAGRAM <span>@STANCEBOUND</span></a>
-            <i></i>
-            <a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer">TIKTOK <span>@STANCEBOUND</span></a>
-          </div>
+          <div aria-label="Follow STANCEBOUND" class="hero-socials sb-social-buttons">
+<a href="https://www.instagram.com/stancebound/" target="_blank" rel="noopener noreferrer" aria-label="STANCEBOUND on Instagram (opens new tab)"><span class="sb-social-icon" aria-hidden="true">◎</span><span class="sb-social-copy"><strong>INSTAGRAM</strong><small>@STANCEBOUND</small></span><span class="sb-social-arrow" aria-hidden="true">↗</span></a>
+<a href="https://www.tiktok.com/@stancebound" target="_blank" rel="noopener noreferrer" aria-label="STANCEBOUND on TikTok (opens new tab)"><span class="sb-social-icon" aria-hidden="true">♪</span><span class="sb-social-copy"><strong>TIKTOK</strong><small>@STANCEBOUND</small></span><span class="sb-social-arrow" aria-hidden="true">↗</span></a>
+</div>
           <p class="hero-description" id="home-description">Mobile automotive detailing and automotive photography across South Wales. Careful interior and exterior cleaning, clear pricing agreed before work starts, and photography that makes your car stand out.</p>
-          <div class="hero-buttons">
-            <button class="btn" onclick="showPage('booking')">Request a Booking</button>
-            <button class="btn secondary" onclick="document.getElementById('home-discover').scrollIntoView({behavior:'smooth'})">Explore STANCEBOUND</button>
-          </div>
+          <div class="hero-buttons sb-hero-primary-actions">
+<button class="btn" type="button" onclick="showPage('booking')">BOOK A DETAIL <span aria-hidden="true">↗</span></button>
+<button class="btn secondary" type="button" onclick="showPage('pricing')">VIEW SERVICES &amp; PRICES <span aria-hidden="true">↗</span></button>
+</div>
+<div class="sb-home-direct" aria-label="Quick access to STANCEBOUND pages">
+<div class="sb-home-direct-label">EXPLORE STANCEBOUND <span>DIRECT ACCESS</span></div>
+<div class="sb-home-direct-grid">
+<button type="button" onclick="showPage('detailing')"><span>01 / DETAILING</span><b>CAR CARE</b><i aria-hidden="true">↗</i></button>
+<button type="button" onclick="showPage('photography')"><span>02 / PHOTOGRAPHY</span><b>THE GALLERY</b><i aria-hidden="true">↗</i></button>
+<button type="button" onclick="showPage('shop')"><span>03 / STORE</span><b>SHOP</b><i aria-hidden="true">↗</i></button>
+<button type="button" onclick="showPage('reviews')"><span>04 / CUSTOMER FEEDBACK</span><b>REVIEWS</b><i aria-hidden="true">↗</i></button>
+</div>
+</div>
         </div>
         <div class="home-scroll-cue">Discover</div>
       </div>
