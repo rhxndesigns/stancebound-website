@@ -4477,6 +4477,49 @@ html.sb-chromebook-performance #home .sb-home-techfield{animation:none!important
 .enquiry-grid .sb-returning-panel #sbReturningNotice{max-width:100%;overflow-wrap:break-word;}
 @media(max-width:620px){.enquiry-grid .sb-returning-panel{padding:15px 13px;}.enquiry-grid .sb-returning-panel .sb-returning-toggle strong{font-size:11px!important;letter-spacing:.035em!important;}.enquiry-grid .sb-returning-panel .sb-returning-toggle small{font-size:11px!important;}}
 </style>
+
+<style id="sb-unified-overlay-scroll-css">
+html.sb-overlay-locked{overflow:hidden!important;overscroll-behavior:none!important}
+body.sb-overlay-locked{position:fixed!important;left:0!important;right:0!important;width:100%!important;overflow:hidden!important;touch-action:pan-x!important}
+body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog"],body.sb-overlay-locked .modal-content,body.sb-overlay-locked .sheet-content{touch-action:pan-y;overscroll-behavior:contain}
+</style>
+<script id="sb-unified-overlay-scroll-js">
+(()=>{
+ const selectors=['#hoodieProductModal','#sbpModal','#lightbox','#radialNav','#sbPaymentSheet','#sbJobQuickModal','#sbInspectionModal','#financeTransactionModal','#financeExpenseModal','#sbNotificationPanel','#quickSheet','#chatChoiceSheet','#sbJobChatOverlay'];
+ let locked=false,y=0,observer;
+ function visible(el){if(!el||el.hidden||el.getAttribute('aria-hidden')==='true')return false;const c=getComputedStyle(el);if(c.display==='none'||c.visibility==='hidden')return false;return el.classList.contains('open')||el.classList.contains('show')||(!el.id.includes('radialNav')&&c.position==='fixed'&&c.opacity!=='0');}
+ function sync(){const active=selectors.some(sel=>visible(document.querySelector(sel)));
+  if(active===locked)return;
+  if(active){y=window.scrollY;document.body.style.top=`-${y}px`;document.documentElement.classList.add('sb-overlay-locked');document.body.classList.add('sb-overlay-locked');locked=true;}
+  else{document.documentElement.classList.remove('sb-overlay-locked');document.body.classList.remove('sb-overlay-locked');document.body.style.top='';locked=false;window.scrollTo(0,y);}
+ }
+ document.addEventListener('DOMContentLoaded',()=>{
+  observer=new MutationObserver(sync);
+  selectors.forEach(sel=>{const el=document.querySelector(sel);if(el)observer.observe(el,{attributes:true,attributeFilter:['class','style','hidden','aria-hidden']});});
+  sync();
+ });
+ window.addEventListener('pageshow',sync);
+})();
+</script>
+
+<style id="sb-menu-home-clarity-2026">
+/* Make the floating navigation an actual visible control without replacing its existing behaviour. */
+.radial-toggle{width:74px!important;height:74px!important;border:2px solid #dc3036!important;background:linear-gradient(150deg,#220608,#090909)!important;box-shadow:0 0 0 5px rgba(0,0,0,.75),0 0 24px rgba(220,48,54,.35)!important;overflow:visible!important}
+.radial-toggle::after{content:'MENU';position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;letter-spacing:2px;color:#ff6b6b;white-space:nowrap;text-shadow:0 2px 8px #000}
+.radial-nav.open .radial-toggle{background:#c52630!important;border-color:#ff676d!important}
+.radial-nav.open .radial-toggle::after{content:'CLOSE';color:#fff}
+.radial-toggle:focus-visible{outline:2px solid white;outline-offset:7px}
+/* Cleaner first impression while retaining the existing hero and routes. */
+#home .hero-content{max-width:760px}
+#home .hero-description{max-width:510px;line-height:1.7}
+#home .hero-buttons{gap:10px}
+#home .home-flow{max-width:1080px}
+#home .home-choice{border-color:rgba(255,255,255,.16)}
+#home .home-choice:focus-visible{outline:2px solid #f05257;outline-offset:3px}
+#home .hero-socials a:focus-visible{outline:2px solid #f05257;outline-offset:4px}
+@media(max-width:600px){.radial-nav{bottom:29px!important}.radial-toggle{width:66px!important;height:66px!important}#home .hero-content{width:100%}}
+</style>
+
 </head>
 
 
