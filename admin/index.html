@@ -1720,6 +1720,31 @@ html:not(.sb-admin-authorized) #sbInspectionModal{display:none!important}
 }
 .chat-thread-view{overflow:visible!important}
 </style>
+
+<style id="sb-unified-overlay-scroll-css">
+html.sb-overlay-locked{overflow:hidden!important;overscroll-behavior:none!important}
+body.sb-overlay-locked{position:fixed!important;left:0!important;right:0!important;width:100%!important;overflow:hidden!important;touch-action:pan-x!important}
+body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog"],body.sb-overlay-locked .modal-content,body.sb-overlay-locked .sheet-content{touch-action:pan-y;overscroll-behavior:contain}
+</style>
+<script id="sb-unified-overlay-scroll-js">
+(()=>{
+ const selectors=['#hoodieProductModal','#sbpModal','#lightbox','#radialNav','#sbPaymentSheet','#sbJobQuickModal','#sbInspectionModal','#financeTransactionModal','#financeExpenseModal','#sbNotificationPanel','#quickSheet','#chatChoiceSheet','#sbJobChatOverlay'];
+ let locked=false,y=0,observer;
+ function visible(el){if(!el||el.hidden||el.getAttribute('aria-hidden')==='true')return false;const c=getComputedStyle(el);if(c.display==='none'||c.visibility==='hidden')return false;return el.classList.contains('open')||el.classList.contains('show')||(!el.id.includes('radialNav')&&c.position==='fixed'&&c.opacity!=='0');}
+ function sync(){const active=selectors.some(sel=>visible(document.querySelector(sel)));
+  if(active===locked)return;
+  if(active){y=window.scrollY;document.body.style.top=`-${y}px`;document.documentElement.classList.add('sb-overlay-locked');document.body.classList.add('sb-overlay-locked');locked=true;}
+  else{document.documentElement.classList.remove('sb-overlay-locked');document.body.classList.remove('sb-overlay-locked');document.body.style.top='';locked=false;window.scrollTo(0,y);}
+ }
+ document.addEventListener('DOMContentLoaded',()=>{
+  observer=new MutationObserver(sync);
+  selectors.forEach(sel=>{const el=document.querySelector(sel);if(el)observer.observe(el,{attributes:true,attributeFilter:['class','style','hidden','aria-hidden']});});
+  sync();
+ });
+ window.addEventListener('pageshow',sync);
+})();
+</script>
+
 </head>
 
 <body>
