@@ -5377,9 +5377,16 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
               <div class="enquiry-field"><label for="bookingTime">Preferred time</label><input id="bookingTime" name="booking_time" type="time"></div>
               <div class="enquiry-field full"><label for="bookingLocation">Location / postcode</label><input id="bookingLocation" name="booking_location" type="text" maxlength="160" placeholder="Where will the vehicle be?" required></div>
 
+              <div class="enquiry-field full" id="sbArrivalReview" hidden>
+                <div class="eyebrow">RETURNING CUSTOMER · ARRIVAL DETAILS</div>
+                <div class="sb-site-access-title">Confirm your visit details</div>
+                <p id="sbArrivalInfo" style="color:#bcbcbc;line-height:1.7">Previous booking answers are not connected yet. Please enter the details for this visit once, then review them below.</p>
+                <div id="sbArrivalSummary" hidden style="border:1px solid #555;padding:14px;line-height:1.8"></div>
+                <button type="button" id="sbArrivalEdit" class="btn" style="margin-top:12px">REVIEW ARRIVAL DETAILS</button>
+              </div>
               <div class="enquiry-field full sb-site-access-heading">
                 <div class="eyebrow">DETAILING ACCESS</div>
-                <div class="sb-site-access-title">Help STANCEBOUND arrive prepared</div>
+                <div class="sb-site-access-title">Arrival details for this visit</div>
                 <div class="sb-site-access-copy">Tell us what is available where the vehicle will be cleaned.</div>
               </div>
 
@@ -9116,6 +9123,41 @@ function bookHeadlightRestoration(){
   sync();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script><script id="sb-arrival-review-v2">
+(function(){
+function start(){
+ const page=document.getElementById('booking'),check=document.getElementById('sbReturningCustomer'),panel=document.getElementById('sbArrivalReview'),btn=document.getElementById('sbArrivalEdit'),summary=document.getElementById('sbArrivalSummary'),info=document.getElementById('sbArrivalInfo');
+ if(!page||!check||!panel||!btn)return;
+ const ids=['accessWater','accessPower','accessParking','accessSpace','accessParkingOther'];
+ const els=ids.map(id=>document.getElementById(id)).filter(Boolean);
+ const wraps=els.map(el=>el.closest('.enquiry-field'));
+ const heading=document.querySelector('.sb-site-access-heading');
+ let reviewing=false;
+ function sync(){
+  const active=check.checked&&page.classList.contains('sb-returning-details');
+  panel.hidden=!active;panel.style.setProperty('display',active?'block':'none','important');
+  if(!active){for(const w of wraps)if(w)w.style.removeProperty('display');if(heading)heading.style.removeProperty('display');return}
+  if(heading)heading.style.setProperty('display','none','important');
+  const mandatory=els.filter(el=>el.required&&!(el.closest('[hidden]')));
+  const complete=mandatory.every(el=>!!el.value);
+  if(!complete)reviewing=false;
+  for(const w of wraps){if(!w)continue;if(w.id==='accessParkingOtherWrap'&&w.hidden)continue;w.style.setProperty('display',reviewing?'none':'block','important')}
+  summary.hidden=!reviewing;
+  btn.textContent=reviewing?'EDIT DETAILS':'SAVE & REVIEW DETAILS';
+  info.textContent=reviewing?'These are the details supplied for this booking. Previous booking records have not been retrieved.':'Previous answers are not available automatically yet. Confirm these details for this visit, then tap Save & Review Details.';
+  if(reviewing){summary.replaceChildren();for(const el of els){if(!el.value)continue;const line=document.createElement('div');const label=document.querySelector('label[for="'+el.id+'"]');line.textContent=(label?.textContent?.trim()||el.name)+': '+(el.selectedOptions?.[0]?.textContent||el.value);summary.appendChild(line)}}
+ }
+ btn.addEventListener('click',()=>{
+  if(!reviewing){for(const el of els){if(el.required&&!el.value){el.focus();el.reportValidity();return}}}
+  reviewing=!reviewing;sync();
+ });
+ check.addEventListener('change',()=>{reviewing=false;sync()});
+ for(const el of els)el.addEventListener('change',()=>{if(reviewing){reviewing=false;sync()}});
+ new MutationObserver(sync).observe(page,{attributes:true,attributeFilter:['class']});
+ sync();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script></body>
 
