@@ -4566,6 +4566,15 @@ body.light-theme #home .sb-home-direct-label{color:#222}
 body.light-theme #home .sb-social-buttons>a{background:#fff;color:#111;border-color:#aaa}
 body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home .sb-social-buttons .sb-social-icon{color:#111}
 </style>
+<style id="sb-home-touch-navigation-repair-v1">
+#home .hero-content{position:relative;z-index:10!important}
+#home .sb-logo-hit{pointer-events:none!important}
+#home .sb-home-techfield,#home .sb-logo-glint,#home .sb-logo-reticle,#home .sb-logo-readout{pointer-events:none!important}
+#home .sb-hero-primary-actions,#home .sb-home-direct,#home .sb-social-buttons{position:relative;z-index:11}
+#home .sb-hero-primary-actions button,#home .sb-home-direct-grid button,#home .sb-social-buttons a{touch-action:manipulation;pointer-events:auto}
+#home .hero,#home .hero-content{touch-action:pan-y pinch-zoom}
+@media(hover:hover) and (pointer:fine){#home .sb-logo-hit{pointer-events:auto!important;z-index:3}}
+</style>
 </head>
 
 
