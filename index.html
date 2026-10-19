@@ -4575,7 +4575,25 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 #home .hero,#home .hero-content{touch-action:pan-y pinch-zoom}
 @media(hover:hover) and (pointer:fine){#home .sb-logo-hit{pointer-events:auto!important;z-index:3}}
 </style>
-</head>
+<style id="sb-returning-flow-style">#booking [hidden]{display:none!important}.sb-return-step-copy{color:#c9c9c9;font-size:13px;line-height:1.65;margin:12px 0}.sb-returning-panel #sbReturningStep{padding:14px 0 3px}.sb-returning-panel #sbReturningContinue{width:100%;min-height:48px}</style><style id="sb-returning-customer-wizard-fix">
+#booking.sb-returning-identify #availabilityCalendar,
+#booking.sb-returning-identify #enquiryForm .enquiry-grid > :not(.sb-returning-panel):not(:has(#enquiryName)):not(:has(#enquiryEmail)),
+#booking.sb-returning-identify #enquiryForm > :not(.enquiry-grid),
+#booking.sb-returning-identify #sbReturningNotice {display:none!important}
+#booking.sb-returning-identify #sbReturningStep {display:block!important}
+#booking.sb-returning-details #sbReturningStep {display:none!important}
+#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryName),
+#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryEmail),
+#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryPhone) {display:none!important}
+#booking.sb-returning-details #sbReturningNotice {display:none!important}
+#booking.sb-returning-details #availabilityCalendar {display:block!important}
+#booking .sb-returning-panel {order:-1}
+#booking.sb-returning-identify .enquiry-grid {display:flex;flex-direction:column}
+#booking.sb-returning-identify .sb-returning-panel {order:3}
+#booking.sb-returning-identify .enquiry-grid > :has(#enquiryName) {order:1}
+#booking.sb-returning-identify .enquiry-grid > :has(#enquiryEmail) {order:2}
+#booking .sb-returning-step-heading {font-size:13px;letter-spacing:1.3px;margin:12px 0;color:#fff}
+</style></head>
 
 
 
@@ -5328,7 +5346,8 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
               <div class="enquiry-field"><label for="enquiryPhone">Phone number</label><input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional"></div>
               <div class="enquiry-field full sb-returning-panel">
                 <label class="sb-returning-toggle"><input type="checkbox" id="sbReturningCustomer"><span><strong>BOOKED WITH STANCEBOUND BEFORE?</strong><small>Returning customer? We can identify your request using your verified email.</small></span></label>
-                <p id="sbReturningNotice" hidden>Use the same email address as your previous booking. We'll verify it using the existing email code. Repeat-signature exemption is subject to checking your previous agreement and the terms for this appointment.</p>
+                <p id="sbReturningNotice" hidden>Use the email address from your previous booking. We’ll verify your email before sending this request. Your previous booking details are not automatically retrieved yet, so please confirm the vehicle and location on the next step.</p>
+                <div id="sbReturningStep" hidden><p class="sb-return-step-copy">STEP 1 OF 2 · Enter the email used for your previous booking. Continue to choose your services and confirm what is needed for this appointment. Your email will be verified before the request is submitted.</p><button type="button" class="btn" id="sbReturningContinue">CONTINUE TO BOOKING DETAILS →</button><p id="sbReturningStepError" role="alert" style="color:#ff9292;font-size:12px" hidden></p></div>
               </div>
               <div class="enquiry-field full service-choice-field">
                 <label>Services / packages</label>
@@ -6098,9 +6117,46 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
       if(value)sbSelectedServices.add(value);
       sbRefreshServices();
     }
-    document.getElementById("sbReturningCustomer")?.addEventListener("change",event=>{
-      document.getElementById("sbReturningNotice").hidden=!event.target.checked;
+    // Returning customers first confirm their contact details, then see the package and job questions.
+    // No unverified customer data is exposed or silently loaded from the database.
+    const sbReturningCheckbox=document.getElementById("sbReturningCustomer");
+    const sbReturningContinue=document.getElementById("sbReturningContinue");
+    const sbReturningStep=document.getElementById("sbReturningStep");
+    const sbReturningError=document.getElementById("sbReturningStepError");
+    const sbReturningForm=document.getElementById("enquiryForm");
+    const sbReturningHidden=[];
+    if(sbReturningForm){
+      const grid=sbReturningForm.querySelector(".enquiry-grid");
+      if(grid){
+        [...grid.children].forEach(field=>{
+          if(field.classList.contains("sb-returning-panel"))return;
+          if(field.querySelector("#enquiryName,#enquiryEmail"))return;
+          sbReturningHidden.push(field);
+        });
+      }
+    }
+    const sbBookingCalendar=document.getElementById("availabilityCalendar");
+    const sbReturningOther=[sbBookingCalendar,...(sbReturningForm?[...sbReturningForm.children].filter(el=>el.classList.contains("booking-terms-notice")||el.classList.contains("consent-row")||el.classList.contains("booking-email-warning")||el.classList.contains("enquiry-actions")||el.querySelector?.(".cf-turnstile")):[])].filter(Boolean);
+    let sbReturningAdvanced=false;
+    function sbSyncReturningFlow(){
+      const active=!!sbReturningCheckbox?.checked;
+      document.getElementById("sbReturningNotice").hidden=!active;
+      if(sbReturningStep)sbReturningStep.hidden=!active||sbReturningAdvanced;
+      for(const field of sbReturningHidden)field.hidden=active&&!sbReturningAdvanced;
+      for(const field of sbReturningOther)field.hidden=active&&!sbReturningAdvanced;
+      if(sbReturningError)sbReturningError.hidden=true;
+    }
+    sbReturningCheckbox?.addEventListener("change",()=>{sbReturningAdvanced=false;sbSyncReturningFlow();});
+    sbReturningContinue?.addEventListener("click",()=>{
+      const name=document.getElementById("enquiryName");
+      const email=document.getElementById("enquiryEmail");
+      if(!name?.value.trim()){name?.focus();name?.reportValidity();return;}
+      if(!email?.value.trim()||!email.checkValidity()){email?.focus();email?.reportValidity();return;}
+      sbReturningAdvanced=true;sbSyncReturningFlow();
+      const picker=document.getElementById("sbPackageTrigger");
+      picker?.scrollIntoView({behavior:"smooth",block:"center"});
     });
+    sbSyncReturningFlow();
     document.addEventListener("click",event=>{
       const trigger=event.target.closest("#sbPackageTrigger");
       const picker=document.getElementById("sbPackagePicker");
@@ -9017,6 +9073,29 @@ function bookHeadlightRestoration(){
   else if(typeof window.openBooking==='function'){window.openBooking()}
 }
 </script>
-</body>
+<script id="sb-returning-customer-wizard-controller">
+(function(){
+ function setup(){
+  const page=document.getElementById('booking'), checkbox=document.getElementById('sbReturningCustomer'), next=document.getElementById('sbReturningContinue');
+  if(!page||!checkbox||!next)return;
+  let step=1;
+  function sync(){
+   page.classList.toggle('sb-returning-identify',checkbox.checked&&step===1);
+   page.classList.toggle('sb-returning-details',checkbox.checked&&step===2);
+   const notice=document.getElementById('sbReturningNotice');if(notice)notice.hidden=true;
+   const panel=document.getElementById('sbReturningStep');if(panel)panel.hidden=!checkbox.checked||step!==1;
+  }
+  checkbox.addEventListener('change',()=>{step=1;sync();});
+  // Run after legacy handlers so its UI state wins without changing the existing submit and verification flow.
+  next.addEventListener('click',()=>{
+   const name=document.getElementById('enquiryName'), email=document.getElementById('enquiryEmail');
+   if(!name?.value.trim()||!email?.checkValidity())return;
+   step=2;queueMicrotask(()=>{sync();document.getElementById('sbPackageTrigger')?.scrollIntoView({block:'center',behavior:'smooth'});});
+  });
+  sync();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script></body>
 
 </html>
