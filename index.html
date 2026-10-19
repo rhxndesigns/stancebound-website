@@ -9076,22 +9076,43 @@ function bookHeadlightRestoration(){
 <script id="sb-returning-customer-wizard-controller">
 (function(){
  function setup(){
-  const page=document.getElementById('booking'), checkbox=document.getElementById('sbReturningCustomer'), next=document.getElementById('sbReturningContinue');
-  if(!page||!checkbox||!next)return;
+  const page=document.getElementById('booking'), form=document.getElementById('enquiryForm'), checkbox=document.getElementById('sbReturningCustomer'), next=document.getElementById('sbReturningContinue');
+  if(!page||!form||!checkbox||!next)return;
+  const grid=form.querySelector('.enquiry-grid');
   let step=1;
+  const fields=Array.from(grid.children);
+  const outside=Array.from(form.children).filter(el=>el!==grid);
+  const calendar=document.getElementById('availabilityCalendar');
+  function forceVisible(el,show){if(!el)return; if(show){el.style.removeProperty('display');}else{el.style.setProperty('display','none','important');}}
   function sync(){
-   page.classList.toggle('sb-returning-identify',checkbox.checked&&step===1);
-   page.classList.toggle('sb-returning-details',checkbox.checked&&step===2);
-   const notice=document.getElementById('sbReturningNotice');if(notice)notice.hidden=true;
-   const panel=document.getElementById('sbReturningStep');if(panel)panel.hidden=!checkbox.checked||step!==1;
+   const returning=checkbox.checked;
+   page.classList.toggle('sb-returning-identify',returning&&step===1);
+   page.classList.toggle('sb-returning-details',returning&&step===2);
+   const notice=document.getElementById('sbReturningNotice');if(notice){notice.hidden=true;forceVisible(notice,false)}
+   const panel=document.getElementById('sbReturningStep');if(panel){panel.hidden=!returning||step!==1;forceVisible(panel,returning&&step===1)}
+   for(const el of fields){
+    const isPanel=el.classList.contains('sb-returning-panel');
+    const isIdentity=!!el.querySelector('#enquiryName,#enquiryEmail');
+    const isPhone=!!el.querySelector('#enquiryPhone');
+    // Returning step 1 is exclusively identity. Step 2 is job details, not personal information.
+    const visible=!returning || (step===1?(isPanel||isIdentity):(!isIdentity&&!isPhone));
+    forceVisible(el,visible);
+   }
+   for(const el of outside){
+    const verification=el.id==='verifyBox';
+    forceVisible(el,!returning||step===2||verification&&el.classList.contains('active'));
+   }
+   forceVisible(calendar,!returning||step===2);
   }
-  checkbox.addEventListener('change',()=>{step=1;sync();});
-  // Run after legacy handlers so its UI state wins without changing the existing submit and verification flow.
+  checkbox.addEventListener('change',()=>{step=1;queueMicrotask(sync)});
   next.addEventListener('click',()=>{
-   const name=document.getElementById('enquiryName'), email=document.getElementById('enquiryEmail');
-   if(!name?.value.trim()||!email?.checkValidity())return;
+   const name=document.getElementById('enquiryName'),email=document.getElementById('enquiryEmail');
+   if(!name?.value.trim()){name?.focus();name?.reportValidity();return;}
+   if(!email?.value.trim()||!email.checkValidity()){email?.focus();email?.reportValidity();return;}
    step=2;queueMicrotask(()=>{sync();document.getElementById('sbPackageTrigger')?.scrollIntoView({block:'center',behavior:'smooth'});});
   });
+  // Reapply after other booking scripts toggle visibility.
+  new MutationObserver(()=>{if(checkbox.checked)queueMicrotask(sync)}).observe(checkbox,{attributes:true,attributeFilter:['checked']});
   sync();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
