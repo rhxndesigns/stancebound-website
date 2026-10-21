@@ -4593,7 +4593,25 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 #booking.sb-returning-identify .enquiry-grid > :has(#enquiryName) {order:1}
 #booking.sb-returning-identify .enquiry-grid > :has(#enquiryEmail) {order:2}
 #booking .sb-returning-step-heading {font-size:13px;letter-spacing:1.3px;margin:12px 0;color:#fff}
-</style></head>
+</style><style id="stancebound-identity-refresh-2026">
+/* Visual refresh only. No routing, booking, checkout or customer logic modified. */
+#home { --sb-accent:#c82935; --sb-soft:#aaaeb5; }
+#home .hero { position:relative; isolation:isolate; }
+#home .hero::after { content:""; position:absolute; inset:auto 0 0; height:22%; pointer-events:none; background:linear-gradient(0deg,rgba(8,9,12,.62),transparent); z-index:0; }
+#home .hero-content { position:relative; z-index:1; }
+#home .tagline { letter-spacing:.22em; text-transform:uppercase; font-weight:700; }
+#home .hero-subtitle { letter-spacing:.085em; }
+#home .home-kicker { color:#ed5560; letter-spacing:.19em; font-size:.72rem; font-weight:800; text-transform:uppercase; }
+#home .home-feature-compact, #home .home-shop-teaser { border:1px solid rgba(255,255,255,.12); border-radius:18px; overflow:hidden; background:linear-gradient(140deg,rgba(30,31,36,.92),rgba(9,10,13,.98)); box-shadow:0 20px 65px rgba(0,0,0,.25); }
+#home .home-feature-compact h2, #home .home-shop-teaser h2, #home .home-final-compact h2 { letter-spacing:-.035em; line-height:1.05; }
+#home .home-feature-compact p, #home .home-shop-teaser p { color:#b6b8bd; line-height:1.65; }
+#home .home-feature-video video, #home .home-shop-image img { filter:contrast(1.045) saturate(.85); }
+#home .home-link { letter-spacing:.08em; text-transform:uppercase; font-weight:800; }
+#home .home-final-compact { border-top:1px solid rgba(226,63,76,.38); }
+@media (prefers-reduced-motion:reduce) { #home .home-feature-compact, #home .home-shop-teaser { scroll-behavior:auto; } }
+</style>
+
+</head>
 
 
 
