@@ -4654,7 +4654,11 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sb-clio-controls span{color:#aaa;font-size:11px;letter-spacing:.15em}
 @media(min-width:850px){#sb-clio-gallery.gallery.swipe-gallery>.photo{flex-basis:min(38vw,470px)!important;width:min(38vw,470px)!important}}
 </style>
-</head>
+<style id="sb-quote-style">
+#sbQuoteOverlay{position:fixed;inset:0;z-index:2147483000;background:#050505;color:#f5f5f5;overflow:auto;overscroll-behavior:contain;padding:20px 14px 70px;font-family:Arial,sans-serif}
+#sbQuoteOverlay[hidden]{display:none!important}.sbq-wrap{max-width:790px;margin:0 auto}.sbq-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 0 25px;border-bottom:1px solid #292929}.sbq-top strong{letter-spacing:.24em;font-size:13px}.sbq-close{width:44px;height:44px;border:1px solid #444;background:#151515;color:#fff;border-radius:50%;font-size:22px}.sbq-eyebrow{font-size:10px;letter-spacing:.22em;color:#999;margin:24px 0 10px}.sbq-title{font-size:clamp(28px,5vw,48px);line-height:1.05;letter-spacing:-.05em;margin:0 0 12px}.sbq-copy{color:#aaa;font-size:14px;line-height:1.65}.sbq-progress{height:4px;background:#252525;margin:20px 0 30px}.sbq-progress i{display:block;height:100%;background:#fff;transition:width .25s}.sbq-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:22px 0}.sbq-option{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:9px;min-height:125px;padding:18px;background:#101010;border:1px solid #303030;color:#eee;border-radius:16px;cursor:pointer}.sbq-option[aria-pressed="true"]{border:2px solid #eee;background:#202020}.sbq-option .sbq-visual{font-size:33px;filter:grayscale(.4)}.sbq-option b{font-size:15px}.sbq-option small{font-size:11px;line-height:1.45;color:#999}.sbq-input{display:block;width:100%;padding:14px;margin:9px 0 17px;background:#101010;border:1px solid #444;color:#fff;border-radius:9px;font:inherit}.sbq-label{font-size:11px;color:#bbb;letter-spacing:.08em}.sbq-actions{display:flex;gap:10px;margin:28px 0}.sbq-btn{flex:1;min-height:52px;padding:12px;border:1px solid #ddd;background:#eee;color:#090909;font-weight:800;letter-spacing:.08em;border-radius:12px;cursor:pointer}.sbq-btn.alt{flex:0 0 110px;background:#151515;color:#eee;border-color:#444}.sbq-btn:disabled{opacity:.4}.sbq-note{padding:16px;border:1px solid #333;background:#0c0c0c;color:#aaa;line-height:1.65;border-radius:12px;font-size:12px}.sbq-summary{padding:18px;background:#101010;border:1px solid #333;border-radius:15px;line-height:1.85;overflow-wrap:anywhere}.sbq-status{min-height:20px;color:#ffb4b4;font-size:12px;margin-top:12px}.sbq-checkbox{display:flex;gap:12px;align-items:center;padding:13px;border-bottom:1px solid #242424;color:#ddd;font-size:13px}.sbq-checkbox input{width:20px;height:20px;accent-color:#fff}.sbq-small{color:#aaa;font-size:12px}.sbq-approval{margin-top:20px;padding:18px;border:1px solid #555;border-radius:14px;background:#111}
+@media(max-width:480px){.sbq-options{grid-template-columns:1fr 1fr;gap:8px}.sbq-option{padding:12px;min-height:125px}.sbq-option b{font-size:13px}.sbq-option small{font-size:10px}.sbq-actions{position:sticky;bottom:0;background:#050505;padding:12px 0}}
+</style></head>
 
 
 
@@ -5146,13 +5150,13 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
             <div>
               <small>FULL DEEP DETAIL</small>
               <h1>ONE CAR.<br>PROPERLY DONE.</h1>
-              <p>Interior and exterior cleaning with a six-stage process. Introductory portfolio-building rate, subject to vehicle condition.</p>
+              <p>Interior and exterior cleaning with a six-stage process. Every vehicle is different. Tell me what yours needs and I’ll prepare a personalised quote.</p>
             </div>
-            <div class="sbp-price"><span>INTRO RATE</span><strong>£40</strong></div>
+            <div class="sbp-price"><span>TAILORED TO YOUR CAR</span><strong style="font-size:clamp(20px,3vw,36px)">REQUEST A QUOTE</strong></div>
           </div>
           <div class="sbp-actions">
             <button type="button" data-sbp-open="detail">WHAT'S INCLUDED? <i>↗</i></button>
-            <button type="button" onclick="bookIntroDetail()">BOOK <i>→</i></button>
+            <button type="button" onclick="sbQuoteOpen()">GET A QUOTE <i>→</i></button>
           </div>
         </section>
 
@@ -5243,10 +5247,10 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
             <div class="process-box" data-detail-stage="6"><span class="process-icon inspect-icon" aria-hidden="true"></span><b>06</b><strong>Final Inspection</strong><small>Finished vehicle check</small></div>
           </div>
           <div class="detail-bottom-row">
-            <div class="detail-fact"><span>THE £40 INTRODUCTORY DETAIL</span><p>The six-stage cleaning process above covers a standard interior and exterior detail, subject to the vehicle’s condition. £40 is an introductory portfolio-building rate, not a guaranteed price for every vehicle.</p></div>
+            <div class="detail-fact"><span>YOUR PERSONALISED DETAIL</span><p>The six-stage cleaning process above covers a standard interior and exterior detail, subject to the vehicle’s condition. Your quote is based on vehicle size, condition, required work and any extras. I confirm the price before you book.</p></div>
             <div class="detail-fact"><span>QUOTED SEPARATELY</span><p>Heavy soiling, intensive stain or pet-hair removal, scratch removal and paint correction may require a separate quote. Any additional work and cost will be discussed and agreed with you before work begins. A booking request is not a confirmed appointment.</p></div>
           </div>
-          <button class="btn current-book-btn" type="button" onclick="bookIntroDetail()">BOOK THE £40 DETAIL</button>
+          <button class="btn current-book-btn" type="button" onclick="sbQuoteOpen()">REQUEST A QUOTE</button>
         </div>
       </div>
     </section>
@@ -5477,9 +5481,9 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
                     <span><small>SELECT A PACKAGE</small><strong id="sbPackageSelected">Tap to select your services</strong></span>
                     <i aria-hidden="true">⌄</i>
                   </button>
-                  <div class="sb-package-menu" id="serviceChoiceGrid" hidden>
+                  <div class="sb-package-menu" id="serviceChoiceGrid" hidden><button type="button" class="service-choice" onclick="sbQuoteOpen()"><span>GET A PERSONALISED DETAILING QUOTE →</span><small>Required before booking a full detail</small></button>
                     <button type="button" class="service-choice" data-service="Detailing">
-                      <span>FULL DEEP DETAIL</span><small>£40 introductory rate</small>
+                      <span>FULL DEEP DETAIL</span><small>Personalised quote required</small>
                     </button>
                     <button type="button" class="service-choice" data-service="Headlight Restoration - One Headlight (£25)">
                       <span>HEADLIGHT RESTORATION · ONE</span><small>£25 · One headlight</small>
@@ -5489,7 +5493,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
                     </button>
                   </div>
                 </div>
-                <div id="sbBookingBasket" class="sb-booking-basket" aria-live="polite">No services selected yet.</div>
+                <p id="sbQuoteBookingNotice" style="color:#d4e6d4;font-size:12px;line-height:1.5"></p><div id="sbBookingBasket" class="sb-booking-basket" aria-live="polite">No services selected yet.</div>
               </div>
               <div class="enquiry-field full"><label for="enquiryVehicle">Vehicle</label><input id="enquiryVehicle" name="vehicle" type="text" maxlength="100" placeholder="e.g. BMW 330d" required></div>
               <div class="enquiry-field"><label for="bookingDate">Preferred date</label><input id="bookingDate" name="booking_date" type="date" required></div>
@@ -6216,7 +6220,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
     /* Multi-service selection: existing service text field remains compatible with start-enquiry. */
     const sbSelectedServices=new Set();
     const sbServicePrices={
-      "Detailing":40,
+      
       "Headlight Restoration - One Headlight (£25)":25,
       "Headlight Restoration - Both Headlights (£40)":40
     };
@@ -6314,12 +6318,8 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
     sbRefreshServices();
 
     function bookIntroDetail(){
-      showPage("booking");
-      window.setTimeout(() => {
-        setBookingService("Detailing");
-        const vehicle = document.getElementById("enquiryVehicle");
-        // Do not focus an input on Booking navigation (prevents Android keyboard).
-      }, 520);
+      // Full detailing must begin with a reviewed quotation.
+      window.sbQuoteOpen?.();
     }
 
     /* ========================================
@@ -8336,7 +8336,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
    if(!detailHome){detailHome=document.createComment('detail-home');detailNode.parentNode.insertBefore(detailHome,detailNode)}
    body.innerHTML='';
    body.appendChild(detailNode); detailNode.style.display='block';
-   document.getElementById('sbpModalKicker').textContent='01 / AVAILABLE NOW · £40';
+   document.getElementById('sbpModalKicker').textContent='01 / PERSONALISED QUOTE';
    document.getElementById('sbpModalTitle').textContent="WHAT'S INCLUDED";
   }else{
    const s=services[key];if(!s)return;
@@ -9317,6 +9317,38 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   update();
 })();
 </script>
-</body>
+<div id="sbQuoteOverlay" hidden role="dialog" aria-modal="true" aria-label="Personalised detailing quote"><div class="sbq-wrap"><div class="sbq-top"><strong>STANCEBOUND / QUOTES</strong><button type="button" class="sbq-close" onclick="sbQuoteClose()" aria-label="Close quote">×</button></div><div id="sbQuoteContent"></div></div></div>
+<script type="module" id="sb-quote-engine">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const client=createClient('https://fxlekwzcxedkiyqfswvq.supabase.co','sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld');
+const state={step:0,vehicle_type:'',vehicle:'',interior:'',exterior:'',service:'',problems:[],addons:[],notes:'',name:'',email:'',phone:'',postcode:''};
+const steps=[
+ {title:'What do you drive?',sub:'Vehicle size affects the time and materials needed.',key:'vehicle_type',items:[['Small car / hatchback','🚗','Fiesta, Clio, Corsa'],['Saloon / estate','🚘','Astra, 3 Series, estate'],['SUV / 4x4','🚙','Larger cabin and bodywork'],['Van / larger vehicle','🚐','Commercial and oversized vehicles']]},
+ {title:'How is the interior?',sub:'Choose the closest match. This helps me judge the work required.',key:'interior',items:[['Light','✨','Generally tidy, light dust'],['Moderate','🧹','Dirt, crumbs and marked mats'],['Heavy','🪣','Ground-in dirt, stains or mud'],['Very heavy','⚠️','Significant build-up or deep cleaning']]},
+ {title:'How is the exterior?',sub:'Think about the paintwork, wheels and lower panels.',key:'exterior',items:[['Light','✨','Light road film or dust'],['Moderate','💦','Usual road grime and dirty wheels'],['Heavy','🧽','Mud, bonded dirt or heavy deposits'],['Very heavy','⚠️','Thick mud or prolonged build-up']]},
+ {title:'What would you like cleaned?',sub:'Choose the main service you want.',key:'service',items:[['Full interior & exterior','🚘','Complete detailing request'],['Interior only','🪑','Cabin, carpets and surfaces'],['Exterior only','💧','Bodywork, wheels and exterior'],['Not sure / advise me','💬','I’ll recommend a suitable service']]}
+];
+const problems=[['Stained seats','🪑'],['Pet hair','🐾'],['Odours','🌬️'],['Muddy carpets','🥾'],['Brake dust','🛞'],['Tar / iron fallout','⚙️'],['Mould / biohazard concern','⚠️'],['None of these','✓']];
+const addons=[['Headlight restoration','💡'],['Engine bay clean','⚙️'],['Upholstery extraction','🪑'],['Paint decontamination','✨'],['Extra boot / load area','📦'],['Other cosmetic work','🔧']];
+document.addEventListener('click',e=>{const btn=e.target.closest('#serviceChoiceGrid [data-service="Detailing"]');if(btn&&!localStorage.getItem('sbApprovedQuote')){e.preventDefault();e.stopImmediatePropagation();window.sbQuoteOpen();}},true);
+const overlay=document.getElementById('sbQuoteOverlay'),content=document.getElementById('sbQuoteContent');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const options=(items,key,multi=false)=>'<div class="sbq-options">'+items.map(([label,emoji,desc])=>`<button type="button" class="sbq-option" data-sbq-key="${key}" data-sbq-value="${esc(label)}" aria-pressed="${multi?state[key].includes(label):state[key]===label}"><span class="sbq-visual" aria-hidden="true">${emoji}</span><b>${esc(label)}</b>${desc?`<small>${esc(desc)}</small>`:''}</button>`).join('')+'</div>';
+const field=(key,label,type='text',required=false)=>`<label class="sbq-label" for="sbq-${key}">${label}${required?' *':''}</label><input class="sbq-input" id="sbq-${key}" data-sbq-field="${key}" type="${type}" maxlength="160" value="${esc(state[key])}" ${required?'required':''}>`;
+function render(){let html=`<div class="sbq-eyebrow">PERSONALISED QUOTE / STEP ${Math.min(state.step+1,8)} OF 8</div><div class="sbq-progress"><i style="width:${(state.step+1)/8*100}%"></i></div>`;
+ if(state.step<4){const s=steps[state.step];html+=`<h2 class="sbq-title">${s.title}</h2><p class="sbq-copy">${s.sub}</p>`+options(s.items,s.key);if(state.step===0)html+=field('vehicle','Vehicle make / model (optional)');}
+ if(state.step===4)html+='<h2 class="sbq-title">Any problem areas?</h2><p class="sbq-copy">Select everything that applies. Some jobs need extra time or specialist treatment.</p>'+options(problems,'problems',true);
+ if(state.step===5)html+='<h2 class="sbq-title">Add any extras.</h2><p class="sbq-copy">Optional services. I’ll assess these individually and include them in your quote.</p>'+options(addons,'addons',true);
+ if(state.step===6)html+='<h2 class="sbq-title">Tell me anything else.</h2><p class="sbq-copy">Describe the result you want, problem areas or anything that might affect the job.</p><label class="sbq-label" for="sbq-notes">Additional details</label><textarea id="sbq-notes" class="sbq-input" rows="5" maxlength="2000" placeholder="e.g. Dog hair on rear seats, stained passenger carpet…">'+esc(state.notes)+'</textarea><p class="sbq-small">I’ll confirm any specialist treatment or extra charges with you before work starts.</p>';
+ if(state.step===7)html+='<h2 class="sbq-title">Request your quote.</h2><p class="sbq-copy">I’ll review the vehicle and work required, then send you a price. No booking or payment is taken yet.</p>'+field('name','Your name','text',true)+field('email','Email address','email',true)+field('phone','Phone number','tel',true)+field('postcode','Town / postcode','text',true)+`<div class="sbq-summary"><b>YOUR REQUEST</b><div>${esc(state.vehicle_type)} · ${esc(state.vehicle)}</div><div>${esc(state.service)}</div><div>Interior: ${esc(state.interior)} · Exterior: ${esc(state.exterior)}</div><div>Problem areas: ${esc(state.problems.join(', ')||'None selected')}</div><div>Add-ons: ${esc(state.addons.join(', ')||'None')}</div></div>`;
+ html+=`<div class="sbq-actions">${state.step?'<button type="button" class="sbq-btn alt" id="sbqBack">← BACK</button>':''}<button type="button" class="sbq-btn" id="sbqNext">${state.step===7?'SEND QUOTE REQUEST →':'CONTINUE →'}</button></div><p id="sbqStatus" class="sbq-status" role="status"></p>`;
+ content.innerHTML=html;content.querySelectorAll('[data-sbq-key]').forEach(b=>b.onclick=()=>{const k=b.dataset.sbqKey,v=b.dataset.sbqValue;if(Array.isArray(state[k])){state[k]=state[k].includes(v)?state[k].filter(x=>x!==v):[...state[k],v];if(v==='None of these')state[k]=['None of these'];else state[k]=state[k].filter(x=>x!=='None of these')}else state[k]=v;render()});content.querySelectorAll('[data-sbq-field]').forEach(i=>i.oninput=()=>state[i.dataset.sbqField]=i.value);const n=content.querySelector('#sbq-notes');if(n)n.oninput=()=>state.notes=n.value;const back=content.querySelector('#sbqBack');if(back)back.onclick=()=>{state.step--;render()};content.querySelector('#sbqNext').onclick=next;
+}
+async function next(){const st=content.querySelector('#sbqStatus');if(state.step<4&&!state[steps[state.step].key]){st.textContent='Please choose an option to continue.';return}if(state.step<7){state.step++;render();content.scrollIntoView({block:'start',behavior:'smooth'});return}if(!state.name.trim()||!state.phone.trim()||!state.postcode.trim()||!/^\S+@\S+\.\S+$/.test(state.email)){st.textContent='Please enter your name, valid email, phone and location.';return}const btn=content.querySelector('#sbqNext');btn.disabled=true;st.textContent='Submitting your request securely…';try{const token=crypto.randomUUID();const {error}=await client.from('sb_detail_quotes').insert({customer_token:token,customer_name:state.name.trim(),email:state.email.trim(),phone:state.phone.trim(),postcode:state.postcode.trim(),vehicle:state.vehicle.trim(),vehicle_type:state.vehicle_type,interior_condition:state.interior,exterior_condition:state.exterior,service:state.service,problems:state.problems,addons:state.addons,notes:state.notes});if(error)throw error;localStorage.setItem('sbQuoteCustomerToken',token);showLookup(token,'Your quote request has been received. Save this browser or use the reference below to check its status.');}catch(e){st.textContent='Unable to send: '+(e.message||'Please try again.');btn.disabled=false}}
+async function showLookup(token,message){content.innerHTML=`<h2 class="sbq-title">Quote request received.</h2><p class="sbq-copy">${esc(message||'Your personalised quote')}</p><div class="sbq-approval"><b>YOUR PRIVATE REFERENCE</b><p class="sbq-small" style="overflow-wrap:anywhere">${esc(token)}</p><button class="sbq-btn" id="sbqCheck">CHECK QUOTE STATUS</button><p id="sbqStatus" class="sbq-status"></p><div id="sbqResult"></div></div>`;content.querySelector('#sbqCheck').onclick=()=>checkQuote(token);}
+async function checkQuote(token){const st=content.querySelector('#sbqStatus'),result=content.querySelector('#sbqResult');st.textContent='Checking…';const {data,error}=await client.rpc('sb_quote_status',{p_token:token});if(error){st.textContent=error.message;return}const q=Array.isArray(data)?data[0]:data;st.textContent='';if(!q){result.textContent='No matching quote found.';return}if(q.status==='approved'){result.innerHTML=`<p>APPROVED · <strong>£${Number(q.price).toFixed(2)}</strong></p><p class="sbq-small">${esc(q.admin_notes||'Your personalised quote is ready.')}</p><button class="sbq-btn" id="sbqBook">CONTINUE TO BOOKING →</button>`;result.querySelector('#sbqBook').onclick=()=>{localStorage.setItem('sbApprovedQuote',JSON.stringify({token,price:q.price,service:q.service,vehicle:q.vehicle}));window.sbQuoteClose();window.showPage?.('booking');setTimeout(()=>{const car=document.getElementById('enquiryVehicle');if(car&&!car.value)car.value=q.vehicle||'';document.querySelector('#serviceChoiceGrid [data-service="Detailing"]')?.click();const notice=document.getElementById('sbQuoteBookingNotice');if(notice)notice.textContent='APPROVED QUOTE · £'+Number(q.price).toFixed(2)+' · Reference '+token;},150)}}else result.textContent=q.status==='declined'?'This request could not be approved. Please contact STANCEBOUND.':'Your quote is awaiting review. Check back later.'}
+window.sbQuoteOpen=()=>{overlay.hidden=false;document.body.style.overflow='hidden';const saved=localStorage.getItem('sbQuoteCustomerToken');if(saved)showLookup(saved,'You have an existing quote request. Check its status below, or start a new one.').then(()=>{const b=document.createElement('button');b.className='sbq-btn alt';b.style.marginTop='15px';b.textContent='START A NEW REQUEST';b.onclick=()=>{Object.assign(state,{step:0,vehicle_type:'',vehicle:'',interior:'',exterior:'',service:'',problems:[],addons:[],notes:'',name:'',email:'',phone:'',postcode:''});render()};content.append(b)});else render()};
+window.sbQuoteClose=()=>{overlay.hidden=true;document.body.style.overflow=''};
+</script></body>
 
 </html>
