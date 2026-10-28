@@ -4689,6 +4689,8 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 #sbQuoteOverlay .sbq-progress{height:2px}
 #sbQuoteOverlay .sbq-estimate{border-radius:3px}
 @media(max-width:480px){#sbQuoteOverlay .sbq-option{min-height:150px;padding:12px}#sbQuoteOverlay .sbq-visual{width:48px;height:48px}#sbQuoteOverlay .sbq-visual svg{width:30px;height:30px}}
+</style><style id="sb-cinema-mobile-clip-fix">
+@media(max-width:600px){#pricing .sbp-cinema-copy{width:calc(100% - 32px);padding-right:8px}#pricing .sbp-cinema-copy h2{font-size:clamp(34px,9vw,52px);line-height:.96;overflow-wrap:normal;max-width:100%}#pricing .sbp-cinema-copy p{max-width:100%;overflow-wrap:break-word}#pricing .sbp-cinema-frame{min-height:450px}}
 </style><style id="sb-brand-footer-v1">
 .sb-product-brands{max-width:720px;margin:0 auto 24px;padding:20px 12px 23px;border-bottom:1px solid rgba(255,255,255,.13);text-align:center}
 .sb-product-brands-label{font-size:10px;letter-spacing:3px;color:#aaa;margin-bottom:20px;font-weight:800}
@@ -4698,7 +4700,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sb-autoglym{font-weight:900;letter-spacing:2px}
 .sb-product-brands-note{font-size:9px;line-height:1.6;letter-spacing:.3px;text-transform:none;color:#777;margin-top:16px;font-weight:400}
 .sb-product-logo{display:block;max-width:min(190px,38vw);width:auto;height:64px;object-fit:contain;filter:grayscale(1) brightness(1.5);opacity:.9}
-.sb-auto-finesse-logo{max-width:min(210px,40vw)}
+.sb-auto-finesse-logo{max-width:min(210px,40vw);min-width:48px}
 .sb-autoglym-logo{max-width:min(180px,38vw)}
 @media(max-width:480px){.sb-product-logo{height:48px}}
 </style>
@@ -5216,7 +5218,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 
   <section class="sbp-cinema" id="sbpCinema">
           <div class="sbp-cinema-head">
-            <span>SERVICES / <b id="sbpCinemaNum">03</b>—07</span>
+            <span>SERVICES / <b id="sbpCinemaNum">01</b>—05</span>
             <small>EXPLORE</small>
           </div>
 
@@ -5232,7 +5234,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
             <div class="sbp-cinema-edge right" aria-hidden="true">›</div>
             <div class="sbp-cinema-copy">
               <div class="sbp-cinema-status">COMING SOON <i></i></div>
-              <div class="sbp-cinema-index" id="sbpCinemaIndex">03</div>
+              <div class="sbp-cinema-index" id="sbpCinemaIndex">01</div>
               <h2 id="sbpCinemaTitle">SALE<br>PREPARATION.</h2>
               <p id="sbpCinemaText">Detail · Photography · Listing creation</p>
               <button type="button" class="sbp-explore-btn" id="sbpCinemaMore" data-sbp-open="sale">
@@ -5244,16 +5246,11 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
           <div class="sbp-cinema-nav">
             <button type="button" data-cinema-prev><i>←</i><span>PREVIOUS</span></button>
             <div class="sbp-cinema-progress" id="sbpCinemaProgress">
-              <b class="active">03</b><i></i><b>04</b><i></i><b>05</b><i></i><b>06</b><i></i><b>07</b>
+              <b class="active">01</b><i></i><b>02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b>
             </div>
             <button type="button" data-cinema-next><span>NEXT</span><i>→</i></button>
           </div>
         </section>
-
-        <div class="sbp-footer-line">
-          <span>DETAILING · RESTORATION · PROTECTION · PHOTOGRAPHY</span>
-          <strong>STANCEBOUND</strong>
-        </div>
 
         <!-- Original six-step graphic system retained here and moved into the modal only when requested. -->
         <div class="sbp-detail-source" id="currentServiceDetails">
@@ -5919,7 +5916,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 <div class="sb-product-brands" aria-label="Detailing product brands">
   <div class="sb-product-brands-label">PRODUCT BRANDS WE USE</div>
   <div class="sb-product-brands-row">
-    <img class="sb-product-logo sb-auto-finesse-logo" src="https://cdn.brandfetch.io/autofinesse.com/w/400/h/200/logo" alt="Auto Finesse official brand logo" loading="lazy" referrerpolicy="no-referrer">
+    <img class="sb-product-logo sb-auto-finesse-logo" src="https://cdn.brandfetch.io/autofinesse.com/w/400/h/200/logo" alt="Auto Finesse" loading="lazy" onerror="if(!this.dataset.fallback){this.dataset.fallback=1;this.src='https://www.autofinesse.com/cdn/shop/files/Auto_Finesse_Logo.png'}else if(this.dataset.fallback==='1'){this.dataset.fallback=2;this.src='https://www.google.com/s2/favicons?domain=autofinesse.com&amp;sz=256'}else{this.style.display='none'}">
     <img class="sb-product-logo sb-autoglym-logo" src="https://www.autoglym.com/static/version1744617326/frontend/Autoglym/default/en_GB/images/logos/logo-60.png" alt="Autoglym official brand logo" loading="lazy">
   </div>
   <div class="sb-product-brands-note">Independent detailing service. No brand endorsement or affiliation implied.</div>
@@ -8439,11 +8436,11 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <script id="stancebound-cinema-browser-js">
 (function(){
  const data=[
-  ['sale','03','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
-  ['scratch','04','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
-  ['paint','05','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
-  ['ceramic','06','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
-  ['photo','07','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
+  ['sale','01','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
+  ['scratch','02','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
+  ['paint','03','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
+  ['ceramic','04','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
+  ['photo','05','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
  ];
  let index=0,busy=false,startX=null,startY=null,dragging=false;
  function render(next){
