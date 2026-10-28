@@ -4704,6 +4704,18 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sb-autoglym-logo{max-width:min(180px,38vw)}
 @media(max-width:480px){.sb-product-logo{height:48px}}
 </style>
+<style id="sb-brand-actual-logos-fix">
+/* Isolated footer brand presentation: no changes to site navigation or bookings. */
+.sb-product-brands-row{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:nowrap;max-width:100%;overflow:hidden}
+.sb-brand-logo-frame{position:relative;display:block;flex:0 1 170px;width:170px;height:94px;overflow:hidden;background:transparent}
+.sb-brand-logo-frame img{display:block;position:absolute;max-width:none;filter:grayscale(1);opacity:.95}
+/* Official Auto Finesse logo, cropped to its decorative wordmark and inverted for dark footer. */
+.sb-brand-af-frame img{width:205px;height:205px;left:-2px;top:-54px;object-fit:fill;filter:grayscale(1) invert(1)}
+/* Crop Autoglym's anniversary badge out of its combined source image. */
+.sb-brand-ag-frame{flex-basis:128px;width:128px}
+.sb-brand-ag-frame img{height:90px;width:auto;max-width:none;left:0;top:2px;filter:grayscale(1) brightness(1.5)}
+@media(max-width:420px){.sb-product-brands-row{gap:10px}.sb-brand-af-frame{flex-basis:150px;width:150px;height:86px}.sb-brand-af-frame img{width:190px;height:190px;top:-51px}.sb-brand-ag-frame{flex-basis:110px;width:110px;height:86px}.sb-brand-ag-frame img{height:83px}}
+</style>
 </head>
 
 
@@ -5916,7 +5928,8 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 <div class="sb-product-brands" aria-label="Detailing product brands">
   <div class="sb-product-brands-label">PRODUCT BRANDS WE USE</div>
   <div class="sb-product-brands-row">
-    <img class="sb-product-logo sb-autoglym-logo" src="https://www.autoglym.com/static/version1744617326/frontend/Autoglym/default/en_GB/images/logos/logo-60.png" alt="Autoglym official brand logo" loading="lazy">
+    <span class="sb-brand-logo-frame sb-brand-af-frame" role="img" aria-label="Auto Finesse logo"><img src="https://autofinesse.com/cdn/shop/files/fc0dee5d-5b2a-4e05-9ed8-b767f73bb302.__CR434_0_1132_700_PT0_SX970_V1.webp?v=1690555974" alt="" loading="lazy"></span>
+    <span class="sb-brand-logo-frame sb-brand-ag-frame" role="img" aria-label="Autoglym logo"><img src="https://www.autoglym.com/static/version1744617326/frontend/Autoglym/default/en_GB/images/logos/logo-60.png" alt="" loading="lazy"></span>
   </div>
   <div class="sb-product-brands-note">Independent detailing service. No brand endorsement or affiliation implied.</div>
 </div>
