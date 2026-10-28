@@ -6149,7 +6149,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
         }
 
         if(sbSelectedServices.has('Detailing')&&!sbGetApprovedQuote()){
-          enquiryStatus.textContent='Please obtain an approved detailing quote before booking.';
+          enquiryStatus.textContent='Please complete your detailing estimate before booking.';
           window.sbQuoteOpen?.();return;
         }
         const sendBtn=document.getElementById("sendEnquiryBtn");
@@ -6165,8 +6165,9 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
           message:[
             document.getElementById("sbReturningCustomer")?.checked?"RETURNING CUSTOMER REQUEST: Customer says they have booked previously. Verify previous signed agreement before deciding whether a new signature is required.":"",
             "Selected services: "+document.getElementById("enquiryService").value,
-            "Approved quote reference: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?.token||'MISSING APPROVAL'):'Not applicable'),
-            "Approved detailing price: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?'£'+Number(sbGetApprovedQuote().price).toFixed(2):'Not approved'):'Not applicable'),
+            ...(sbSelectedServices.has('Detailing')&&sbGetApprovedQuote()?["[STANCEBOUND DETAILING SELECTION]",JSON.stringify({version:1,reference:sbGetApprovedQuote().token,estimated_price:Number(sbGetApprovedQuote().price),vehicle_type:sbGetApprovedQuote().vehicle_type||'',vehicle:sbGetApprovedQuote().vehicle||'',service:sbGetApprovedQuote().service||'',interior:sbGetApprovedQuote().interior||'',exterior:sbGetApprovedQuote().exterior||'',problems:sbGetApprovedQuote().problems||[],addons:sbGetApprovedQuote().addons||[],notes:sbGetApprovedQuote().notes||''}),"[/STANCEBOUND DETAILING SELECTION]"]:[]),
+            "Detailing estimate reference: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?.token||'MISSING APPROVAL'):'Not applicable'),
+            "Estimated detailing price: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?'£'+Number(sbGetApprovedQuote().price).toFixed(2):'Not approved'):'Not applicable'),
             "Estimated combined price: "+( [...sbSelectedServices].some(x=>!(x in sbServicePrices) && !(x==='Detailing'&&sbGetApprovedQuote())) ? "Quote required" : "£"+[...sbSelectedServices].reduce((sum,x)=>sum+(x==='Detailing'&&sbGetApprovedQuote()?Number(sbGetApprovedQuote().price):(sbServicePrices[x]||0)),0).toFixed(2) ),
             document.getElementById("enquiryMessage").value.trim(),
             "Booking location: "+document.getElementById("bookingLocation").value.trim(),
