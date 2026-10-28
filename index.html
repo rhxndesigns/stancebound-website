@@ -5514,7 +5514,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
                   </button>
                   <div class="sb-package-menu" id="serviceChoiceGrid" hidden><button type="button" class="service-choice" onclick="sbQuoteOpen()"><span>GET A PERSONALISED DETAILING QUOTE →</span><small>Required before booking a full detail</small></button>
                     <button type="button" class="service-choice" data-service="Detailing">
-                      <span>FULL DEEP DETAIL</span><small>Personalised quote required</small>
+                      <span>FULL DEEP DETAIL</span><small id="sbDetailPackagePrice">Personalised quote required</small>
                     </button>
                     <button type="button" class="service-choice" data-service="Headlight Restoration - One Headlight (£25)">
                       <span>HEADLIGHT RESTORATION · ONE</span><small>£25 · One headlight</small>
@@ -6148,6 +6148,10 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
           return;
         }
 
+        if(sbSelectedServices.has('Detailing')&&!sbGetApprovedQuote()){
+          enquiryStatus.textContent='Please obtain an approved detailing quote before booking.';
+          window.sbQuoteOpen?.();return;
+        }
         const sendBtn=document.getElementById("sendEnquiryBtn");
         sendBtn.disabled=true;
         enquiryStatus.textContent="Sending verification code...";
@@ -6161,7 +6165,9 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
           message:[
             document.getElementById("sbReturningCustomer")?.checked?"RETURNING CUSTOMER REQUEST: Customer says they have booked previously. Verify previous signed agreement before deciding whether a new signature is required.":"",
             "Selected services: "+document.getElementById("enquiryService").value,
-            "Estimated combined price: "+( [...sbSelectedServices].some(x=>!(x in sbServicePrices)) ? "Quote required" : "£"+[...sbSelectedServices].reduce((sum,x)=>sum+sbServicePrices[x],0) ),
+            "Approved quote reference: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?.token||'MISSING APPROVAL'):'Not applicable'),
+            "Approved detailing price: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?'£'+Number(sbGetApprovedQuote().price).toFixed(2):'Not approved'):'Not applicable'),
+            "Estimated combined price: "+( [...sbSelectedServices].some(x=>!(x in sbServicePrices) && !(x==='Detailing'&&sbGetApprovedQuote())) ? "Quote required" : "£"+[...sbSelectedServices].reduce((sum,x)=>sum+(x==='Detailing'&&sbGetApprovedQuote()?Number(sbGetApprovedQuote().price):(sbServicePrices[x]||0)),0).toFixed(2) ),
             document.getElementById("enquiryMessage").value.trim(),
             "Booking location: "+document.getElementById("bookingLocation").value.trim(),
             "DETAILING ACCESS",
@@ -6255,6 +6261,23 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
       "Headlight Restoration - One Headlight (£25)":25,
       "Headlight Restoration - Both Headlights (£40)":40
     };
+    function sbGetApprovedQuote(){
+      try {const q=JSON.parse(localStorage.getItem('sbApprovedQuote')||'null');
+        return q && q.token && Number.isFinite(Number(q.price)) && Number(q.price)>=0 ? q : null;
+      }catch(e){return null;}
+    }
+    function sbApplyApprovedQuote(){
+      const q=sbGetApprovedQuote();
+      const detail=document.querySelector('#serviceChoiceGrid [data-service="Detailing"]');
+      const priceLabel=document.getElementById('sbDetailPackagePrice');
+      const notice=document.getElementById('sbQuoteBookingNotice');
+      if(detail && priceLabel)priceLabel.textContent=q?'APPROVED QUOTE · £'+Number(q.price).toFixed(2):'Personalised quote required';
+      if(notice)notice.textContent=q?'APPROVED DETAILING QUOTE · £'+Number(q.price).toFixed(2)+' · Reference '+q.token:'';
+      if(q){sbSelectedServices.add('Detailing');const car=document.getElementById('enquiryVehicle');if(car&&!car.value)car.value=q.vehicle||'';}
+      sbRefreshServices();
+    }
+    window.sbApplyApprovedQuote=sbApplyApprovedQuote;
+    queueMicrotask(sbApplyApprovedQuote);
     function sbRefreshServices(){
       const buttons=[...document.querySelectorAll("#serviceChoiceGrid .service-choice[data-service]")];
       const chosen=buttons.filter(b=>sbSelectedServices.has(b.dataset.service));
@@ -6267,10 +6290,11 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
       });
       const label=document.getElementById("sbPackageSelected");
       if(label)label.textContent=chosen.length?chosen.length+" service"+(chosen.length===1?"":"s")+" selected":"Tap to select your services";
-      const total=chosen.reduce((sum,b)=>sum+(sbServicePrices[b.dataset.service]||0),0);
-      const unknown=chosen.some(b=>!(b.dataset.service in sbServicePrices));
+      const approved=sbGetApprovedQuote();
+      const total=chosen.reduce((sum,b)=>sum+(b.dataset.service==='Detailing'&&approved?Number(approved.price):(sbServicePrices[b.dataset.service]||0)),0);
+      const unknown=chosen.some(b=>!(b.dataset.service in sbServicePrices) && !(b.dataset.service==='Detailing'&&approved));
       const basket=document.getElementById("sbBookingBasket");
-      if(basket)basket.textContent=chosen.length?chosen.map(b=>"✓ "+b.querySelector("span")?.textContent.trim()).join(" · ")+" | "+(unknown?"Known services £"+total+" + quoted extras":"Estimated total £"+total):"No services selected yet.";
+      if(basket)basket.textContent=chosen.length?chosen.map(b=>"✓ "+b.querySelector("span")?.textContent.trim()+(b.dataset.service==='Detailing'&&approved?" (£"+Number(approved.price).toFixed(2)+")":"")).join(" · ")+" | "+(unknown?"Known services £"+total.toFixed(2)+" + quoted extras":"Total £"+total.toFixed(2)):"No services selected yet.";
       service?.dispatchEvent(new Event("change",{bubbles:true}));
     }
     function setBookingService(value){
@@ -9405,7 +9429,7 @@ function render(){let html=`<div class="sbq-eyebrow">PERSONALISED QUOTE / STEP $
 }
 async function next(){const st=content.querySelector('#sbqStatus');if(state.step<4&&!state[steps[state.step].key]){st.textContent='Please choose an option to continue.';return}if(state.step<7){state.step++;render();content.scrollIntoView({block:'start',behavior:'smooth'});return}if(!state.name.trim()||!state.phone.trim()||!state.postcode.trim()||!/^\S+@\S+\.\S+$/.test(state.email)){st.textContent='Please enter your name, valid email, phone and location.';return}const btn=content.querySelector('#sbqNext');btn.disabled=true;st.textContent='Submitting your request securely…';try{const token=crypto.randomUUID();const {error}=await client.from('sb_detail_quotes').insert({customer_token:token,customer_name:state.name.trim(),email:state.email.trim(),phone:state.phone.trim(),postcode:state.postcode.trim(),vehicle:state.vehicle.trim(),vehicle_type:state.vehicle_type,interior_condition:state.interior,exterior_condition:state.exterior,service:state.service,problems:state.problems,addons:state.addons,notes:state.notes});if(error)throw error;localStorage.setItem('sbQuoteCustomerToken',token);showLookup(token,'Your quote request has been received. Save this browser or use the reference below to check its status.');}catch(e){st.textContent='Unable to send: '+(e.message||'Please try again.');btn.disabled=false}}
 async function showLookup(token,message){content.innerHTML=`<h2 class="sbq-title">Quote request received.</h2><p class="sbq-copy">${esc(message||'Your personalised quote')}</p><div class="sbq-approval"><b>YOUR PRIVATE REFERENCE</b><p class="sbq-small" style="overflow-wrap:anywhere">${esc(token)}</p><button class="sbq-btn" id="sbqCheck">CHECK QUOTE STATUS</button><p id="sbqStatus" class="sbq-status"></p><div id="sbqResult"></div></div>`;content.querySelector('#sbqCheck').onclick=()=>checkQuote(token);}
-async function checkQuote(token){const st=content.querySelector('#sbqStatus'),result=content.querySelector('#sbqResult');st.textContent='Checking…';const {data,error}=await client.rpc('sb_quote_status',{p_token:token});if(error){st.textContent=error.message;return}const q=Array.isArray(data)?data[0]:data;st.textContent='';if(!q){result.textContent='No matching quote found.';return}if(q.status==='approved'){result.innerHTML=`<p>APPROVED · <strong>£${Number(q.price).toFixed(2)}</strong></p><p class="sbq-small">${esc(q.admin_notes||'Your personalised quote is ready.')}</p><button class="sbq-btn" id="sbqBook">CONTINUE TO BOOKING →</button>`;result.querySelector('#sbqBook').onclick=()=>{localStorage.setItem('sbApprovedQuote',JSON.stringify({token,price:q.price,service:q.service,vehicle:q.vehicle}));window.sbQuoteClose();window.showPage?.('booking');setTimeout(()=>{const car=document.getElementById('enquiryVehicle');if(car&&!car.value)car.value=q.vehicle||'';document.querySelector('#serviceChoiceGrid [data-service="Detailing"]')?.click();const notice=document.getElementById('sbQuoteBookingNotice');if(notice)notice.textContent='APPROVED QUOTE · £'+Number(q.price).toFixed(2)+' · Reference '+token;},150)}}else result.textContent=q.status==='declined'?'This request could not be approved. Please contact STANCEBOUND.':'Your quote is awaiting review. Check back later.'}
+async function checkQuote(token){const st=content.querySelector('#sbqStatus'),result=content.querySelector('#sbqResult');st.textContent='Checking…';const {data,error}=await client.rpc('sb_quote_status',{p_token:token});if(error){st.textContent=error.message;return}const q=Array.isArray(data)?data[0]:data;st.textContent='';if(!q){result.textContent='No matching quote found.';return}if(q.status==='approved'){result.innerHTML=`<p>APPROVED · <strong>£${Number(q.price).toFixed(2)}</strong></p><p class="sbq-small">${esc(q.admin_notes||'Your personalised quote is ready.')}</p><button class="sbq-btn" id="sbqBook">CONTINUE TO BOOKING →</button>`;result.querySelector('#sbqBook').onclick=()=>{localStorage.setItem('sbApprovedQuote',JSON.stringify({token,price:q.price,service:q.service,vehicle:q.vehicle}));window.sbQuoteClose();window.showPage?.('booking');setTimeout(()=>{window.sbApplyApprovedQuote?.();document.getElementById('sbPackageTrigger')?.scrollIntoView({block:'center',behavior:'smooth'});},150)}}else result.textContent=q.status==='declined'?'This request could not be approved. Please contact STANCEBOUND.':'Your quote is awaiting review. Check back later.'}
 window.sbQuoteOpen=()=>{overlay.hidden=false;document.body.style.overflow='hidden';const saved=localStorage.getItem('sbQuoteCustomerToken');if(saved)showLookup(saved,'You have an existing quote request. Check its status below, or start a new one.').then(()=>{const b=document.createElement('button');b.className='sbq-btn alt';b.style.marginTop='15px';b.textContent='START A NEW REQUEST';b.onclick=()=>{Object.assign(state,{step:0,vehicle_type:'',vehicle:'',interior:'',exterior:'',service:'',problems:[],addons:[],notes:'',name:'',email:'',phone:'',postcode:''});render()};content.append(b)});else render()};
 window.sbQuoteClose=()=>{overlay.hidden=true;document.body.style.overflow=''};
 </script></body>
