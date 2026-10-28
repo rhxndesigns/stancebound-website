@@ -4669,6 +4669,26 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sbq-estimate{margin:20px 0;padding:23px;border:1px solid #666;background:linear-gradient(140deg,#1b1b1b,#090909);border-radius:16px}
 .sbq-estimate strong{display:block;font-size:clamp(38px,10vw,62px);letter-spacing:-.05em;margin:9px 0}
 .sbq-estimate small{color:#aaa;line-height:1.6}
+</style><style id="sbq-stance-monochrome-v3">
+#sbQuoteOverlay{background:radial-gradient(circle at 100% 0%,#171717 0,transparent 42%),#050505!important}
+#sbQuoteOverlay .sbq-wrap{max-width:850px}
+#sbQuoteOverlay .sbq-top{border-bottom:1px solid #363636}
+#sbQuoteOverlay .sbq-eyebrow{color:#bbb;font-weight:800}
+#sbQuoteOverlay .sbq-options{gap:12px}
+#sbQuoteOverlay .sbq-option{position:relative;overflow:hidden;min-height:145px;background:linear-gradient(135deg,#121212,#070707);border:1px solid #393939;border-radius:3px;padding:19px;transition:background .2s,border-color .2s,transform .2s}
+#sbQuoteOverlay .sbq-option:before{content:'';position:absolute;right:-30px;top:-30px;width:110px;height:110px;border:1px solid #242424;transform:rotate(45deg);pointer-events:none}
+#sbQuoteOverlay .sbq-option:hover{border-color:#aaa;background:#1b1b1b;transform:translateY(-2px)}
+#sbQuoteOverlay .sbq-option[aria-pressed="true"]{background:#f0f0f0;color:#080808;border:1px solid #fff;box-shadow:inset 0 0 0 2px #090909}
+#sbQuoteOverlay .sbq-option[aria-pressed="true"] small{color:#444}
+#sbQuoteOverlay .sbq-visual{display:flex;align-items:center;justify-content:center;width:57px;height:57px;border:1px solid currentColor;opacity:.92;border-radius:2px;filter:none!important}
+#sbQuoteOverlay .sbq-visual svg{width:36px;height:36px;display:block}
+#sbQuoteOverlay .sbq-option b{font-size:14px;letter-spacing:.015em;text-transform:uppercase}
+#sbQuoteOverlay .sbq-option small{line-height:1.5}
+#sbQuoteOverlay .sbq-btn{border-radius:3px;background:#f2f2f2;color:#080808}
+#sbQuoteOverlay .sbq-btn.alt{background:#111;color:#fff}
+#sbQuoteOverlay .sbq-progress{height:2px}
+#sbQuoteOverlay .sbq-estimate{border-radius:3px}
+@media(max-width:480px){#sbQuoteOverlay .sbq-option{min-height:150px;padding:12px}#sbQuoteOverlay .sbq-visual{width:48px;height:48px}#sbQuoteOverlay .sbq-visual svg{width:30px;height:30px}}
 </style></head>
 
 
@@ -9329,6 +9349,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 <div id="sbQuoteOverlay" hidden role="dialog" aria-modal="true" aria-label="Personalised detailing quote"><div class="sbq-wrap"><div class="sbq-top"><strong>STANCEBOUND / QUOTES</strong><button type="button" class="sbq-close" onclick="sbQuoteClose()" aria-label="Close quote">×</button></div><div id="sbQuoteContent"></div></div></div>
+<script id="sbq-early-trigger">
+window.sbQuoteOpen=window.sbQuoteOpen||function(){const o=document.getElementById('sbQuoteOverlay');if(o){o.hidden=false;const c=document.getElementById('sbQuoteContent');if(c)c.innerHTML='<p class="sbq-copy">Loading the quote builder…</p>';}};
+window.sbQuoteClose=window.sbQuoteClose||function(){const o=document.getElementById('sbQuoteOverlay');if(o)o.hidden=true;document.body.style.overflow='';};
+</script>
 <script type="module" id="sb-quote-engine">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const client=createClient('https://fxlekwzcxedkiyqfswvq.supabase.co','sb_publishable_FNT90aCj5_w4rJypLsw3Bg_iLNpOYld');
@@ -9344,7 +9368,20 @@ const addons=[['Headlight restoration','💡'],['Engine bay clean','⚙️'],['U
 document.addEventListener('click',e=>{const btn=e.target.closest('#serviceChoiceGrid [data-service="Detailing"]');if(btn&&!localStorage.getItem('sbApprovedQuote')){e.preventDefault();e.stopImmediatePropagation();window.sbQuoteOpen();}},true);
 const overlay=document.getElementById('sbQuoteOverlay'),content=document.getElementById('sbQuoteContent');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const options=(items,key,multi=false)=>'<div class="sbq-options">'+items.map(([label,emoji,desc])=>`<button type="button" class="sbq-option" data-sbq-key="${key}" data-sbq-value="${esc(label)}" aria-pressed="${multi?state[key].includes(label):state[key]===label}"><span class="sbq-visual" aria-hidden="true">${emoji}</span><b>${esc(label)}</b>${desc?`<small>${esc(desc)}</small>`:''}</button>`).join('')+'</div>';
+const sbqIcon=(label)=>{
+ const car='<path d="M5 16h14l-1.5-5H6.5L5 16Z"/><path d="m7 11 2-4h6l2 4M4 16v3h3v-3m10 0v3h3v-3M7 14h.01M17 14h.01"/>';
+ const sparkle='<path d="m12 2 2.3 7.7L22 12l-7.7 2.3L12 22l-2.3-7.7L2 12l7.7-2.3L12 2Z"/>';
+ const dirt='<path d="M4 18h16M7 14l3-7 4 5 3-3 2 5M5 6h.01M19 5h.01"/>';
+ const water='<path d="M12 3c-3 4-7 8-7 12a7 7 0 0 0 14 0c0-4-4-8-7-12Z"/>';
+ const seat='<path d="M8 4v9a4 4 0 0 0 4 4h7M7 13H5v6h14v-4M9 20v2m9-2v2"/>';
+ const paw='<circle cx="12" cy="15" r="3"/><circle cx="6" cy="9" r="1"/><circle cx="10" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="19" cy="9" r="1"/>';
+ const gear='<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>';
+ const check='<path d="m4 12 5 5L20 6"/>';
+ const alert='<path d="M12 3 2 21h20L12 3Zm0 6v5m0 3v.5"/>';
+ const paths=/car|hatchback|saloon|estate|suv|4x4|van|vehicle|interior & exterior/i.test(label)?car:/pet/i.test(label)?paw:/seat|upholstery|cabin|interior only/i.test(label)?seat:/water|exterior only|wash|mud|carpet|odour/i.test(label)?water:/heavy|mould|biohazard/i.test(label)?alert:/moderate|brake|tar|engine|cosmetic/i.test(label)?gear:/none|not sure/i.test(label)?check:/headlight|light|paint|clean|extraction/i.test(label)?sparkle:dirt;
+ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+};
+const options=(items,key,multi=false)=>'<div class="sbq-options">'+items.map(([label,emoji,desc])=>`<button type="button" class="sbq-option" data-sbq-key="${key}" data-sbq-value="${esc(label)}" aria-pressed="${multi?state[key].includes(label):state[key]===label}"><span class="sbq-visual" aria-hidden="true">${sbqIcon(label)}</span><b>${esc(label)}</b>${desc?`<small>${esc(desc)}</small>`:''}</button>`).join('')+'</div>';
 function estimateQuote(){
  const rank={Light:0,Moderate:1,Heavy:2,'Very heavy':3};
  const size={'Small car / hatchback':0,'Saloon / estate':.25,'SUV / 4x4':.65,'Van / larger vehicle':1}[state.vehicle_type]??0;
@@ -9362,7 +9399,7 @@ function render(){let html=`<div class="sbq-eyebrow">PERSONALISED QUOTE / STEP $
  if(state.step===4)html+='<h2 class="sbq-title">Any problem areas?</h2><p class="sbq-copy">Select everything that applies. Some jobs need extra time or specialist treatment.</p>'+options(problems,'problems',true);
  if(state.step===5)html+='<h2 class="sbq-title">Add any extras.</h2><p class="sbq-copy">Optional services. I’ll assess these individually and include them in your quote.</p>'+options(addons,'addons',true);
  if(state.step===6)html+='<h2 class="sbq-title">Tell me anything else.</h2><p class="sbq-copy">Describe the result you want, problem areas or anything that might affect the job.</p><label class="sbq-label" for="sbq-notes">Additional details</label><textarea id="sbq-notes" class="sbq-input" rows="5" maxlength="2000" placeholder="e.g. Dog hair on rear seats, stained passenger carpet…">'+esc(state.notes)+'</textarea><p class="sbq-small">I’ll confirm any specialist treatment or extra charges with you before work starts.</p>';
- if(state.step===7)html+='<h2 class="sbq-title">Your estimated price.</h2>'<p class="sbq-copy">I’ll review the vehicle and work required, then send you a price. No booking or payment is taken yet.</p>'+`<div class="sbq-estimate"><span>ESTIMATED DETAILING PRICE</span><strong>£${estimateQuote()}</strong><small>Indicative estimate only, based on your answers. Standard detailing ranges from £40 to £250. Optional extras, specialist treatment and unusually large vehicles may be quoted separately. Your final price is confirmed by STANCEBOUND before booking.</small></div>`+field('name','Your name','text',true)+field('email','Email address','email',true)+field('phone','Phone number','tel',true)+field('postcode','Town / postcode','text',true)+`<div class="sbq-summary"><b>YOUR REQUEST</b><div>${esc(state.vehicle_type)} · ${esc(state.vehicle)}</div><div>${esc(state.service)}</div><div>Interior: ${esc(state.interior)} · Exterior: ${esc(state.exterior)}</div><div>Problem areas: ${esc(state.problems.join(', ')||'None selected')}</div><div>Add-ons: ${esc(state.addons.join(', ')||'None')}</div></div>`;
+ if(state.step===7)html+='<h2 class="sbq-title">Your estimated price.</h2><p class="sbq-copy">I’ll review the vehicle and work required, then send you a price. No booking or payment is taken yet.</p>'+`<div class="sbq-estimate"><span>ESTIMATED DETAILING PRICE</span><strong>£${estimateQuote()}</strong><small>Indicative estimate only, based on your answers. Standard detailing ranges from £40 to £250. Optional extras, specialist treatment and unusually large vehicles may be quoted separately. Your final price is confirmed by STANCEBOUND before booking.</small></div>`+field('name','Your name','text',true)+field('email','Email address','email',true)+field('phone','Phone number','tel',true)+field('postcode','Town / postcode','text',true)+`<div class="sbq-summary"><b>YOUR REQUEST</b><div>${esc(state.vehicle_type)} · ${esc(state.vehicle)}</div><div>${esc(state.service)}</div><div>Interior: ${esc(state.interior)} · Exterior: ${esc(state.exterior)}</div><div>Problem areas: ${esc(state.problems.join(', ')||'None selected')}</div><div>Add-ons: ${esc(state.addons.join(', ')||'None')}</div></div>`;
  html+=`<div class="sbq-actions">${state.step?'<button type="button" class="sbq-btn alt" id="sbqBack">← BACK</button>':''}<button type="button" class="sbq-btn" id="sbqNext">${state.step===7?'SEND QUOTE REQUEST →':'CONTINUE →'}</button></div><p id="sbqStatus" class="sbq-status" role="status"></p>`;
  content.innerHTML=html;content.querySelectorAll('[data-sbq-key]').forEach(b=>b.onclick=()=>{const k=b.dataset.sbqKey,v=b.dataset.sbqValue;if(Array.isArray(state[k])){state[k]=state[k].includes(v)?state[k].filter(x=>x!==v):[...state[k],v];if(v==='None of these')state[k]=['None of these'];else state[k]=state[k].filter(x=>x!=='None of these')}else state[k]=v;render()});content.querySelectorAll('[data-sbq-field]').forEach(i=>i.oninput=()=>state[i.dataset.sbqField]=i.value);const n=content.querySelector('#sbq-notes');if(n)n.oninput=()=>state.notes=n.value;const back=content.querySelector('#sbqBack');if(back)back.onclick=()=>{state.step--;render()};content.querySelector('#sbqNext').onclick=next;
 }
