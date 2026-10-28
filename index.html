@@ -4629,6 +4629,20 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 @media (prefers-reduced-motion:reduce) { #home .home-feature-compact, #home .home-shop-teaser { scroll-behavior:auto; } }
 </style>
 
+<style id="sb-detail-project-styles">
+.sb-project-select{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:34px 0 48px}
+.sb-project-tile{position:relative;display:block;overflow:hidden;min-height:340px;aspect-ratio:4/4.5;border:1px solid rgba(255,255,255,.18);background:#121212;color:#fff;text-align:left;cursor:pointer;border-radius:8px;padding:0}
+.sb-project-tile img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transition:transform .35s ease}
+.sb-project-tile:hover img{transform:scale(1.035)}
+.sb-project-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.88) 100%)}
+.sb-project-tile-copy{position:absolute;z-index:1;bottom:0;left:0;right:0;padding:24px;display:flex;flex-direction:column;gap:9px}
+.sb-project-tile-copy small{font-size:10px;letter-spacing:.2em;color:#d1d1d1}
+.sb-project-tile-copy strong{font-size:clamp(23px,3vw,37px);line-height:1.1}
+.sb-project-tile-copy em{font-style:normal;font-size:12px;letter-spacing:.08em;color:#ddd}
+.sb-project-back{margin:25px 0 30px;padding:12px 16px;background:transparent;color:inherit;border:1px solid #777;border-radius:5px;cursor:pointer}
+.sb-project-page .sb-clio-project{margin-top:0}
+@media(max-width:650px){.sb-project-select{grid-template-columns:1fr;gap:12px}.sb-project-tile{min-height:260px;aspect-ratio:4/3}.sb-project-tile-copy{padding:18px}}
+</style>
 </head>
 
 
@@ -4932,7 +4946,51 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 
 
 
-        <div class="feature-detail">
+        <div class="sb-project-select" aria-label="Explore detailing projects">
+          <button class="sb-project-tile" type="button" onclick="showPage('detail-merc')">
+            <img src="images/STANCEBOUND4.jpg" loading="lazy" decoding="async" alt="Mercedes-AMG CLA detail">
+            <span class="sb-project-tile-copy"><small>DETAILING / PROJECT 01</small><strong>Mercedes-AMG CLA</strong><em>Explore the detail ↗</em></span>
+          </button>
+          <button class="sb-project-tile" type="button" onclick="showPage('detail-clio')">
+            <img src="clio1.jpg" loading="lazy" decoding="async" alt="Blue Renault Clio front exterior">
+            <span class="sb-project-tile-copy"><small>DETAILING / PROJECT 02</small><strong>Renault Clio</strong><em>View all seven photos ↗</em></span>
+          </button>
+        </div>
+
+        <div class="cta">
+
+          <h2>
+            Need Your Car Cleaned?
+          </h2>
+
+          <p>
+
+            Mobile detailing and automotive photography across South Wales. Request a date online and receive confirmation after availability has been reviewed.
+
+          </p>
+
+
+          <button
+            class="btn"
+            onclick="showPage('contact')"
+          >
+            Chat With STANCEBOUND
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+
+
+    <!-- Standalone detailing project pages -->
+    <section id="detail-merc" class="page sb-project-page"><div class="content">
+      <button type="button" class="sb-project-back" onclick="showPage('detailing')">← Back to detailing projects</button>
+              <div class="feature-detail">
 
           <div class="feature-kicker">Featured Detail</div>
 
@@ -5013,35 +5071,48 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
         </div>
 
 
-        <div class="cta">
+</div></section>
+    <section id="detail-clio" class="page sb-project-page"><div class="content">
+      <button type="button" class="sb-project-back" onclick="showPage('detailing')">← Back to detailing projects</button>
+              <!-- Featured detail / Renault Clio: self-contained static project, unaffected by CMS gallery updates -->
+        <section class="sb-clio-project" aria-labelledby="sb-clio-title">
+          <div class="sb-clio-heading">
+            <div><span class="sb-clio-kicker">Featured work / Detailing</span><h2 id="sb-clio-title">Renault Clio</h2><p>Exterior, interior and the details in between.</p></div>
+            <span class="sb-clio-count">01 / 07 FRAMES</span>
+          </div>
+          <div class="gallery swipe-gallery" id="sb-clio-gallery">
+          <div class="photo" role="button" tabindex="0" aria-label="View front exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio1.jpg" alt="Blue Renault Clio front three-quarter view after detailing" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Front exterior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View rear exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio2.jpg" alt="Blue Renault Clio rear three-quarter view after detailing" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Rear exterior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View boot lid detail photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio3.jpg" alt="Close-up of cleaned Renault Clio tailgate detailing" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Boot lid detail</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View tailgate photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio4.jpg" alt="Renault Clio with tailgate open after cleaning" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Tailgate</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View boot interior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio5.jpg" alt="Cleaned Renault Clio boot and rear seat backs" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Boot interior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View engine bay photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio6.jpg" alt="Renault Clio engine bay after cleaning" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Engine bay</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View cabin photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="clio7.jpg" alt="Renault Clio dashboard, centre console and front seats" loading="lazy" decoding="async">
+            <span class="sb-clio-label">Cabin</span>
+          </div>
+          </div>
+        </section>
 
-          <h2>
-            Need Your Car Cleaned?
-          </h2>
-
-          <p>
-
-            Mobile detailing and automotive photography across South Wales. Request a date online and receive confirmation after availability has been reviewed.
-
-          </p>
-
-
-          <button
-            class="btn"
-            onclick="showPage('contact')"
-          >
-            Chat With STANCEBOUND
-          </button>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-
+</div></section>
 
     <!-- ========================================
          PRICING
@@ -5270,44 +5341,6 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
         </div>
 
 
-
-        <!-- Featured detail / Renault Clio: self-contained static project, unaffected by CMS gallery updates -->
-        <section class="sb-clio-project" aria-labelledby="sb-clio-title">
-          <div class="sb-clio-heading">
-            <div><span class="sb-clio-kicker">Featured work / Detailing</span><h2 id="sb-clio-title">Renault Clio</h2><p>Exterior, interior and the details in between.</p></div>
-            <span class="sb-clio-count">01 / 07 FRAMES</span>
-          </div>
-          <div class="gallery swipe-gallery" id="sb-clio-gallery">
-          <div class="photo" role="button" tabindex="0" aria-label="View front exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio1.jpg" alt="Blue Renault Clio front three-quarter view after detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio1.jpg';}">
-            <span class="sb-clio-label">Front exterior</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View rear exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio2.jpg" alt="Blue Renault Clio rear three-quarter view after detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio2.jpg';}">
-            <span class="sb-clio-label">Rear exterior</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View boot lid detail photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio3.jpg" alt="Close-up of cleaned Renault Clio tailgate detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio3.jpg';}">
-            <span class="sb-clio-label">Boot lid detail</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View tailgate photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio4.jpg" alt="Renault Clio with tailgate open after cleaning" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio4.jpg';}">
-            <span class="sb-clio-label">Tailgate</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View boot interior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio5.jpg" alt="Cleaned Renault Clio boot and rear seat backs" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio5.jpg';}">
-            <span class="sb-clio-label">Boot interior</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View engine bay photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio6.jpg" alt="Renault Clio engine bay after cleaning" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio6.jpg';}">
-            <span class="sb-clio-label">Engine bay</span>
-          </div>
-          <div class="photo" role="button" tabindex="0" aria-label="View cabin photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="images/clio7.jpg" alt="Renault Clio dashboard, centre console and front seats" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio7.jpg';}">
-            <span class="sb-clio-label">Cabin</span>
-          </div>
-          </div>
-        </section>
 
         <div class="cta">
 
@@ -6441,7 +6474,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 
 
     function enhanceGalleryViewfinders(){
-      const cards=[...document.querySelectorAll(".gallery .photo")];
+      const cards=[...document.querySelectorAll("#photography-gallery .photo")];
       cards.forEach((card,index)=>{
         if(card.querySelector(".sb-viewfinder"))return;
         const overlay=document.createElement("div");
@@ -6482,7 +6515,7 @@ card.addEventListener("pointercancel",cancel,{passive:true});
         const cards=[...gallery.querySelectorAll(".photo,.ba-card")];
         const images=cards.map(c=>c.querySelector("img")?.src).filter(Boolean);
         cards.forEach((card,index)=>{card.onclick=()=>{
-          const isPhotoViewfinder=card.matches(".gallery .photo");
+          const isPhotoViewfinder=card.matches("#photography-gallery .photo");
           const isTouch=window.matchMedia("(hover: none) and (pointer: coarse)").matches;
           if(isPhotoViewfinder&&isTouch){
             const pressedAt=Number(card.dataset.vfPressedAt||performance.now());
