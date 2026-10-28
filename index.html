@@ -4643,6 +4643,17 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sb-project-page .sb-clio-project{margin-top:0}
 @media(max-width:650px){.sb-project-select{grid-template-columns:1fr;gap:12px}.sb-project-tile{min-height:260px;aspect-ratio:4/3}.sb-project-tile-copy{padding:18px}}
 </style>
+
+<style id="sb-clio-carousel-fix-v2">
+#sb-clio-gallery.gallery.swipe-gallery{display:flex!important;flex-wrap:nowrap!important;gap:12px!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;scroll-behavior:smooth!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important;padding:0 18px 14px 0!important;max-width:100%!important;min-width:0!important;scrollbar-width:thin!important}
+#sb-clio-gallery.gallery.swipe-gallery>.photo{position:relative!important;display:block!important;flex:0 0 min(82vw,410px)!important;width:min(82vw,410px)!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;aspect-ratio:3/4!important;grid-column:auto!important;scroll-snap-align:center!important;overflow:hidden!important;background:#141414!important;border:1px solid #303030!important}
+#sb-clio-gallery.gallery.swipe-gallery>.photo img{display:block!important;width:100%!important;height:100%!important;min-height:0!important;object-fit:cover!important}
+#sb-clio-gallery.gallery.swipe-gallery>.photo:first-child{margin-left:0!important}
+.sb-clio-controls{display:flex;align-items:center;gap:12px;margin:10px 0 0;justify-content:flex-end}
+.sb-clio-controls button{border:1px solid #777;color:#fff;background:#151515;padding:12px 17px;border-radius:4px;font-size:20px;cursor:pointer;min-width:48px}
+.sb-clio-controls span{color:#aaa;font-size:11px;letter-spacing:.15em}
+@media(min-width:850px){#sb-clio-gallery.gallery.swipe-gallery>.photo{flex-basis:min(38vw,470px)!important;width:min(38vw,470px)!important}}
+</style>
 </head>
 
 
@@ -4952,7 +4963,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
             <span class="sb-project-tile-copy"><small>DETAILING / PROJECT 01</small><strong>Mercedes-AMG CLA</strong><em>Explore the detail ↗</em></span>
           </button>
           <button class="sb-project-tile" type="button" onclick="showPage('detail-clio')">
-            <img src="clio1.jpg" loading="lazy" decoding="async" alt="Blue Renault Clio front exterior">
+            <img src="images/clio1.jpg" data-sb-clio="1" loading="lazy" decoding="async" alt="Blue Renault Clio front exterior">
             <span class="sb-project-tile-copy"><small>DETAILING / PROJECT 02</small><strong>Renault Clio</strong><em>View all seven photos ↗</em></span>
           </button>
         </div>
@@ -5082,34 +5093,35 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
           </div>
           <div class="gallery swipe-gallery" id="sb-clio-gallery">
           <div class="photo" role="button" tabindex="0" aria-label="View front exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio1.jpg" alt="Blue Renault Clio front three-quarter view after detailing" loading="lazy" decoding="async">
+            <img src="images/clio1.jpg" data-sb-clio="1" alt="Blue Renault Clio front three-quarter view after detailing" loading="lazy" decoding="async">
             <span class="sb-clio-label">Front exterior</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View rear exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio2.jpg" alt="Blue Renault Clio rear three-quarter view after detailing" loading="lazy" decoding="async">
+            <img src="images/clio2.jpg" data-sb-clio="2" alt="Blue Renault Clio rear three-quarter view after detailing" loading="lazy" decoding="async">
             <span class="sb-clio-label">Rear exterior</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View boot lid detail photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio3.jpg" alt="Close-up of cleaned Renault Clio tailgate detailing" loading="lazy" decoding="async">
+            <img src="images/clio3.jpg" data-sb-clio="3" alt="Close-up of cleaned Renault Clio tailgate detailing" loading="lazy" decoding="async">
             <span class="sb-clio-label">Boot lid detail</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View tailgate photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio4.jpg" alt="Renault Clio with tailgate open after cleaning" loading="lazy" decoding="async">
+            <img src="images/clio4.jpg" data-sb-clio="4" alt="Renault Clio with tailgate open after cleaning" loading="lazy" decoding="async">
             <span class="sb-clio-label">Tailgate</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View boot interior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio5.jpg" alt="Cleaned Renault Clio boot and rear seat backs" loading="lazy" decoding="async">
+            <img src="images/clio5.jpg" data-sb-clio="5" alt="Cleaned Renault Clio boot and rear seat backs" loading="lazy" decoding="async">
             <span class="sb-clio-label">Boot interior</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View engine bay photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio6.jpg" alt="Renault Clio engine bay after cleaning" loading="lazy" decoding="async">
+            <img src="images/clio6.jpg" data-sb-clio="6" alt="Renault Clio engine bay after cleaning" loading="lazy" decoding="async">
             <span class="sb-clio-label">Engine bay</span>
           </div>
           <div class="photo" role="button" tabindex="0" aria-label="View cabin photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-            <img src="clio7.jpg" alt="Renault Clio dashboard, centre console and front seats" loading="lazy" decoding="async">
+            <img src="images/clio7.jpg" data-sb-clio="7" alt="Renault Clio dashboard, centre console and front seats" loading="lazy" decoding="async">
             <span class="sb-clio-label">Cabin</span>
           </div>
           </div>
+          <div class="sb-clio-controls" aria-label="Clio photo navigation"><button type="button" onclick="sbClioStep(-1)" aria-label="Previous Clio photo">‹</button><span id="sb-clio-progress">01 / 07</span><button type="button" onclick="sbClioStep(1)" aria-label="Next Clio photo">›</button></div>
         </section>
 
 </div></section>
@@ -9266,6 +9278,41 @@ function start(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
-</script></body>
+</script>
+<script id="sb-clio-image-and-swipe-fix">
+(function(){
+  const gallery=document.getElementById('sb-clio-gallery');
+  if(!gallery)return;
+  const images=[...gallery.querySelectorAll('img[data-sb-clio]')];
+  images.forEach(img=>{
+    const file='clio'+img.dataset.sbClio+'.jpg';
+    const options=['images/'+file,file,'/images/'+file,'/'+file];
+    let attempt=0;
+    img.addEventListener('error',()=>{
+      attempt++;
+      if(attempt<options.length){img.src=options[attempt];}
+      else {img.alt='Photo unavailable: '+file;img.closest('.photo')?.classList.add('sb-clio-image-missing');}
+    });
+  });
+  const cards=[...gallery.querySelectorAll('.photo')];
+  const progress=document.getElementById('sb-clio-progress');
+  const update=()=>{
+    let closest=0,dist=Infinity;
+    cards.forEach((card,i)=>{const d=Math.abs(card.offsetLeft-gallery.offsetLeft-gallery.scrollLeft);if(d<dist){dist=d;closest=i;}});
+    if(progress)progress.textContent=String(closest+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
+  };
+  window.sbClioStep=function(dir){
+    const left=gallery.scrollLeft;
+    let idx=0,dist=Infinity;
+    cards.forEach((card,i)=>{const d=Math.abs(card.offsetLeft-gallery.offsetLeft-left);if(d<dist){dist=d;idx=i;}});
+    const next=Math.max(0,Math.min(cards.length-1,idx+dir));
+    gallery.scrollTo({left:cards[next].offsetLeft-gallery.offsetLeft,behavior:'smooth'});
+    if(progress)progress.textContent=String(next+1).padStart(2,'0')+' / '+String(cards.length).padStart(2,'0');
+  };
+  gallery.addEventListener('scroll',update,{passive:true});
+  update();
+})();
+</script>
+</body>
 
 </html>
