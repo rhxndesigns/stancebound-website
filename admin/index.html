@@ -1861,6 +1861,15 @@ Log In
   <div class="admin-kicker">STANCEBOUND / DEPLOYMENT CONTROL</div>
   <h2>Website Updates</h2>
   <p class="sb-su-desc">Upload a complete STANCEBOUND HTML file with <strong>any filename</strong>. Admin automatically publishes it as <code>index.html</code> in the correct GitHub folder. No renaming or deleting old downloads needed.</p>
+  <div class="sb-su-card" id="sbBundleCard" style="margin-bottom:16px;border-color:#888">
+    <div class="sb-su-top"><span>ONE UPLOAD / FOUR PAGES</span><strong>DEPLOY WEBSITE ZIP</strong></div>
+    <p>Select a ZIP containing <code>index.html</code>, <code>mobile-valeting-llanelli/index.html</code>, <code>headlight-restoration/index.html</code> and <code>areas-covered/index.html</code>. The four files will be committed together. Your admin page is not replaced.</p>
+    <label for="sbBundleUpload">SELECT WEBSITE ZIP</label>
+    <input id="sbBundleUpload" type="file" accept=".zip,application/zip" />
+    <div class="sb-su-file" id="sbBundleFiles">No ZIP selected.</div>
+    <button type="button" id="sbPublishBundle" class="sb-su-deploy" disabled>DEPLOY ALL FOUR PAGES</button>
+    <div class="sb-su-status" id="sbBundleStatus" role="status" aria-live="polite"></div>
+  </div>
   <div class="sb-su-grid">
    <div class="sb-su-card">
     <div class="sb-su-top"><span>01 / CUSTOMER WEBSITE</span><strong>PUBLIC WEBSITE</strong></div>
@@ -6861,6 +6870,57 @@ let scheduled=false;function scan(){scheduled=false;document.querySelectorAll('.
 const observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(scan)}});
 function start(){scan();observer.observe(document.body,{childList:true,subtree:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+<script id="sb-bundle-deploy-js">
+(()=>{
+  'use strict';
+  const input=document.getElementById('sbBundleUpload'),button=document.getElementById('sbPublishBundle'),files=document.getElementById('sbBundleFiles'),status=document.getElementById('sbBundleStatus');
+  if(!input||!button||!files||!status)return;
+  const paths=['index.html','mobile-valeting-llanelli/index.html','headlight-restoration/index.html','areas-covered/index.html'];
+  let payload=null;
+  function report(message,error=false){status.textContent=message;status.style.color=error?'#ff9b9b':'#b9e8c6';}
+  function loadZipLibrary(){return new Promise((resolve,reject)=>{if(window.JSZip)return resolve(window.JSZip);const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';s.onload=()=>window.JSZip?resolve(window.JSZip):reject(Error('ZIP reader unavailable'));s.onerror=()=>reject(Error('ZIP reader could not load. Check your internet connection.'));document.head.append(s);});}
+  input.addEventListener('change',async()=>{
+    payload=null;button.disabled=true;const file=input.files?.[0];files.textContent='No ZIP selected.';report('');if(!file)return;
+    try{
+      if(file.size>8*1024*1024)throw Error('ZIP too large (8 MB maximum).');
+      const JSZip=await loadZipLibrary(),zip=await JSZip.loadAsync(file);
+      const entries=Object.values(zip.files).filter(x=>!x.dir);
+      if(entries.length!==4)throw Error('The ZIP must contain exactly four HTML files, no extras.');
+      const found={};
+      for(const entry of entries){
+        let path=entry.name.replace(/\/g,'/').replace(/^\.\//,'');
+        // Accept a single enclosing folder, as produced by some ZIP utilities.
+        if(!paths.includes(path)){const parts=path.split('/');if(parts.length>1&&paths.includes(parts.slice(1).join('/')))path=parts.slice(1).join('/');}
+        if(!paths.includes(path)||found[path])throw Error('Unexpected or duplicate ZIP path: '+entry.name);
+        const html=await entry.async('string');
+        if(html.length<500||html.length>1500000||!/<!doctype\s+html/i.test(html)||!/<\/html>/i.test(html))throw Error('Invalid HTML: '+path);
+        found[path]=html;
+      }
+      if(paths.some(path=>!found[path]))throw Error('One or more required index.html files are missing.');
+      const doc=new DOMParser().parseFromString(found['index.html'],'text/html');
+      if(!doc.getElementById('home')||!doc.getElementById('sbBoot'))throw Error('Root index.html does not look like the STANCEBOUND main website.');
+      payload=paths.map(path=>({path,html:found[path]}));
+      files.textContent='Ready: '+paths.join(' · ');button.disabled=false;report('All four pages validated. Ready to publish.');
+    }catch(e){report(e.message||'Could not read ZIP.',true);}
+  });
+  button.addEventListener('click',async()=>{
+    if(!payload)return;
+    if(!confirm('Publish all four website pages in ONE GitHub commit? This will replace the existing four pages.'))return;
+    button.disabled=true;report('Uploading all four pages. Keep this page open…');
+    try{
+      const sb=window.sbAdminSupabase;
+      if(!sb)throw Error('Admin session unavailable. Sign in again.');
+      const {data:auth,error:authError}=await sb.auth.getSession();
+      if(authError||!auth?.session?.access_token)throw Error('Admin login expired. Sign in again.');
+      const {data,error}=await sb.functions.invoke('sb-deploy-bundle',{body:{files:payload}});
+      if(error){let detail=error.message;try{const d=await error.context?.json();detail=d?.error||detail;}catch{}throw Error(detail);}
+      if(!data?.success||!data?.commit)throw Error(data?.error||'GitHub did not confirm the commit.');
+      report('All four pages committed successfully: '+String(data.commit).slice(0,8)+'. GitHub Pages may take a few minutes to publish.');
+      input.value='';payload=null;files.textContent='Deployment confirmed.';
+    }catch(e){report('Not confirmed: '+(e.message||'Unknown error'),true);button.disabled=false;}
+  });
 })();
 </script>
 </body>
