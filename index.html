@@ -103,6 +103,24 @@ html.sb-track-route,html.sb-track-route body{background:#050505!important}
 .sb-returning-toggle span{display:grid;gap:5px}.sb-returning-toggle strong{font-size:12px;letter-spacing:.06em}
 .sb-returning-toggle small{font-size:11px;line-height:1.5;color:#aaa}
 #sbReturningNotice{font-size:11px;line-height:1.6;color:#bbb;margin:12px 0 0}
+
+    /* STANCEBOUND / Clio featured detail: isolated from booking and admin UI */
+    .sb-clio-project{margin:34px 0 44px}
+    .sb-clio-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:16px;flex-wrap:wrap}
+    .sb-clio-kicker{font-size:11px;letter-spacing:.24em;color:#aaa;text-transform:uppercase}
+    .sb-clio-heading h2{font-size:clamp(24px,3.5vw,39px);line-height:1.12;margin:7px 0}
+    .sb-clio-heading p{margin:0;color:#a5a5a5;font-size:13px}
+    .sb-clio-count{font-size:11px;letter-spacing:.16em;color:#999;white-space:nowrap}
+    #sb-clio-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;overflow:visible;padding:0;scroll-snap-type:none}
+    #sb-clio-gallery .photo,#sb-clio-gallery .photo.large{grid-column:span 2;min-width:0;min-height:0;aspect-ratio:4/5;border-radius:4px;overflow:hidden}
+    #sb-clio-gallery .photo:nth-child(-n+2){grid-column:span 3;aspect-ratio:4/5}
+    #sb-clio-gallery .photo:last-child{grid-column:span 4;aspect-ratio:16/9}
+    #sb-clio-gallery .photo img,#sb-clio-gallery .photo.large img{width:100%;height:100%;min-height:0;object-fit:cover;display:block}
+    #sb-clio-gallery .photo:last-child img{object-position:center 60%}
+    #sb-clio-gallery .sb-clio-label{position:absolute;z-index:2;bottom:0;left:0;right:0;padding:32px 12px 11px;background:linear-gradient(transparent,rgba(0,0,0,.68));color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;pointer-events:none}
+    @media(max-width:700px){#sb-clio-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#sb-clio-gallery .photo,#sb-clio-gallery .photo.large,#sb-clio-gallery .photo:nth-child(-n+2),#sb-clio-gallery .photo:last-child{grid-column:span 1;aspect-ratio:3/4;min-height:0}#sb-clio-gallery .photo:first-child{grid-column:span 2;aspect-ratio:4/3}#sb-clio-gallery .photo img,#sb-clio-gallery .photo.large img{min-height:0}#sb-clio-gallery .sb-clio-label{font-size:9px;padding:22px 9px 9px}}
+    @media(prefers-reduced-motion:reduce){#sb-clio-gallery .photo img{transition:none}}
+
 </style>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -5252,6 +5270,44 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
         </div>
 
 
+
+        <!-- Featured detail / Renault Clio: self-contained static project, unaffected by CMS gallery updates -->
+        <section class="sb-clio-project" aria-labelledby="sb-clio-title">
+          <div class="sb-clio-heading">
+            <div><span class="sb-clio-kicker">Featured work / Detailing</span><h2 id="sb-clio-title">Renault Clio</h2><p>Exterior, interior and the details in between.</p></div>
+            <span class="sb-clio-count">01 / 07 FRAMES</span>
+          </div>
+          <div class="gallery swipe-gallery" id="sb-clio-gallery">
+          <div class="photo" role="button" tabindex="0" aria-label="View front exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio1.jpg" alt="Blue Renault Clio front three-quarter view after detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio1.jpg';}">
+            <span class="sb-clio-label">Front exterior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View rear exterior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio2.jpg" alt="Blue Renault Clio rear three-quarter view after detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio2.jpg';}">
+            <span class="sb-clio-label">Rear exterior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View boot lid detail photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio3.jpg" alt="Close-up of cleaned Renault Clio tailgate detailing" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio3.jpg';}">
+            <span class="sb-clio-label">Boot lid detail</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View tailgate photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio4.jpg" alt="Renault Clio with tailgate open after cleaning" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio4.jpg';}">
+            <span class="sb-clio-label">Tailgate</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View boot interior photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio5.jpg" alt="Cleaned Renault Clio boot and rear seat backs" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio5.jpg';}">
+            <span class="sb-clio-label">Boot interior</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View engine bay photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio6.jpg" alt="Renault Clio engine bay after cleaning" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio6.jpg';}">
+            <span class="sb-clio-label">Engine bay</span>
+          </div>
+          <div class="photo" role="button" tabindex="0" aria-label="View cabin photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <img src="images/clio7.jpg" alt="Renault Clio dashboard, centre console and front seats" loading="lazy" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='clio7.jpg';}">
+            <span class="sb-clio-label">Cabin</span>
+          </div>
+          </div>
+        </section>
 
         <div class="cta">
 
