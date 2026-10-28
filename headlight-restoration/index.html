@@ -95,7 +95,7 @@ html.sb-track-route,html.sb-track-route body{background:#050505!important}
           rgba(0, 0, 0, 0.28),
           rgba(0, 0, 0, 0.28)
         ),
-        url("images/texture.png");
+        url("/images/texture.png");
 
       background-repeat: repeat;
       background-size: 700px auto;
@@ -1639,7 +1639,7 @@ clamp(21px, 4vw, 32px);
     .theme-wipe.to-dark{background:#050505}
     .theme-wipe.run{animation:themeCurtain .72s cubic-bezier(.77,0,.18,1) forwards}
     @keyframes themeCurtain{0%{transform:translateY(-101%)}52%{transform:translateY(0)}100%{transform:translateY(101%)}}
-    body.light-theme{--black:#f4f3ef;--panel:rgba(255,255,255,.82);--white:#101010;--silver:#303030;--grey:#666;--dark-grey:#888;--line:rgba(0,0,0,.14);background-color:#f4f3ef;background-image:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)),url("images/texture.png")}
+    body.light-theme{--black:#f4f3ef;--panel:rgba(255,255,255,.82);--white:#101010;--silver:#303030;--grey:#666;--dark-grey:#888;--line:rgba(0,0,0,.14);background-color:#f4f3ef;background-image:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)),url("/images/texture.png")}
     body.light-theme header{background:rgba(244,243,239,.93)}
     body.light-theme .header-logo img,body.light-theme .contact-logo{filter:invert(1)}
     body.light-theme .service,body.light-theme .feature-detail,body.light-theme .cta,body.light-theme .contact-card,body.light-theme .enquiry-shell{background:rgba(255,255,255,.62);border-color:rgba(0,0,0,.12)}
@@ -1728,7 +1728,7 @@ clamp(21px, 4vw, 32px);
       inset: 0;
       z-index: -1;
       pointer-events: none;
-      background-image: url("images/backgroundsb.png");
+      background-image: url("/images/backgroundsb.png");
       background-repeat: no-repeat;
       background-position: center 14%;
       background-size: min(1500px, 125vw) auto;
@@ -1738,7 +1738,7 @@ clamp(21px, 4vw, 32px);
     body.light-theme #photography::before,
     body.light-theme #shop::before,
     body.light-theme #reviews::before {
-      background-image: url("images/backgroundsbwhite.png");
+      background-image: url("/images/backgroundsbwhite.png");
       opacity: .10;
     }
     @media (max-width: 760px) {
@@ -4580,20 +4580,12 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 </style><style id="sb-service-clean-navigation-v2">
 /* Service pages only: no photographic backdrop, no extra top header. */
 html,body{overflow-x:clip!important;max-width:100%!important}
-body{background:#060607!important;background-image:radial-gradient(circle at 50% 20%,rgba(255,255,255,.035),transparent 42%),repeating-linear-gradient(0deg,transparent 0 64px,rgba(255,255,255,.014) 65px 66px),repeating-linear-gradient(90deg,transparent 0 64px,rgba(255,255,255,.012) 65px 66px)!important;background-attachment:scroll!important}
+body{background-color:#050505!important;background-image:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),url("/images/texture.png")!important;background-repeat:repeat!important;background-size:700px auto!important;background-position:top center!important;background-attachment:scroll!important}
 body::before{background:none!important;content:none!important;display:none!important}
 body>header{display:none!important}
 .sb-service-shell{padding-top:20px!important}
 .sb-service-hero{padding-top:8px!important}
 .sb-service-hero .hero-logo{display:block;margin-inline:auto}
-/* Original circular SB navigation button, fully visible, above page content. */
-#radialNav{position:fixed!important;left:50%!important;bottom:calc(35px + env(safe-area-inset-bottom,0px))!important;top:auto!important;z-index:2147483000!important;isolation:isolate}
-#radialNav .radial-toggle{position:absolute!important;left:0!important;top:0!important;display:grid!important;place-items:center!important;transform:translate(-50%,-50%)!important;width:72px!important;height:72px!important;border-radius:50%!important;border:2px solid #d92e3c!important;background:radial-gradient(circle at 50% 42%,#262629 0%,#070708 74%)!important;box-shadow:0 0 0 5px rgba(0,0,0,.78),0 0 22px rgba(210,35,51,.3)!important;opacity:1!important;visibility:visible!important;overflow:hidden!important}
-#radialNav .radial-toggle img{display:block!important;position:relative!important;opacity:1!important;visibility:visible!important;filter:none!important;width:45px!important;height:45px!important;max-width:70%!important;max-height:70%!important;object-fit:contain!important;transform:none!important;z-index:2!important}
-#radialNav .radial-toggle::after{content:none!important}
-#radialNav .radial-items{pointer-events:none}
-#radialNav.open .radial-items{pointer-events:auto}
-#radialNav .radial-item{white-space:nowrap}
 @media(max-width:600px){.sb-service-shell{padding-inline:20px!important;padding-bottom:170px!important}.sb-service-hero h1{font-size:clamp(26px,7vw,34px)!important;overflow-wrap:break-word}.sb-service-lead{font-size:16px!important;line-height:1.65!important}.sb-service-actions a{min-height:54px!important;padding:14px!important}.sb-service-section h2{font-size:clamp(23px,6vw,30px)!important}}
 @media(prefers-reduced-motion:reduce){body{background-attachment:scroll!important}}
 </style></head><body><header>
@@ -4643,14 +4635,16 @@ body>header{display:none!important}
 <button class="radial-item" data-page="contact" style="--i:7;--a:87deg">Chat</button>
 </div>
 <button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" src="/images/stanceboundlogo.png?v=30" onerror="this.src='/images/stanceboundlogo.png'"/></button>
-</div><script>
-function goRoot(page){location.href='/#'+page}
-function toggleMenu(){const n=document.getElementById('navigation'),b=document.querySelector('.menu-button');if(!n)return;n.classList.toggle('active');n.classList.toggle('open');b?.setAttribute('aria-expanded',String(n.classList.contains('active')||n.classList.contains('open')))}
-(function(){const radial=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43');if(!radial||!toggle||!items)return;toggle.addEventListener('click',()=>{const open=radial.classList.toggle('open');radial.classList.toggle('active',open);items.inert=!open;toggle.setAttribute('aria-expanded',String(open))});items.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>goRoot(el.dataset.page)));})();
-</script><script>
-(function(){const nav=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43');if(!nav||!toggle||!items)return;
-function close(){nav.classList.remove('open','active');items.inert=true;toggle.setAttribute('aria-expanded','false')}
-document.addEventListener('pointerdown',e=>{if(nav.classList.contains('open')&&!nav.contains(e.target))close()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
-})();
-</script></body></html>
+</div><style id="sb-original-exact-nav-fix-v1">
+   .sb-service-shell,.sb-service-hero,.sb-service-section{background-image:none!important}
+   body{background-color:#050505!important;background-image:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),url('/images/texture.png')!important;background-repeat:repeat!important;background-size:700px auto!important;background-position:top center!important}
+   #radialNav{position:fixed!important;left:50%!important;bottom:72px!important;top:auto!important;width:0!important;height:0!important;z-index:10010!important;isolation:auto!important}
+   #radialNav .radial-toggle{position:absolute!important;left:0!important;top:0!important;transform:translate(-50%,-50%)!important;width:66px!important;height:66px!important;border-radius:50%!important;border:2px solid #d22b3a!important;background:radial-gradient(circle at 50% 40%,#262629,#09090a 72%)!important;box-shadow:0 0 0 5px rgba(0,0,0,.78),0 0 22px rgba(210,35,51,.3)!important;display:grid!important;place-items:center!important;overflow:hidden!important;opacity:1!important;visibility:visible!important;cursor:pointer!important}
+   #radialNav .radial-toggle img{display:block!important;width:45px!important;height:45px!important;max-width:70%!important;max-height:70%!important;object-fit:contain!important;position:relative!important;transform:none!important;filter:none!important;opacity:1!important;visibility:visible!important;z-index:2!important}
+   #radialNav .radial-toggle::after{content:none!important}
+   #radialNav .radial-items{position:absolute!important;left:0!important;top:0!important;pointer-events:none!important}
+   #radialNav.open .radial-items{pointer-events:auto!important}
+   #radialNav .radial-item{white-space:nowrap}
+   #radialNav.open .radial-item{pointer-events:auto!important}
+   @media(max-width:600px){.sb-service-shell{padding-bottom:185px!important}}
+   </style><script id="sb-service-root-nav-v1">(()=>{const nav=document.getElementById('radialNav'),btn=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43');if(!nav||!btn||!items)return;function setOpen(open){nav.classList.toggle('open',open);nav.classList.toggle('active',open);items.inert=!open;btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'Close menu':'Open menu')}btn.addEventListener('click',e=>{e.preventDefault();setOpen(!nav.classList.contains('open'))});items.querySelectorAll('[data-page]').forEach(b=>{b.classList.remove('active');b.addEventListener('click',()=>{location.href='/#'+b.dataset.page})});document.addEventListener('pointerdown',e=>{if(nav.classList.contains('open')&&!nav.contains(e.target))setOpen(false)});document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});setOpen(false)})();</script></body></html>
