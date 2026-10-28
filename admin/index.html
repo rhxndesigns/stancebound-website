@@ -1745,7 +1745,7 @@ body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog
 })();
 </script>
 
-</head>
+<style id="sb-admin-quotes-css">.sbq-admin-card{border:1px solid #333;background:#0c0c0c;padding:17px;border-radius:14px;margin:12px 0;line-height:1.65}.sbq-admin-card h3{margin:0 0 8px}.sbq-admin-meta{color:#aaa;font-size:12px;overflow-wrap:anywhere}.sbq-admin-card input,.sbq-admin-card textarea{width:100%;margin:8px 0 12px;padding:12px;background:#111;color:#fff;border:1px solid #444;border-radius:8px}.sbq-admin-card button{width:auto;min-height:42px;padding:10px 18px;margin:5px 7px 5px 0}.sbq-admin-card .sbq-approve{background:#eaeaea;color:#090909}.sbq-admin-card .sbq-decline{background:#301313;color:#ffbcbc}</style></head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -1837,6 +1837,7 @@ Log In
 
   <nav class="admin-tabs" aria-label="Admin pages">
     <button type="button" class="admin-tab active" data-admin-target="dashboard">Home</button>
+    <button type="button" class="admin-tab" data-admin-target="quotes">Quotes</button>
     <button type="button" class="admin-tab" data-admin-target="bookings">01 Enquiries <span id="bookingBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="confirmation">02 Confirmation <span id="confirmationBadge"></span></button>
     <button type="button" class="admin-tab" data-admin-target="upcoming">03 Jobs <span id="jobsBadge"></span></button>
@@ -2008,7 +2009,8 @@ Log In
     </div>
   </div>
 
-  <div class="admin-page" data-admin-page="bookings">
+  <div class="admin-page" data-admin-page="quotes"><section class="panel"><div class="admin-kicker">STANCEBOUND / PERSONAL QUOTES</div><h2>Detailing quote requests.</h2><p class="help">Review vehicle condition, requested work and extras. Set your price before approving. Quotes do not reserve calendar dates.</p><button type="button" id="sbqAdminRefresh">REFRESH QUOTES</button><p id="sbqAdminStatus" class="status"></p><div id="sbqAdminList"></div></section></div>
+<div class="admin-page" data-admin-page="bookings">
     <div class="panel">
       <div class="admin-kicker">01 · NEW ENQUIRIES</div>
       <div class="section-title-row"><h2>Enquiries</h2><span class="status-pill" id="bookingRequestCount">0</span></div>
@@ -6799,5 +6801,12 @@ document.getElementById('sbiSaveDraft').addEventListener('click',()=>save(false)
 })();
 
 </script>
-</body>
+<script type="module" id="sb-admin-quotes-engine">
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const list=document.getElementById('sbqAdminList'),status=document.getElementById('sbqAdminStatus');
+async function refresh(){const sb=window.sbAdminSupabase;if(!sb){status.textContent='Waiting for admin connection…';return}const {data:{session}}=await sb.auth.getSession();if(!session){status.textContent='Sign in to review quotes.';return}status.textContent='Loading quotes…';const {data,error}=await sb.from('sb_detail_quotes').select('*').order('created_at',{ascending:false}).limit(100);if(error){status.textContent=error.message;return}status.textContent=`${data.length} quote request(s)`;list.innerHTML=data.length?data.map(q=>`<article class="sbq-admin-card" data-sbq-id="${esc(q.id)}"><h3>${esc(q.customer_name)} <small>· ${esc(q.status)}</small></h3><div class="sbq-admin-meta">${esc(q.email)} · ${esc(q.phone)} · ${esc(q.postcode)}<br>${esc(q.vehicle_type)} · ${esc(q.vehicle)}<br><b>${esc(q.service)}</b><br>Interior: ${esc(q.interior_condition)} · Exterior: ${esc(q.exterior_condition)}<br>Problem areas: ${esc((q.problems||[]).join(', ')||'None')}<br>Add-ons: ${esc((q.addons||[]).join(', ')||'None')}<br>Notes: ${esc(q.notes||'None')}<br>Submitted: ${esc(new Date(q.created_at).toLocaleString('en-GB'))}</div><label>Approved price (£)</label><input type="number" min="1" step="0.01" data-sbq-price value="${q.price??''}" placeholder="Enter your agreed price"><label>Message / quote details</label><textarea data-sbq-notes rows="3" placeholder="Describe the included work, exclusions or conditions">${esc(q.admin_notes||'')}</textarea><button type="button" class="sbq-approve" data-sbq-action="approved">APPROVE QUOTE</button><button type="button" class="sbq-decline" data-sbq-action="declined">DECLINE</button><small style="display:block;color:#888">Customer can check approval using their private reference. This does not automatically send an email.</small><p data-sbq-result class="status"></p></article>`).join(''):'<p class="help">No quotes received yet.</p>'}
+list.addEventListener('click',async e=>{const btn=e.target.closest('[data-sbq-action]');if(!btn)return;const card=btn.closest('[data-sbq-id]'),price=Number(card.querySelector('[data-sbq-price]').value),notes=card.querySelector('[data-sbq-notes]').value.trim(),action=btn.dataset.sbqAction,feedback=card.querySelector('[data-sbq-result]');if(action==='approved'&&(!Number.isFinite(price)||price<=0)){feedback.textContent='Enter a valid price first.';return}btn.disabled=true;feedback.textContent='Saving…';const {error}=await window.sbAdminSupabase.from('sb_detail_quotes').update({status:action,price:action==='approved'?price:null,admin_notes:notes,reviewed_at:new Date().toISOString()}).eq('id',card.dataset.sbqId);if(error){feedback.textContent=error.message;btn.disabled=false;return}await refresh()});
+document.getElementById('sbqAdminRefresh').onclick=refresh;
+document.addEventListener('click',e=>{if(e.target.closest('[data-admin-target="quotes"],[data-sheet-target="quotes"]'))setTimeout(refresh,120)});
+</script></body>
 </html>
