@@ -4697,6 +4697,10 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 .sb-autofinesse{font-style:italic;font-weight:900;letter-spacing:-.5px}.sb-autofinesse strong{font-weight:900}
 .sb-autoglym{font-weight:900;letter-spacing:2px}
 .sb-product-brands-note{font-size:9px;line-height:1.6;letter-spacing:.3px;text-transform:none;color:#777;margin-top:16px;font-weight:400}
+.sb-product-logo{display:block;max-width:min(190px,38vw);width:auto;height:64px;object-fit:contain;filter:grayscale(1) brightness(1.5);opacity:.9}
+.sb-auto-finesse-logo{max-width:min(210px,40vw)}
+.sb-autoglym-logo{max-width:min(180px,38vw)}
+@media(max-width:480px){.sb-product-logo{height:48px}}
 </style>
 </head>
 
@@ -5915,8 +5919,8 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 <div class="sb-product-brands" aria-label="Detailing product brands">
   <div class="sb-product-brands-label">PRODUCT BRANDS WE USE</div>
   <div class="sb-product-brands-row">
-    <span class="sb-product-brand sb-autofinesse">AUTO <strong>FINESSE</strong></span>
-    <span class="sb-product-brand sb-autoglym">AUTOGLYM</span>
+    <img class="sb-product-logo sb-auto-finesse-logo" src="https://cdn.brandfetch.io/autofinesse.com/w/400/h/200/logo" alt="Auto Finesse official brand logo" loading="lazy" referrerpolicy="no-referrer">
+    <img class="sb-product-logo sb-autoglym-logo" src="https://www.autoglym.com/static/version1744617326/frontend/Autoglym/default/en_GB/images/logos/logo-60.png" alt="Autoglym official brand logo" loading="lazy">
   </div>
   <div class="sb-product-brands-note">Independent detailing service. No brand endorsement or affiliation implied.</div>
 </div>
