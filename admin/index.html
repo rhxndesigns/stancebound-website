@@ -6835,5 +6835,33 @@ async function refresh(){const sb=window.sbAdminSupabase;if(!sb){status.textCont
 list.addEventListener('click',async e=>{const btn=e.target.closest('[data-sbq-action]');if(!btn)return;const card=btn.closest('[data-sbq-id]'),price=Number(card.querySelector('[data-sbq-price]').value),notes=card.querySelector('[data-sbq-notes]').value.trim(),action=btn.dataset.sbqAction,feedback=card.querySelector('[data-sbq-result]');if(action==='approved'&&(!Number.isFinite(price)||price<=0)){feedback.textContent='Enter a valid price first.';return}btn.disabled=true;feedback.textContent='Saving…';const {error}=await window.sbAdminSupabase.from('sb_detail_quotes').update({status:action,price:action==='approved'?price:null,admin_notes:notes,reviewed_at:new Date().toISOString()}).eq('id',card.dataset.sbqId);if(error){feedback.textContent=error.message;btn.disabled=false;return}await refresh()});
 document.getElementById('sbqAdminRefresh').onclick=refresh;
 document.addEventListener('click',e=>{if(e.target.closest('[data-admin-target="quotes"],[data-sheet-target="quotes"]'))setTimeout(refresh,120)});
-</script></body>
+</script><style id="sb-clean-booking-details-style">
+.sb-clean-summary{margin:14px 0;padding:16px;border:1px solid #484848;border-radius:12px;background:#101010;color:#fff;line-height:1.5}
+.sb-clean-summary *{box-sizing:border-box}.sb-clean-summary .sb-clean-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.sb-clean-summary .sb-clean-title{font-weight:850;font-size:19px;letter-spacing:.01em}.sb-clean-summary .sb-clean-money{font-size:28px;font-weight:900}
+.sb-clean-summary .sb-clean-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sb-clean-summary .sb-clean-cell{border:1px solid #353535;border-radius:9px;background:#1b1b1b;padding:11px;min-width:0}
+.sb-clean-summary .sb-clean-label{font-size:12px;color:#bcbcbc;font-weight:700}.sb-clean-summary .sb-clean-val{font-size:17px;font-weight:800;overflow-wrap:anywhere;margin-top:3px}
+.sb-clean-summary .sb-clean-heading{font-size:13px;font-weight:850;margin:16px 0 7px}.sb-clean-summary .sb-clean-tags{display:flex;gap:7px;flex-wrap:wrap}.sb-clean-summary .sb-clean-chip{padding:8px 10px;border-radius:7px;border:1px solid #555;background:#252525;font-size:14px;font-weight:700}
+.sb-clean-summary .sb-clean-info{font-size:13px;color:#bcbcbc;margin-top:12px}.sb-clean-summary .sb-clean-note{white-space:pre-wrap;font-size:15px;overflow-wrap:anywhere}
+@media(max-width:440px){.sb-clean-summary{padding:12px}.sb-clean-summary .sb-clean-grid{grid-template-columns:1fr}}
+</style>
+<script id="sb-clean-booking-details-engine">
+(function(){
+const marker=/\[STANCEBOUND DETAILING SELECTION\]\s*([\s\S]*?)\s*\[\/STANCEBOUND DETAILING SELECTION\]/;
+const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clean=s=>String(s||'').replace(marker,'').replace(/Detailing estimate reference:\s*[^\n]+/gi,'').replace(/Estimated detailing price:\s*[^\n]+/gi,'').replace(/Estimated combined price:\s*[^\n]+/gi,'').replace(/Selected services:\s*Detailing\s*/gi,'').trim();
+const chips=a=>Array.isArray(a)&&a.length?a.map(v=>'<span class="sb-clean-chip">'+html(v)+'</span>').join(''):'<span class="sb-clean-info">None selected</span>';
+function visual(d){const price=Number(d.estimated_price);const box=(label,value)=>'<div class="sb-clean-cell"><div class="sb-clean-label">'+html(label)+'</div><div class="sb-clean-val">'+html(value||'Not specified')+'</div></div>';
+return '<section class="sb-clean-summary" aria-label="Customer detailing choices"><div class="sb-clean-top"><div class="sb-clean-title">DETAILING BREAKDOWN</div><div class="sb-clean-money">'+(Number.isFinite(price)?'£'+price.toFixed(2):'Price not supplied')+'</div></div><div class="sb-clean-grid">'+box('🚗 VEHICLE',[d.vehicle_type,d.vehicle].filter(Boolean).join(' · '))+box('SERVICE',d.service)+box('INTERIOR',d.interior)+box('EXTERIOR',d.exterior)+'</div><div class="sb-clean-heading">PROBLEM AREAS</div><div class="sb-clean-tags">'+chips(d.problems)+'</div><div class="sb-clean-heading">EXTRAS REQUESTED</div><div class="sb-clean-tags">'+chips(d.addons)+'</div>'+(d.notes?'<div class="sb-clean-heading">CUSTOMER NOTES</div><div class="sb-clean-note">'+html(d.notes)+'</div>':'')+'<div class="sb-clean-info">Estimated price. Check whether extras need a separate charge.</div></section>'}
+function update(el){if(el.dataset.sbCleanDone==='1')return;const raw=el.textContent||'';const match=raw.match(marker);if(!match)return;let data;try{data=JSON.parse(match[1])}catch{return}if(!data||typeof data!=='object')return;
+el.dataset.sbCleanDone='1';const panel=document.createElement('div');panel.innerHTML=visual(data);el.parentNode.insertBefore(panel.firstElementChild,el);
+const remaining=clean(raw);if(remaining){el.textContent=remaining}else{el.remove()}
+}
+let scheduled=false;function scan(){scheduled=false;document.querySelectorAll('.enquiry-message').forEach(update)}
+const observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(scan)}});
+function start(){scan();observer.observe(document.body,{childList:true,subtree:true})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+</body>
 </html>
