@@ -4577,6 +4577,25 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 #radialNav{z-index:9999}
 @media(max-width:600px){.sb-service-shell{padding:24px 18px 170px}.sb-service-hero{padding-top:12px}.sb-service-hero .hero-logo{width:min(85%,350px);max-height:140px}.sb-service-actions{grid-template-columns:1fr}.sb-service-grid{grid-template-columns:1fr}.sb-service-section{margin-top:43px}.sb-service-hero h1{font-size:clamp(25px,7vw,34px)}.sb-service-lead{font-size:15px}.sb-service-card{padding:19px}.sb-service-hero:before{width:78vw}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important}}
+</style><style id="sb-service-clean-navigation-v2">
+/* Service pages only: no photographic backdrop, no extra top header. */
+html,body{overflow-x:clip!important;max-width:100%!important}
+body{background:#060607!important;background-image:radial-gradient(circle at 50% 20%,rgba(255,255,255,.035),transparent 42%),repeating-linear-gradient(0deg,transparent 0 64px,rgba(255,255,255,.014) 65px 66px),repeating-linear-gradient(90deg,transparent 0 64px,rgba(255,255,255,.012) 65px 66px)!important;background-attachment:scroll!important}
+body::before{background:none!important;content:none!important;display:none!important}
+body>header{display:none!important}
+.sb-service-shell{padding-top:20px!important}
+.sb-service-hero{padding-top:8px!important}
+.sb-service-hero .hero-logo{display:block;margin-inline:auto}
+/* Original circular SB navigation button, fully visible, above page content. */
+#radialNav{position:fixed!important;left:50%!important;bottom:calc(35px + env(safe-area-inset-bottom,0px))!important;top:auto!important;z-index:2147483000!important;isolation:isolate}
+#radialNav .radial-toggle{position:absolute!important;left:0!important;top:0!important;display:grid!important;place-items:center!important;transform:translate(-50%,-50%)!important;width:72px!important;height:72px!important;border-radius:50%!important;border:2px solid #d92e3c!important;background:radial-gradient(circle at 50% 42%,#262629 0%,#070708 74%)!important;box-shadow:0 0 0 5px rgba(0,0,0,.78),0 0 22px rgba(210,35,51,.3)!important;opacity:1!important;visibility:visible!important;overflow:hidden!important}
+#radialNav .radial-toggle img{display:block!important;position:relative!important;opacity:1!important;visibility:visible!important;filter:none!important;width:45px!important;height:45px!important;max-width:70%!important;max-height:70%!important;object-fit:contain!important;transform:none!important;z-index:2!important}
+#radialNav .radial-toggle::after{content:none!important}
+#radialNav .radial-items{pointer-events:none}
+#radialNav.open .radial-items{pointer-events:auto}
+#radialNav .radial-item{white-space:nowrap}
+@media(max-width:600px){.sb-service-shell{padding-inline:20px!important;padding-bottom:170px!important}.sb-service-hero h1{font-size:clamp(26px,7vw,34px)!important;overflow-wrap:break-word}.sb-service-lead{font-size:16px!important;line-height:1.65!important}.sb-service-actions a{min-height:54px!important;padding:14px!important}.sb-service-section h2{font-size:clamp(23px,6vw,30px)!important}}
+@media(prefers-reduced-motion:reduce){body{background-attachment:scroll!important}}
 </style></head><body><header>
 <button aria-label="Go to STANCEBOUND home" class="header-logo" onclick="goRoot('home')" type="button">
 <img alt="STANCEBOUND" src="/images/stanceboundlogo.png?v=30"/>
@@ -4623,9 +4642,15 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 <button class="radial-item" data-page="reviews" style="--i:8;--a:0deg">Reviews</button>
 <button class="radial-item" data-page="contact" style="--i:7;--a:87deg">Chat</button>
 </div>
-<button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" src="/images/stanceboundlogo.png?v=30"/></button>
+<button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" src="/images/stanceboundlogo.png?v=30" onerror="this.src='/images/stanceboundlogo.png'"/></button>
 </div><script>
 function goRoot(page){location.href='/#'+page}
 function toggleMenu(){const n=document.getElementById('navigation'),b=document.querySelector('.menu-button');if(!n)return;n.classList.toggle('active');n.classList.toggle('open');b?.setAttribute('aria-expanded',String(n.classList.contains('active')||n.classList.contains('open')))}
 (function(){const radial=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43');if(!radial||!toggle||!items)return;toggle.addEventListener('click',()=>{const open=radial.classList.toggle('open');radial.classList.toggle('active',open);items.inert=!open;toggle.setAttribute('aria-expanded',String(open))});items.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>goRoot(el.dataset.page)));})();
+</script><script>
+(function(){const nav=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43');if(!nav||!toggle||!items)return;
+function close(){nav.classList.remove('open','active');items.inert=true;toggle.setAttribute('aria-expanded','false')}
+document.addEventListener('pointerdown',e=>{if(nav.classList.contains('open')&&!nav.contains(e.target))close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+})();
 </script></body></html>
