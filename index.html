@@ -4735,6 +4735,18 @@ footer .sb-brand-image img{display:block;position:static;width:100%;height:100%;
 footer .sb-product-brands-note{font-size:9px;line-height:1.5;color:#777;margin:12px auto 0;max-width:330px}
 @media(max-width:420px){footer .sb-product-brands-row{gap:18px;max-width:210px}footer .sb-brand-image{flex-basis:86px;width:86px;height:86px}}
 </style>
+<style id="sb-footer-layout-repair-2026">
+/* Legal links and brand credits share the same normal-flow footer. */
+footer{height:auto!important;min-height:0!important;overflow:visible!important;position:relative!important;display:block!important;clear:both!important;padding-top:28px!important}
+footer .sb-footer-legal-fixed{position:static!important;display:block!important;width:100%;max-width:480px;margin:0 auto 28px;padding:0 16px;transform:none!important;z-index:auto!important}
+footer .sb-footer-legal-fixed .sb-footer-links{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center;justify-content:center;gap:8px 18px;margin:0!important;padding:0!important;position:static!important;background:transparent!important}
+footer .sb-footer-legal-fixed .sb-footer-links button{display:inline-block!important;width:auto!important;min-width:0!important;padding:8px 0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important;color:#aaa!important;font-size:10px!important;letter-spacing:.08em!important;line-height:1.5!important;white-space:normal!important}
+footer .sb-product-brands{position:relative!important;z-index:1;margin:0 auto 24px!important;clear:both!important}
+footer .sb-product-brands-row{max-width:240px!important;gap:20px!important}
+footer .sb-brand-image{width:82px!important;height:82px!important;flex:0 0 82px!important;overflow:visible!important}
+footer .sb-brand-image img{object-fit:contain!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;clip-path:none!important}
+@media(max-width:420px){footer .sb-footer-legal-fixed .sb-footer-links{gap:6px 12px!important}footer .sb-footer-legal-fixed .sb-footer-links button{font-size:9px!important}}
+</style>
 </head>
 
 
@@ -4994,8 +5006,6 @@ footer .sb-product-brands-note{font-size:9px;line-height:1.5;color:#777;margin:1
           </div>
         </section>
       </div>
-      <!-- Legal links belong after all homepage content, not above the hero. -->
-      <div class="sb-home-legal-bottom"><nav class="sb-footer-links" aria-label="Legal information"><button type="button" onclick="sbOpenLegal('privacy-policy')">Privacy Policy</button><button type="button" onclick="sbOpenLegal('terms')">Terms & Conditions</button><button type="button" onclick="sbOpenLegal('delivery-returns')">Delivery & Returns</button></nav></div>
     </section>
 
 
@@ -5944,6 +5954,7 @@ footer .sb-product-brands-note{font-size:9px;line-height:1.5;color:#777;margin:1
        ======================================== -->
 
   <footer>
+<div class="sb-footer-legal-fixed"><nav class="sb-footer-links" aria-label="Legal information"><button type="button" onclick="sbOpenLegal('privacy-policy')">Privacy Policy</button><button type="button" onclick="sbOpenLegal('terms')">Terms & Conditions</button><button type="button" onclick="sbOpenLegal('delivery-returns')">Delivery & Returns</button></nav></div>
 <div class="sb-product-brands" aria-label="Detailing products used">
   <div class="sb-product-brands-label">PRODUCTS WE USE</div>
   <div class="sb-product-brands-row">
@@ -5952,7 +5963,7 @@ footer .sb-product-brands-note{font-size:9px;line-height:1.5;color:#777;margin:1
   </div>
   <div class="sb-product-brands-note">Independent detailing service. No brand endorsement or affiliation.</div>
 </div>
-</div>©
+©
     <span id="year"></span>
     STANCEBOUND
 
