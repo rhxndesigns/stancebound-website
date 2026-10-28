@@ -4748,7 +4748,29 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 @media(max-width:420px){footer .sb-footer-legal-fixed .sb-footer-links{gap:6px 12px!important}footer .sb-footer-legal-fixed .sb-footer-links button{font-size:9px!important}}
 </style>
 <style id="sb-price-clarity-2026">.sb-price-examples{padding:20px 18px;border-top:1px solid rgba(255,255,255,.15);background:#0c0c0e;color:#fff}.sb-price-examples-heading{font-size:12px;font-weight:800;letter-spacing:.13em;margin-bottom:14px}.sb-price-examples-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.sb-price-examples-grid>div{border:1px solid #414146;padding:14px 10px;min-width:0}.sb-price-examples-grid b{display:block;font-size:clamp(15px,2.4vw,23px);line-height:1.15;letter-spacing:-.02em}.sb-price-examples-grid span{display:block;font-size:12px;line-height:1.5;color:#c6c6c9;margin-top:8px}.sb-price-examples p{font-size:12px;line-height:1.6;color:#b6b6b9;margin:13px 0 0}@media(max-width:430px){.sb-price-examples{padding:16px 12px}.sb-price-examples-grid{gap:6px}.sb-price-examples-grid>div{padding:12px 7px}.sb-price-examples-grid b{font-size:14px}.sb-price-examples-grid span{font-size:11px}}</style>
-</head>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="STANCEBOUND">
+<meta property="og:title" content="STANCEBOUND | Automotive Detailing & Photography">
+<meta property="og:description" content="Mobile car valeting, detailing, headlight restoration and automotive photography in South Wales. All cars welcome.">
+<meta property="og:url" content="https://www.stancebound.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STANCEBOUND | Automotive Detailing & Photography">
+<meta name="twitter:description" content="Mobile valeting, detailing and automotive photography across South Wales.">
+<style id="sb-booking-sweep-2026">
+.booking-email-warning{border:1px solid #444!important;background:#111!important;box-shadow:none!important;padding:16px!important}
+.booking-email-warning strong{color:#fff!important;font-size:12px!important;letter-spacing:.1em!important}
+.booking-email-warning span{color:#bbb!important;font-size:13px!important}
+.sb-contact-strip{border:1px solid #393939;padding:15px 18px;margin:16px 0 22px;display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#101010}
+.sb-contact-strip span{color:#bbb;font-size:11px;letter-spacing:.1em;font-weight:700}
+.sb-contact-strip a{color:#fff;overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:4px;font-size:14px}
+.sb-receipt-summary{max-width:650px;margin:26px auto;padding:20px;border:1px solid #555;background:#101010;text-align:left}
+.sb-receipt-summary h3{font-size:17px;margin:0 0 14px;letter-spacing:.07em}
+.sb-receipt-row{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #333;align-items:flex-start}
+.sb-receipt-row span{font-size:12px;color:#aaa;flex:0 0 32%}
+.sb-receipt-row strong{font-size:14px;color:#fff;text-align:right;overflow-wrap:anywhere}
+.sb-receipt-summary p{font-size:12px;color:#bbb;line-height:1.7;margin:15px 0 0}
+@media(max-width:420px){.sb-receipt-row{display:block}.sb-receipt-row strong{display:block;text-align:left;margin-top:4px}}
+</style></head>
 
 
 
@@ -5524,6 +5546,7 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
             <p>Choose the date that suits you. Your request is reviewed before anything is confirmed.</p>
           </div>
 
+          <div class="sb-contact-strip"><span>NEED HELP WITH A BOOKING?</span><a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a></div>
           <div class="booking-notice">
             <strong>THIS IS A BOOKING REQUEST</strong>
             Your requested date and time are not confirmed until STANCEBOUND has reviewed your request and confirmed availability by email.
@@ -5551,7 +5574,7 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
               <div class="enquiry-field"><label for="enquiryPhone">Phone number</label><input id="enquiryPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional"></div>
               <div class="enquiry-field full sb-returning-panel">
                 <label class="sb-returning-toggle"><input type="checkbox" id="sbReturningCustomer"><span><strong>BOOKED WITH STANCEBOUND BEFORE?</strong><small>Returning customer? We can identify your request using your verified email.</small></span></label>
-                <p id="sbReturningNotice" hidden>Use the email address from your previous booking. We’ll verify your email before sending this request. Your previous booking details are not automatically retrieved yet, so please confirm the vehicle and location on the next step.</p>
+                <p id="sbReturningNotice" hidden>Use the email address from your previous booking. We’ll verify your email before sending this request. Please confirm the details for this visit.</p>
                 <div id="sbReturningStep" hidden><p class="sb-return-step-copy">STEP 1 OF 2 · Enter the email used for your previous booking. Continue to choose your services and confirm what is needed for this appointment. Your email will be verified before the request is submitted.</p><button type="button" class="btn" id="sbReturningContinue">CONTINUE TO BOOKING DETAILS →</button><p id="sbReturningStepError" role="alert" style="color:#ff9292;font-size:12px" hidden></p></div>
               </div>
               <div class="enquiry-field full service-choice-field">
@@ -5664,11 +5687,6 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 
             <div id="signatureWrap" class="signature-wrap" aria-hidden="true" hidden></div>
             <div class="consent-row"><input id="mediaConsent" name="media_consent" type="checkbox"><label for="mediaConsent">I'm happy for STANCEBOUND to photograph my vehicle and use the images for its website, portfolio and social media. <strong>Optional.</strong></label></div>
-
-            <div class="booking-email-warning">
-              <strong>⚠ IMPORTANT: CHECK YOUR SPAM / JUNK FOLDER</strong>
-              <span>Your <b>booking confirmation email</b> may go straight to Spam or Junk, even if your verification code arrived in your inbox. Check both folders after booking. If it is in Spam, select <b>“Not spam”</b> so you can receive and sign your confirmation.</span>
-            </div>
             <div class="enquiry-field full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFAMOhWJPNbje08q" data-theme="dark"></div></div>
             <div class="enquiry-actions">
               <button class="btn" id="sendEnquiryBtn" type="submit">Request Booking</button>
@@ -5688,9 +5706,10 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
         <div class="heading-line" style="margin-left:auto;margin-right:auto;"></div>
         <p style="max-width:650px;margin:24px auto;line-height:1.8;">Your booking request has been received and your email has been verified. We’ll review the requested date, time and details before confirming the booking by email.</p>
         <p style="color:var(--grey);font-size:12px;letter-spacing:.08em;">YOUR REQUEST IS NOT CONFIRMED UNTIL YOU RECEIVE A STANCEBOUND BOOKING CONFIRMATION.</p>
+        <div id="sb-receipt-summary" class="sb-receipt-summary" hidden aria-live="polite"></div>
         <div class="booking-email-warning booking-email-warning-thanks">
-          <strong>⚠ NEXT STEP: CHECK YOUR SPAM / JUNK FOLDER</strong>
-          <span>Your <b>booking confirmation</b> may arrive in Spam or Junk, even if the verification code did not. Check those folders, mark the message <b>“Not spam”</b> and review and sign the confirmation. <b>Your appointment is not final until this step is complete.</b></span>
+          <strong>EMAIL CONFIRMATION</strong>
+          <span>Please look out for an email from STANCEBOUND. If it doesn’t arrive, check your junk folder. Your requested appointment is not confirmed until the booking confirmation is reviewed and signed.</span>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:42px auto 24px;text-align:left;">
@@ -6295,6 +6314,18 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
           enquiryStatus.textContent="REQUEST RECEIVED ✓";
           enquiryStatus.classList.add("success");
           verifyBox.classList.remove("show");
+          try {
+            const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            const q=sbGetApprovedQuote();
+            const chosen=[...sbSelectedServices];
+            const sum=chosen.reduce((total,item)=>total+(item==='Detailing'&&q?Number(q.price):(sbServicePrices[item]||0)),0);
+            const unpriced=chosen.some(item=>!(item in sbServicePrices)&&!(item==='Detailing'&&q));
+            const fields=[['Vehicle',document.getElementById('enquiryVehicle')?.value],['Services',chosen.join(' · ')],['Estimate',unpriced?'Some services require a separate quote':'£'+sum.toFixed(2)],['Location',document.getElementById('bookingLocation')?.value]];
+            const cal=document.getElementById('calendarSelectionText')?.textContent?.trim();
+            if(cal && !/tap an available/i.test(cal))fields.splice(3,0,['Requested date',cal]);
+            const node=document.getElementById('sb-receipt-summary');
+            if(node){node.innerHTML='<h3>YOUR BOOKING REQUEST</h3>'+fields.filter(row=>row[1]).map(row=>'<div class="sb-receipt-row"><span>'+esc(row[0])+'</span><strong>'+esc(row[1])+'</strong></div>').join('')+'<p>We will review availability and confirm your appointment by email.</p>';node.hidden=false;}
+          }catch(receiptError){console.warn('Receipt summary unavailable',receiptError);}
           enquiryForm.reset();
           sbSelectedServices.clear();sbRefreshServices();
           document.getElementById("sbReturningNotice").hidden=true;
