@@ -4718,9 +4718,9 @@ body>header{display:none!important}
   if(typeof L==='undefined'){setTimeout(setup,250);return;}
   el.dataset.ready='1';
   var map=L.map(el,{scrollWheelZoom:false,tap:false,zoomControl:true,attributionControl:true});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-   subdomains:'abcd',maxZoom:18,
-   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+   maxZoom:18,
+   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
   }).addTo(map);
   var places=[
    ['St Davids',51.881,-5.267],['Haverfordwest',51.801,-4.969],['Pembroke',51.675,-4.916],
@@ -4731,11 +4731,20 @@ body>header{display:none!important}
     .bindTooltip(p[0],{permanent:true,direction:'top',offset:[0,-6],className:'sb-map-label'});
   });
   map.fitBounds([[51.48,-5.43],[52.04,-3.73]],{padding:[16,16]});
-  setTimeout(function(){map.invalidateSize()},350);
+  setTimeout(function(){map.invalidateSize()},350);window.addEventListener("resize",function(){map.invalidateSize()},{passive:true});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
-</script></head><body><a href="/#home" class="sb-service-back" aria-label="Go back to previous page" id="sbServiceBack">&#8592;</a><script>document.getElementById('sbServiceBack').addEventListener('click',function(e){try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){e.preventDefault();history.back()}}catch(_){}});</script><header>
+</script><style id="sb-coverage-mobile-repair">
+html,body{width:100%;max-width:100%;overflow-x:clip!important}
+.sb-service-shell,.sb-service-section,.sb-service-hero,.sb-area-map,.sb-mono-map{box-sizing:border-box;max-width:100%;min-width:0}
+.sb-mono-map #sb-coverage-map{width:100%!important;max-width:100%!important;height:clamp(300px,85vw,430px)!important;overflow:hidden!important}
+.sb-mono-map .leaflet-tile-pane{filter:grayscale(1) brightness(.52) contrast(1.18)!important}
+.sb-mono-map .leaflet-control-attribution{font-size:9px!important;line-height:1.3!important;white-space:normal!important;max-width:calc(100vw - 80px)!important}
+.sb-mono-map figcaption,.sb-mono-map figcaption span{overflow-wrap:anywhere}
+.sb-service-back{position:relative!important;inset:auto!important;top:auto!important;left:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;margin:12px 0 12px clamp(16px,4vw,32px)!important;width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;z-index:30!important;vertical-align:top}
+@media(max-width:600px){.sb-service-section,.sb-service-hero{min-width:0!important}.sb-service-section p,.sb-service-section h2,.sb-service-lead{overflow-wrap:break-word}.sb-mono-map{margin-left:0!important;margin-right:0!important}}
+</style></head><body><a href="/#home" class="sb-service-back" aria-label="Go back to previous page" id="sbServiceBack">&#8592;</a><script>document.getElementById('sbServiceBack').addEventListener('click',function(e){try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){e.preventDefault();history.back()}}catch(_){}});</script><header>
 <button aria-label="Go to STANCEBOUND home" class="header-logo" onclick="goRoot('home')" type="button">
 <img alt="STANCEBOUND" src="/images/stanceboundlogo.png?v=30"/>
 </button>
