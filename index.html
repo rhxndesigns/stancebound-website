@@ -4725,6 +4725,18 @@ body:not(.intro-running) .page .scanline,
 body:not(.intro-running) .page .particles{animation:none!important}
 .page:not(.active){content-visibility:hidden}
 }
+</style><style id="sb-condition-preview-v1">
+.sb-condition-preview{max-width:920px;margin:24px auto 35px;padding:25px 24px;background:linear-gradient(140deg,#19191b,#080809);border:1px solid #555;border-radius:15px;color:#f5f5f5;box-sizing:border-box;box-shadow:0 15px 38px #0007}
+.sb-condition-preview *{box-sizing:border-box}.sb-condition-preview .sbcp-eyebrow{font-size:11px;color:#e15b67;letter-spacing:.2em;font-weight:700}
+.sb-condition-preview h2{font-size:clamp(21px,3vw,30px);margin:12px 0 8px;color:#f5f5f5}
+.sb-condition-preview .sbcp-copy{font-size:14px;line-height:1.65;color:#c6c6c6;margin:0 0 20px}
+.sb-condition-preview .sbcp-results{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 17px}
+.sb-condition-preview .sbcp-state{font-size:17px;font-weight:700}.sb-condition-preview output{font-size:clamp(29px,5vw,44px);font-weight:800;color:#fff}
+.sb-condition-preview input[type=range]{width:100%;display:block;accent-color:#d84452;cursor:pointer;min-height:36px}
+.sb-condition-preview .sbcp-scale{display:flex;justify-content:space-between;color:#aaa;font-size:12px;gap:10px}
+.sb-condition-preview .sbcp-disclaimer{font-size:12px;line-height:1.6;color:#b6b6b6;margin:20px 0}
+.sb-condition-preview .sbcp-cta{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:11px 19px;border:1px solid #e05260;border-radius:5px;background:#a32635;color:#fff;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.08em}
+@media(max-width:600px){.sb-condition-preview{padding:18px 15px;margin:18px 0 25px}}
 </style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5061,7 +5073,17 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <!-- ========================================
          PRICING
          ======================================== -->
-<section class="page" id="pricing">
+<section class="page" id="pricing"><section class="sb-condition-preview" data-sb-condition-preview aria-label="Illustrative detailing price preview">
+<div class="sbcp-eyebrow">STANCEBOUND / INSTANT PRICE PREVIEW</div>
+<h2>How dirty is your vehicle?</h2>
+<p class="sbcp-copy">Slide to explore how the condition of your car can affect an indicative detailing price.</p>
+<div class="sbcp-results"><div class="sbcp-state" aria-live="polite">Moderately dirty</div><output aria-live="polite">£145</output></div>
+<label for="sb-condition-slider-main" class="sbcp-copy">Vehicle condition</label>
+<input id="sb-condition-slider-main" type="range" min="0" max="4" step="1" value="2" aria-label="Vehicle dirtiness, from very light to heavily soiled">
+<div class="sbcp-scale"><span>Very light dirt</span><span>Heavily soiled</span></div>
+<p class="sbcp-disclaimer"><strong>Illustrative preview only, not a quote.</strong> Your final personalised quote depends on the services selected, vehicle size, condition and travel. Sliding does not change your booking price.</p>
+<a class="sbcp-cta" href="/#booking">REQUEST YOUR PERSONALISED QUOTE ↗</a>
+</section>
 <div class="content sbp-content">
 <section class="sbp-hero">
 <div aria-hidden="true" class="service-light-orbit"></div>
@@ -5332,7 +5354,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <div class="enquiry-field full" hidden="" id="sbArrivalReview">
 <div class="eyebrow">RETURNING CUSTOMER · ARRIVAL DETAILS</div>
 <div class="sb-site-access-title">Confirm your visit details</div>
-<p id="sbArrivalInfo" style="color:#bcbcbc;line-height:1.7">Previous booking answers are not connected yet. Please enter the details for this visit once, then review them below.</p>
+<p id="sbArrivalInfo" style="color:#bcbcbc;line-height:1.7">Enter your visit details below and review them before submitting your booking request.</p>
 <div hidden="" id="sbArrivalSummary" style="border:1px solid #555;padding:14px;line-height:1.8"></div>
 <button class="btn" id="sbArrivalEdit" style="margin-top:12px" type="button">REVIEW ARRIVAL DETAILS</button>
 </div>
@@ -9133,5 +9155,18 @@ async function showLookup(token,message){content.innerHTML=`<h2 class="sbq-title
 async function checkQuote(token){const st=content.querySelector('#sbqStatus'),result=content.querySelector('#sbqResult');st.textContent='Checking…';const {data,error}=await client.rpc('sb_quote_status',{p_token:token});if(error){st.textContent=error.message;return}const q=Array.isArray(data)?data[0]:data;st.textContent='';if(!q){result.textContent='No matching quote found.';return}if(q.status==='approved'){result.innerHTML=`<p>APPROVED · <strong>£${Number(q.price).toFixed(2)}</strong></p><p class="sbq-small">${esc(q.admin_notes||'Your personalised quote is ready.')}</p><button class="sbq-btn" id="sbqBook">CONTINUE TO BOOKING →</button>`;result.querySelector('#sbqBook').onclick=()=>{localStorage.setItem('sbApprovedQuote',JSON.stringify({token,price:q.price,service:q.service,vehicle:q.vehicle}));window.sbQuoteClose();window.showPage?.('booking');setTimeout(()=>{window.sbApplyApprovedQuote?.();document.getElementById('sbPackageTrigger')?.scrollIntoView({block:'center',behavior:'smooth'});},150)}}else result.textContent=q.status==='declined'?'This request could not be approved. Please contact STANCEBOUND.':'Your quote is awaiting review. Check back later.'}
 window.sbQuoteOpen=()=>{overlay.hidden=false;document.body.style.overflow='hidden';const saved=localStorage.getItem('sbQuoteCustomerToken');if(saved)showLookup(saved,'You have an existing quote request. Check its status below, or start a new one.').then(()=>{const b=document.createElement('button');b.className='sbq-btn alt';b.style.marginTop='15px';b.textContent='START A NEW REQUEST';b.onclick=()=>{Object.assign(state,{step:0,vehicle_type:'',vehicle:'',interior:'',exterior:'',service:'',problems:[],addons:[],notes:'',name:'',email:'',phone:'',postcode:''});render()};content.append(b)});else render()};
 window.sbQuoteClose=()=>{overlay.hidden=true;document.body.style.overflow=''};
+</script><script id="sb-condition-preview-js-v1">
+(function(){
+function init(){
+ document.querySelectorAll('[data-sb-condition-preview]').forEach(function(card){
+  var range=card.querySelector('input[type=range]'), amount=card.querySelector('output'), label=card.querySelector('.sbcp-state');
+  if(!range||!amount||!label)return;
+  var labels=['Very light dirt','Lightly dirty','Moderately dirty','Very dirty','Heavily soiled'];
+  function update(){var v=Math.max(0,Math.min(4,Number(range.value)||0));amount.textContent='£'+(40+Math.round(v*210/4));label.textContent=labels[v];range.setAttribute('aria-valuetext',labels[v]+', indicative £'+(40+Math.round(v*210/4)));}
+  range.addEventListener('input',update);update();
+ });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
 </script></body>
 </html>
