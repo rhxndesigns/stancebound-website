@@ -4578,31 +4578,81 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 #radialNav{z-index:9999}
 @media(max-width:600px){.sb-service-shell{padding:24px 18px 170px}.sb-service-hero{padding-top:12px}.sb-service-hero .hero-logo{width:min(85%,350px);max-height:140px}.sb-service-actions{grid-template-columns:1fr}.sb-service-grid{grid-template-columns:1fr}.sb-service-section{margin-top:43px}.sb-service-hero h1{font-size:clamp(25px,7vw,34px)}.sb-service-lead{font-size:15px}.sb-service-card{padding:19px}.sb-service-hero:before{width:78vw}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important}}
-</style><style id="sb-service-menu-exact-repair">
-/* Service-only alignment with the root site's navigation and textured visual system */
+</style><style id="stancebound-menu-refinement-and-reviews">
+/* Compact, legible floating navigation, preserving the original SB logo control. */
+.radial-nav .radial-toggle{width:58px!important;height:58px!important;animation:none!important;box-shadow:0 6px 24px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.19)!important;}
+.radial-nav .radial-toggle::before,.radial-nav .radial-toggle::after{animation:none!important;opacity:.22!important;}
+.radial-nav .radial-toggle img{width:34px!important;height:34px!important;animation:none!important;}
+.radial-nav .radial-items{width:0;height:0;}
+.radial-nav .radial-item{--a:0deg!important;--i:0!important;min-width:116px!important;padding:10px 16px!important;text-align:center!important;background:rgba(12,12,12,.97)!important;border:1px solid rgba(255,255,255,.17)!important;border-radius:5px!important;font-size:10px!important;font-weight:750!important;letter-spacing:.13em!important;transform:translate(-50%,-50%) translateY(0) scale(.92)!important;transition:transform .24s ease,opacity .2s ease!important;transition-delay:0ms!important;}
+.radial-nav.open .radial-item{opacity:1!important;pointer-events:auto!important;transform:translate(-50%,-50%) translateY(calc(-82px - var(--sb-index) * 47px)) scale(1)!important;}
+.radial-nav .radial-item:nth-child(1){--sb-index:0}.radial-nav .radial-item:nth-child(2){--sb-index:1}.radial-nav .radial-item:nth-child(3){--sb-index:2}.radial-nav .radial-item:nth-child(4){--sb-index:3}.radial-nav .radial-item:nth-child(5){--sb-index:4}.radial-nav .radial-item:nth-child(6){--sb-index:5}.radial-nav .radial-item:nth-child(7){--sb-index:6}.radial-nav .radial-item:nth-child(8){--sb-index:7}.radial-nav .radial-item:nth-child(9){--sb-index:8}
+.radial-nav.open .radial-item.active{border-color:#fff!important;background:#e9e9e9!important;color:#080808!important;}
+@media(max-height:750px){.radial-nav.open .radial-item{transform:translate(-50%,-50%) translateY(calc(-74px - var(--sb-index) * 39px)) scale(1)!important;padding:7px 12px!important;}}
+.sb-reviews-page{background:#050505;color:#f6f6f6}.sb-reviews-content{max-width:970px;margin:0 auto;padding:clamp(105px,15vw,170px) 22px 130px!important}.sb-reviews-eyebrow,.sb-reviews-count{font-size:10px;font-weight:800;letter-spacing:.24em;color:#929292}.sb-reviews-page h1{font-size:clamp(42px,10vw,90px);line-height:.96;letter-spacing:-.04em;margin:24px 0}.sb-reviews-intro{font-size:clamp(15px,2.8vw,20px);line-height:1.7;color:#bcbcbc;max-width:650px}.sb-reviews-empty{border:1px solid #353535;padding:clamp(24px,5vw,52px);margin:45px 0;background:linear-gradient(145deg,#111,#060606)}.sb-reviews-empty h2,.sb-reviews-actions h2{font-size:clamp(19px,4vw,30px);letter-spacing:.025em;margin:22px 0 12px}.sb-reviews-empty p,.sb-reviews-actions p{color:#a7a7a7;line-height:1.75;max-width:650px}.sb-reviews-actions{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid #444;padding-top:20px;flex-wrap:wrap}.sb-reviews-actions .btn{white-space:nowrap}
+</style>
+<style id="sb-menu-home-clarity-2026">
+/* Make the floating navigation an actual visible control without replacing its existing behaviour. */
+.radial-toggle{width:74px!important;height:74px!important;border:2px solid #dc3036!important;background:linear-gradient(150deg,#220608,#090909)!important;box-shadow:0 0 0 5px rgba(0,0,0,.75),0 0 24px rgba(220,48,54,.35)!important;overflow:visible!important}
+.radial-toggle::after{content:'MENU';position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;letter-spacing:2px;color:#ff6b6b;white-space:nowrap;text-shadow:0 2px 8px #000}
+.radial-nav.open .radial-toggle{background:#c52630!important;border-color:#ff676d!important}
+.radial-nav.open .radial-toggle::after{content:'CLOSE';color:#fff}
+.radial-toggle:focus-visible{outline:2px solid white;outline-offset:7px}
+/* Cleaner first impression while retaining the existing hero and routes. */
+#home .hero-content{max-width:760px}
+#home .hero-description{max-width:510px;line-height:1.7}
+#home .hero-buttons{gap:10px}
+#home .home-flow{max-width:1080px}
+#home .home-choice{border-color:rgba(255,255,255,.16)}
+#home .home-choice:focus-visible{outline:2px solid #f05257;outline-offset:3px}
+#home .hero-socials a:focus-visible{outline:2px solid #f05257;outline-offset:4px}
+@media(max-width:600px){.radial-nav{bottom:29px!important}.radial-toggle{width:66px!important;height:66px!important}#home .hero-content{width:100%}}
+</style>
+<style id="stancebound-menu-cinematic-glass-v1">
+/* Dark transparent cinematic layer: page remains recognizable under the menu. */
+.radial-backdrop{background:rgba(0,0,0,.70)!important;-webkit-backdrop-filter:blur(13px) saturate(.72)!important;backdrop-filter:blur(13px) saturate(.72)!important;transition:opacity .38s ease,backdrop-filter .38s ease!important}
+.radial-backdrop.show{opacity:1!important}
+.radial-nav{z-index:10010!important}
+.radial-nav .radial-items{isolation:isolate}
+.radial-nav.open .radial-item{border:1px solid rgba(255,255,255,.14)!important;border-radius:9px!important;background:linear-gradient(125deg,rgba(24,24,27,.9),rgba(5,5,6,.72))!important;box-shadow:0 8px 25px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08)!important;padding:12px 15px!important;color:#ededed!important;letter-spacing:.14em!important;font-weight:750!important;min-width:85px;text-align:center;transition:transform .36s cubic-bezier(.2,.9,.2,1),background .25s,border-color .25s,box-shadow .25s,color .25s!important}
+.radial-nav.open .radial-item:hover,.radial-nav.open .radial-item:focus-visible{background:linear-gradient(125deg,rgba(70,70,76,.96),rgba(20,20,24,.96))!important;border-color:rgba(255,255,255,.75)!important;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 24px rgba(255,255,255,.19),0 12px 35px #000!important;color:white!important;outline:none!important}
+.radial-nav.open .radial-item:active{filter:brightness(1.5)}
+.radial-nav .radial-toggle{transition:transform .38s ease,box-shadow .3s ease!important}
+.radial-nav .radial-toggle:hover,.radial-nav .radial-toggle:focus-visible{box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 35px rgba(255,255,255,.24)!important}
+/* Pointer-reactive ambient spotlight, subtle and never blocking clicks. */
+.radial-backdrop.show:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(300px circle at var(--sb-menu-x,50%) var(--sb-menu-y,75%),rgba(255,255,255,.075),transparent 80%)}
+@media(max-width:700px){.radial-nav.open .radial-item{padding:9px 11px!important;min-width:70px;font-size:10px!important}.radial-backdrop{background:rgba(0,0,0,.76)!important;-webkit-backdrop-filter:blur(9px)!important;backdrop-filter:blur(9px)!important}}
+@media(prefers-reduced-motion:reduce){.radial-nav.open .radial-item{transition:none!important}}
+</style>
+<style id="sb-menu-red-scrolllock-v2">
+html.sb-menu-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important}
+body.sb-menu-scroll-locked{position:fixed!important;overflow:hidden!important;width:100%!important;left:0!important;right:0!important;touch-action:none!important}
+.radial-backdrop.show{overscroll-behavior:none;touch-action:none}
+.radial-backdrop.show::after{background:radial-gradient(330px circle at var(--sb-menu-x,50%) var(--sb-menu-y,65%),rgba(168,21,39,.22),rgba(115,12,23,.07) 46%,transparent 78%)!important}
+.radial-nav.open .radial-item{border-color:rgba(173,45,55,.35)!important;box-shadow:0 8px 26px #0009,inset 2px 0 rgba(164,24,39,.45)!important}
+.radial-nav.open .radial-item:hover,.radial-nav.open .radial-item:focus-visible{border-color:rgba(255,73,86,.82)!important;background:linear-gradient(125deg,rgba(89,18,28,.97),rgba(17,8,12,.95))!important;box-shadow:0 0 24px rgba(209,26,47,.27),0 12px 35px #000!important;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a))) scale(1.055)!important}
+.radial-nav.open .radial-toggle{box-shadow:0 0 0 1px rgba(220,40,55,.4),0 0 30px rgba(160,12,32,.23)!important}
+@media(hover:none){.radial-nav.open .radial-item:active{background:rgba(126,20,36,.85)!important}}
+@media(prefers-reduced-motion:reduce){.radial-nav.open .radial-item:hover{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-142px) rotate(calc(-1 * var(--a)))!important}}
+</style>
+<style id="sb-service-original-menu-alignment">
+/* Exact home dock footprint, using the original button and menu selectors. */
+.radial-nav{left:50%!important;bottom:20px!important;z-index:10010!important;width:0!important;height:0!important}
+.radial-toggle{width:62px!important;height:62px!important;border-radius:50%!important;left:0!important;top:0!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;transform:translate(-50%,-50%)!important;transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .3s!important}
+.radial-toggle img{width:34px!important;height:34px!important;object-fit:contain!important;display:block!important;transform:translate3d(var(--sb-tilt-x,0px),var(--sb-tilt-y,0px),0) rotate(0deg)!important;transition:transform .45s cubic-bezier(.2,.8,.2,1)!important}
+.radial-nav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg)!important}
+.radial-nav.open .radial-toggle img{transform:rotate(-225deg)!important}
+.radial-items{position:absolute!important;left:0!important;top:0!important;width:0!important;height:0!important;pointer-events:none!important}
+.radial-nav:not(.open) .radial-item{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.radial-nav.open .radial-items{pointer-events:auto!important}
+.radial-nav.open .radial-item{visibility:visible!important;pointer-events:auto!important}
+.radial-backdrop{position:fixed!important;inset:0!important;z-index:10000!important;background:rgba(0,0,0,.86)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:opacity .3s,visibility .3s!important}
+.radial-backdrop.show{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
 html,body{max-width:100%;overflow-x:clip}
-body{background:#050505 url('/images/texture.png') center top / 700px auto repeat!important}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 50% 35%,transparent 0 16%,rgba(255,255,255,.045) 16.12%,transparent 16.3%,transparent 28%,rgba(255,255,255,.035) 28.1%,transparent 28.3%,transparent 42%,rgba(255,255,255,.025) 42.1%,transparent 42.3%);opacity:.75}
-.sb-service-shell{position:relative;z-index:1;background:transparent!important;background-image:none!important}
-.sb-service-hero,.sb-service-section{background:transparent!important;background-image:none!important}
-.sb-service-shell::before,.sb-service-hero::before{pointer-events:none}
-/* Match root control dimensions, centred badge and open-state spin */
-#radialNav{position:fixed!important;left:50%!important;bottom:64px!important;top:auto!important;z-index:10010!important;width:0!important;height:0!important;overflow:visible!important;transform:none!important}
-#radialNav .radial-toggle{position:absolute!important;left:0!important;top:0!important;width:74px!important;height:74px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px!important;border-radius:50%!important;border:2px solid #db334b!important;background:radial-gradient(circle at 48% 40%,#292929,#080808 75%)!important;box-shadow:0 0 0 5px #050505,0 0 18px #b71f3844!important;transform:translate(-50%,-50%) rotate(0deg)!important;transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .3s!important;cursor:pointer!important;z-index:3!important}
-#radialNav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg)!important;box-shadow:0 0 0 5px #050505,0 0 25px #db334b88!important}
-#radialNav .radial-toggle img{display:block!important;position:static!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;transform:none!important;opacity:1!important;filter:none!important}
-#radialNav .radial-toggle::before,#radialNav .radial-toggle::after{content:none!important}
-/* Closed links must never appear in page content */
-#radialNav .radial-items{position:absolute!important;left:0!important;top:0!important;width:0!important;height:0!important;pointer-events:none!important;z-index:2!important}
-#radialNav:not(.open) .radial-item{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translate(-50%,-50%) scale(.4)!important}
-#radialNav.open .radial-items{pointer-events:auto!important}
-#radialNav.open .radial-item{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
-#radialNav .radial-item{position:absolute!important;left:0!important;top:0!important;white-space:nowrap!important;transition:transform .52s cubic-bezier(.2,.9,.25,1),opacity .3s,visibility .3s!important}
-#radialBackdrop{position:fixed!important;inset:0!important;z-index:10000!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;background:radial-gradient(circle at 50% 72%,rgba(80,8,21,.5),rgba(0,0,0,.94) 60%)!important;backdrop-filter:blur(7px)!important;transition:opacity .3s,visibility .3s!important}
-#radialBackdrop.show{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
-@media(max-width:600px){.sb-service-shell{padding-bottom:160px!important}}
-@media(prefers-reduced-motion:reduce){#radialNav .radial-toggle,#radialNav .radial-item{transition:none!important}}
-</style></head><body><header>
+@media(max-width:700px){.radial-nav{bottom:20px!important}}
+@media(prefers-reduced-motion:reduce){.radial-toggle,.radial-toggle img{transition:none!important}}
+</style>
+</head><body><header>
 <button aria-label="Go to STANCEBOUND home" class="header-logo" onclick="goRoot('home')" type="button">
 <img alt="STANCEBOUND" src="/images/stanceboundlogo.png?v=30"/>
 </button>
@@ -4649,13 +4699,17 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <button class="radial-item" data-page="contact" style="--i:7;--a:87deg">Chat</button>
 </div>
 <button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" onerror="this.src='/images/stanceboundlogo.png'" src="/images/stanceboundlogo.png?v=30"/></button>
-</div><script id="sb-service-menu-exact-repair-js">(()=>{
+</div><script id="sb-service-original-menu-control">(()=>{
  const nav=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43'),backdrop=document.getElementById('radialBackdrop');
  if(!nav||!toggle||!items||!backdrop)return;
- const setOpen=open=>{nav.classList.toggle('open',open);backdrop.classList.toggle('show',open);items.inert=!open;toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close menu':'Open menu');document.documentElement.classList.toggle('sb-service-menu-open',open)};
- toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!nav.classList.contains('open'))});
- backdrop.addEventListener('click',()=>setOpen(false));
- items.querySelectorAll('[data-page]').forEach(b=>{b.classList.remove('active');b.addEventListener('click',e=>{e.preventDefault();const p=b.dataset.page;setOpen(false);location.href='/#'+encodeURIComponent(p)})});
- document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});
+ const close=()=>setOpen(false);
+ function setOpen(open){nav.classList.toggle('open',open);backdrop.classList.toggle('show',open);items.inert=!open;toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close menu':'Open menu');document.body.classList.toggle('sb-service-menu-open',open)}
  setOpen(false);
-})();</script></body></html>
+ toggle.addEventListener('click',e=>{e.preventDefault();setOpen(!nav.classList.contains('open'))});
+ backdrop.addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ // Gentle pointer-responsive movement, like the homepage button.
+ toggle.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const r=toggle.getBoundingClientRect();toggle.style.setProperty('--sb-tilt-x',((e.clientX-r.left-r.width/2)/r.width*5).toFixed(1)+'px');toggle.style.setProperty('--sb-tilt-y',((e.clientY-r.top-r.height/2)/r.height*5).toFixed(1)+'px')});
+ toggle.addEventListener('pointerleave',()=>{toggle.style.setProperty('--sb-tilt-x','0px');toggle.style.setProperty('--sb-tilt-y','0px')});
+ nav.querySelectorAll('.radial-item[data-page]').forEach(btn=>btn.addEventListener('click',()=>{const p=btn.dataset.page;location.href='https://www.stancebound.com/#'+(p==='pricing'?'pricing':p==='contact'?'contact':p)}));
+})();</script>
+</body></html>
