@@ -3430,7 +3430,14 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 .sb-boot-kicker{font-size:7px;font-weight:800;letter-spacing:.31em;color:#777;margin-bottom:9px;opacity:0;animation:sbBootText .35s ease .38s forwards}.sb-boot-title{font-size:clamp(23px,7vw,34px);font-weight:900;letter-spacing:.09em;line-height:1;margin:0;opacity:0;animation:sbBootText .38s ease .46s forwards}.sb-boot-rule{height:1px;width:0;margin:17px auto 15px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:sbBootRule .62s cubic-bezier(.16,1,.3,1) .58s forwards}.sb-boot-readout{display:flex;justify-content:center;gap:11px;align-items:center;font-size:6.5px;font-weight:800;letter-spacing:.16em;color:#686868;opacity:0;animation:sbBootText .32s ease .68s forwards}.sb-boot-readout i{width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 8px #fff;animation:sbBootPulse .8s ease-in-out infinite}.sb-boot-status{position:absolute;left:24px;right:24px;bottom:27px;display:flex;justify-content:space-between;font-size:5.5px;font-weight:800;letter-spacing:.18em;color:#4c4c4c}.sb-boot-status span:last-child{color:#9a9a9a}
 @keyframes sbBootScan{0%{top:-2%;opacity:0}10%{opacity:.9}100%{top:102%;opacity:0}}@keyframes sbBootMark{from{opacity:0;transform:scale(.82);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:none}}@keyframes sbBootText{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes sbBootRule{to{width:100%}}@keyframes sbBootDiamond{to{transform:rotate(405deg)}}@keyframes sbBootPulse{50%{opacity:.25;transform:scale(.6)}}
 @media(prefers-reduced-motion:reduce){.sb-boot-scan,.sb-boot-mark,.sb-boot-kicker,.sb-boot-title,.sb-boot-rule,.sb-boot-readout,.sb-boot-mark:before,.sb-boot-mark:after,.sb-boot-readout i{animation:none!important;opacity:1}.sb-boot-rule{width:100%}}
-</style><script id="stancebound-boot-early">(()=>{try{if(!new URLSearchParams(location.search).has('track') && sessionStorage.getItem('sb_original_boot_seen_v3')!=='1' && !(document.referrer && new URL(document.referrer).origin===location.origin))document.documentElement.classList.add('sb-boot-lock')}catch(e){}})();</script>
+</style><script id="stancebound-boot-early">(()=>{
+ let seen=false,internal=false;
+ try{seen=sessionStorage.getItem('sb_original_boot_seen_v3')==='1'}catch(e){}
+ try{internal=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch(e){}
+ const params=new URLSearchParams(location.search);
+ window.sbBootShouldRun=!seen&&!internal&&!params.has('track')&&!params.has('booking-confirmation');
+ if(window.sbBootShouldRun)document.documentElement.classList.add('sb-boot-lock');
+})();</script>
 <style id="stancebound-boot-v2-detail">
 #sbBoot:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.065),transparent 24%);animation:sbBootCoreGlow 3.2s ease-in-out both}
 .sb-boot-core:before,.sb-boot-core:after{content:"";position:absolute;left:50%;top:37px;width:128px;height:128px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none}
@@ -4502,8 +4509,7 @@ body.light-theme #home .sb-social-buttons .sb-social-copy,body.light-theme #home
 #booking.sb-returning-identify #sbReturningStep {display:block!important}
 #booking.sb-returning-details #sbReturningStep {display:none!important}
 #booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryName),
-#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryEmail),
-#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryPhone) {display:none!important}
+#booking.sb-returning-details #enquiryForm .enquiry-grid > :has(#enquiryEmail) {display:none!important}
 #booking.sb-returning-details #sbReturningNotice {display:none!important}
 #booking.sb-returning-details #availabilityCalendar {display:block!important}
 #booking .sb-returning-panel {order:-1}
@@ -4659,7 +4665,7 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 <meta content="Mobile Car Valeting &amp; Detailing | STANCEBOUND" name="twitter:title"/>
 <meta content="Mobile detailing and valeting in Llanelli, Carmarthen, Ammanford and Swansea." name="twitter:description"/>
 <meta content="https://www.stancebound.com/images/stanceboundlogo.png" name="twitter:image"/>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AutomotiveBusiness", "name": "STANCEBOUND", "url": "https://www.stancebound.com/", "logo": "https://www.stancebound.com/images/stanceboundlogo.png", "description": "Mobile car detailing, car valeting and automotive photography in Carmarthenshire and South Wales.", "email": "enquiries@stancebound.com", "areaServed": [{"@type": "Place", "name": "Llanelli"}, {"@type": "Place", "name": "Carmarthen"}, {"@type": "Place", "name": "Ammanford"}, {"@type": "Place", "name": "Carmarthenshire"}, {"@type": "Place", "name": "Swansea"}, {"@type": "Place", "name": "South Wales"}], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Automotive services", "itemListElement": [{"@type": "OfferCatalog", "name": "Mobile car detailing"}, {"@type": "OfferCatalog", "name": "Car valeting"}, {"@type": "OfferCatalog", "name": "Automotive photography"}, {"@type": "OfferCatalog", "name": "Headlight restoration"}]}, "sameAs": ["https://www.instagram.com/stancebound/", "https://www.tiktok.com/@stancebound"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AutomotiveBusiness", "name": "STANCEBOUND", "url": "https://www.stancebound.com/", "logo": "https://www.stancebound.com/images/stanceboundlogo.png", "description": "Mobile car detailing, car valeting and automotive photography in Carmarthenshire and South Wales.", "email": "enquiries@stancebound.com", "areaServed": [{"@type": "Place", "name": "Llanelli"}, {"@type": "Place", "name": "Carmarthen"}, {"@type": "Place", "name": "Ammanford"}, {"@type": "Place", "name": "Carmarthenshire"}, {"@type": "Place", "name": "Swansea"}, {"@type": "Place", "name": "South Wales"}, {"@type": "Place", "name": "Pembrokeshire"}], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Automotive services", "itemListElement": [{"@type": "OfferCatalog", "name": "Mobile car detailing"}, {"@type": "OfferCatalog", "name": "Car valeting"}, {"@type": "OfferCatalog", "name": "Automotive photography"}, {"@type": "OfferCatalog", "name": "Headlight restoration"}]}, "sameAs": ["https://www.instagram.com/stancebound/", "https://www.tiktok.com/@stancebound"]}</script>
 <style>.sb-seo-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
 <style id="sb-2026-accessibility-local-css">
 .sb-local-h1{font-size:clamp(15px,2vw,22px);font-weight:600;letter-spacing:.015em;line-height:1.45;max-width:700px;margin:14px auto 10px;color:#f2f2f2;text-align:center}
@@ -4745,23 +4751,32 @@ body:not(.intro-running) .page .particles{animation:none!important}
 #pricing .sbp-hero .sbcp-integrated .sbcp-disclaimer{margin:10px 0 0}
 #pricing .sbp-hero .sbp-hero-main{grid-template-columns:minmax(0,1fr)}
 @media(max-width:600px){#pricing .sbp-hero .sbcp-integrated{padding:14px 12px;margin:16px 0}#pricing .sbp-hero .sbcp-integrated .sbcp-results output{font-size:34px}}
+</style><style id="sb-foundation-fixes-20261029">
+#sbBoot .sb-boot-core{max-width:calc(100vw - 36px);box-sizing:border-box;padding-inline:4px}
+#sbBoot .sb-boot-kicker{line-height:1.65;overflow-wrap:anywhere;min-height:2em}
+#sbBoot .sb-boot-readout{flex-wrap:wrap;row-gap:8px;line-height:1.6}
+#sbBoot .sb-boot-status{gap:12px;line-height:1.6}
+#sbBoot .sb-boot-status span{min-width:0;overflow-wrap:anywhere}
+#sbBoot .sb-boot-skip{bottom:calc(64px + env(safe-area-inset-bottom,0px))!important;min-height:44px}
+@media(max-height:440px){#sbBoot .sb-boot-mark{width:50px;height:50px;margin-bottom:12px}#sbBoot .sb-boot-data{top:12px}#sbBoot .sb-boot-core{transform:translateY(-14px)}#sbBoot .sb-boot-skip{right:14px!important;padding:10px!important;font-size:9px!important}}
 </style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
-<div aria-hidden="true" id="sbBoot"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br/>UI CORE / ONLINE<br/>MOTION / ACTIVE</div>
+<div aria-label="STANCEBOUND introduction" id="sbBoot"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br/>UI CORE / ONLINE<br/>MOTION / ACTIVE</div>
 <div class="sb-boot-data right">SB-01<br/>SECURE SESSION<br/>SOUTH WALES</div>
 <div class="sb-boot-core"><div class="sb-boot-mark"><img alt="" src="/images/stanceboundlogo.png?v=30"/></div><div class="sb-boot-kicker">SYSTEM INITIALISATION / 01</div><div class="sb-boot-rule"></div><div class="sb-boot-readout"><span>DETAILING</span><i></i><span>PHOTOGRAPHY</span><i></i><span>SOUTH WALES</span></div></div><div class="sb-boot-progress"></div><div class="sb-boot-status"><span>SB / AUTOMOTIVE SYSTEM</span><span>READY</span></div></div>
 <script id="stancebound-first-visit-boot-js">
 (()=>{
  const root=document.documentElement,boot=document.getElementById('sbBoot');
  if(!boot)return;
- if(new URLSearchParams(location.search).has('track') || (sessionStorage.getItem('sb_original_boot_seen_v3')==='1' || (document.referrer && new URL(document.referrer).origin===location.origin))){boot.remove();root.classList.remove('sb-boot-lock');return;}
+ if(!window.sbBootShouldRun){boot.remove();root.classList.remove('sb-boot-lock');return;}
  // Run the boot only once in this tab; mark it immediately so navigation cannot restart it.
  try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}
  let finished=false;
  const finish=()=>{if(finished)return;finished=true;try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}boot.classList.add('sb-boot-exit');root.classList.remove('sb-boot-lock');setTimeout(()=>boot.remove(),420)};
  const skip=document.createElement('button');skip.type='button';skip.textContent='SKIP INTRO →';skip.setAttribute('aria-label','Skip website intro');
  skip.style.cssText='position:absolute;right:22px;bottom:55px;z-index:10;background:#111;color:#fff;border:1px solid #777;padding:12px 18px;cursor:pointer;font:700 11px Inter,Arial,sans-serif;letter-spacing:.14em';
+ skip.className='sb-boot-skip';
  skip.addEventListener('click',()=>{try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}finish()});boot.appendChild(skip);
  const status=boot.querySelector('.sb-boot-status span:last-child');
  const kicker=boot.querySelector('.sb-boot-kicker');
@@ -4775,6 +4790,10 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <img alt="STANCEBOUND Detailing" class="intro-logo" src="images/stanceboundlogo.png?v=30"/>
 </div>
 </div>
+<script id="sb-intro-reveal-failsafe">(()=>{
+ const reveal=()=>{document.getElementById('site-intro')?.remove();document.body.classList.remove('intro-running');document.body.classList.add('intro-revealing')};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reveal,{once:true});else reveal();
+})();</script>
 <!-- ========================================
        HEADER
        ======================================== -->
@@ -5165,7 +5184,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <div class="sbds-sweep"></div>
 <div class="sbds-head"><span id="sbdsSystem">STAGE 01 / WHEEL SYSTEM</span><b id="sbdsStatus">PRE-CLEAN ANALYSIS</b></div>
 <div aria-hidden="true" class="sbds-car sbds-reference-car">
-<img alt="" class="sbds-golfer-base" src="/images/golfer.png?v=1"/>
+<img loading="lazy" decoding="async" alt="" class="sbds-golfer-base" src="/images/golfer.png?v=1"/>
 <div class="sbds-zone sbds-zone-front-wheel"></div>
 <div class="sbds-zone sbds-zone-rear-wheel"></div>
 <div class="sbds-zone sbds-zone-cabin"></div>
@@ -5618,7 +5637,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <div class="content order-confirmation-page">
 <div class="order-confirmation-shell">
 <div class="order-confirmation-image">
-<img alt="STANCEBOUND Signature Hoodie DROP 001" src="images/hoodiedrop001.png"/>
+<img loading="lazy" decoding="async" alt="STANCEBOUND Signature Hoodie DROP 001" src="images/hoodiedrop001.png"/>
 </div>
 <div class="order-confirmation-copy">
 <div class="order-confirmation-tick">✓</div>
@@ -6581,7 +6600,7 @@ card.addEventListener("pointercancel",cancel,{passive:true});
 <div aria-hidden="true" class="product-modal" id="hoodieProductModal" onclick="productModalBackdrop(event)">
 <div aria-labelledby="hoodieProductTitle" aria-modal="true" class="product-modal-panel" role="dialog">
 <button aria-label="Close product" class="product-modal-close" onclick="closeHoodieProduct()" type="button">×</button>
-<div class="product-modal-image"><img alt="STANCEBOUND Signature Hoodie DROP 001 front and back" src="images/hoodiedrop001.png"/></div>
+<div class="product-modal-image"><img loading="lazy" decoding="async" alt="STANCEBOUND Signature Hoodie DROP 001 front and back" src="images/hoodiedrop001.png"/></div>
 <div class="product-modal-copy">
 <span class="drop-label">STANCEBOUND · DROP 001</span>
 <h2 id="hoodieProductTitle">Signature Hoodie</h2>
@@ -8930,7 +8949,7 @@ body.sb-menu-scroll-locked{position:fixed!important;overflow:hidden!important;wi
 </style>
 <div aria-hidden="true" aria-label="Legal information" aria-modal="true" id="sbLegalOverlay" role="dialog">
 <button aria-label="Close legal information" class="sb-legal-close" onclick="sbCloseLegal()" type="button">×</button>
-<div class="sb-legal-inner"><div data-legal="privacy-policy"><div class="sb-legal-content"><h1>Privacy Policy</h1><p>Last updated: 16 October 2026</p><p>STANCEBOUND provides automotive detailing, photography and online merchandise sales in South Wales. Contact us at <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a> about your personal data.</p><h2>Information we collect</h2><p>When you book, contact us or purchase, we may collect your name, email, telephone number, vehicle and appointment details, messages, delivery details and order information. Payment information is handled by Stripe; we do not need your full card number to process an order.</p><h2>Why we use it</h2><p>We use your details to respond to enquiries, arrange and deliver services, fulfil orders, manage payments and refunds, keep records and protect our systems. Depending on the activity, our lawful basis may be performance of a contract, legitimate interests, legal obligations or consent where required.</p><h2>Who receives it</h2><p>Relevant service providers may process information for hosting, booking, messaging, payment processing and order fulfilment, including Stripe and our fulfilment partners. Their own privacy notices may also apply.</p><h2>Retention and rights</h2><p>We keep information only for as long as needed for the relevant purpose and applicable legal requirements. You can request access, correction or deletion, object to certain processing or raise a concern with the UK Information Commissioner's Office at <a href="https://ico.org.uk/" rel="noopener" target="_blank">ico.org.uk</a>. Contact us to exercise your rights.</p><p>We may update this notice when our systems or practices change.</p></div></div><div data-legal="terms"><div class="sb-legal-content"><h1>Terms &amp; Conditions</h1><p>Last updated: 16 October 2026</p><h2>Bookings</h2><p>Submitting a booking request does not guarantee an appointment. We confirm availability and agreed services separately. Any additional work or charges must be agreed before work starts. Please provide accurate vehicle, access and contact details.</p><h2>Shop orders</h2><p>Product details, available sizes and prices are shown before payment. UK delivery is free for the Signature Hoodie and included in its £44.99 price. Orders are subject to availability and confirmation. We may contact you if an order cannot be fulfilled and will arrange an appropriate refund.</p><h2>Consumer rights</h2><p>Your statutory rights under UK consumer law are not affected by these terms. For online goods, eligible customers generally have 14 days after delivery to cancel, followed by 14 days to send goods back. Exceptions may apply to genuinely personalised or bespoke goods. Faulty or misdescribed goods have separate statutory remedies.</p><h2>Contact</h2><p>For bookings, orders or complaints, email <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a>.</p></div></div><div data-legal="delivery-returns"><div class="sb-legal-content"><h1>Delivery &amp; Returns</h1><h2>Production and delivery</h2><p>Our Signature Hoodie is produced to order. Free UK delivery is included in the £44.99 price, with no additional UK shipping charge. Estimated production and delivery times are provided at checkout before payment. We do not currently publish a guaranteed dispatch or arrival date. If no delivery period is agreed, UK consumer rules generally require delivery without undue delay and within 30 days unless otherwise agreed.</p><h2>Cancellation and returns</h2><p>For standard non-personalised goods purchased online, you normally have 14 days from delivery to tell us you wish to cancel, then another 14 days to return the item. Contact <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a> with your order number before returning anything so we can provide return instructions and the appropriate return address. We will explain return postage arrangements before you send it. Refunds are handled in line with applicable UK consumer law.</p><p>Made-to-order alone does not remove cancellation rights. A statutory exception may apply to goods made to your individual specifications or clearly personalised. If an item arrives faulty, damaged or not as described, contact us promptly; your statutory rights still apply.</p><h2>Exchanges</h2><p>For a different size, contact us first. Exchanges depend on available stock or production options; where an exchange is unavailable, you can use any applicable cancellation and return rights and place a new order.</p><h2>Size guide</h2><p>Sizes available: S, M, L, XL, 2XL and 3XL. We have not published verified garment measurements yet. Please email us for the exact chest and length measurements before buying if fit is important. Do not assume standard UK sizes will fit identically across garments.</p></div></div></div></div>
+<div class="sb-legal-inner"><div data-legal="privacy-policy"><div class="sb-legal-content"><h1>Privacy Policy</h1><p>Last updated: 16 October 2026</p><p>STANCEBOUND provides automotive detailing, photography and online merchandise sales in South Wales. Contact us at <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a> about your personal data.</p><h2>Information we collect</h2><p>When you book, contact us or purchase, we may collect your name, email, telephone number, vehicle and appointment details, messages, delivery details and order information. Payment information is handled by Stripe; we do not need your full card number to process an order.</p><h2>Why we use it</h2><p>We use your details to respond to enquiries, arrange and deliver services, fulfil orders, manage payments and refunds, keep records and protect our systems. Depending on the activity, our lawful basis may be performance of a contract, legitimate interests, legal obligations or consent where required.</p><h2>Who receives it</h2><p>Relevant service providers may process information for hosting, booking, messaging, payment processing and order fulfilment, including Supabase for booking and messaging, Stripe for payment processing, and our fulfilment partners. Their own privacy notices may also apply.</p><h2>Retention and rights</h2><p>We keep information only for as long as needed for the relevant purpose and applicable legal requirements. You can request access, correction or deletion, object to certain processing or raise a concern with the UK Information Commissioner's Office at <a href="https://ico.org.uk/" rel="noopener" target="_blank">ico.org.uk</a>. Contact us to exercise your rights.</p><p>We may update this notice when our systems or practices change.</p></div></div><div data-legal="terms"><div class="sb-legal-content"><h1>Terms &amp; Conditions</h1><p>Last updated: 16 October 2026</p><h2>Bookings</h2><p>Submitting a booking request does not guarantee an appointment. We confirm availability and agreed services separately. Any additional work or charges must be agreed before work starts. Please provide accurate vehicle, access and contact details.</p><h2>Shop orders</h2><p>Product details, available sizes and prices are shown before payment. UK delivery is free for the Signature Hoodie and included in its £44.99 price. Orders are subject to availability and confirmation. We may contact you if an order cannot be fulfilled and will arrange an appropriate refund.</p><h2>Consumer rights</h2><p>Your statutory rights under UK consumer law are not affected by these terms. For online goods, eligible customers generally have 14 days after delivery to cancel, followed by 14 days to send goods back. Exceptions may apply to genuinely personalised or bespoke goods. Faulty or misdescribed goods have separate statutory remedies.</p><h2>Contact</h2><p>For bookings, orders or complaints, email <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a>.</p></div></div><div data-legal="delivery-returns"><div class="sb-legal-content"><h1>Delivery &amp; Returns</h1><h2>Production and delivery</h2><p>Our Signature Hoodie is produced to order. Free UK delivery is included in the £44.99 price, with no additional UK shipping charge. Estimated production and delivery times are provided at checkout before payment. We do not currently publish a guaranteed dispatch or arrival date. If no delivery period is agreed, UK consumer rules generally require delivery without undue delay and within 30 days unless otherwise agreed.</p><h2>Cancellation and returns</h2><p>For standard non-personalised goods purchased online, you normally have 14 days from delivery to tell us you wish to cancel, then another 14 days to return the item. Contact <a href="mailto:enquiries@stancebound.com">enquiries@stancebound.com</a> with your order number before returning anything so we can provide return instructions and the appropriate return address. We will explain return postage arrangements before you send it. Refunds are handled in line with applicable UK consumer law.</p><p>Made-to-order alone does not remove cancellation rights. A statutory exception may apply to goods made to your individual specifications or clearly personalised. If an item arrives faulty, damaged or not as described, contact us promptly; your statutory rights still apply.</p><h2>Exchanges</h2><p>For a different size, contact us first. Exchanges depend on available stock or production options; where an exchange is unavailable, you can use any applicable cancellation and return rights and place a new order.</p><h2>Size guide</h2><p>Sizes available: S, M, L, XL, 2XL and 3XL. We have not published verified garment measurements yet. Please email us for the exact chest and length measurements before buying if fit is important. Do not assume standard UK sizes will fit identically across garments.</p></div></div></div></div>
 <script>
 (function(){
  const overlay=document.getElementById('sbLegalOverlay');
@@ -8999,7 +9018,7 @@ function bookHeadlightRestoration(){
     const isIdentity=!!el.querySelector('#enquiryName,#enquiryEmail');
     const isPhone=!!el.querySelector('#enquiryPhone');
     // Returning step 1 is exclusively identity. Step 2 is job details, not personal information.
-    const visible=!returning || (step===1?(isPanel||isIdentity):(!isIdentity&&!isPhone));
+    const visible=!returning || (step===1?(isPanel||isIdentity):(!isIdentity));
     forceVisible(el,visible);
    }
    for(const el of outside){
