@@ -4697,7 +4697,17 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 .sb-service-shortcuts__google{margin:13px 0 0;font-size:12px;color:#aaa;line-height:1.6}.sb-service-shortcuts__google a{color:#eee;text-underline-offset:3px}
 @media(max-width:620px){.sb-service-shortcuts__grid{grid-template-columns:1fr}.sb-service-shortcuts__grid a{min-height:76px;padding:13px 18px;gap:6px}.sb-service-shortcuts__head{font-size:10px}.sb-service-shortcuts__grid strong{font-size:14px}}
 </style>
-</head>
+<style id="sb-shared-menu-visual-final-20261029">
+/* Shared across root and all service pages. Preserves the original radial DOM and interactions. */
+.radial-nav .radial-toggle{width:66px!important;height:66px!important;display:grid!important;place-items:center!important;left:0!important;top:0!important;padding:0!important;border:2px solid #e3313d!important;border-radius:50%!important;background:radial-gradient(circle at 50% 42%,#4b2429 0%,#221115 38%,#09090b 77%)!important;box-shadow:inset 0 0 24px rgba(215,45,62,.22),0 0 0 5px rgba(0,0,0,.5),0 0 18px rgba(214,32,51,.3)!important;transform:translate(-50%,-50%)!important;transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .35s!important;animation:sb-shared-menu-float 3.5s ease-in-out infinite!important;overflow:visible!important;isolation:isolate!important}
+.radial-nav .radial-toggle img{display:block!important;position:relative!important;inset:auto!important;width:42px!important;height:42px!important;max-width:none!important;max-height:none!important;object-fit:contain!important;margin:0!important;transform:none!important;transition:transform .65s ease!important;filter:drop-shadow(0 2px 4px #000)!important}
+.radial-nav .radial-toggle:before{content:""!important;position:absolute!important;inset:-8px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:50%!important;opacity:1!important;pointer-events:none!important;animation:none!important}
+.radial-nav .radial-toggle:after{content:none!important;display:none!important}
+.radial-nav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg)!important;background:radial-gradient(circle,#4b2429,#10080a 80%)!important}
+.radial-nav.open .radial-toggle img{transform:rotate(-225deg) scale(.94)!important}
+@keyframes sb-shared-menu-float{0%,100%{box-shadow:inset 0 0 22px rgba(215,45,62,.19),0 0 0 5px rgba(0,0,0,.5),0 0 16px rgba(214,32,51,.27)}50%{box-shadow:inset 0 0 28px rgba(215,45,62,.28),0 0 0 5px rgba(0,0,0,.5),0 0 23px rgba(214,32,51,.4)}}
+@media(prefers-reduced-motion:reduce){.radial-nav .radial-toggle{animation:none!important}}
+</style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
 <div aria-hidden="true" id="sbBoot"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br/>UI CORE / ONLINE<br/>MOTION / ACTIVE</div>
@@ -4809,15 +4819,7 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 </div>
 </div>
 <!-- STANCEBOUND dedicated service shortcuts: original homepage remains unchanged -->
-<section class="sb-service-shortcuts" aria-label="Explore our local services">
- <div class="sb-service-shortcuts__head"><span>EXPLORE OUR SERVICES</span><span>LOCAL / SOUTH WALES</span></div>
- <div class="sb-service-shortcuts__grid">
-  <a href="/mobile-valeting-llanelli/"><small>01 / MOBILE CAR CARE</small><strong>MOBILE VALETING</strong><span aria-hidden="true">↗</span></a>
-  <a href="/headlight-restoration/"><small>02 / LENS RESTORATION</small><strong>HEADLIGHT RESTORATION</strong><span aria-hidden="true">↗</span></a>
-  <a href="/areas-covered/"><small>03 / SERVICE AREA</small><strong>AREAS COVERED</strong><span aria-hidden="true">↗</span></a>
- </div>
- <p class="sb-service-shortcuts__google">STANCEBOUND is on Google. <a href="https://share.google/RDpIZGEFVLpogJteo" target="_blank" rel="noopener noreferrer">View our business profile ↗</a></p>
-</section>
+
 
 </div>
 <div class="home-scroll-cue">Discover</div>

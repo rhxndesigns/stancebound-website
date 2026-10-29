@@ -4545,7 +4545,7 @@ html,body{max-width:100%;overflow-x:clip;overscroll-behavior-x:none}
 
 /* Service page content inherits original STANCEBOUND CSS above. */
 html{overflow-x:clip;scroll-behavior:smooth}body{overflow-x:clip;max-width:100%;min-height:100vh;background:#050506;color:#eee}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,.025) 45%,transparent 65%),url('/images/STANCEBOUND4.jpg') center/cover;opacity:.13;filter:grayscale(1)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,.025) 45%,transparent 65%),url('/images/texture.png') center/cover;opacity:.13;filter:grayscale(1)}
 .sb-service-shell{width:min(100%,980px);margin:0 auto;padding:clamp(24px,5vw,54px) clamp(18px,4vw,40px) 160px;position:relative;z-index:1}
 .sb-service-hero{text-align:center;position:relative;padding:22px 0 36px;isolation:isolate}
 .sb-service-hero:before{content:"";position:absolute;z-index:-1;width:min(80vw,620px);aspect-ratio:1;border:1px solid rgba(255,255,255,.07);border-radius:50%;top:0;left:50%;transform:translate(-50%,-20%);box-shadow:0 0 0 48px rgba(255,255,255,.012),0 0 0 100px rgba(255,255,255,.008);pointer-events:none}
@@ -4652,7 +4652,30 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:700px){.radial-nav{bottom:20px!important}}
 @media(prefers-reduced-motion:reduce){.radial-toggle,.radial-toggle img{transition:none!important}}
 </style>
-</head><body><header>
+<style id="sb-service-visual-repair-final-20261029">
+/* Exactly the root textured background, never a car photo. */
+html,body{background-color:#050505!important;overflow-x:clip!important}
+body{background-image:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),url('/images/texture.png')!important;background-repeat:repeat!important;background-size:auto,700px auto!important;background-attachment:scroll!important}
+body:before,body:after{background-image:none!important;content:none!important;display:none!important}
+body>header{display:none!important}
+.sb-service-shell{padding-top:24px!important}
+.radial-backdrop{position:fixed!important;inset:0!important;z-index:9998!important;background:rgba(0,0,0,.91)!important;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility .3s!important}
+.radial-backdrop.show{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+.radial-nav{z-index:10010!important}
+.radial-nav:not(.open) .radial-item{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.radial-nav.open .radial-item{visibility:visible!important}
+@media(max-width:700px){.sb-service-shell{padding-top:20px!important}}
+</style><style id="sb-shared-menu-visual-final-20261029">
+/* Shared across root and all service pages. Preserves the original radial DOM and interactions. */
+.radial-nav .radial-toggle{width:66px!important;height:66px!important;display:grid!important;place-items:center!important;left:0!important;top:0!important;padding:0!important;border:2px solid #e3313d!important;border-radius:50%!important;background:radial-gradient(circle at 50% 42%,#4b2429 0%,#221115 38%,#09090b 77%)!important;box-shadow:inset 0 0 24px rgba(215,45,62,.22),0 0 0 5px rgba(0,0,0,.5),0 0 18px rgba(214,32,51,.3)!important;transform:translate(-50%,-50%)!important;transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .35s!important;animation:sb-shared-menu-float 3.5s ease-in-out infinite!important;overflow:visible!important;isolation:isolate!important}
+.radial-nav .radial-toggle img{display:block!important;position:relative!important;inset:auto!important;width:42px!important;height:42px!important;max-width:none!important;max-height:none!important;object-fit:contain!important;margin:0!important;transform:none!important;transition:transform .65s ease!important;filter:drop-shadow(0 2px 4px #000)!important}
+.radial-nav .radial-toggle:before{content:""!important;position:absolute!important;inset:-8px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:50%!important;opacity:1!important;pointer-events:none!important;animation:none!important}
+.radial-nav .radial-toggle:after{content:none!important;display:none!important}
+.radial-nav.open .radial-toggle{transform:translate(-50%,-50%) rotate(225deg)!important;background:radial-gradient(circle,#4b2429,#10080a 80%)!important}
+.radial-nav.open .radial-toggle img{transform:rotate(-225deg) scale(.94)!important}
+@keyframes sb-shared-menu-float{0%,100%{box-shadow:inset 0 0 22px rgba(215,45,62,.19),0 0 0 5px rgba(0,0,0,.5),0 0 16px rgba(214,32,51,.27)}50%{box-shadow:inset 0 0 28px rgba(215,45,62,.28),0 0 0 5px rgba(0,0,0,.5),0 0 23px rgba(214,32,51,.4)}}
+@media(prefers-reduced-motion:reduce){.radial-nav .radial-toggle{animation:none!important}}
+</style></head><body><header>
 <button aria-label="Go to STANCEBOUND home" class="header-logo" onclick="goRoot('home')" type="button">
 <img alt="STANCEBOUND" src="/images/stanceboundlogo.png?v=30"/>
 </button>
