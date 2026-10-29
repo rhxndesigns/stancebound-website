@@ -4817,6 +4817,46 @@ body:not(.intro-running) .page .particles{animation:none!important}
 #booking .key-dot.sb-key-pending{border:1px dashed #777!important;background:#202023!important}
 
 </style>
+<style id="sb-private-chat-layout-isolation">
+/* Email conversation links show only the dedicated customer chat.
+   Keep this stronger than the public footer's display:block!important. */
+html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(script):not(style){display:none!important}
+</style>
+<style id="sb-modern-private-chat">
+/* Customer chat: readable conversation typography and a compact composer. */
+#conversationPage .conv-body,#conversationPage #convReply,#conversationPage .conv-response-note,#conversationPage .conv-time,#conversationPage #convStatus,#conversationPage #convLiveStatus{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;text-transform:none!important;letter-spacing:0!important}
+#conversationPage .conv-messages{gap:14px;padding:24px 0!important}
+#conversationPage .conv-msg{padding:16px 18px!important;border:1px solid #2e2e32!important;border-radius:18px 18px 18px 5px!important;background:#171719!important;box-shadow:none!important;max-width:88%!important}
+#conversationPage .conv-msg.customer{border-color:#5c3035!important;background:#26191c!important;border-radius:18px 18px 5px 18px!important}
+#conversationPage .conv-who{font-family:Arial,sans-serif!important;font-size:10px!important;letter-spacing:.08em!important;color:#aaa!important;margin-bottom:8px!important}
+#conversationPage .conv-body{font-size:16px!important;line-height:1.6!important;font-weight:400!important}
+#conversationPage .conv-time{font-size:11px!important;color:#888!important;margin-top:10px!important;line-height:1.4}
+#conversationPage .conv-response-note{padding:15px 18px!important;border:1px solid #303034!important;border-radius:14px;background:#111113;font-size:13px!important;line-height:1.65!important;color:#aaa}
+#conversationPage .conv-response-note strong{font:600 14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:#eee!important;margin-bottom:5px}
+#conversationPage #convForm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 14px;padding:16px!important;border-radius:20px!important;background:#141416!important;border:1px solid #39393e!important;box-shadow:0 10px 35px #0003;align-items:center}
+#conversationPage #convForm[hidden]{display:none!important}
+#conversationPage #convForm>label{grid-column:1/-1;font:500 13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;text-transform:none!important;letter-spacing:0!important;color:#bcbcc1!important;margin:0!important}
+#conversationPage #convReply{grid-column:1/-1;min-height:72px!important;height:72px;max-height:240px;resize:none!important;border:0!important;border-radius:10px!important;background:#141416!important;padding:8px 2px!important;color:#f3f3f3!important;font-size:16px!important;line-height:1.55!important;box-shadow:none!important;box-sizing:border-box}
+#conversationPage #convReply::placeholder{font:inherit!important;color:#818187!important;letter-spacing:0!important;text-transform:none!important}
+#conversationPage #convReply:focus{outline:none!important}
+#conversationPage #convForm:focus-within{border-color:#aa3b48!important}
+#conversationPage .conv-attach-row{display:flex;align-items:center;gap:9px;margin:0!important;min-width:0}
+#conversationPage #convForm .conv-attach-btn{width:42px!important;height:42px!important;min-height:42px;border:1px solid #48484e!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;padding:0!important;margin:0!important;background:#202023!important;color:#ddd!important;cursor:pointer;flex:none}
+#conversationPage .conv-attach-btn svg{width:19px;height:19px}
+#conversationPage .conv-photo-hint{font:400 11px/1.4 Arial,sans-serif!important;color:#929298!important;letter-spacing:0!important;text-transform:none!important}
+#conversationPage .conv-attach-preview{grid-column:1/-1;order:1;min-width:0}
+#conversationPage .conv-attach-preview:empty{display:none}
+#conversationPage .conv-actions{display:flex!important;justify-content:flex-end;gap:10px;margin:0!important;flex-wrap:wrap;min-width:0}
+#conversationPage .conv-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 17px!important;background:#b52c3b!important;border:1px solid #c74654!important;border-radius:24px!important;color:#fff!important;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer;transition:background .18s,transform .18s}
+#conversationPage .conv-actions button svg{width:16px;height:16px}
+#conversationPage .conv-actions button:active{transform:scale(.96)}
+#conversationPage .conv-actions button:disabled{opacity:.5;cursor:wait}
+#conversationPage #convStatus{font-size:11px!important;line-height:1.4;color:#bbb!important;max-width:140px;overflow-wrap:anywhere}
+#conversationPage #convLiveStatus{grid-column:1/-1;order:2;font-size:11px!important;line-height:1.55!important;color:#929298!important;margin:0!important}
+#conversationPage .conv-private{font:400 11px/1.6 Arial,sans-serif!important;text-transform:none!important;letter-spacing:0!important}
+@media(max-width:380px){#conversationPage .conv-photo-hint{max-width:65px}#conversationPage #convForm{padding:14px!important;gap:12px 8px}#conversationPage .conv-actions button{padding:11px 14px!important}#conversationPage .conv-msg{max-width:94%!important}}
+@media(prefers-reduced-motion:reduce){#conversationPage .conv-actions button{transition:none}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -7065,16 +7105,16 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
 <div class="conv-passkey-status" id="convPasskeySetupStatus"></div>
 </div>
 <div id="convJob"></div>
-<div class="conv-response-note" hidden="" id="convResponseNote"><strong>NO NEED TO KEEP THIS PAGE OPEN</strong>When STANCEBOUND replies, we’ll send an email to let you know. You can return to this private chat from the link in that email.</div>
+<div class="conv-response-note" hidden="" id="convResponseNote"><strong>We’ll email you when we reply.</strong>You can close this page. Use the link in your email to return to this conversation.</div>
 <div hidden="" id="convError"></div>
 <div class="conv-messages" id="convMessages"></div>
 <form hidden="" id="convForm">
-<label>Reply to STANCEBOUND</label>
-<textarea id="convReply" maxlength="5000" placeholder="Type your message…" rows="5"></textarea>
-<div class="conv-attach-row"><label aria-label="Attach images" class="conv-attach-btn" for="convAttachments">📎</label><input accept="image/*" class="conv-attach-input" id="convAttachments" multiple="" type="file"/><span style="font-size:10px;color:#777;letter-spacing:.08em">UP TO 5 IMAGES</span></div><div class="conv-attach-preview" id="convAttachPreview"></div>
+<label for="convReply">Message STANCEBOUND</label>
+<textarea id="convReply" maxlength="5000" placeholder="Write a message…" rows="2"></textarea>
+<div class="conv-attach-row"><label aria-label="Attach images" class="conv-attach-btn" for="convAttachments" tabindex="0" role="button"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 13 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7l9-9M7 15l8-8"/></svg></label><input accept="image/*" class="conv-attach-input" id="convAttachments" multiple="" type="file"/><span class="conv-photo-hint">Add up to 5 photos</span></div><div class="conv-attach-preview" id="convAttachPreview"></div>
 <div class="conv-actions">
 <span id="convStatus"></span>
-<button type="submit">SEND</button>
+<button type="submit">Send<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
 </div>
 <div class="conv-live" id="convLiveStatus">LIVE · checking for replies automatically</div>
 </form>
@@ -7168,7 +7208,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
       const job=$('convJob'),isGeneralChat=String(c.service||'').toLowerCase()==='private chat',visibleFacts=isGeneralChat?[]:facts;
       if(visibleFacts.length){job.className='conv-job';job.innerHTML=visibleFacts.map(x=>`<span>${esc(x[0])}<strong>${esc(x[1])}</strong></span>`).join('')}else{job.className='';job.innerHTML=''}
       $('convResponseNote').hidden=false;renderMessages(d.messages||[]);$('convForm').hidden=false;
-      $('convLiveStatus').textContent='CHECKING FOR REPLIES WHILE THIS PAGE IS OPEN · WE’LL EMAIL YOU WHEN STANCEBOUND RESPONDS';
+      $('convLiveStatus').textContent='Replies refresh while this page is open. We’ll also notify you by email.';
       if(passkeysSupported&&!localStorage.getItem(passkeySetupKey))$('convPasskeySetup').hidden=false;else $('convPasskeySetup').hidden=true;
       if(!refreshTimer)refreshTimer=setInterval(()=>load(true),3000);
     }catch(e){if(!silent){$('convError').textContent=e.message;$('convError').hidden=false}}finally{loading=false}
@@ -7210,7 +7250,7 @@ html[data-theme="light"] #conversationPage{background:radial-gradient(circle at 
   $('convMessages').addEventListener('click',e=>{const img=e.target.closest('[data-conv-image]');if(!img)return;$('convLightboxImage').src=img.dataset.convImage;$('convLightbox').hidden=false});
   $('convLightboxClose').onclick=()=>{$('convLightbox').hidden=true;$('convLightboxImage').src=''};$('convLightbox').addEventListener('click',e=>{if(e.target===$('convLightbox'))$('convLightboxClose').click()});
 
-  $('convForm').onsubmit=async e=>{e.preventDefault();const box=$('convReply'),message=box.value.trim(),st=$('convStatus'),btn=e.currentTarget.querySelector('button');if(!message&&!selectedAttachments.length)return;btn.disabled=true;st.textContent='Sending…';try{const readFileAsDataURL=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('One of the selected images could not be read.'));reader.readAsDataURL(file)});const attachments=await Promise.all(selectedAttachments.map(async f=>({name:f.name,type:f.type,size:f.size,data:await readFileAsDataURL(f)})));const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'send',token,session,message,attachments})}),d=await r.json().catch(()=>({}));if(r.status===401&&d.verification_required){localStorage.removeItem(sessionKey);session='';showVerify('Your secure session has expired. Unlock with your passkey or verify by email.');return}if(!r.ok)throw Error(d.error||'Could not send reply.');box.value='';selectedAttachments=[];drawAttachmentPreview();st.textContent='Sent ✓';await load()}catch(x){st.textContent=x.message}finally{btn.disabled=false}};
+  $('convForm').onsubmit=async e=>{e.preventDefault();const box=$('convReply'),message=box.value.trim(),st=$('convStatus'),btn=e.currentTarget.querySelector('button[type="submit"]');if(!message&&!selectedAttachments.length)return;btn.disabled=true;st.textContent='Sending…';try{const readFileAsDataURL=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('One of the selected images could not be read.'));reader.readAsDataURL(file)});const attachments=await Promise.all(selectedAttachments.map(async f=>({name:f.name,type:f.type,size:f.size,data:await readFileAsDataURL(f)})));const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'send',token,session,message,attachments})}),d=await r.json().catch(()=>({}));if(r.status===401&&d.verification_required){localStorage.removeItem(sessionKey);session='';showVerify('Your secure session has expired. Unlock with your passkey or verify by email.');return}if(!r.ok)throw Error(d.error||'Could not send reply.');box.value='';box.dispatchEvent(new Event('input'));selectedAttachments=[];drawAttachmentPreview();st.textContent='Sent ✓';await load()}catch(x){st.textContent=x.message}finally{btn.disabled=false}};
 
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}}else if(session)load(true)});
   if(session)load();else showVerify();
@@ -9279,5 +9319,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 </script>
+<script id="sb-modern-private-chat-controller">
+(()=>{
+ const box=document.getElementById('convReply');if(!box)return;
+ function resize(){box.style.height='72px';const height=Math.min(240,Math.max(72,box.scrollHeight));box.style.height=height+'px';box.style.overflowY=box.scrollHeight>240?'auto':'hidden'}
+ box.addEventListener('input',resize);
+ const attach=document.querySelector('label[for=convAttachments]');attach?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.getElementById('convAttachments').click()}});
+ window.addEventListener('resize',resize,{passive:true});
+ new MutationObserver(()=>{if(!document.getElementById('convForm').hidden)resize()}).observe(document.getElementById('convForm'),{attributes:true,attributeFilter:['hidden']});
+ resize();
+})();
+</script>
 </body>
 </html>
+
