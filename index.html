@@ -4768,7 +4768,56 @@ body:not(.intro-running) .page .particles{animation:none!important}
 #sbReferralBooking .sb-referral-error{color:#ff9ba5;font-size:13px;line-height:1.5;margin:12px 0 0}
 #sbReferralError[hidden]{display:none!important}
 @media(max-width:600px){#sbReferralBooking{padding:16px}.sb-referral-grid{grid-template-columns:minmax(0,1fr)}}
-</style></head>
+</style><style id="sb-quote-journey-style">
+/* Quote journey: scoped to the existing booking page. */
+#booking .sbw-head{padding:24px 0 28px;border-bottom:1px solid #333;margin-bottom:28px}
+#booking .sbw-topline{display:flex;justify-content:space-between;gap:16px;align-items:center;color:#bdbdbd;font-size:11px;letter-spacing:.16em}
+#booking .sbw-topline strong{color:#efefef}
+#booking .sbw-track{height:3px;background:#303033;margin:20px 0 16px;overflow:hidden}
+#booking .sbw-track i{display:block;width:33.333%;height:100%;background:#c33543;transition:width .38s ease}
+#booking .sbw-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0;gap:10px}
+#booking .sbw-steps li{font-size:11px;line-height:1.6;color:#818185;letter-spacing:.06em}
+#booking .sbw-steps li[aria-current=step]{color:#fff}#booking .sbw-steps li.sbw-done{color:#c9c9ce}
+#booking .sbw-steps b{display:block;font-size:17px;letter-spacing:.08em;margin-bottom:3px}
+#booking .sbw-heading{display:flex;gap:24px;align-items:center;margin:0 0 28px}
+#booking .sbw-art{width:112px;flex:none;color:#ddd;overflow:visible}
+#booking .sbw-art path{stroke-dasharray:400;stroke-dashoffset:0;animation:sbw-draw 1s ease both}
+#booking .sbw-art .sbw-red{stroke:#c33543}
+#booking .sbw-heading h3{font-size:clamp(24px,5vw,36px);line-height:1.1;margin:0 0 10px;color:#fff}
+#booking .sbw-heading p{color:#bdbdbd;font-size:13px;line-height:1.7;margin:0}
+#booking .sbw-panel[hidden],#booking .sbw-nav [hidden]{display:none!important}
+#booking .sbw-panel{min-width:0}
+#booking .sbw-panel .enquiry-grid{margin-bottom:20px}
+#booking .sbw-nav{display:flex;justify-content:space-between;gap:14px;border-top:1px solid #333;margin-top:26px;padding-top:22px}
+#booking .sbw-nav button{min-height:48px;cursor:pointer;transition:transform .18s,background .18s}
+#booking .sbw-nav button:active{transform:scale(.97)}
+#booking .sbw-back{background:transparent;color:#ddd;border:1px solid #555;padding:12px 20px;font:700 12px Arial,sans-serif;letter-spacing:.08em}
+#booking .sbw-review{padding:20px;border:1px solid #3a3a3f;margin:0 0 24px;background:#101012}
+#booking .sbw-review h4{font-size:12px;letter-spacing:.15em;margin:0 0 12px}
+#booking .sbw-review dl{margin:0}.sbw-review dl div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;padding:9px 0;border-bottom:1px solid #29292d;font-size:12px;line-height:1.6}
+#booking .sbw-review dt{color:#999}#booking .sbw-review dd{margin:0;color:#eee;overflow-wrap:anywhere}
+#booking .sbw-policy{margin:18px 0;border:1px solid #3a3a3e;padding:16px}
+#booking .sbw-policy summary{cursor:pointer;font-size:12px;letter-spacing:.06em;color:#eee;min-height:32px;align-content:center}
+#booking .sbw-policy .booking-terms-notice{margin:14px 0 0;border:0;padding:0}
+#booking .sbw-error{color:#ff9da5;line-height:1.6;font-size:13px;margin:16px 0}
+#booking .sbw-step-note{font-size:12px;line-height:1.7;color:#a7a7ab;margin-top:20px}
+#booking .service-choice{transition:background .18s,border-color .18s,transform .18s}
+#booking .service-choice:active{transform:scale(.985)}
+#booking .service-choice.selected{border-color:#c33543}
+#booking .sbw-panel input:focus-visible,#booking .sbw-panel select:focus-visible,#booking .sbw-panel textarea:focus-visible{outline:2px solid #c33543;outline-offset:3px}
+@keyframes sbw-draw{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
+@media(max-width:540px){#booking .sbw-heading{gap:15px;align-items:flex-start}#booking .sbw-art{width:74px;margin-top:4px}#booking .sbw-steps li{font-size:10px}#booking .sbw-topline{font-size:9px;letter-spacing:.1em}#booking .sbw-review{padding:16px}#booking .sbw-nav .btn{padding:14px 18px;font-size:11px}#booking .sbw-review dl div{grid-template-columns:80px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){#booking .sbw-art path{animation:none}#booking .sbw-track i,#booking .sbw-nav button,#booking .service-choice{transition:none}}
+/* Availability keeps its existing rules, expressed in the requested palette. */
+#booking #sbQuoteBookingNotice{color:#ccc!important}
+#booking .calendar-day.sb-calendar-available{border-color:#aaa!important;background:#19191b!important;color:#eee!important}
+#booking .calendar-day.sb-calendar-available.selected{background:#eee!important;color:#111!important;border-color:#eee!important;box-shadow:0 0 0 2px #a32735}
+#booking .calendar-day.sb-calendar-pending{border:2px dashed #777!important;background:#202023!important;color:#aaa!important}
+#booking .key-dot.sb-key-available{border-color:#aaa!important;background:#19191b!important}
+#booking .key-dot.sb-key-pending{border:1px dashed #777!important;background:#202023!important}
+
+</style>
+</head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
 <div aria-label="STANCEBOUND introduction" id="sbBoot"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br/>UI CORE / ONLINE<br/>MOTION / ACTIVE</div>
@@ -5323,18 +5372,18 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <div class="content">
 <div class="page-heading">
 <div class="eyebrow">STANCEBOUND</div>
-<h2>Request a Booking</h2>
+<h2>Get your personalised quote.</h2>
 <div class="heading-line"></div>
-<p>Request a date for detailing, automotive photography or both. Your booking is only confirmed once STANCEBOUND has reviewed your request and confirmed availability.</p>
+<p>Tell us about your vehicle and what you need in three short steps. We’ll review your request, confirm your individual price and agree availability.</p>
 </div>
 <div class="enquiry-shell">
 <div class="enquiry-head">
-<div class="eyebrow">REQUEST A BOOKING</div>
-<h2>Request Your STANCEBOUND Booking</h2>
-<p>Choose the date that suits you. Your request is reviewed before anything is confirmed.</p>
+<div class="eyebrow">CLEANER · HIGHER · FURTHER</div>
+<h2>A better clean starts here.</h2>
+<p>Three short steps. A quote tailored to your vehicle. All vehicles welcome.</p>
 </div>
 <div class="booking-notice">
-<strong>THIS IS A BOOKING REQUEST</strong>
+<strong>YOUR REQUEST. YOUR INDIVIDUAL QUOTE.</strong>
             Your requested date and time are not confirmed until STANCEBOUND has reviewed your request and confirmed availability by email.
           </div>
 <div class="availability-calendar" id="availabilityCalendar">
@@ -6120,46 +6169,6 @@ body:not(.intro-running) .page .particles{animation:none!important}
       if(value)sbSelectedServices.add(value);
       sbRefreshServices();
     }
-    // Returning customers first confirm their contact details, then see the package and job questions.
-    // No unverified customer data is exposed or silently loaded from the database.
-    const sbReturningCheckbox=document.getElementById("sbReturningCustomer");
-    const sbReturningContinue=document.getElementById("sbReturningContinue");
-    const sbReturningStep=document.getElementById("sbReturningStep");
-    const sbReturningError=document.getElementById("sbReturningStepError");
-    const sbReturningForm=document.getElementById("enquiryForm");
-    const sbReturningHidden=[];
-    if(sbReturningForm){
-      const grid=sbReturningForm.querySelector(".enquiry-grid");
-      if(grid){
-        [...grid.children].forEach(field=>{
-          if(field.classList.contains("sb-returning-panel"))return;
-          if(field.querySelector("#enquiryName,#enquiryEmail"))return;
-          sbReturningHidden.push(field);
-        });
-      }
-    }
-    const sbBookingCalendar=document.getElementById("availabilityCalendar");
-    const sbReturningOther=[sbBookingCalendar,...(sbReturningForm?[...sbReturningForm.children].filter(el=>el.classList.contains("booking-terms-notice")||el.classList.contains("consent-row")||el.classList.contains("booking-email-warning")||el.classList.contains("enquiry-actions")||el.querySelector?.(".cf-turnstile")):[])].filter(Boolean);
-    let sbReturningAdvanced=false;
-    function sbSyncReturningFlow(){
-      const active=!!sbReturningCheckbox?.checked;
-      document.getElementById("sbReturningNotice").hidden=!active;
-      if(sbReturningStep)sbReturningStep.hidden=!active||sbReturningAdvanced;
-      for(const field of sbReturningHidden)field.hidden=active&&!sbReturningAdvanced;
-      for(const field of sbReturningOther)field.hidden=active&&!sbReturningAdvanced;
-      if(sbReturningError)sbReturningError.hidden=true;
-    }
-    sbReturningCheckbox?.addEventListener("change",()=>{sbReturningAdvanced=false;sbSyncReturningFlow();});
-    sbReturningContinue?.addEventListener("click",()=>{
-      const name=document.getElementById("enquiryName");
-      const email=document.getElementById("enquiryEmail");
-      if(!name?.value.trim()){name?.focus();name?.reportValidity();return;}
-      if(!email?.value.trim()||!email.checkValidity()){email?.focus();email?.reportValidity();return;}
-      sbReturningAdvanced=true;sbSyncReturningFlow();
-      const picker=document.getElementById("sbPackageTrigger");
-      picker?.scrollIntoView({behavior:"smooth",block:"center"});
-    });
-    sbSyncReturningFlow();
     document.addEventListener("click",event=>{
       const trigger=event.target.closest("#sbPackageTrigger");
       const picker=document.getElementById("sbPackagePicker");
@@ -9016,86 +9025,7 @@ function bookHeadlightRestoration(){
   else if(typeof window.openBooking==='function'){window.openBooking()}
 }
 </script>
-<script id="sb-returning-customer-wizard-controller">
-(function(){
- function setup(){
-  const page=document.getElementById('booking'), form=document.getElementById('enquiryForm'), checkbox=document.getElementById('sbReturningCustomer'), next=document.getElementById('sbReturningContinue');
-  if(!page||!form||!checkbox||!next)return;
-  const grid=form.querySelector('.enquiry-grid');
-  let step=1;
-  const fields=Array.from(grid.children);
-  const outside=Array.from(form.children).filter(el=>el!==grid);
-  const calendar=document.getElementById('availabilityCalendar');
-  function forceVisible(el,show){if(!el)return; if(show){el.style.removeProperty('display');}else{el.style.setProperty('display','none','important');}}
-  function sync(){
-   const returning=checkbox.checked;
-   page.classList.toggle('sb-returning-identify',returning&&step===1);
-   page.classList.toggle('sb-returning-details',returning&&step===2);
-   const notice=document.getElementById('sbReturningNotice');if(notice){notice.hidden=true;forceVisible(notice,false)}
-   const panel=document.getElementById('sbReturningStep');if(panel){panel.hidden=!returning||step!==1;forceVisible(panel,returning&&step===1)}
-   for(const el of fields){
-    const isPanel=el.classList.contains('sb-returning-panel');
-    const isIdentity=!!el.querySelector('#enquiryName,#enquiryEmail');
-    const isPhone=!!el.querySelector('#enquiryPhone');
-    // Returning step 1 is exclusively identity. Step 2 is job details, not personal information.
-    const visible=!returning || (step===1?(isPanel||isIdentity):(!isIdentity));
-    forceVisible(el,visible);
-   }
-   for(const el of outside){
-    const verification=el.id==='verifyBox';
-    forceVisible(el,!returning||step===2||verification&&el.classList.contains('active'));
-   }
-   forceVisible(calendar,!returning||step===2);
-  }
-  checkbox.addEventListener('change',()=>{step=1;queueMicrotask(sync)});
-  next.addEventListener('click',()=>{
-   const name=document.getElementById('enquiryName'),email=document.getElementById('enquiryEmail');
-   if(!name?.value.trim()){name?.focus();name?.reportValidity();return;}
-   if(!email?.value.trim()||!email.checkValidity()){email?.focus();email?.reportValidity();return;}
-   step=2;queueMicrotask(()=>{sync();document.getElementById('sbPackageTrigger')?.scrollIntoView({block:'center',behavior:'smooth'});});
-  });
-  // Reapply after other booking scripts toggle visibility.
-  new MutationObserver(()=>{if(checkbox.checked)queueMicrotask(sync)}).observe(checkbox,{attributes:true,attributeFilter:['checked']});
-  sync();
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
-})();
-</script><script id="sb-arrival-review-v2">
-(function(){
-function start(){
- const page=document.getElementById('booking'),check=document.getElementById('sbReturningCustomer'),panel=document.getElementById('sbArrivalReview'),btn=document.getElementById('sbArrivalEdit'),summary=document.getElementById('sbArrivalSummary'),info=document.getElementById('sbArrivalInfo');
- if(!page||!check||!panel||!btn)return;
- const ids=['accessWater','accessPower','accessParking','accessSpace','accessParkingOther'];
- const els=ids.map(id=>document.getElementById(id)).filter(Boolean);
- const wraps=els.map(el=>el.closest('.enquiry-field'));
- const heading=document.querySelector('.sb-site-access-heading');
- let reviewing=false;
- function sync(){
-  const active=check.checked&&page.classList.contains('sb-returning-details');
-  panel.hidden=!active;panel.style.setProperty('display',active?'block':'none','important');
-  if(!active){for(const w of wraps)if(w)w.style.removeProperty('display');if(heading)heading.style.removeProperty('display');return}
-  if(heading)heading.style.setProperty('display','none','important');
-  const mandatory=els.filter(el=>el.required&&!(el.closest('[hidden]')));
-  const complete=mandatory.every(el=>!!el.value);
-  if(!complete)reviewing=false;
-  for(const w of wraps){if(!w)continue;if(w.id==='accessParkingOtherWrap'&&w.hidden)continue;w.style.setProperty('display',reviewing?'none':'block','important')}
-  summary.hidden=!reviewing;
-  btn.textContent=reviewing?'EDIT DETAILS':'SAVE & REVIEW DETAILS';
-  info.textContent=reviewing?'These are the details supplied for this booking. Previous booking records have not been retrieved.':'Previous answers are not available automatically yet. Confirm these details for this visit, then tap Save & Review Details.';
-  if(reviewing){summary.replaceChildren();for(const el of els){if(!el.value)continue;const line=document.createElement('div');const label=document.querySelector('label[for="'+el.id+'"]');line.textContent=(label?.textContent?.trim()||el.name)+': '+(el.selectedOptions?.[0]?.textContent||el.value);summary.appendChild(line)}}
- }
- btn.addEventListener('click',()=>{
-  if(!reviewing){for(const el of els){if(el.required&&!el.value){el.focus();el.reportValidity();return}}}
-  reviewing=!reviewing;sync();
- });
- check.addEventListener('change',()=>{reviewing=false;sync()});
- for(const el of els)el.addEventListener('change',()=>{if(reviewing){reviewing=false;sync()}});
- new MutationObserver(sync).observe(page,{attributes:true,attributeFilter:['class']});
- sync();
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
-})();
-</script>
+
 <script id="sb-clio-image-and-swipe-fix">
 (function(){
   const gallery=document.getElementById('sb-clio-gallery');
@@ -9280,5 +9210,74 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<script id="sb-quote-journey-controller">
+(()=>{
+ function init(){
+ const form=document.getElementById('enquiryForm'),page=document.getElementById('booking');if(!form||!page||form.dataset.sbwReady)return;form.dataset.sbwReady='true';
+ const originalGrid=form.querySelector('.enquiry-grid');if(!originalGrid)return;
+ const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let step=0,animation=null;
+ const titles=['Your vehicle. Your service.','Where shall we come to you?','Your details. Then we’re on it.'];
+ const copy=['Choose your service and tell us about the vehicle. Detailing prices are personalised to the work required.','Choose a preferred date and tell us about the space available. Availability is confirmed individually.','Review your request and add your contact details. No payment is taken here.'];
+ const art=[
+ '<path d="M13 49h134l-7-23H38L24 49m17-23 12-14h65l17 14M12 49v21h17m104 0h15V49M48 70h56M35 49h18m59 0h18"/><circle cx="39" cy="70" r="10"/><circle cx="119" cy="70" r="10"/><path class="sbw-red" d="M58 53h44M65 60h30"/>',
+ '<path d="M80 76s28-28 28-47a28 28 0 0 0-56 0c0 19 28 47 28 47Z"/><circle cx="80" cy="28" r="10"/><path class="sbw-red" d="M40 68 23 81h114l-17-13"/>',
+ '<path d="M30 10h100v69H30Zm17 17h41M47 40h28M47 54h28M47 67h15"/><path class="sbw-red" d="m89 55 11 11 24-26"/>'
+ ];
+ const header=document.createElement('div');header.className='sbw-head';header.innerHTML='<div class="sbw-topline"><strong>YOUR PERSONALISED REQUEST</strong><span id="sbwCount">STEP 1 OF 3</span></div><div class="sbw-track" role="progressbar" aria-label="Quote request progress" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><i></i></div><ol class="sbw-steps"><li aria-current="step"><b>01</b>VEHICLE & SERVICE</li><li><b>02</b>LOCATION & VISIT</li><li><b>03</b>DETAILS & REVIEW</li></ol>';
+ form.prepend(header);
+ const panels=titles.map((title,i)=>{const panel=document.createElement('section');panel.className='sbw-panel';panel.dataset.step=i;panel.hidden=i!==0;panel.setAttribute('aria-labelledby','sbwTitle'+i);panel.innerHTML='<div class="sbw-heading"><svg class="sbw-art" viewBox="0 0 160 90" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+art[i]+'</svg><div><h3 id="sbwTitle'+i+'" tabindex="-1">'+title+'</h3><p>'+copy[i]+'</p></div></div><div class="enquiry-grid"></div>';header.after(panel);return panel});
+ // Move the existing live fields, preserving IDs, values and event listeners.
+ panels.forEach(panel=>form.append(panel));
+ const grids=panels.map(p=>p.querySelector('.enquiry-grid'));
+ const move=(id,index)=>{const node=document.getElementById(id)?.closest('.enquiry-field');if(node)grids[index].append(node)};
+ ['enquiryVehicle','enquiryService','enquiryMessage'].forEach(id=>move(id,0));
+ ['bookingDate','bookingTime','bookingLocation'].forEach(id=>move(id,1));
+ const accessHeading=originalGrid.querySelector('.sb-site-access-heading');if(accessHeading)grids[1].append(accessHeading);
+ ['accessWater','accessPower','accessParking','accessSpace','accessParkingOther'].forEach(id=>move(id,1));
+ ['enquiryName','enquiryEmail','enquiryPhone','sbReturningCustomer','sbReferrerName'].forEach(id=>move(id,2));
+ const obsolete=document.getElementById('sbArrivalReview');obsolete?.remove();
+ // Keep honeypot and any future unassigned fields attached to the form.
+ for(const node of [...originalGrid.children])grids[2].append(node);
+ originalGrid.remove();
+ const calendar=document.getElementById('availabilityCalendar');if(calendar)panels[1].querySelector('.sbw-heading').after(calendar);
+ const review=document.createElement('section');review.className='sbw-review';review.innerHTML='<h4>YOUR REQUEST AT A GLANCE</h4><dl></dl>';panels[2].querySelector('.sbw-heading').after(review);
+ for(const node of [...form.children]){
+  if(node===header||panels.includes(node))continue;
+  if(node.classList.contains('booking-terms-notice')){const details=document.createElement('details');details.className='sbw-policy';const summary=document.createElement('summary');summary.textContent=node.querySelector('h3')?.textContent||'Booking information';details.append(summary,node);panels[node.getAttribute('aria-label')?.startsWith('Weather')?1:2].append(details);}
+  else panels[node.querySelector('#canopySpaceConfirmed')?1:2].append(node);
+ }
+ const nav=document.createElement('div');nav.className='sbw-nav';nav.innerHTML='<button type="button" class="sbw-back" id="sbwBack" hidden>← BACK</button><button type="button" class="btn" id="sbwNext">CONTINUE →</button>';form.append(nav);
+ const error=document.createElement('p');error.className='sbw-error';error.id='sbwError';error.setAttribute('role','alert');nav.before(error);
+ const next=document.getElementById('sbwNext'),back=document.getElementById('sbwBack');
+ function updateReview(){const dl=review.querySelector('dl');dl.replaceChildren();const fields=[['Vehicle','enquiryVehicle'],['Service','enquiryService'],['Preferred date','bookingDate'],['Preferred time','bookingTime'],['Location','bookingLocation']];for(const [label,id]of fields){const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=document.getElementById(id)?.value||'Not specified';row.append(dt,dd);dl.append(row)}}
+ function show(index,focus=true){
+  animation?.cancel();const previous=step;step=Math.max(0,Math.min(2,index));panels.forEach((p,i)=>p.hidden=i!==step);updateReview();
+  document.getElementById('sbwCount').textContent='STEP '+(step+1)+' OF 3';header.querySelector('.sbw-track').setAttribute('aria-valuenow',step+1);header.querySelector('.sbw-track i').style.width=((step+1)/3*100)+'%';
+  header.querySelectorAll('li').forEach((li,i)=>{li.classList.toggle('sbw-done',i<step);if(i===step)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current')});
+  back.hidden=step===0;next.hidden=step===2;error.textContent='';
+  if(focus){const title=document.getElementById('sbwTitle'+step);title.focus({preventScroll:true});header.scrollIntoView({block:'start',behavior:reduced()?'instant':'smooth'});if(!reduced()&&panels[step].animate)animation=panels[step].animate([{opacity:0,transform:'translateX('+(step>=previous?18:-18)+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:280,easing:'cubic-bezier(.2,.7,.2,1)'})}
+ }
+ function validate(index){
+  if(index===0&&!document.getElementById('enquiryService').value){error.textContent='Choose at least one service to continue.';document.getElementById('sbPackageTrigger')?.focus();return false}
+  for(const field of panels[index].querySelectorAll('input,select,textarea')){if(field.disabled||!field.willValidate||field.closest('[hidden]'))continue;if(!field.checkValidity()){field.reportValidity();return false}}
+  return true;
+ }
+ next.onclick=()=>{if(validate(step))show(step+1)};back.onclick=()=>{if(document.getElementById('verifyBox').classList.contains('show')){error.textContent='Finish verifying your email below to send this request.';document.getElementById('verificationCode').focus();return}show(step-1)};
+ // Enter advances the current step; only the final step can reach the existing submit handler.
+ form.addEventListener('submit',e=>{if(document.activeElement?.id==='verificationCode'&&document.getElementById('verifyBox').classList.contains('show')){e.preventDefault();e.stopImmediatePropagation();document.getElementById('verifyEnquiryBtn').click();return}if(step<2){e.preventDefault();e.stopImmediatePropagation();next.click();return}if(!document.getElementById('enquiryService').value){e.preventDefault();e.stopImmediatePropagation();show(0);validate(0);return}for(let i=0;i<3;i++){if(i!==step){const invalid=[...panels[i].querySelectorAll('input,select,textarea')].find(f=>!f.disabled&&f.willValidate&&!f.validity.valid&&!f.closest('[hidden]:not(.sbw-panel)'));if(invalid){e.preventDefault();e.stopImmediatePropagation();show(i);invalid.reportValidity();return}}}if(!validate(2)){e.preventDefault();e.stopImmediatePropagation()}},true);
+ form.addEventListener('invalid',e=>{const panel=e.target.closest('.sbw-panel');if(panel&&Number(panel.dataset.step)!==step)show(Number(panel.dataset.step))},true);
+ form.addEventListener('reset',()=>setTimeout(()=>show(0,false),0));
+ const returning=document.getElementById('sbReturningCustomer'),notice=document.getElementById('sbReturningNotice');
+ const syncReturning=()=>{if(notice){notice.hidden=!returning.checked;notice.textContent='Use the email from your previous booking. Please confirm the vehicle and visit details for this request; previous answers are not loaded automatically.'}};returning?.addEventListener('change',syncReturning);syncReturning();
+ document.getElementById('sbReturningStep')?.remove();
+ document.getElementById('sendEnquiryBtn').textContent='REQUEST MY QUOTE →';
+ const message=document.getElementById('enquiryMessage');message.placeholder='Tell us about the condition, problem areas and the result you would like.';
+ show(0,false);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
+</script>
 </body>
 </html>
