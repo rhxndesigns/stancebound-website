@@ -4737,6 +4737,14 @@ body:not(.intro-running) .page .particles{animation:none!important}
 .sb-condition-preview .sbcp-disclaimer{font-size:12px;line-height:1.6;color:#b6b6b6;margin:20px 0}
 .sb-condition-preview .sbcp-cta{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:11px 19px;border:1px solid #e05260;border-radius:5px;background:#a32635;color:#fff;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.08em}
 @media(max-width:600px){.sb-condition-preview{padding:18px 15px;margin:18px 0 25px}}
+</style><style id="sb-integrated-price-layout-v1">
+#pricing .sbp-hero .sbcp-integrated{max-width:none;width:100%;margin:22px 0 18px;padding:18px 20px;background:rgba(0,0,0,.42);border:1px solid rgba(190,190,190,.3);border-radius:7px;box-shadow:none}
+#pricing .sbp-hero .sbcp-integrated h2{font-size:clamp(17px,3vw,24px);line-height:1.2;letter-spacing:normal;margin:7px 0}
+#pricing .sbp-hero .sbcp-integrated .sbcp-results{margin:10px 0 5px}
+#pricing .sbp-hero .sbcp-integrated .sbcp-copy{margin-bottom:8px}
+#pricing .sbp-hero .sbcp-integrated .sbcp-disclaimer{margin:10px 0 0}
+#pricing .sbp-hero .sbp-hero-main{grid-template-columns:minmax(0,1fr)}
+@media(max-width:600px){#pricing .sbp-hero .sbcp-integrated{padding:14px 12px;margin:16px 0}#pricing .sbp-hero .sbcp-integrated .sbcp-results output{font-size:34px}}
 </style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5073,17 +5081,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <!-- ========================================
          PRICING
          ======================================== -->
-<section class="page" id="pricing"><section class="sb-condition-preview" data-sb-condition-preview aria-label="Illustrative detailing price preview">
-<div class="sbcp-eyebrow">STANCEBOUND / INSTANT PRICE PREVIEW</div>
-<h2>How dirty is your vehicle?</h2>
-<p class="sbcp-copy">Slide to explore how the condition of your car can affect an indicative detailing price.</p>
-<div class="sbcp-results"><div class="sbcp-state" aria-live="polite">Moderately dirty</div><output aria-live="polite">£145</output></div>
-<label for="sb-condition-slider-main" class="sbcp-copy">Vehicle condition</label>
-<input id="sb-condition-slider-main" type="range" min="0" max="4" step="1" value="2" aria-label="Vehicle dirtiness, from very light to heavily soiled">
-<div class="sbcp-scale"><span>Very light dirt</span><span>Heavily soiled</span></div>
-<p class="sbcp-disclaimer"><strong>Illustrative preview only, not a quote.</strong> Your final personalised quote depends on the services selected, vehicle size, condition and travel. Sliding does not change your booking price.</p>
-<a class="sbcp-cta" href="/#booking">REQUEST YOUR PERSONALISED QUOTE ↗</a>
-</section>
+<section class="page" id="pricing">
 <div class="content sbp-content">
 <section class="sbp-hero">
 <div aria-hidden="true" class="service-light-orbit"></div>
@@ -5099,8 +5097,19 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <h2>ONE CAR.<br/>PROPERLY DONE.</h2>
 <p>Interior and exterior cleaning with a six-stage process. Every vehicle is different. Tell me what yours needs and I’ll prepare a personalised quote.</p>
 </div>
-<div class="sbp-price"><span>TAILORED TO YOUR CAR</span><strong>£40–£250</strong><small>ESTIMATED DETAILING RANGE</small></div>
+
 </div>
+<section class="sb-condition-preview sbcp-integrated" data-sb-condition-preview aria-label="Illustrative detailing price preview">
+<div class="sbcp-eyebrow">STANCEBOUND / INSTANT PRICE PREVIEW</div>
+<h2>How dirty is your vehicle?</h2>
+<p class="sbcp-copy">Slide to explore how the condition of your car can affect an indicative detailing price.</p>
+<div class="sbcp-results"><div class="sbcp-state" aria-live="polite">Moderately dirty</div><output aria-live="polite">£145</output></div>
+<label for="sb-condition-slider-main" class="sbcp-copy">Vehicle condition</label>
+<input id="sb-condition-slider-main" type="range" min="0" max="4" step="1" value="2" aria-label="Vehicle dirtiness, from very light to heavily soiled">
+<div class="sbcp-scale"><span>Very light dirt</span><span>Heavily soiled</span></div>
+<p class="sbcp-disclaimer"><strong>Illustrative preview only, not a quote.</strong> Your final personalised quote depends on the services selected, vehicle size, condition and travel. Sliding does not change your booking price.</p>
+
+</section>
 <div class="sbp-actions">
 <button data-sbp-open="detail" type="button">WHAT'S INCLUDED? <i>↗</i></button>
 <button onclick="sbQuoteOpen()" type="button">GET A QUOTE <i>→</i></button>
