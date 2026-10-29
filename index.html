@@ -3430,7 +3430,7 @@ html.sb-boot-lock #sbBoot{display:flex}#sbBoot.sb-boot-exit{opacity:0;pointer-ev
 .sb-boot-kicker{font-size:7px;font-weight:800;letter-spacing:.31em;color:#777;margin-bottom:9px;opacity:0;animation:sbBootText .35s ease .38s forwards}.sb-boot-title{font-size:clamp(23px,7vw,34px);font-weight:900;letter-spacing:.09em;line-height:1;margin:0;opacity:0;animation:sbBootText .38s ease .46s forwards}.sb-boot-rule{height:1px;width:0;margin:17px auto 15px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:sbBootRule .62s cubic-bezier(.16,1,.3,1) .58s forwards}.sb-boot-readout{display:flex;justify-content:center;gap:11px;align-items:center;font-size:6.5px;font-weight:800;letter-spacing:.16em;color:#686868;opacity:0;animation:sbBootText .32s ease .68s forwards}.sb-boot-readout i{width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 8px #fff;animation:sbBootPulse .8s ease-in-out infinite}.sb-boot-status{position:absolute;left:24px;right:24px;bottom:27px;display:flex;justify-content:space-between;font-size:5.5px;font-weight:800;letter-spacing:.18em;color:#4c4c4c}.sb-boot-status span:last-child{color:#9a9a9a}
 @keyframes sbBootScan{0%{top:-2%;opacity:0}10%{opacity:.9}100%{top:102%;opacity:0}}@keyframes sbBootMark{from{opacity:0;transform:scale(.82);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:none}}@keyframes sbBootText{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes sbBootRule{to{width:100%}}@keyframes sbBootDiamond{to{transform:rotate(405deg)}}@keyframes sbBootPulse{50%{opacity:.25;transform:scale(.6)}}
 @media(prefers-reduced-motion:reduce){.sb-boot-scan,.sb-boot-mark,.sb-boot-kicker,.sb-boot-title,.sb-boot-rule,.sb-boot-readout,.sb-boot-mark:before,.sb-boot-mark:after,.sb-boot-readout i{animation:none!important;opacity:1}.sb-boot-rule{width:100%}}
-</style><script id="stancebound-boot-early">(()=>{try{if(!new URLSearchParams(location.search).has('track') && localStorage.getItem('sb_intro_seen_v1')!=='1')document.documentElement.classList.add('sb-boot-lock')}catch(e){}})();</script>
+</style><script id="stancebound-boot-early">(()=>{try{if(!new URLSearchParams(location.search).has('track') && sessionStorage.getItem('sb_original_boot_seen_v3')!=='1' && !(document.referrer && new URL(document.referrer).origin===location.origin))document.documentElement.classList.add('sb-boot-lock')}catch(e){}})();</script>
 <style id="stancebound-boot-v2-detail">
 #sbBoot:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.065),transparent 24%);animation:sbBootCoreGlow 3.2s ease-in-out both}
 .sb-boot-core:before,.sb-boot-core:after{content:"";position:absolute;left:50%;top:37px;width:128px;height:128px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none}
@@ -4722,14 +4722,14 @@ footer .sb-brand-image img{object-fit:contain!important;width:100%!important;hei
 (()=>{
  const root=document.documentElement,boot=document.getElementById('sbBoot');
  if(!boot)return;
- if(new URLSearchParams(location.search).has('track') || (localStorage.getItem('sb_boot_seen')==='1' || (document.referrer && new URL(document.referrer).origin===location.origin))){boot.remove();root.classList.remove('sb-boot-lock');return;}
+ if(new URLSearchParams(location.search).has('track') || (sessionStorage.getItem('sb_original_boot_seen_v3')==='1' || (document.referrer && new URL(document.referrer).origin===location.origin))){boot.remove();root.classList.remove('sb-boot-lock');return;}
  // Run the boot only once in this tab; mark it immediately so navigation cannot restart it.
- try{localStorage.setItem('sb_boot_seen','1')}catch(e){}
+ try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}
  let finished=false;
- const finish=()=>{if(finished)return;finished=true;try{localStorage.setItem('sb_boot_seen','1')}catch(e){}boot.classList.add('sb-boot-exit');root.classList.remove('sb-boot-lock');setTimeout(()=>boot.remove(),420)};
+ const finish=()=>{if(finished)return;finished=true;try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}boot.classList.add('sb-boot-exit');root.classList.remove('sb-boot-lock');setTimeout(()=>boot.remove(),420)};
  const skip=document.createElement('button');skip.type='button';skip.textContent='SKIP INTRO →';skip.setAttribute('aria-label','Skip website intro');
  skip.style.cssText='position:absolute;right:22px;bottom:55px;z-index:10;background:#111;color:#fff;border:1px solid #777;padding:12px 18px;cursor:pointer;font:700 11px Inter,Arial,sans-serif;letter-spacing:.14em';
- skip.addEventListener('click',()=>{try{localStorage.setItem('sb_intro_seen_v1','1')}catch(e){}finish()});boot.appendChild(skip);
+ skip.addEventListener('click',()=>{try{sessionStorage.setItem('sb_original_boot_seen_v3','1')}catch(e){}finish()});boot.appendChild(skip);
  const status=boot.querySelector('.sb-boot-status span:last-child');
  const kicker=boot.querySelector('.sb-boot-kicker');
  [[520,'SYSTEM CHECK / INTERFACE'],[1120,'VISUAL SYSTEM / ONLINE'],[1760,'DETAILING SYSTEM / READY'],[2350,'PHOTOGRAPHY SYSTEM / READY']].forEach(([ms,label],i)=>setTimeout(()=>{if(finished)return;if(kicker)kicker.textContent=label;if(status)status.textContent=i===3?'READY':'INITIALISING';},ms));
@@ -6526,7 +6526,7 @@ card.addEventListener("pointercancel",cancel,{passive:true});
     // Play the branded intro only once per tab session, including when returning from service pages.
     const introSessionKey="sb_intro_seen_v1";
     let introSeen=false;
-    try{introSeen=localStorage.getItem(introSessionKey)==="1" || (document.referrer && new URL(document.referrer).origin===location.origin);localStorage.setItem(introSessionKey,"1");}catch(_){}
+    try{introSeen=true;}catch(_){}
     if(introSeen){finishIntroImmediately();}
     else if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",runStanceboundIntro,{once:true});
     else runStanceboundIntro();
