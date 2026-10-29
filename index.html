@@ -4759,6 +4759,15 @@ body:not(.intro-running) .page .particles{animation:none!important}
 #sbBoot .sb-boot-status span{min-width:0;overflow-wrap:anywhere}
 #sbBoot .sb-boot-skip{bottom:calc(64px + env(safe-area-inset-bottom,0px))!important;min-height:44px}
 @media(max-height:440px){#sbBoot .sb-boot-mark{width:50px;height:50px;margin-bottom:12px}#sbBoot .sb-boot-data{top:12px}#sbBoot .sb-boot-core{transform:translateY(-14px)}#sbBoot .sb-boot-skip{right:14px!important;padding:10px!important;font-size:9px!important}}
+</style><style id="sb-referral-booking-style">
+#sbReferralBooking{min-width:0;padding:20px;border:1px solid #414144;background:linear-gradient(135deg,#171719,#09090b);box-sizing:border-box}
+#sbReferralBooking .eyebrow{color:#dd5662;font-size:11px;letter-spacing:.15em}
+#sbReferralBooking .sb-referral-copy{margin:10px 0 18px;color:#bdbdc2;font-size:13px;line-height:1.65}
+.sb-referral-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.sb-referral-grid>div{min-width:0}
+#sbReferralCode{text-transform:uppercase;letter-spacing:.08em}
+#sbReferralBooking .sb-referral-error{color:#ff9ba5;font-size:13px;line-height:1.5;margin:12px 0 0}
+#sbReferralError[hidden]{display:none!important}
+@media(max-width:600px){#sbReferralBooking{padding:16px}.sb-referral-grid{grid-template-columns:minmax(0,1fr)}}
 </style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5352,6 +5361,15 @@ body:not(.intro-running) .page .particles{animation:none!important}
 <p hidden="" id="sbReturningNotice">Use the email address from your previous booking. We’ll verify your email before sending this request. Your previous booking details are not automatically retrieved yet, so please confirm the vehicle and location on the next step.</p>
 <div hidden="" id="sbReturningStep"><p class="sb-return-step-copy">STEP 1 OF 2 · Enter the email used for your previous booking. Continue to choose your services and confirm what is needed for this appointment. Your email will be verified before the request is submitted.</p><button class="btn" id="sbReturningContinue" type="button">CONTINUE TO BOOKING DETAILS →</button><p hidden="" id="sbReturningStepError" role="alert" style="color:#ff9292;font-size:12px"></p></div>
 </div>
+<div class="enquiry-field full sb-referral-booking" id="sbReferralBooking">
+<div class="eyebrow">REFERRED BY A CUSTOMER?</div>
+<p class="sb-referral-copy" id="sbReferralHelp">Optional. Enter the name and referral code of the STANCEBOUND customer who recommended us. Referrals apply to new customers’ first completed, paid booking. Your booking price stays the same.</p>
+<div class="sb-referral-grid">
+<div><label for="sbReferrerName">Referrer’s full name</label><input id="sbReferrerName" name="referrer_name" type="text" maxlength="100" autocomplete="off" aria-describedby="sbReferralHelp" placeholder="Who recommended STANCEBOUND?"/></div>
+<div><label for="sbReferralCode">Referral code</label><input id="sbReferralCode" name="referral_code" type="text" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="sbReferralHelp" placeholder="e.g. SB-7K3M9P"/></div>
+</div>
+<p id="sbReferralError" class="sb-referral-error" role="alert" hidden></p>
+</div>
 <div class="enquiry-field full service-choice-field">
 <label>Services / packages</label>
 <p class="sb-multi-hint">SELECT ONE OR MORE SERVICES · TAP TO ADD OR REMOVE</p>
@@ -5938,6 +5956,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
           document.getElementById("sbPackageTrigger")?.scrollIntoView({behavior:"smooth",block:"center"});
           return;
         }
+        if(window.sbValidateReferralRequest && !window.sbValidateReferralRequest())return;
         if(!enquiryForm.reportValidity())return;
         const turnstileToken=enquiryForm.querySelector('[name="cf-turnstile-response"]')?.value||"";
         if(!turnstileToken){
@@ -5962,6 +5981,7 @@ body:not(.intro-running) .page .particles{animation:none!important}
           message:[
             document.getElementById("sbReturningCustomer")?.checked?"RETURNING CUSTOMER REQUEST: Customer says they have booked previously. Verify previous signed agreement before deciding whether a new signature is required.":"",
             "Selected services: "+document.getElementById("enquiryService").value,
+            ...(window.sbReferralRequestLines?.()||[]),
             ...(sbSelectedServices.has('Detailing')&&sbGetApprovedQuote()?["[STANCEBOUND DETAILING SELECTION]",JSON.stringify({version:1,reference:sbGetApprovedQuote().token,estimated_price:Number(sbGetApprovedQuote().price),vehicle_type:sbGetApprovedQuote().vehicle_type||'',vehicle:sbGetApprovedQuote().vehicle||'',service:sbGetApprovedQuote().service||'',interior:sbGetApprovedQuote().interior||'',exterior:sbGetApprovedQuote().exterior||'',problems:sbGetApprovedQuote().problems||[],addons:sbGetApprovedQuote().addons||[],notes:sbGetApprovedQuote().notes||''}),"[/STANCEBOUND DETAILING SELECTION]"]:[]),
             "Detailing estimate reference: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?.token||'MISSING APPROVAL'):'Not applicable'),
             "Estimated detailing price: "+(sbSelectedServices.has('Detailing')?(sbGetApprovedQuote()?'£'+Number(sbGetApprovedQuote().price).toFixed(2):'Not approved'):'Not applicable'),
@@ -9195,6 +9215,31 @@ function init(){
  });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script><script id="sb-referral-booking-controller">
+(()=>{
+ const name=document.getElementById('sbReferrerName'),code=document.getElementById('sbReferralCode'),error=document.getElementById('sbReferralError');
+ if(!name||!code||!error)return;
+ const values=()=>({name:name.value.trim(),code:code.value.trim().toUpperCase()});
+ function clear(){name.setCustomValidity('');code.setCustomValidity('');error.hidden=true;error.textContent=''}
+ function fail(input,message){input.setCustomValidity(message);error.textContent=message;error.hidden=false;input.focus();input.reportValidity();return false}
+ name.addEventListener('input',clear);code.addEventListener('input',clear);
+ document.getElementById('sbReturningCustomer')?.addEventListener('change',clear);
+ document.getElementById('enquiryForm')?.addEventListener('reset',clear);
+ window.sbValidateReferralRequest=function(){
+  clear();const v=values();
+  if(!v.name&&!v.code)return true;
+  if(document.getElementById('sbReturningCustomer')?.checked)return fail(code,'Referral rewards apply to new customers’ first booking. Remove these referral details to continue as a returning customer.');
+  if(!v.name)return fail(name,'Enter the full name of the customer who referred you.');
+  if(!v.code)return fail(code,'Enter their referral code, or clear the name to book without a referral.');
+  if(!/^[A-Z0-9-]{4,32}$/.test(v.code))return fail(code,'Check the referral code. Use 4–32 letters, numbers or hyphens.');
+  code.value=v.code;return true;
+ };
+ window.sbReferralRequestLines=function(){
+  const v=values();
+  if(!v.name||!v.code)return [];
+  return ['[STANCEBOUND REFERRAL REQUEST]',JSON.stringify({version:1,referrer_name:v.name,referral_code:v.code,verification_status:'unverified'}),'[/STANCEBOUND REFERRAL REQUEST]'];
+ };
 })();
 </script></body>
 </html>
