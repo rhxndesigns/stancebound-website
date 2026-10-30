@@ -4866,6 +4866,36 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 #sbpModal .sb-sale-request:active{transform:translateY(1px)}
 #sbpModal .sb-sale-available{color:#eee}
 </style>
+<style id="sb-matching-service-cards">
+/* Shared presentation for the live restoration card and service carousel. */
+#pricing #sbpCinema{margin:18px 0;border:1px solid rgba(255,255,255,.22);background:radial-gradient(circle at 85% 30%,rgba(255,255,255,.09),transparent 38%),linear-gradient(135deg,#101010,#050505 65%);overflow:hidden}
+#pricing #sbpCinema .sbp-cinema-head{height:auto;min-height:0;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.15);background:transparent;font-size:10px!important;letter-spacing:.14em}
+#pricing #sbpCinema .sbp-cinema-status{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.14em;color:#eee;line-height:1.5}
+#pricing #sbpCinema .sbp-cinema-status i{order:-1;width:7px;height:7px;border-radius:50%;background:#aaa;box-shadow:none;flex:none}
+#pricing #sbpCinema[data-service-available=true] .sbp-cinema-status i{background:#c94350;box-shadow:0 0 9px #c9435044}
+#pricing #sbpCinema .sbp-cinema-head small{font-size:9px!important;font-weight:800;letter-spacing:.14em!important;color:#888;line-height:1.5;text-align:right}
+#pricing #sbpCinema .sbp-cinema-frame{min-height:0!important;height:auto;overflow:hidden;background:transparent;box-shadow:none;isolation:isolate}
+#pricing #sbpCinema .sbp-cinema-frame:before{content:"";inset:0;position:absolute;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 47px,rgba(255,255,255,.018) 48px),repeating-linear-gradient(90deg,transparent 0 47px,rgba(255,255,255,.018) 48px);animation:none;transform:none;border:0;opacity:1}
+#pricing #sbpCinema .sbp-cinema-frame:after,#pricing #sbpCinema .sbp-cinema-image,#pricing #sbpCinema .sbp-cinema-shade,#pricing #sbpCinema .sbp-cinema-tech,#pricing #sbpCinema .sbp-swipe-cue,#pricing #sbpCinema .sbp-cinema-edge,#pricing #sbpCinema .sbp-hit,#pricing #sbpCinema .sbp-cinema-index{display:none!important}
+#pricing #sbpCinema .sbp-cinema-copy{position:relative;width:100%!important;padding:38px 28px 32px!important;box-sizing:border-box}
+#pricing #sbpCinema .sb-service-kicker{color:#aaa;font-size:10px;letter-spacing:.22em;font-weight:800;margin-bottom:20px;line-height:1.65}
+#pricing #sbpCinema .sbp-cinema-copy h2{font-size:clamp(34px,8vw,76px)!important;line-height:.96!important;letter-spacing:-.045em;font-weight:950;margin:0 0 20px;color:#fff;overflow-wrap:normal}
+#pricing #sbpCinema .sbp-cinema-copy p{font-size:15px!important;line-height:1.65!important;color:#b9b9b9;max-width:570px;margin:0 0 26px;letter-spacing:0}
+#pricing #sbpCinema .sb-service-facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;max-width:530px;margin-bottom:22px}
+#pricing #sbpCinema .sb-service-facts>div{border:1px solid rgba(255,255,255,.22);padding:18px 16px;min-width:0}
+#pricing #sbpCinema .sb-service-facts small{display:block;font-size:9px;letter-spacing:.13em;color:#aaa;font-weight:800;line-height:1.6;margin-bottom:8px}
+#pricing #sbpCinema .sb-service-facts strong{display:block;font-size:16px;line-height:1.4;color:#eee;letter-spacing:-.01em}
+#pricing #sbpCinema .sbp-explore-btn{display:flex;align-items:center;justify-content:space-between;max-width:530px;width:100%;height:auto;min-height:64px;margin:0;border:1px solid rgba(255,255,255,.55);padding:20px 18px;background:transparent;color:#fff;font-size:12px!important;letter-spacing:.1em!important;font-weight:850;box-sizing:border-box}
+#pricing #sbpCinema .sbp-explore-btn i{font-size:22px}#pricing #sbpCinema .sbp-explore-btn:hover,#pricing #sbpCinema .sbp-explore-btn:focus-visible{background:#fff;color:#050505}
+#pricing #sbpCinema .sbp-cinema-nav{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;height:auto;min-height:52px;padding:8px 16px;border-top:1px solid rgba(255,255,255,.15);background:transparent}
+#pricing #sbpCinema .sbp-cinema-nav>button{padding:0;min-width:44px;min-height:44px;font-size:18px}
+#pricing #sbpCinema .sbp-cinema-nav>button span{display:none}
+#pricing #sbpCinema .sbp-cinema-progress{justify-content:center;gap:7px}#pricing #sbpCinema .sbp-cinema-progress b{font-size:9px}
+@media(min-width:760px){#pricing #sbpCinema .sbp-cinema-copy{padding:58px 48px!important}}
+@media(max-width:390px){#pricing #sbpCinema .sbp-cinema-head{padding:15px 12px;font-size:8px!important}#pricing #sbpCinema .sbp-cinema-status{font-size:8px}#pricing #sbpCinema .sbp-cinema-head small{font-size:8px!important}#pricing #sbpCinema .sbp-cinema-copy{padding:30px 18px!important}#pricing #sbpCinema .sb-service-facts>div{padding:15px 12px}#pricing #sbpCinema .sb-service-facts strong{font-size:14px}}
+#pricing .sb-headlight-pulse{background:#c94350;box-shadow:0 0 9px #c9435044;animation:none}
+#pricing .sb-headlight-rates em{color:#c8c8c8}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5252,11 +5282,8 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 </div>
 <div class="sb-headlight-foot"><span>EXTERIOR / RESTORATION</span><span>01 OR 02 HEADLIGHTS</span></div>
 </section>
-<section class="sbp-cinema" id="sbpCinema">
-<div class="sbp-cinema-head">
-<span>SERVICES / <b id="sbpCinemaNum">01</b>—05</span>
-<small>EXPLORE</small>
-</div>
+<section class="sbp-cinema" id="sbpCinema" data-service-available="true">
+<div class="sbp-cinema-head"><div class="sbp-cinema-status">AVAILABLE TO ENQUIRE <i></i></div><small>STANCEBOUND / SERVICES <b id="sbpCinemaNum">01</b>—05</small></div>
 <article class="sbp-cinema-frame" data-mode="sale" id="sbpCinemaFrame">
 <div aria-hidden="true" class="sbp-cinema-image" id="sbpCinemaImage"></div>
 <div aria-hidden="true" class="sbp-cinema-shade"></div>
@@ -5267,21 +5294,22 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <div aria-hidden="true" class="sbp-cinema-edge left">‹</div>
 <div aria-hidden="true" class="sbp-cinema-edge right">›</div>
 <div class="sbp-cinema-copy">
-<div class="sbp-cinema-status">AVAILABLE TO ENQUIRE <i></i></div>
+<div class="sb-service-kicker" id="sbpCinemaKicker">SALE PREPARATION / COMPLETE PRESENTATION</div>
 <div class="sbp-cinema-index" id="sbpCinemaIndex">01</div>
 <h2 id="sbpCinemaTitle">SALE<br/>PREPARATION.</h2>
 <p id="sbpCinemaText">Full clean · Professional photos · Written advert · Website listing</p>
+<div class="sb-service-facts" id="sbpCinemaFacts"><div><small>VEHICLE PREPARATION</small><strong>Interior &amp; exterior clean</strong></div><div><small>SALE PRESENTATION</small><strong>Photos &amp; written advert</strong></div></div>
 <button class="sbp-explore-btn" data-sbp-open="sale" id="sbpCinemaMore" type="button">
 <span>EXPLORE SERVICE</span><i>↗</i>
 </button>
 </div>
 </article>
 <div class="sbp-cinema-nav">
-<button data-cinema-prev="" type="button"><i>←</i><span>PREVIOUS</span></button>
+<button aria-label="Previous service" data-cinema-prev="" type="button"><i>←</i><span>PREVIOUS</span></button>
 <div class="sbp-cinema-progress" id="sbpCinemaProgress">
 <b class="active">01</b><i></i><b>02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b>
 </div>
-<button data-cinema-next="" type="button"><span>NEXT</span><i>→</i></button>
+<button aria-label="Next service" data-cinema-next="" type="button"><span>NEXT</span><i>→</i></button>
 </div>
 </section>
 <!-- Original six-step graphic system retained here and moved into the modal only when requested. -->
@@ -8284,6 +8312,11 @@ if(busy)return;busy=true;
    document.getElementById('sbpCinemaTitle').innerHTML=title;
    document.getElementById('sbpCinemaText').textContent=text;
    document.getElementById('sbpCinemaMore').dataset.sbpOpen=key;
+   document.getElementById('sbpCinema').dataset.serviceAvailable=String(key==='sale');
+   const presentation={sale:['SALE PREPARATION / COMPLETE PRESENTATION','VEHICLE PREPARATION','Interior & exterior clean','SALE PRESENTATION','Photos & written advert'],scratch:['SCRATCH REMOVAL / TARGETED IMPROVEMENT','PAINT CONDITION','Assessed individually','AVAILABILITY','Coming soon'],paint:['SINGLE-STAGE POLISH / GLOSS ENHANCEMENT','SERVICE DEVELOPMENT','Astra demonstration first','AVAILABILITY','Coming soon'],ceramic:['CERAMIC COATING / VEHICLE PROTECTION','PREPARATION','Assessed individually','AVAILABILITY','Coming soon'],photo:['DETAIL + PHOTOGRAPHY / VEHICLE PRESENTATION','VEHICLE PREPARATION','Full deep detail','PHOTOGRAPHY','Dedicated vehicle imagery']}[key];
+   document.getElementById('sbpCinemaKicker').textContent=presentation[0];
+   const facts=document.getElementById('sbpCinemaFacts');facts.replaceChildren();
+   for(let i=1;i<5;i+=2){const box=document.createElement('div'),label=document.createElement('small'),value=document.createElement('strong');label.textContent=presentation[i];value.textContent=presentation[i+1];box.append(label,value);facts.append(box)}
    const availability=document.querySelector('#sbpCinema .sbp-cinema-status');availability.replaceChildren(document.createTextNode(key==='sale'?'AVAILABLE TO ENQUIRE ':'COMING SOON '),document.createElement('i'));
    document.querySelectorAll('#sbpCinemaProgress b').forEach((b,i)=>b.classList.toggle('active',i===index));
    requestAnimationFrame(()=>frame.classList.remove('cinema-changing'));
@@ -9365,5 +9398,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 </body>
 </html>
+
 
 
