@@ -4904,6 +4904,39 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 #sale-preparation .sb-sale-live-note{font-size:12px;line-height:1.7;color:#aaa}
 @media(max-width:390px){#sale-preparation .sb-sale-live-facts>div{padding:15px 12px}#sale-preparation .sb-sale-live-facts strong{font-size:14px}}
 </style>
+<style id="sb-clean-navigation">
+/* Compact SB menu; shared by the homepage and local service pages. */
+#radialNav{bottom:calc(64px + env(safe-area-inset-bottom))!important}
+#radialNav #radialItemsV43{position:absolute!important;left:0!important;top:auto!important;bottom:58px!important;width:min(370px,calc(100vw - 32px))!important;height:auto!important;max-height:calc(100dvh - 155px);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:12px 18px!important;border:1px solid #49494e;border-radius:18px!important;background:linear-gradient(145deg,#1b1b1e,#0b0b0d 70%)!important;box-shadow:0 18px 60px #000a!important;display:flex!important;flex-direction:column!important;gap:0!important;transform:translate(-50%,12px)!important;opacity:0!important;visibility:hidden;pointer-events:none!important;transition:opacity .18s ease,transform .18s ease,visibility .18s!important}
+#radialNav.open #radialItemsV43{transform:translate(-50%,0)!important;opacity:1!important;visibility:visible;pointer-events:auto!important}
+#radialNav #radialItemsV43 .radial-item,#radialNav.open #radialItemsV43 .radial-item:hover,#radialNav.open #radialItemsV43 .radial-item:focus-visible{position:relative!important;inset:auto!important;display:flex!important;align-items:center;justify-content:space-between;flex:none;width:100%!important;min-width:0!important;min-height:48px!important;box-sizing:border-box;margin:0!important;padding:12px 9px!important;transform:none!important;border:0!important;border-bottom:1px solid #303034!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:left!important;opacity:1!important;pointer-events:auto!important;font:500 16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;letter-spacing:0!important;text-transform:none!important;white-space:normal!important;color:#ddd!important;transition:background .15s,color .15s!important;transition-delay:0s!important}
+#radialNav #radialItemsV43 .radial-item:after{content:'↗';font-size:16px;color:#777;margin-left:14px}
+#radialNav #radialItemsV43 .radial-item[aria-current=page],#radialNav #radialItemsV43 .radial-item.active{color:#fff!important;background:#431b224d!important;box-shadow:inset 2px 0 #c33848!important}
+#radialNav #radialItemsV43 .radial-item:hover,#radialNav #radialItemsV43 .radial-item:focus-visible{background:#29292e!important;color:#fff!important;outline:2px solid #ba3848!important;outline-offset:-2px}
+#radialNav #radialItemsV43 .sb-menu-quote{color:#fff!important;font-weight:700!important}
+#radialNav .sb-menu-caption{padding:8px 9px 10px;color:#929298;font:600 10px/1.5 Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase}
+#radialNav .sb-menu-secondary{display:flex;gap:16px;padding-top:8px}
+#radialNav #radialItemsV43 .sb-menu-secondary .radial-item{width:auto!important;flex:1;font-size:13px!important;min-height:44px!important;border:0!important}
+#radialNav .radial-toggle{animation:none!important}
+#radialNav .sb-menu-label{position:absolute;left:0;top:40px;transform:translateX(-50%);color:#ccc;font:600 10px/1.5 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;pointer-events:none}
+.radial-backdrop{background:#0009!important;backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important}
+.sb-quick-links{position:fixed;bottom:calc(40px + env(safe-area-inset-bottom));left:16px;right:16px;z-index:10009;display:flex;justify-content:space-between;gap:100px;pointer-events:none}
+.sb-quick-links[hidden]{display:none!important}
+.sb-quick-links button{min-height:44px;padding:10px 16px;border:1px solid #555;border-radius:24px;background:#141416;color:#eee;font:600 13px/1.4 Arial,sans-serif;cursor:pointer;pointer-events:auto}
+.sb-quick-links .sb-quick-quote{background:#a62938;border-color:#c34554;color:white}
+html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:none}
+#sbPublicMain,.sb-service-main{padding-bottom:115px}
+.sb-section-links{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:14px 0;border-top:1px solid #333;border-bottom:1px solid #333}
+.sb-section-links button,.sb-section-links a{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #444;background:#111113;color:#ddd;font:500 13px/1.4 Arial,sans-serif;cursor:pointer;text-decoration:none}
+.sb-section-links [aria-current=page]{border-color:#b33645;color:white}
+.sb-page-next{box-sizing:border-box;width:min(1080px,calc(100% - 40px));margin:38px auto 12px;padding:24px;border:1px solid #3c3c40;background:#111113}
+.sb-page-next p{font-size:15px;line-height:1.65;color:#bbb;margin:0 0 16px}.sb-page-next h3{font-size:23px;margin:0 0 10px;color:#fff}
+.sb-page-next .sb-section-links{border:0;margin:0;padding:0}
+.page.sb-page-leaving{animation:sbCleanLeave 80ms ease both!important}.page.sb-page-entering{animation:sbCleanEnter 160ms ease both!important}
+@keyframes sbCleanLeave{to{opacity:0;transform:translateY(-3px)}}@keyframes sbCleanEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:360px){.sb-quick-links{left:10px;right:10px}.sb-quick-links button{padding:10px 12px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){#radialNav #radialItemsV43,#radialNav #radialItemsV43 .radial-item{transition:none!important}.page.sb-page-leaving,.page.sb-page-entering{animation:none!important}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -4949,48 +4982,20 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <button aria-controls="navigation" aria-expanded="false" aria-label="Open navigation" class="menu-button" onclick="toggleMenu()" type="button">
       ☰
     </button>
-<nav id="navigation">
-<button class="nav-link active" data-page="home" onclick="showPage('home')">
-        Home
-      </button>
-<button class="nav-link" data-page="detailing" onclick="showPage('detailing')">
-        Detailing
-      </button>
-<button class="nav-link" data-page="pricing" onclick="showPage('pricing')">
-        Prices
-      </button>
-<button class="nav-link" data-page="photography" onclick="showPage('photography')">
-        Photography
-      </button>
-<button class="nav-link" data-page="about" onclick="showPage('about')">
-        About
-      </button>
-<button class="nav-link" data-page="shop" onclick="showPage('shop')">
-        Shop
-      </button>
-<button class="nav-link" data-page="reviews" onclick="showPage('reviews')">Reviews</button>
-<button class="nav-link" data-page="booking" onclick="showPage('booking')">
-        Booking
-      </button>
-<button class="nav-link" data-page="contact" onclick="showPage('contact')">
-        Chat
-      </button>
-</nav>
+<nav id="navigation"><button class="nav-link active" data-page="home" onclick="showPage('home')">Home</button><button class="nav-link" data-page="pricing" onclick="showPage('pricing')">Services &amp; Prices</button><button class="nav-link" data-page="detailing" onclick="showPage('detailing')">Our Work</button><button class="nav-link" data-page="reviews" onclick="showPage('reviews')">Reviews</button><button class="nav-link" data-page="booking" onclick="showPage('booking')">Get a Quote</button><button class="nav-link" data-page="about" onclick="showPage('about')">About</button><button class="nav-link" data-page="shop" onclick="showPage('shop')">Shop</button></nav>
 </header>
 <div class="radial-backdrop" id="radialBackdrop"></div>
 <div aria-label="Site menu" class="radial-nav" id="radialNav">
 <div class="radial-items" id="radialItemsV43" inert="">
-<button class="radial-item active" data-page="home" style="--i:0;--a:-87deg">Home</button>
-<button class="radial-item" data-page="detailing" style="--i:1;--a:-62deg">Detailing</button>
-<button class="radial-item" data-page="pricing" style="--i:2;--a:-37deg">Prices</button>
-<button class="radial-item" data-page="photography" style="--i:3;--a:-17deg">Photo</button>
-<button class="radial-item" data-page="about" style="--i:4;--a:17deg">About</button>
-<button class="radial-item" data-page="shop" style="--i:5;--a:37deg">Shop</button>
-<button class="radial-item" data-page="booking" style="--i:6;--a:62deg">Booking</button>
-<button class="radial-item" data-page="reviews" style="--i:8;--a:0deg">Reviews</button>
-<button class="radial-item" data-page="contact" style="--i:7;--a:87deg">Chat</button>
+<div class="sb-menu-caption">Explore STANCEBOUND</div>
+<button class="radial-item active" data-page="home" type="button">Home</button>
+<button class="radial-item" data-page="pricing" type="button">Services &amp; Prices</button>
+<button class="radial-item" data-page="detailing" type="button">Our Work</button>
+<button class="radial-item" data-page="reviews" type="button">Reviews</button>
+<button class="radial-item sb-menu-quote" data-page="booking" type="button">Get a Quote</button>
+<div class="sb-menu-secondary"><button class="radial-item" data-page="about" type="button">About</button><button class="radial-item" data-page="shop" type="button">Shop</button></div>
 </div>
-<button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" src="images/stanceboundlogo.png?v=30"/></button>
+<button aria-controls="radialItemsV43" aria-expanded="false" aria-label="Open menu" class="radial-toggle" id="radialToggle" type="button"><img alt="" aria-hidden="true" src="images/stanceboundlogo.png?v=30"/></button><span class="sb-menu-label">Menu</span>
 </div>
 <main id="sbPublicMain" tabindex="-1">
 <!-- ========================================
@@ -5008,17 +5013,12 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 </div>
 <p class="hero-description" id="home-description">Professional mobile car valeting, deep interior cleaning, exterior detailing and headlight restoration across Llanelli, Carmarthen, Ammanford, Swansea and surrounding Carmarthenshire areas. From everyday family cars to modified and performance cars, every vehicle is welcome.</p>
 <div class="hero-buttons sb-hero-primary-actions">
-<button class="btn" onclick="showPage('booking')" type="button">BOOK A DETAIL <span aria-hidden="true">↗</span></button>
+<button class="btn" onclick="showPage('booking')" type="button">GET A QUOTE <span aria-hidden="true">↗</span></button>
 <button class="btn secondary" onclick="showPage('pricing')" type="button">VIEW SERVICES &amp; PRICES <span aria-hidden="true">↗</span></button>
 </div>
 <div aria-label="Quick access to STANCEBOUND pages" class="sb-home-direct">
 <div class="sb-home-direct-label">EXPLORE STANCEBOUND <span>DIRECT ACCESS</span></div>
-<div class="sb-home-direct-grid">
-<button onclick="showPage('detailing')" type="button"><span>01 / DETAILING</span><b>CAR CARE</b><i aria-hidden="true">↗</i></button>
-<button onclick="showPage('photography')" type="button"><span>02 / PHOTOGRAPHY</span><b>THE GALLERY</b><i aria-hidden="true">↗</i></button>
-<button onclick="showPage('shop')" type="button"><span>03 / STORE</span><b>SHOP</b><i aria-hidden="true">↗</i></button>
-<button onclick="showPage('reviews')" type="button"><span>04 / CUSTOMER FEEDBACK</span><b>REVIEWS</b><i aria-hidden="true">↗</i></button>
-</div>
+<div class="sb-home-direct-grid"><button onclick="showPage('pricing')" type="button"><span>01 / VEHICLE CARE</span><b>SERVICES &amp; PRICES</b><i aria-hidden="true">↗</i></button><button onclick="showPage('detailing')" type="button"><span>02 / GENUINE RESULTS</span><b>OUR WORK</b><i aria-hidden="true">↗</i></button><button onclick="showPage('reviews')" type="button"><span>03 / CUSTOMER FEEDBACK</span><b>REVIEWS</b><i aria-hidden="true">↗</i></button><button onclick="location.href='/areas-covered/'" type="button"><span>04 / SOUTH WALES</span><b>AREAS COVERED</b><i aria-hidden="true">↗</i></button></div>
 </div>
 <!-- STANCEBOUND dedicated service shortcuts: original homepage remains unchanged -->
 
@@ -5095,7 +5095,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
             STANCEBOUND
           </div>
 <h2>
-            Detailing<span class="sb-seo-only"> | Mobile Car Detailing &amp; Valeting in Carmarthenshire</span>
+            Our Work<span class="sb-seo-only"> | Mobile Car Detailing &amp; Valeting in Carmarthenshire</span>
 </h2>
 <div class="heading-line"></div>
 <p>
@@ -5103,7 +5103,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
             Professional interior and exterior car care for all vehicles, from family cars and daily drivers to performance cars and modified builds. Every car deserves attention.
 
           </p>
-</div>
+</div><div class="sb-section-links" aria-label="Browse our work"><button aria-current="page" onclick="showPage('detailing')" type="button">Detailing results</button><button onclick="showPage('photography')" type="button">Photography</button></div>
 <div aria-label="Explore detailing projects" class="sb-project-select">
 <button class="sb-project-tile" onclick="showPage('detail-merc')" type="button">
 <img alt="Mercedes-AMG CLA detail" decoding="async" loading="lazy" src="images/STANCEBOUND4.jpg"/>
@@ -5128,7 +5128,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
           </button>
 </div>
 </div>
-</section>
+<aside class="sb-page-next"><h3>Like the finish?</h3><p>See what’s included or request a quote for your own vehicle.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button><button onclick="showPage('pricing')" type="button">Services &amp; Prices</button></div></aside></section>
 <!-- Standalone detailing project pages -->
 <section class="page sb-project-page" id="detail-merc"><div class="content">
 <button class="sb-project-back" onclick="showPage('detailing')" type="button">← Back to detailing projects</button>
@@ -5246,7 +5246,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
          PRICING
          ======================================== -->
 <section class="page" id="pricing">
-<div class="content sbp-content">
+<div class="content sbp-content"><div class="page-heading"><div class="eyebrow">STANCEBOUND / VEHICLE CARE</div><h2>Services &amp; Prices</h2><p>Explore our available services below. Detailing and sale preparation are individually quoted; coming-soon services are labelled separately.</p></div>
 <section class="sbp-hero">
 <div aria-hidden="true" class="service-light-orbit"></div>
 <div aria-hidden="true" class="service-scanline"></div>
@@ -5372,7 +5372,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <button class="btn current-book-btn" onclick="sbQuoteOpen()" type="button">REQUEST A QUOTE</button>
 </div>
 </div>
-</section>
+<aside class="sb-page-next"><h3>Not sure which service you need?</h3><p>Tell us about your vehicle for a personalised quote, or ask a question in chat.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button></div></aside></section>
 <!-- ========================================
          PHOTOGRAPHY
          ======================================== -->
@@ -5393,7 +5393,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
             and the culture surrounding them.
 
           </p>
-</div>
+</div><div class="sb-section-links" aria-label="Browse our work"><button onclick="showPage('detailing')" type="button">Detailing results</button><button aria-current="page" onclick="showPage('photography')" type="button">Photography</button></div>
 <div class="gallery swipe-gallery" id="photography-gallery">
 <div aria-label="Open gallery image: STANCEBOUND automotive photography" class="photo large" onclick="
               openLightbox(
@@ -5434,7 +5434,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
           </button>
 </div>
 </div>
-</section>
+<aside class="sb-page-next"><h3>Put your vehicle in the frame.</h3><p>Explore sale preparation for cleaning, photographs and an advert, or chat about your photography requirements.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button><button onclick="showPage('pricing')" type="button">Services &amp; Prices</button></div></aside></section>
 <!-- ========================================
          ABOUT
          ======================================== -->
@@ -5461,7 +5461,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 </div>
 </div>
 </div>
-</section>
+<aside class="sb-page-next"><h3>Let’s look after your vehicle.</h3><p>View our services, explore completed work or send a quote request.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button><button onclick="showPage('pricing')" type="button">Services &amp; Prices</button></div></aside></section>
 <!-- ========================================
          CONTACT
          ======================================== -->
@@ -5836,7 +5836,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <p class="sb-tp-collector-note">Reviews are written and published independently on Trustpilot. <a href="https://uk.trustpilot.com/review/stancebound.com" rel="noopener noreferrer" style="color:#e6e6e6;text-decoration:underline;text-underline-offset:3px" target="_blank">Read customer feedback ↗</a></p>
 </div>
 </div>
-</section>
+<aside class="sb-page-next"><h3>Ready to try STANCEBOUND?</h3><p>Explore the services or tell us about your vehicle.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button><button onclick="showPage('pricing')" type="button">Services &amp; Prices</button></div></aside></section>
 </main>
 <!-- ========================================
        IMAGE LIGHTBOX
@@ -6307,6 +6307,8 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
        PAGE NAVIGATION
        ======================================== */
 
+    const sbPageScroll=new Map();
+    if('scrollRestoration' in history)history.scrollRestoration='manual';
     function showPage(pageName, addToHistory = true) {
 
       // Private customer conversations are a dedicated route.
@@ -6318,6 +6320,8 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
         return;
       }
 
+      const previousPage=document.querySelector('.page.active')?.id;
+      if(previousPage&&previousPage!==pageName)sbPageScroll.set(previousPage,document.body.classList.contains('sb-menu-scroll-locked')?Math.abs(parseFloat(document.body.style.top)||0):window.scrollY);
       const pages =
         document.querySelectorAll(".page");
 
@@ -6398,10 +6402,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
       );
 
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      requestAnimationFrame(()=>window.scrollTo({top:addToHistory?0:(sbPageScroll.get(pageName)||0),behavior:'instant'}));
 
 
       const nextHash = "#" + pageName;
@@ -6635,6 +6636,8 @@ card.addEventListener("pointercancel",cancel,{passive:true});
 
     const allowedPages = [
       "home",
+      "detail-merc",
+      "detail-clio",
       "detailing",
       "pricing",
       "photography",
@@ -8118,7 +8121,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <style id="stancebound-global-interaction-motion">
   :root{--sb-ease:cubic-bezier(.22,.8,.22,1);--sb-fast:180ms;--sb-page:340ms}
   .page{will-change:auto}.page.sb-page-entering,.page.sb-page-leaving{will-change:opacity,transform}
-  .page.sb-page-leaving{display:block!important;opacity:0!important;transform:translateY(10px) scale(.995)!important;filter:blur(2px);pointer-events:none;transition:opacity 180ms ease,transform 220ms var(--sb-ease),filter 180ms ease!important}
+  .page.sb-page-leaving{display:block!important;pointer-events:none;animation:sbCleanLeave 80ms ease both}
   .page.sb-page-entering{display:block!important;animation:sbPageEnter var(--sb-page) var(--sb-ease) both}
   @keyframes sbPageEnter{from{opacity:0;transform:translateY(14px) scale(.994);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
 
@@ -8176,7 +8179,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
       try{
         if(current&&!reduce){
           current.classList.add('sb-page-leaving');
-          await wait(175);
+          await wait(80);
           current.classList.remove('sb-page-leaving');
         }
         instantShow(pageName,addToHistory);
@@ -8185,7 +8188,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
           next.classList.remove('sb-page-entering');
           void next.offsetWidth;
           next.classList.add('sb-page-entering');
-          await wait(360);
+          await wait(160);
           next.classList.remove('sb-page-entering');
         }
       }finally{
@@ -8948,8 +8951,9 @@ if(sys)sys.textContent='SYS / STARTING';
     const page = document.querySelector('main > .page.active')?.id;
     if(!page) return;
     document.querySelectorAll('#navigation [data-page], #radialItemsV43 [data-page]').forEach(button => {
-      if(button.dataset.page === page) button.setAttribute('aria-current','page');
-      else button.removeAttribute('aria-current');
+      const current=button.dataset.page===page||button.dataset.page==='detailing'&&(page==='photography'||page.startsWith('detail-'));
+      button.classList.toggle('active',current);
+      if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
     });
   };
   if(radial && headerNav){
@@ -9415,8 +9419,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  });
 })();
 </script>
+<div class="sb-quick-links" aria-label="Quick contact and quote"><button data-quick-page="contact" type="button">Chat</button><button class="sb-quick-quote" data-quick-page="booking" type="button">Get a quote ↗</button></div><script id="sb-clean-navigation-controller">(()=>{
+ const nav=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43'),quick=document.querySelector('.sb-quick-links');if(!nav||!toggle||!items)return;
+ const sync=()=>{const open=nav.classList.contains('open');if(quick)quick.hidden=open;if(open)requestAnimationFrame(()=>items.querySelector('button')?.focus());else if(items.contains(document.activeElement))toggle.focus()};
+ new MutationObserver(sync).observe(nav,{attributes:true,attributeFilter:['class']});
+ nav.addEventListener('keydown',e=>{if(e.key!=='Tab'||!nav.classList.contains('open'))return;const buttons=[...items.querySelectorAll('button'),toggle],first=buttons[0],last=toggle;if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}});
+ quick?.addEventListener('click',e=>{const button=e.target.closest('[data-quick-page]');if(!button)return;const page=button.dataset.quickPage;if(typeof window.showPage==='function')window.showPage(page);else location.href='/#'+page});
+ sync();
+})();
+</script>
 </body>
 </html>
+
 
 
 
