@@ -4937,6 +4937,14 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 @media(max-width:360px){.sb-quick-links{left:10px;right:10px}.sb-quick-links button{padding:10px 12px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){#radialNav #radialItemsV43,#radialNav #radialItemsV43 .radial-item{transition:none!important}.page.sb-page-leaving,.page.sb-page-entering{animation:none!important}}
 </style>
+<style id="sb-bottom-back-and-swipe-style">.sb-quick-links .sb-bottom-left{display:flex;align-items:center;gap:6px;pointer-events:auto}
+.sb-quick-links .sb-bottom-left button{padding:10px 12px}
+.sb-quick-links .sb-site-back{width:44px;padding:0!important;font-size:22px;flex:none}
+.sb-quick-links .sb-site-back:disabled{opacity:.35;cursor:default}
+.sb-quick-links .sb-quick-quote{padding:10px 12px}
+@media(max-width:360px){.sb-quick-links{left:8px;right:8px;gap:84px}.sb-quick-links .sb-bottom-left{gap:4px}.sb-quick-links .sb-bottom-left button:not(.sb-site-back){padding:10px 9px}.sb-quick-links .sb-quick-quote{padding:10px 9px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.sb-swipe-surface{transition:none!important}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5131,7 +5139,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <aside class="sb-page-next"><h3>Like the finish?</h3><p>See what’s included or request a quote for your own vehicle.</p><div class="sb-section-links"><button onclick="showPage('booking')" type="button">Get a quote ↗</button><button onclick="showPage('contact')" type="button">Chat with STANCEBOUND</button><button onclick="showPage('pricing')" type="button">Services &amp; Prices</button></div></aside></section>
 <!-- Standalone detailing project pages -->
 <section class="page sb-project-page" id="detail-merc"><div class="content">
-<button class="sb-project-back" onclick="showPage('detailing')" type="button">← Back to detailing projects</button>
+
 <div class="feature-detail">
 <div class="feature-kicker">Featured Detail</div>
 <div class="feature-head">
@@ -5202,7 +5210,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 </div>
 </div></section>
 <section class="page sb-project-page" id="detail-clio"><div class="content">
-<button class="sb-project-back" onclick="showPage('detailing')" type="button">← Back to detailing projects</button>
+
 <!-- Featured detail / Renault Clio: self-contained static project, unaffected by CMS gallery updates -->
 <section aria-labelledby="sb-clio-title" class="sb-clio-project">
 <div class="sb-clio-heading">
@@ -6408,7 +6416,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
       const nextHash = "#" + pageName;
       if (addToHistory) {
         if (window.location.hash !== nextHash) {
-          history.pushState({ stanceboundPage: pageName }, "", nextHash);
+          history.pushState({ stanceboundPage: pageName, sbPreviousPage: previousPage }, "", nextHash);
         }
       } else if (window.location.hash !== nextHash) {
         history.replaceState({ stanceboundPage: pageName }, "", nextHash);
@@ -9419,7 +9427,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  });
 })();
 </script>
-<div class="sb-quick-links" aria-label="Quick contact and quote"><button data-quick-page="contact" type="button">Chat</button><button class="sb-quick-quote" data-quick-page="booking" type="button">Get a quote ↗</button></div><script id="sb-clean-navigation-controller">(()=>{
+<div class="sb-quick-links" aria-label="Quick contact and quote"><div class="sb-bottom-left"><button class="sb-site-back" data-sb-site-back type="button" aria-label="Go back to the previous page" title="Go back">←</button><button data-quick-page="contact" type="button">Chat</button></div><button class="sb-quick-quote" data-quick-page="booking" type="button">Get a quote ↗</button></div><script id="sb-clean-navigation-controller">(()=>{
  const nav=document.getElementById('radialNav'),toggle=document.getElementById('radialToggle'),items=document.getElementById('radialItemsV43'),quick=document.querySelector('.sb-quick-links');if(!nav||!toggle||!items)return;
  const sync=()=>{const open=nav.classList.contains('open');if(quick)quick.hidden=open;if(open)requestAnimationFrame(()=>items.querySelector('button')?.focus());else if(items.contains(document.activeElement))toggle.focus()};
  new MutationObserver(sync).observe(nav,{attributes:true,attributeFilter:['class']});
@@ -9428,8 +9436,58 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  sync();
 })();
 </script>
+<script id="sb-bottom-back-and-swipe">(()=>{
+ const back=document.querySelector('[data-sb-site-back]');if(!back)return;
+ const privateRoute=()=>['conversation','track','referrals','confirm','token','checkout'].some(k=>new URLSearchParams(location.search).has(k));
+ const reduce=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const surface=()=>document.querySelector('main>.page.active')||document.querySelector('main');
+ const isPublic=url=>url.origin===location.origin&&!url.pathname.startsWith('/admin')&&!url.search;
+ function previous(){if(history.state?.sbPreviousPage)return true;try{return history.length>1&&!!document.referrer&&isPublic(new URL(document.referrer))}catch{return false}}
+ const atHome=()=>location.pathname==='/'&&(!location.hash||location.hash==='#home');
+ const update=()=>{back.disabled=atHome()&&!previous()};
+ let gesture=null,busy=false,moved=null;
+ const clear=()=>{if(moved){moved.style.removeProperty('transform');moved.style.removeProperty('opacity');moved.style.removeProperty('transition');moved.style.removeProperty('will-change');moved=null}};
+ function enter(){try{sessionStorage.removeItem('sb-back-transition-v1')}catch{}clear();update();if(!reduce()&&!privateRoute()){const el=surface();el?.animate?.([{opacity:.55,transform:'translateX(-12px)'},{opacity:1,transform:'translateX(0)'}],{duration:160,easing:'ease-out'})}}
+ async function goBack(){
+  if(busy||back.disabled||privateRoute())return;
+  const step=document.querySelector('.sbw-panel:not([hidden])');
+  if(document.querySelector('#booking.active')&&step&&Number(step.dataset.step)>0){document.getElementById('sbwBack')?.click();return}
+  busy=true;const el=surface();
+  if(el&&!reduce()){moved=el;el.style.transition='transform 130ms ease,opacity 130ms ease';el.style.transform='translateX(28px)';el.style.opacity='.3';await new Promise(r=>setTimeout(r,135))}
+  try{sessionStorage.setItem('sb-back-transition-v1','1')}catch{}
+  if(previous())history.back();
+  else if(location.pathname==='/'&&typeof window.showPage==='function'){clear();await window.showPage('home',false);enter()}
+  else location.href='/#home';
+  setTimeout(()=>{busy=false;clear();update()},500);
+ }
+ back.addEventListener('click',goBack);
+ const blocked=()=>privateRoute()||!!document.querySelector('.radial-nav.open,.lightbox.open,.product-modal.open,.sbp-modal.open,#sbQuoteOverlay:not([hidden]),#sbReferralPortal:not([hidden]),#sbFinalConfirmation.show,#sbLegalModal.open');
+ const excluded='a,button,input,textarea,select,label,form,[contenteditable=true],[role=button],.gallery,.swipe-gallery,.sbp-cinema,.calendar-grid,.radial-nav,.conv-messages,video,canvas';
+ function canStart(e){
+  if(busy||back.disabled||blocked()||e.touches.length!==1)return false;
+  const t=e.touches[0];if(t.clientX<24||t.clientX>100)return false;
+  if(e.target.closest(excluded)||document.activeElement?.matches('input,textarea,select,[contenteditable=true]'))return false;
+  for(let n=e.target;n&&n!==document.body;n=n.parentElement){if(n.scrollWidth>n.clientWidth+4&&/auto|scroll/.test(getComputedStyle(n).overflowX))return false}
+  return true;
+ }
+ document.addEventListener('touchstart',e=>{gesture=canStart(e)?{x:e.touches[0].clientX,y:e.touches[0].clientY,time:Date.now(),active:false}:null},{passive:true});
+ document.addEventListener('touchmove',e=>{
+  if(!gesture)return;if(e.touches.length!==1){gesture=null;clear();return}
+  const dx=e.touches[0].clientX-gesture.x,dy=e.touches[0].clientY-gesture.y;
+  if(!gesture.active){if(Math.abs(dy)>16&&Math.abs(dy)>Math.abs(dx)){gesture=null;return}if(dx>22&&dx>Math.abs(dy)*1.6)gesture.active=true;else if(dx<-12){gesture=null;return}}
+  if(gesture.active){if(e.cancelable)e.preventDefault();const el=surface();if(el&&!reduce()){moved=el;el.style.willChange='transform';el.style.transition='none';el.style.transform='translateX('+Math.min(110,Math.max(0,dx*.45))+'px)'}}
+ },{passive:false});
+ document.addEventListener('touchend',e=>{if(!gesture)return;const g=gesture;gesture=null;const t=e.changedTouches[0];if(g.active&&t&&t.clientX-g.x>=85&&Math.abs(t.clientY-g.y)<65&&Date.now()-g.time<1000){void goBack()}else{clear()}},{passive:true});
+ document.addEventListener('touchcancel',()=>{gesture=null;clear()},{passive:true});
+ window.addEventListener('popstate',()=>{gesture=null;busy=false;requestAnimationFrame(enter)});
+ window.addEventListener('pageshow',()=>{busy=false;gesture=null;clear();update();try{if(sessionStorage.getItem('sb-back-transition-v1')){sessionStorage.removeItem('sb-back-transition-v1');requestAnimationFrame(enter)}}catch{}});
+ const pageObserver=new MutationObserver(update);document.querySelectorAll('main>.page').forEach(p=>pageObserver.observe(p,{attributes:true,attributeFilter:['class']}));
+ update();
+})();
+</script>
 </body>
 </html>
+
 
 
 
