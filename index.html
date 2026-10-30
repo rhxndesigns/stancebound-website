@@ -4857,6 +4857,15 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 @media(max-width:380px){#conversationPage .conv-photo-hint{max-width:65px}#conversationPage #convForm{padding:14px!important;gap:12px 8px}#conversationPage .conv-actions button{padding:11px 14px!important}#conversationPage .conv-msg{max-width:94%!important}}
 @media(prefers-reduced-motion:reduce){#conversationPage .conv-actions button{transition:none}}
 </style>
+<style id="sb-sale-preparation-launch">
+#sbpModal .sb-sale-includes{list-style:none;padding:0;margin:20px 0;border-top:1px solid #333}
+#sbpModal .sb-sale-includes li{padding:12px 0 12px 22px;border-bottom:1px solid #333;position:relative;color:#ddd;font:14px/1.6 Arial,sans-serif}
+#sbpModal .sb-sale-includes li:before{content:"+";position:absolute;left:0;color:#d74655}
+#sbpModal .sb-sale-small{font-size:12px;line-height:1.7;color:#aaa}
+#sbpModal .sb-sale-request{width:100%;border:1px solid #b83847;background:#a52836;color:#fff;padding:16px 18px;margin-top:16px;min-height:48px;cursor:pointer;font:700 12px/1.6 Arial,sans-serif;letter-spacing:.06em}
+#sbpModal .sb-sale-request:active{transform:translateY(1px)}
+#sbpModal .sb-sale-available{color:#eee}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5258,10 +5267,10 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <div aria-hidden="true" class="sbp-cinema-edge left">‹</div>
 <div aria-hidden="true" class="sbp-cinema-edge right">›</div>
 <div class="sbp-cinema-copy">
-<div class="sbp-cinema-status">COMING SOON <i></i></div>
+<div class="sbp-cinema-status">AVAILABLE TO ENQUIRE <i></i></div>
 <div class="sbp-cinema-index" id="sbpCinemaIndex">01</div>
 <h2 id="sbpCinemaTitle">SALE<br/>PREPARATION.</h2>
-<p id="sbpCinemaText">Detail · Photography · Listing creation</p>
+<p id="sbpCinemaText">Full clean · Professional photos · Written advert · Website listing</p>
 <button class="sbp-explore-btn" data-sbp-open="sale" id="sbpCinemaMore" type="button">
 <span>EXPLORE SERVICE</span><i>↗</i>
 </button>
@@ -5468,7 +5477,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <span><small>SELECT A PACKAGE</small><strong id="sbPackageSelected">Tap to select your services</strong></span>
 <i aria-hidden="true">⌄</i>
 </button>
-<div class="sb-package-menu" hidden="" id="serviceChoiceGrid"><button class="service-choice" onclick="sbQuoteOpen()" type="button"><span>GET A PERSONALISED DETAILING QUOTE →</span><small>Get a price before booking a full detail</small></button>
+<div class="sb-package-menu" hidden="" id="serviceChoiceGrid"><button class="service-choice" data-service="Sale Preparation" type="button"><span>SALE PREPARATION</span><small>Full clean, professional photos, written advert and website listing · individually quoted</small></button><button class="service-choice" onclick="sbQuoteOpen()" type="button"><span>GET A PERSONALISED DETAILING QUOTE →</span><small>Get a price before booking a full detail</small></button>
 <button class="service-choice" data-service="Detailing" type="button">
 <span>FULL DEEP DETAIL</span><small id="sbDetailPackagePrice">Get your personalised estimate</small>
 </button>
@@ -6201,7 +6210,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
       const total=chosen.reduce((sum,b)=>sum+(b.dataset.service==='Detailing'&&approved?Number(approved.price):(sbServicePrices[b.dataset.service]||0)),0);
       const unknown=chosen.some(b=>!(b.dataset.service in sbServicePrices) && !(b.dataset.service==='Detailing'&&approved));
       const basket=document.getElementById("sbBookingBasket");
-      if(basket)basket.textContent=chosen.length?chosen.map(b=>"✓ "+b.querySelector("span")?.textContent.trim()+(b.dataset.service==='Detailing'&&approved?" (£"+Number(approved.price).toFixed(2)+")":"")).join(" · ")+" | "+(unknown?"Known services £"+total.toFixed(2)+" + quoted extras":"Total £"+total.toFixed(2)):"No services selected yet.";
+      if(basket)basket.textContent=chosen.length?chosen.map(b=>"✓ "+b.querySelector("span")?.textContent.trim()+(b.dataset.service==='Detailing'&&approved?" (£"+Number(approved.price).toFixed(2)+")":"")).join(" · ")+" | "+(unknown?(total>0?"Known services £"+total.toFixed(2)+" + quoted extras":"Individual quote required"):"Total £"+total.toFixed(2)):"No services selected yet.";
       service?.dispatchEvent(new Event("change",{bubbles:true}));
     }
     function setBookingService(value){
@@ -6227,6 +6236,8 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
         else{
           if(value.includes("One Headlight"))sbSelectedServices.delete("Headlight Restoration - Both Headlights (£40)");
           if(value.includes("Both Headlights"))sbSelectedServices.delete("Headlight Restoration - One Headlight (£25)");
+          if(value==='Sale Preparation')sbSelectedServices.delete('Detailing');
+          if(value==='Detailing')sbSelectedServices.delete('Sale Preparation');
           sbSelectedServices.add(value);
         }
         sbRefreshServices();
@@ -8190,10 +8201,10 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <script id="stancebound-pricing-rebuild-js">
 (function(){
  const services={
-  sale:{n:'02',title:'SALE PREPARATION.',display:'SALE<br>PREPARATION.',text:'Deep detail, professional photography and help creating the vehicle listing.',modal:'Deep detail, sale preparation, professional automotive photography and help creating the advert from information supplied by the owner.'},
+  sale:{n:'02',title:'SALE PREPARATION.',display:'SALE<br>PREPARATION.',text:'Full clean. Professional photographs. A sale advert ready to go.',modal:'Get your vehicle ready to advertise with an interior and exterior clean, professional sale photographs and a written advert based on the details you supply. Your package also includes a STANCEBOUND website listing, published after you approve the advert, asking price and public contact details. Pricing is quoted individually for the vehicle, its condition, photography and travel.'},
   scratch:{n:'03',title:'SCRATCH REMOVAL.',display:'SCRATCH<br>REMOVAL.',text:'Targeted improvement for suitable scratches and paint defects.',modal:'Targeted paint improvement for suitable scratches and defects. The method depends on the depth, location and condition of the paint.'},
   headlight:{n:'04',title:'HEADLIGHT RESTORATION.',display:'HEADLIGHT<br>RESTORATION.',text:'Restore clarity to oxidised lenses. £25 for one headlight or £40 for both.',modal:'Headlight restoration for tired or oxidised lenses. £25 for one headlight or £40 for both headlights. Results depend on lens condition.'},
-  paint:{n:'05',title:'PAINT CORRECTION.',display:'PAINT<br>CORRECTION.',text:'Machine correction for improved clarity, gloss and depth.',modal:'Machine correction focused on improving swirls, haze, gloss and paint clarity, tailored to the condition of the vehicle.'},
+  paint:{n:'05',title:'SINGLE-STAGE POLISH.',display:'SINGLE-STAGE<br>POLISH.',text:'Gloss enhancement. Genuine results to follow before launch.',modal:'A planned single-stage machine-polishing service, assessed for each vehicle. The aim is to improve gloss and the appearance of suitable light surface marks; it is not a promise to remove every scratch. This service is not available to book yet. STANCEBOUND is completing a first demonstration on its own Astra before launch, with genuine before-and-after photographs to follow.'},
   ceramic:{n:'06',title:'CERAMIC COATING.',display:'CERAMIC<br>COATING.',text:'Preparation-led protection with a durable finish.',modal:'Ceramic protection built around proper preparation first, rather than simply applying a coating over existing defects.'},
   photo:{n:'07',title:'DETAIL + AUTOMOTIVE PHOTOGRAPHY.',display:'DETAIL +<br>PHOTOGRAPHY.',text:'Finish the vehicle properly, then capture it properly.',modal:'A full deep detail followed by dedicated automotive photography, combining vehicle presentation with STANCEBOUND imagery.'}
  };
@@ -8230,7 +8241,7 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
    document.getElementById('sbpModalTitle').textContent="WHAT'S INCLUDED";
   }else{
    const s=services[key];if(!s)return;
-   body.innerHTML='<div class="sbp-modal-visual"></div><div class="sbp-modal-copy"><h3>'+s.title+'</h3><p>'+s.modal+'</p>'+(key==='headlight'?'<div class="sbp-coming">AVAILABLE NOW · FROM £25</div>':'<div class="sbp-coming">COMING SOON</div>')+'</div>';
+   body.innerHTML='<div class="sbp-modal-visual"></div><div class="sbp-modal-copy"><h3>'+s.title+'</h3><p>'+s.modal+'</p>'+(key==='headlight'?'<div class="sbp-coming">AVAILABLE NOW · FROM £25</div>':key==='sale'?'<div class="sbp-coming sb-sale-available">AVAILABLE TO ENQUIRE · PERSONALISED QUOTE</div><ul class="sb-sale-includes"><li>Interior and exterior clean</li><li>Professional vehicle sale photographs</li><li>Written advert and your asking price</li><li>Website listing with owner-approved contact details</li></ul><p class="sb-sale-small">The owner remains the seller. Information and known faults must be supplied accurately. Cleaning and photographs are not a mechanical inspection, and a sale is not guaranteed.</p><button class="sb-sale-request" type="button" data-sale-enquiry>REQUEST A SALE PREPARATION QUOTE →</button>':'<div class="sbp-coming">COMING SOON · NOT AVAILABLE TO BOOK</div>')+'</div>';
    document.getElementById('sbpModalKicker').textContent=s.n+' / STANCEBOUND SERVICE';
    document.getElementById('sbpModalTitle').textContent=s.title;
   }
@@ -8252,9 +8263,9 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <script id="stancebound-cinema-browser-js">
 (function(){
  const data=[
-  ['sale','01','SALE<br>PREPARATION.','Detail · Photography · Listing creation'],
+  ['sale','01','SALE<br>PREPARATION.','Full clean · Professional photos · Written advert · Website listing'],
   ['scratch','02','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
-  ['paint','03','PAINT<br>CORRECTION.','Machine correction for clarity, gloss and depth'],
+  ['paint','03','SINGLE-STAGE<br>POLISH.','Coming soon · Astra demonstration and genuine results to follow'],
   ['ceramic','04','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
   ['photo','05','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
  ];
@@ -8273,6 +8284,7 @@ if(busy)return;busy=true;
    document.getElementById('sbpCinemaTitle').innerHTML=title;
    document.getElementById('sbpCinemaText').textContent=text;
    document.getElementById('sbpCinemaMore').dataset.sbpOpen=key;
+   const availability=document.querySelector('#sbpCinema .sbp-cinema-status');availability.replaceChildren(document.createTextNode(key==='sale'?'AVAILABLE TO ENQUIRE ':'COMING SOON '),document.createElement('i'));
    document.querySelectorAll('#sbpCinemaProgress b').forEach((b,i)=>b.classList.toggle('active',i===index));
    requestAnimationFrame(()=>frame.classList.remove('cinema-changing'));
    setTimeout(()=>busy=false,390);
@@ -9330,6 +9342,28 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  resize();
 })();
 </script>
+<template id="sb-car-sales-page-draft">
+<section class="page" id="cars-for-sale"><div class="content"><div class="page-heading"><div class="eyebrow">STANCEBOUND / OWNER VEHICLES</div><h2>Cars for sale.</h2><div class="heading-line"></div><p>Vehicles presented through our Sale Preparation Package. Contact each owner directly to enquire or arrange a viewing.</p></div><div id="sbCarSalesListings"></div><p>STANCEBOUND provides presentation and advertising. The vehicle owner is the seller; listings are based on owner-supplied information and do not constitute a mechanical inspection.</p></div></section>
+</template>
+<template id="sb-car-sale-listing-draft">
+<article class="sb-car-listing"><div data-sale-photo-gallery></div><h3 data-sale-title></h3><p data-sale-asking-price></p><dl data-sale-key-details></dl><div data-sale-description></div><div data-sale-known-faults></div><div data-sale-approved-seller-contact></div></article>
+</template>
+<script id="sb-sale-preparation-enquiry">
+(()=>{
+ document.addEventListener('click',e=>{
+  if(!e.target.closest('[data-sale-enquiry]'))return;
+  document.querySelector('#sbpModal [data-sbp-close]')?.click();
+  window.showPage?.('booking');
+  const option=document.querySelector('#serviceChoiceGrid [data-service="Sale Preparation"]');
+  if(option?.getAttribute('aria-pressed')!=='true')option?.click();
+  const message=document.getElementById('enquiryMessage');
+  if(message&&!message.value.trim())message.value='I would like a Sale Preparation quote: full clean, professional sale photographs, a written advert and a website listing.\nVehicle condition and any extra requirements: ';
+  document.getElementById('enquiryVehicle')?.focus({preventScroll:true});
+  document.getElementById('enquiryForm')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+ });
+})();
+</script>
 </body>
 </html>
+
 
