@@ -4896,6 +4896,14 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 #pricing .sb-headlight-pulse{background:#c94350;box-shadow:0 0 9px #c9435044;animation:none}
 #pricing .sb-headlight-rates em{color:#c8c8c8}
 </style>
+<style id="sb-standalone-sale-card">
+#sale-preparation .sb-sale-live-facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:22px;max-width:530px}
+#sale-preparation .sb-sale-live-facts>div{border:1px solid rgba(255,255,255,.22);padding:18px 16px;min-width:0}
+#sale-preparation .sb-sale-live-facts small{display:block;font-size:9px;letter-spacing:.13em;color:#aaa;font-weight:800;line-height:1.6;margin-bottom:8px}
+#sale-preparation .sb-sale-live-facts strong{display:block;font-size:16px;line-height:1.4;color:#eee}
+#sale-preparation .sb-sale-live-note{font-size:12px;line-height:1.7;color:#aaa}
+@media(max-width:390px){#sale-preparation .sb-sale-live-facts>div{padding:15px 12px}#sale-preparation .sb-sale-live-facts strong{font-size:14px}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5282,9 +5290,21 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 </div>
 <div class="sb-headlight-foot"><span>EXTERIOR / RESTORATION</span><span>01 OR 02 HEADLIGHTS</span></div>
 </section>
-<section class="sbp-cinema" id="sbpCinema" data-service-available="true">
-<div class="sbp-cinema-head"><div class="sbp-cinema-status">AVAILABLE TO ENQUIRE <i></i></div><small>STANCEBOUND / SERVICES <b id="sbpCinemaNum">01</b>—05</small></div>
-<article class="sbp-cinema-frame" data-mode="sale" id="sbpCinemaFrame">
+<section aria-labelledby="sb-sale-prep-heading" class="sb-headlight-live" id="sale-preparation">
+<div class="sb-headlight-top"><span><i class="sb-headlight-pulse"></i> AVAILABLE TO ENQUIRE <b>03</b></span><span>STANCEBOUND / SALE PREPARATION</span></div>
+<div class="sb-headlight-content">
+<div class="sb-headlight-kicker">SALE PREPARATION / COMPLETE PRESENTATION</div>
+<h2 id="sb-sale-prep-heading">READY FOR<br/>THE NEXT OWNER<span>.</span></h2>
+<p>A full interior and exterior clean, professional sale photographs and a written advert based on your vehicle’s details. Your package includes a STANCEBOUND website listing with your asking price and contact details you approve.</p>
+<div class="sb-sale-live-facts"><div><small>VEHICLE PREPARATION</small><strong>Interior &amp; exterior clean</strong></div><div><small>SALE PRESENTATION</small><strong>Photos &amp; written advert</strong></div></div>
+<p class="sb-sale-live-note">Individually quoted for your vehicle, condition, photography and travel. You approve the advert before it goes live. You remain the seller; a sale is not guaranteed.</p>
+<button class="sb-headlight-book" data-sale-enquiry type="button"><span>GET A SALE PREPARATION QUOTE</span><span aria-hidden="true">↗</span></button>
+</div>
+<div class="sb-headlight-foot"><span>CLEAN / PHOTOGRAPH / ADVERTISE</span><span>PERSONALISED QUOTE</span></div>
+</section>
+<section class="sbp-cinema" id="sbpCinema" data-service-available="false">
+<div class="sbp-cinema-head"><div class="sbp-cinema-status">COMING SOON <i></i></div><small>STANCEBOUND / SERVICES <b id="sbpCinemaNum">01</b>—04</small></div>
+<article class="sbp-cinema-frame" data-mode="scratch" id="sbpCinemaFrame">
 <div aria-hidden="true" class="sbp-cinema-image" id="sbpCinemaImage"></div>
 <div aria-hidden="true" class="sbp-cinema-shade"></div>
 <div aria-hidden="true" class="sbp-cinema-tech" id="sbpCinemaTech"></div>
@@ -5294,12 +5314,12 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <div aria-hidden="true" class="sbp-cinema-edge left">‹</div>
 <div aria-hidden="true" class="sbp-cinema-edge right">›</div>
 <div class="sbp-cinema-copy">
-<div class="sb-service-kicker" id="sbpCinemaKicker">SALE PREPARATION / COMPLETE PRESENTATION</div>
+<div class="sb-service-kicker" id="sbpCinemaKicker">SCRATCH REMOVAL / TARGETED IMPROVEMENT</div>
 <div class="sbp-cinema-index" id="sbpCinemaIndex">01</div>
-<h2 id="sbpCinemaTitle">SALE<br/>PREPARATION.</h2>
-<p id="sbpCinemaText">Full clean · Professional photos · Written advert · Website listing</p>
-<div class="sb-service-facts" id="sbpCinemaFacts"><div><small>VEHICLE PREPARATION</small><strong>Interior &amp; exterior clean</strong></div><div><small>SALE PRESENTATION</small><strong>Photos &amp; written advert</strong></div></div>
-<button class="sbp-explore-btn" data-sbp-open="sale" id="sbpCinemaMore" type="button">
+<h2 id="sbpCinemaTitle">SCRATCH<br/>REMOVAL.</h2>
+<p id="sbpCinemaText">Targeted improvement for suitable paint defects</p>
+<div class="sb-service-facts" id="sbpCinemaFacts"><div><small>PAINT CONDITION</small><strong>Assessed individually</strong></div><div><small>AVAILABILITY</small><strong>Coming soon</strong></div></div>
+<button class="sbp-explore-btn" data-sbp-open="scratch" id="sbpCinemaMore" type="button">
 <span>EXPLORE SERVICE</span><i>↗</i>
 </button>
 </div>
@@ -5307,7 +5327,7 @@ html[data-stancebound-route="conversation"] body > :not(#conversationPage):not(s
 <div class="sbp-cinema-nav">
 <button aria-label="Previous service" data-cinema-prev="" type="button"><i>←</i><span>PREVIOUS</span></button>
 <div class="sbp-cinema-progress" id="sbpCinemaProgress">
-<b class="active">01</b><i></i><b>02</b><i></i><b>03</b><i></i><b>04</b><i></i><b>05</b>
+<b class="active">01</b><i></i><b>02</b><i></i><b>03</b><i></i><b>04</b>
 </div>
 <button aria-label="Next service" data-cinema-next="" type="button"><span>NEXT</span><i>→</i></button>
 </div>
@@ -8291,11 +8311,10 @@ ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=
 <script id="stancebound-cinema-browser-js">
 (function(){
  const data=[
-  ['sale','01','SALE<br>PREPARATION.','Full clean · Professional photos · Written advert · Website listing'],
-  ['scratch','02','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
-  ['paint','03','SINGLE-STAGE<br>POLISH.','Coming soon · Astra demonstration and genuine results to follow'],
-  ['ceramic','04','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
-  ['photo','05','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
+  ['scratch','01','SCRATCH<br>REMOVAL.','Targeted improvement for suitable paint defects'],
+  ['paint','02','SINGLE-STAGE<br>POLISH.','Coming soon · Astra demonstration and genuine results to follow'],
+  ['ceramic','03','CERAMIC<br>COATING.','Preparation-led protection with a durable finish'],
+  ['photo','04','DETAIL +<br>PHOTOGRAPHY.','Finish the vehicle properly. Then capture it properly']
  ];
  let index=0,busy=false,startX=null,startY=null,dragging=false;
  function render(next){
@@ -9398,6 +9417,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 </body>
 </html>
+
 
 
 
