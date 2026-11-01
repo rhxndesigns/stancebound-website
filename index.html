@@ -4968,7 +4968,44 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 #home .sb-store-details .home-shop-teaser{margin:0;border:0}
 @media(max-width:650px){#home .sb-minimal-disclosure>summary{padding:15px;letter-spacing:.05em}#home .sb-minimal-disclosure>summary span{max-width:50%}#home .hero-description{font-size:14px}#home .sb-headlight-feature{margin-top:22px}}
 </style>
-</head>
+<style id="sb-minimal-layout-v2">
+/* STANCEBOUND minimal service composition: original design, quieter hierarchy */
+.home-choice-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(12px,2vw,22px)!important;align-items:stretch!important}
+.home-choice-grid>.home-choice{min-width:0!important;width:100%!important;max-width:none!important}
+.home-choice-grid>.sb-headlight-choice{grid-column:1/-1;position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:220px!important;max-width:none!important;width:100%!important;overflow:hidden;border:1px solid rgba(255,255,255,.14)!important;border-radius:18px!important;background:#101013!important;color:#fff!important;text-decoration:none!important;box-shadow:none!important;margin:0!important}
+.home-choice-grid>.sb-headlight-choice .sb-headlight-feature-image{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;min-height:220px;overflow:hidden}
+.home-choice-grid>.sb-headlight-choice .sb-headlight-feature-image img{width:100%!important;height:100%!important;object-fit:cover!important;display:block}
+.home-choice-grid>.sb-headlight-choice .sb-headlight-feature-copy{position:relative!important;inset:auto!important;transform:none!important;display:flex!important;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(20px,4vw,42px)!important;text-align:left!important;max-width:none!important}
+.home-choice-grid>.sb-headlight-choice h2{font-size:clamp(22px,3vw,38px)!important;line-height:1.05!important;margin:10px 0!important}
+.home-choice-grid>.sb-headlight-choice p{font-size:clamp(13px,1.3vw,15px)!important;line-height:1.55!important;max-width:36ch}
+.home-choice-grid>.sb-headlight-choice strong{font-size:12px!important;letter-spacing:.08em!important;margin-top:15px!important}
+.home-choice-grid>.home-choice p{max-width:40ch}
+@media(max-width:650px){.home-choice-grid{gap:10px!important}.home-choice-grid>.home-choice{min-height:240px!important}.home-choice-grid>.home-choice .home-choice-content{padding:12px!important}.home-choice-grid>.home-choice h2{font-size:clamp(17px,4.5vw,24px)!important}.home-choice-grid>.home-choice p{font-size:12px!important;line-height:1.45!important}.home-choice-grid>.sb-headlight-choice{grid-template-columns:42% 58%;min-height:170px!important}.home-choice-grid>.sb-headlight-choice .sb-headlight-feature-image{min-height:170px}.home-choice-grid>.sb-headlight-choice .sb-headlight-feature-copy{padding:14px!important}.home-choice-grid>.sb-headlight-choice h2{font-size:20px!important}.home-choice-grid>.sb-headlight-choice p{font-size:12px!important}.home-choice-grid>.sb-headlight-choice strong{font-size:10px!important}}
+/* Native disclosure controls, accessible and no dependency on JS */
+.sb-minimal-details{margin:22px 0;border:1px solid rgba(150,150,150,.25);border-radius:14px;background:rgba(120,120,120,.045);overflow:hidden}
+.sb-minimal-details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;cursor:pointer;font-weight:650;letter-spacing:.015em}
+.sb-minimal-details>summary::-webkit-details-marker{display:none}
+.sb-minimal-details>summary:after{content:'+';font-size:24px;font-weight:300;color:#e24a4a}
+.sb-minimal-details[open]>summary:after{content:'−'}
+.sb-minimal-details>summary:focus-visible{outline:2px solid #d44;outline-offset:-3px}
+.sb-minimal-details>.sb-minimal-body{padding:0 18px 18px}
+.sb-minimal-details .sb-service-grid{margin-top:8px}
+</style>
+<style id="sb-minimal-v3-real-layout">
+/* Two matching service cards followed by a compact, full-width restoration card. */
+#home .home-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+#home .home-choice-grid>.sb-headlight-live{grid-column:1/-1;margin:0;min-height:0;border-radius:0;border:1px solid rgba(255,255,255,.12);background:#0c0c0c}
+#home .sb-headlight-live .sb-headlight-content{padding:22px 26px;max-width:none}
+#home .sb-headlight-live .sb-headlight-top,#home .sb-headlight-live .sb-headlight-foot{padding:12px 26px}
+#home .sb-headlight-live h2{font-size:clamp(23px,3vw,38px);line-height:1.1;margin:10px 0}
+#home .sb-headlight-live h2 br{display:none}
+#home .sb-headlight-live .sb-headlight-content>p{max-width:670px;font-size:13px;line-height:1.5;margin:8px 0 14px}
+#home .sb-headlight-live .sb-headlight-rates{margin:12px 0;gap:10px}
+#home .sb-headlight-live .sb-headlight-book{max-width:360px}
+#home .sb-headlight-live .sb-headlight-evidence-link{max-width:360px}
+#home .home-choice{min-height:340px}
+@media(max-width:650px){#home .home-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#home .home-choice{min-height:270px}#home .home-choice-content{padding:12px!important}#home .home-choice h2{font-size:clamp(18px,4.3vw,25px)!important}#home .home-choice p{font-size:11px!important;line-height:1.4}#home .sb-headlight-live .sb-headlight-content{padding:18px}#home .sb-headlight-live .sb-headlight-top,#home .sb-headlight-live .sb-headlight-foot{padding:10px 18px}#home .sb-headlight-live h2{font-size:26px}}
+</style></head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
 <div aria-label="STANCEBOUND introduction" id="sbBoot"><div class="sb-boot-noise"></div><div class="sb-boot-grid"></div><div class="sb-boot-scan"></div><i class="sb-boot-corner tl"></i><i class="sb-boot-corner tr"></i><i class="sb-boot-corner bl"></i><i class="sb-boot-corner br"></i><div class="sb-boot-data left">BOOT / V2.0<br/>UI CORE / ONLINE<br/>MOTION / ACTIVE</div>
@@ -5047,7 +5084,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <button class="btn" onclick="showPage('booking')" type="button">GET A QUOTE <span aria-hidden="true">↗</span></button>
 <button class="btn secondary" onclick="showPage('pricing')" type="button">VIEW SERVICES &amp; PRICES <span aria-hidden="true">↗</span></button>
 </div>
-<a class="sb-headlight-feature" href="/headlight-restoration/#results"><div class="sb-headlight-feature-image"><img src="/images/headlightbeforeandafter.jpg" alt="Headlight before and after restoration by STANCEBOUND" loading="lazy" decoding="async"/></div><div class="sb-headlight-feature-copy"><span class="sb-headlight-feature-kicker">REAL WORK · REAL RESULTS</span><h2>HEADLIGHT<br/>RESTORATION.</h2><p>See the before and after, then watch the sanding and vapour application up close.</p><strong>SEE THE TRANSFORMATION <span aria-hidden="true">↗</span></strong></div></a>
+
 <details class="sb-minimal-disclosure sb-explore-details"><summary>EXPLORE MORE <span>Services · Results · Reviews · Coverage</span></summary>
 <div aria-label="Quick access to STANCEBOUND pages" class="sb-home-direct">
 <div class="sb-home-direct-label">EXPLORE STANCEBOUND <span>DIRECT ACCESS</span></div>
@@ -5082,6 +5119,18 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <span class="home-choice-link">View photography →</span>
 </span>
 </button>
+<section aria-labelledby="sb-headlight-heading" class="sb-headlight-live" id="headlight-restoration">
+<div class="sb-headlight-top"><span><i class="sb-headlight-pulse"></i> AVAILABLE NOW <b>02</b></span><span>STANCEBOUND / RESTORATION</span></div>
+<div class="sb-headlight-content">
+<div class="sb-headlight-kicker">HEADLIGHT RESTORATION / LENS CLARITY</div>
+<h2 id="sb-headlight-heading">BRING BACK<br/>THE CLARITY<span>.</span></h2>
+<p>Cloudy, yellowed or oxidised headlights? Restore the appearance and clarity of tired lenses with a dedicated restoration process. Results depend on lens condition.</p>
+<div class="sb-headlight-rates"><div><small>SINGLE HEADLIGHT</small><strong>£25</strong></div><div><small>BOTH HEADLIGHTS</small><strong>£40</strong><em>SAVE £10</em></div></div>
+<button class="sb-headlight-book" onclick="bookHeadlightRestoration()" type="button"><span>BOOK HEADLIGHT RESTORATION</span><span aria-hidden="true">↗</span></button>
+<a class="sb-headlight-evidence-link" href="/headlight-restoration/#results"><span>SEE REAL RESULTS &amp; PROCESS VIDEOS</span><span aria-hidden="true">↗</span></a>
+</div>
+<div class="sb-headlight-foot"><span>EXTERIOR / RESTORATION</span><span>01 OR 02 HEADLIGHTS</span></div>
+</section>
 </div>
 <div class="home-showcase home-reveal">
 <section class="home-feature-compact">
@@ -5314,18 +5363,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <button onclick="sbQuoteOpen()" type="button">GET A QUOTE <i>→</i></button>
 </div>
 </section>
-<section aria-labelledby="sb-headlight-heading" class="sb-headlight-live" id="headlight-restoration">
-<div class="sb-headlight-top"><span><i class="sb-headlight-pulse"></i> AVAILABLE NOW <b>02</b></span><span>STANCEBOUND / RESTORATION</span></div>
-<div class="sb-headlight-content">
-<div class="sb-headlight-kicker">HEADLIGHT RESTORATION / LENS CLARITY</div>
-<h2 id="sb-headlight-heading">BRING BACK<br/>THE CLARITY<span>.</span></h2>
-<p>Cloudy, yellowed or oxidised headlights? Restore the appearance and clarity of tired lenses with a dedicated restoration process. Results depend on lens condition.</p>
-<div class="sb-headlight-rates"><div><small>SINGLE HEADLIGHT</small><strong>£25</strong></div><div><small>BOTH HEADLIGHTS</small><strong>£40</strong><em>SAVE £10</em></div></div>
-<button class="sb-headlight-book" onclick="bookHeadlightRestoration()" type="button"><span>BOOK HEADLIGHT RESTORATION</span><span aria-hidden="true">↗</span></button>
-<a class="sb-headlight-evidence-link" href="/headlight-restoration/#results"><span>SEE REAL RESULTS &amp; PROCESS VIDEOS</span><span aria-hidden="true">↗</span></a>
-</div>
-<div class="sb-headlight-foot"><span>EXTERIOR / RESTORATION</span><span>01 OR 02 HEADLIGHTS</span></div>
-</section>
+<!-- Headlight restoration card is displayed alongside the two homepage service cards. -->
 <section aria-labelledby="sb-sale-prep-heading" class="sb-headlight-live" id="sale-preparation">
 <div class="sb-headlight-top"><span><i class="sb-headlight-pulse"></i> AVAILABLE TO ENQUIRE <b>03</b></span><span>STANCEBOUND / SALE PREPARATION</span></div>
 <div class="sb-headlight-content">
