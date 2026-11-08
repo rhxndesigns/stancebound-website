@@ -4945,6 +4945,11 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 @media(max-width:360px){.sb-quick-links{left:8px;right:8px;gap:84px}.sb-quick-links .sb-bottom-left{gap:4px}.sb-quick-links .sb-bottom-left button:not(.sb-site-back){padding:10px 9px}.sb-quick-links .sb-quick-quote{padding:10px 9px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.sb-swipe-surface{transition:none!important}}
 </style>
+<style id="sb-headlight-home-card-css">
+@media (min-width: 900px){.home-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media (min-width: 600px) and (max-width:899px){.home-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-choice-grid>.home-choice:last-child{grid-column:1/-1}}
+@media (max-width:599px){.home-choice-grid{grid-template-columns:minmax(0,1fr)!important}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5054,6 +5059,16 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <h2>Your car.<br/>Properly captured.</h2>
 <p>Automotive photography focused on modified cars, individual details and the culture surrounding them.</p>
 <span class="home-choice-link">View photography →</span>
+</span>
+</button>
+<button type="button" aria-label="Explore STANCEBOUND headlight restoration" class="home-choice" onclick="window.location.href='/headlight-restoration/'">
+<img alt="Headlight restoration before and after" decoding="async" loading="lazy" src="/images/headlightbeforeandafter.jpg" onerror="this.onerror=null;this.src='/images/headlightbeforeandafter.jpeg'"/>
+<span class="home-choice-index">03</span>
+<span class="home-choice-content">
+<span class="home-choice-kicker">Headlight Restoration</span>
+<h2>Clarity.<br/>Restored.</h2>
+<p>Bring cloudy, faded headlights back to life with a careful, multi-stage restoration process.</p>
+<span class="home-choice-link">See the transformation →</span>
 </span>
 </button>
 </div>
