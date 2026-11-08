@@ -4950,6 +4950,18 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 @media (min-width: 600px) and (max-width:899px){.home-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-choice-grid>.home-choice:last-child{grid-column:1/-1}}
 @media (max-width:599px){.home-choice-grid{grid-template-columns:minmax(0,1fr)!important}}
 </style>
+<style id="sb-home-service-cards-v2">
+.home-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin-bottom:12px!important}
+.home-choice-grid>.home-choice{min-height:310px!important}
+.home-headlight-feature{margin:0 0 12px}
+.home-headlight-feature>.home-choice{display:block;width:100%;min-height:190px!important;border-radius:0}
+.home-headlight-feature>.home-choice img{width:100%;height:100%;object-fit:cover;object-position:center 45%}
+.home-headlight-feature>.home-choice::after{background:linear-gradient(90deg,rgba(0,0,0,.93),rgba(0,0,0,.58) 54%,rgba(0,0,0,.14))!important}
+.home-headlight-feature .home-choice-content{left:26px;right:22px;bottom:20px;max-width:500px}
+.home-headlight-feature .home-choice h2{font-size:clamp(25px,4vw,40px);line-height:1.02}
+.home-headlight-feature .home-choice-index{right:20px;top:15px}
+@media(max-width:600px){.home-choice-grid{gap:8px!important;margin-bottom:8px!important}.home-choice-grid>.home-choice{min-height:260px!important}.home-choice-grid .home-choice-content{left:13px;right:10px;bottom:13px}.home-choice-grid .home-choice h2{font-size:clamp(19px,4.7vw,29px)!important}.home-choice-grid .home-choice-kicker{font-size:10px!important}.home-choice-grid .home-choice-link{font-size:11px!important;letter-spacing:.04em!important}.home-headlight-feature>.home-choice{min-height:175px!important}.home-headlight-feature .home-choice-content{left:18px;bottom:16px}.home-headlight-feature .home-choice h2{font-size:29px!important}.home-headlight-feature .home-choice p{display:none}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5061,7 +5073,9 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <span class="home-choice-link">View photography →</span>
 </span>
 </button>
-<button type="button" aria-label="Explore STANCEBOUND headlight restoration" class="home-choice" onclick="window.location.href='/headlight-restoration/'">
+
+</div>
+<div class="home-headlight-feature home-reveal"><button type="button" aria-label="Explore STANCEBOUND headlight restoration" class="home-choice" onclick="window.location.href='/headlight-restoration/'">
 <img alt="Headlight restoration before and after" decoding="async" loading="lazy" src="/images/headlightbeforeandafter.jpg" onerror="this.onerror=null;this.src='/images/headlightbeforeandafter.jpeg'"/>
 <span class="home-choice-index">03</span>
 <span class="home-choice-content">
@@ -5070,8 +5084,7 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 <p>Bring cloudy, faded headlights back to life with a careful, multi-stage restoration process.</p>
 <span class="home-choice-link">See the transformation →</span>
 </span>
-</button>
-</div>
+</button></div>
 <div class="home-showcase home-reveal">
 <section class="home-feature-compact">
 <div class="home-feature-video">
