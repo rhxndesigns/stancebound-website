@@ -4962,6 +4962,19 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 .home-headlight-feature .home-choice-index{right:20px;top:15px}
 @media(max-width:600px){.home-choice-grid{gap:8px!important;margin-bottom:8px!important}.home-choice-grid>.home-choice{min-height:260px!important}.home-choice-grid .home-choice-content{left:13px;right:10px;bottom:13px}.home-choice-grid .home-choice h2{font-size:clamp(19px,4.7vw,29px)!important}.home-choice-grid .home-choice-kicker{font-size:10px!important}.home-choice-grid .home-choice-link{font-size:11px!important;letter-spacing:.04em!important}.home-headlight-feature>.home-choice{min-height:175px!important}.home-headlight-feature .home-choice-content{left:18px;bottom:16px}.home-headlight-feature .home-choice h2{font-size:29px!important}.home-headlight-feature .home-choice p{display:none}}
 </style>
+
+<style id="sb-stripe-payment-footer">
+.sb-payment-methods{max-width:480px;margin:0 auto 22px;padding:17px 14px 22px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-payment-title{font-size:11px;font-weight:800;letter-spacing:2.6px;color:#aaa;margin-bottom:14px}
+.sb-payment-logos{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap}
+.sb-payment-logo{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 11px;border:1px solid #484848;border-radius:5px;background:#171717;color:#f3f3f3;font-size:13px;font-weight:800;letter-spacing:.15px}
+.sb-payment-logo.klarna{background:#ffb3c7;color:#171717;border-color:#ffb3c7;font-weight:900}
+.sb-payment-logo.mastercard{letter-spacing:-.4px}
+.sb-payment-logo.mastercard:before{content:"";display:inline-block;width:15px;height:15px;border-radius:50%;background:#eb001b;margin-right:-5px}
+.sb-payment-logo.mastercard:after{content:"";display:inline-block;width:15px;height:15px;border-radius:50%;background:#f79e1b;opacity:.9;margin-right:8px}
+.sb-payment-note{max-width:390px;margin:13px auto 0;font-size:10px;line-height:1.6;color:#999}
+@media(max-width:420px){.sb-payment-logo{font-size:12px;padding:7px 9px}.sb-payment-logos{gap:7px}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5886,6 +5899,18 @@ html.sb-boot-lock .sb-quick-links,body.intro-running .sb-quick-links{display:non
 </section>
 <footer><p class="sb-seo-footer-areas">Mobile detailing and valeting in Llanelli, Carmarthen, Ammanford, Swansea and surrounding areas.</p>
 <div class="sb-footer-legal-fixed"><nav aria-label="Legal information" class="sb-footer-links"><button onclick="sbOpenLegal('privacy-policy')" type="button">Privacy Policy</button><button onclick="sbOpenLegal('terms')" type="button">Terms &amp; Conditions</button><button onclick="sbOpenLegal('delivery-returns')" type="button">Delivery &amp; Returns</button></nav></div>
+
+<div class="sb-payment-methods" aria-label="Payment information">
+  <div class="sb-payment-title">SECURE PAYMENTS</div>
+  <div class="sb-payment-logos" aria-label="Payment methods supported by Stripe, subject to checkout availability">
+    <span class="sb-payment-logo">VISA</span>
+    <span class="sb-payment-logo mastercard">Mastercard</span>
+    <span class="sb-payment-logo">Apple Pay</span>
+    <span class="sb-payment-logo">Google Pay</span>
+    <span class="sb-payment-logo klarna">Klarna.</span>
+  </div>
+  <p class="sb-payment-note">Secure checkout powered by Stripe. Payment methods, including Klarna and digital wallets, are shown when available for your booking, device and eligibility. Klarna is subject to approval and terms.</p>
+</div>
 <div aria-label="Detailing products used" class="sb-product-brands">
 <div class="sb-product-brands-label">PRODUCTS WE USE</div>
 <div class="sb-product-brands-row">
