@@ -4980,6 +4980,21 @@ footer .sb-payment-methods + .sb-product-brands .sb-brand-image{height:64px!impo
 footer .sb-payment-methods + .sb-product-brands .sb-product-brands-row{gap:15px!important;max-width:170px!important}
 @media(max-width:370px){footer .sb-payment-logo{font-size:9px;padding:4px 5px}footer .sb-payment-logos{gap:4px}}
 </style>
+<style id="sb-footer-final-tighten">
+/* Keep footer legal actions grouped immediately above payment methods. */
+footer{padding-top:8px!important}
+footer .sb-seo-footer-areas{display:none!important}
+footer .sb-footer-legal-fixed{max-width:540px!important;margin:0 auto 8px!important;padding:0 12px!important}
+footer .sb-footer-legal-fixed .sb-footer-links{display:flex!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;gap:0 15px!important;line-height:1.2!important}
+footer .sb-footer-legal-fixed .sb-footer-links button{font-size:10px!important;line-height:1.25!important;padding:5px 0!important;letter-spacing:.035em!important}
+footer .sb-payment-methods{padding-top:10px!important;padding-bottom:5px!important;margin:0 auto!important}
+footer .sb-payment-title{margin-bottom:7px!important}
+footer .sb-payment-note{margin:7px auto 0!important;line-height:1.3!important}
+footer .sb-product-brands{margin-top:3px!important;margin-bottom:8px!important}
+footer .sb-product-brands-label{margin-bottom:5px!important}
+footer .sb-product-brands-note{margin-top:4px!important}
+@media(max-width:420px){footer .sb-footer-legal-fixed .sb-footer-links{gap:0 12px!important}footer .sb-footer-legal-fixed .sb-footer-links button{font-size:9px!important;padding:5px 0!important}}
+</style>
 </head>
 <body class="intro-running">
 <button class="sb-v43-skip" onclick="document.getElementById('sbPublicMain')?.focus({preventScroll:true});document.getElementById('sbPublicMain')?.scrollIntoView({block:'start'});" type="button">Skip to main content</button>
@@ -5902,7 +5917,7 @@ footer .sb-payment-methods + .sb-product-brands .sb-product-brands-row{gap:15px!
     <a class="sb-service-directory-card" href="/areas-covered/"><span class="sb-service-card-number">03 / SOUTH WALES</span><strong>Areas covered</strong><span class="sb-service-card-caption">Check our mobile service coverage</span><span class="sb-service-card-arrow" aria-hidden="true">↗</span></a>
   </div>
 </section>
-<footer><p class="sb-seo-footer-areas">Mobile detailing and valeting in Llanelli, Carmarthen, Ammanford, Swansea and surrounding areas.</p>
+<footer>
 <div class="sb-footer-legal-fixed"><nav aria-label="Legal information" class="sb-footer-links"><button onclick="sbOpenLegal('privacy-policy')" type="button">Privacy Policy</button><button onclick="sbOpenLegal('terms')" type="button">Terms &amp; Conditions</button><button onclick="sbOpenLegal('delivery-returns')" type="button">Delivery &amp; Returns</button></nav></div>
 
 <div class="sb-payment-methods" aria-label="Payment information">
