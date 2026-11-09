@@ -5837,10 +5837,10 @@ footer .sb-product-brands-note{margin-top:4px!important}
 <div class="eyebrow">STANCEBOUND STORE</div>
 <h2>Shop</h2>
 <div class="heading-line"></div>
-<p>STANCEBOUND apparel and automotive-inspired products. Explore the Signature Hoodie and purchase securely through our online checkout.</p>
+<p>STANCEBOUND apparel and automotive-inspired products. Explore our Signature Hoodie and embroidered Snapback collection.</p>
 </div>
 <div class="shop-hero">
-<div><span class="shop-index">01 / STORE</span><h2>Built for the cars<br/>we actually care about.</h2><p>Explore the STANCEBOUND Signature Hoodie, the first piece in our collection. Choose your size and buy securely online.</p></div>
+<div><span class="shop-index">01 / STORE</span><h2>Built for the cars<br/>we actually care about.</h2><p>Explore STANCEBOUND apparel, from our Signature Hoodie to the black-and-red embroidered Snapback.</p></div>
 <div class="shop-mark">SB</div>
 </div>
 <div class="shop-grid">
@@ -5857,6 +5857,10 @@ footer .sb-product-brands-note{margin-top:4px!important}
 </div>
 <button type="button">VIEW</button>
 </div>
+</article>
+<article class="product-card is-live" data-printful-product-id="491544819" onclick="openSnapbackProduct(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSnapbackProduct(event)}" role="button" tabindex="0">
+<div class="product-visual product-image"><img alt="STANCEBOUND Snapback black cap with red brim, embroidered red SB logo, front and rear views" decoding="async" loading="lazy" src="images/stancebound-snapback.jpg"/></div>
+<div class="product-info"><div><span>DROP 002 · NEW ARRIVAL</span><h3>STANCEBOUND Snapback</h3><span class="product-sizes">BLACK / RED · ADJUSTABLE · EMBROIDERED SB LOGO</span></div><button type="button">VIEW</button></div>
 </article>
 </div>
 <div class="shop-notify">
@@ -6810,6 +6814,18 @@ card.addEventListener("pointercancel",cancel,{passive:true});
 
 
   </script>
+<!-- SNAPBACK PRODUCT MODAL -->
+<div aria-hidden="true" class="product-modal" id="snapbackProductModal" onclick="if(event.target===this)closeSnapbackProduct()">
+<div aria-labelledby="snapbackProductTitle" aria-modal="true" class="product-modal-panel" role="dialog">
+<button aria-label="Close snapback details" class="product-modal-close" onclick="closeSnapbackProduct()" type="button">×</button>
+<div class="product-modal-image"><img loading="lazy" decoding="async" alt="STANCEBOUND black and red embroidered snapback, front and back" src="images/stancebound-snapback.jpg"/></div>
+<div class="product-modal-copy"><span class="drop-label">STANCEBOUND · DROP 002</span><h2 id="snapbackProductTitle">STANCEBOUND Snapback</h2>
+<p class="product-modal-description">Black snapback with a red flat brim, red embroidered SB crown emblem and adjustable red snap closure.</p>
+<div class="product-option-label">BLACK / RED · ADJUSTABLE FIT</div>
+<a class="product-buy-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none;" href="https://wa.me/447832840851?text=Hi%2C%20I%27m%20interested%20in%20the%20STANCEBOUND%20Snapback.%20Could%20you%20send%20me%20the%20price%20and%20ordering%20details%3F" target="_blank" rel="noopener noreferrer">ENQUIRE ABOUT THIS HAT</a>
+<p class="product-buy-note">Online checkout for this item is being set up. Contact us for pricing and availability.</p>
+</div></div></div>
+<script>function openSnapbackProduct(){const m=document.getElementById('snapbackProductModal');m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}function closeSnapbackProduct(){const m=document.getElementById('snapbackProductModal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSnapbackProduct()});</script>
 <!-- SHOP PRODUCT MODAL -->
 <div aria-hidden="true" class="product-modal" id="hoodieProductModal" onclick="productModalBackdrop(event)">
 <div aria-labelledby="hoodieProductTitle" aria-modal="true" class="product-modal-panel" role="dialog">
