@@ -1745,7 +1745,10 @@ body.sb-overlay-locked .product-modal-panel,body.sb-overlay-locked [role="dialog
 })();
 </script>
 
-<style id="sb-admin-quotes-css">.sbq-admin-card{border:1px solid #333;background:#0c0c0c;padding:17px;border-radius:14px;margin:12px 0;line-height:1.65}.sbq-admin-card h3{margin:0 0 8px}.sbq-admin-meta{color:#aaa;font-size:12px;overflow-wrap:anywhere}.sbq-admin-card input,.sbq-admin-card textarea{width:100%;margin:8px 0 12px;padding:12px;background:#111;color:#fff;border:1px solid #444;border-radius:8px}.sbq-admin-card button{width:auto;min-height:42px;padding:10px 18px;margin:5px 7px 5px 0}.sbq-admin-card .sbq-approve{background:#eaeaea;color:#090909}.sbq-admin-card .sbq-decline{background:#301313;color:#ffbcbc}</style></head>
+<style id="sb-admin-quotes-css">.sbq-admin-card{border:1px solid #333;background:#0c0c0c;padding:17px;border-radius:14px;margin:12px 0;line-height:1.65}.sbq-admin-card h3{margin:0 0 8px}.sbq-admin-meta{color:#aaa;font-size:12px;overflow-wrap:anywhere}.sbq-admin-card input,.sbq-admin-card textarea{width:100%;margin:8px 0 12px;padding:12px;background:#111;color:#fff;border:1px solid #444;border-radius:8px}.sbq-admin-card button{width:auto;min-height:42px;padding:10px 18px;margin:5px 7px 5px 0}.sbq-admin-card .sbq-approve{background:#eaeaea;color:#090909}.sbq-admin-card .sbq-decline{background:#301313;color:#ffbcbc}</style><style id="sb-personal-shortcuts-style">
+.sb-personal-shortcuts{margin:20px 0 26px}.sb-personal-shortcuts-head{margin:0 0 12px}.sb-personal-shortcuts-title{font-size:11px;font-weight:800;letter-spacing:2px;color:#aaa;text-transform:uppercase}.sb-personal-shortcuts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sb-personal-link{display:flex;align-items:center;gap:14px;padding:19px 17px;border:1px solid #343434;border-radius:15px;background:linear-gradient(130deg,#171717,#0a0a0a);text-decoration:none!important;color:#fff!important;min-height:94px;transition:border-color .2s,transform .2s}.sb-personal-link:hover{border-color:#aaa;background:#1a1a1a;transform:translateY(-2px)}.sb-personal-link-icon{width:44px;height:44px;display:grid;place-items:center;flex:none;border:1px solid #3b3b3b;border-radius:12px;background:#202020;font-size:23px}.sb-personal-link-text{min-width:0;flex:1}.sb-personal-link-text strong{display:block;font-size:13px;letter-spacing:.3px;margin-bottom:4px}.sb-personal-link-text small{display:block;font-size:11px;line-height:1.45;color:#999}.sb-personal-link-arrow{font-size:19px;color:#aaa}@media(max-width:520px){.sb-personal-shortcuts-grid{grid-template-columns:1fr}.sb-personal-link{min-height:78px;padding:14px 15px}.sb-personal-link-icon{width:40px;height:40px}}
+</style>
+</head>
 
 <body>
 <div id="sbAdminBootCover" aria-hidden="true"></div>
@@ -1895,6 +1898,7 @@ Log In
 </div>
 
 <div class="admin-page active" data-admin-page="dashboard">
+<!-- sb-personal-shortcuts-v1 --><section class="sb-personal-shortcuts" aria-label="Personal shortcuts"><div class="sb-personal-shortcuts-head"><span class="sb-personal-shortcuts-title">Personal / Quick access</span></div><div class="sb-personal-shortcuts-grid"><a class="sb-personal-link" href="/weightloss/"><span class="sb-personal-link-icon" aria-hidden="true">⚖</span><span class="sb-personal-link-text"><strong>Weight Loss Tracker</strong><small>Daily keto log, nutrition and weight</small></span><span class="sb-personal-link-arrow" aria-hidden="true">↗</span></a><a class="sb-personal-link" href="/Christmas/"><span class="sb-personal-link-icon" aria-hidden="true">🎄</span><span class="sb-personal-link-text"><strong>Christmas List</strong><small>Your private Christmas planner</small></span><span class="sb-personal-link-arrow" aria-hidden="true">↗</span></a></div></section>
   <div class="sb-home">
     <section class="sb-home-hero">
       <div class="sb-home-scan"></div>
@@ -2279,6 +2283,7 @@ Save Changes
     <div class="panel">
       <div class="admin-kicker">Site Controls</div>
       <h2>Tools</h2>
+<!-- sb-personal-shortcuts-tools-v1 --><section class="sb-personal-shortcuts sb-personal-shortcuts-tools" aria-label="Personal shortcuts"><div class="sb-personal-shortcuts-head"><span class="sb-personal-shortcuts-title">Personal / Quick access</span></div><div class="sb-personal-shortcuts-grid"><a class="sb-personal-link" href="/weightloss/"><span class="sb-personal-link-icon" aria-hidden="true">⚖</span><span class="sb-personal-link-text"><strong>Weight Loss Tracker</strong><small>Daily keto log, nutrition and weight</small></span><span class="sb-personal-link-arrow" aria-hidden="true">↗</span></a><a class="sb-personal-link" href="/Christmas/"><span class="sb-personal-link-icon" aria-hidden="true">🎄</span><span class="sb-personal-link-text"><strong>Christmas List</strong><small>Your private Christmas planner</small></span><span class="sb-personal-link-arrow" aria-hidden="true">↗</span></a></div></section>
       <button type="button" id="refreshAdminBtn" class="secondary">Refresh Website Data</button>
       <div class="admin-passkey-tools"><strong>PASSKEY / BIOMETRICS</strong><p class="help">Register this device for secure biometric or device-PIN admin access.</p><button type="button" id="adminPasskeyRegisterBtn" class="secondary">Set Up Passkey</button><div id="adminPasskeyRegisterStatus" class="status"></div></div>
       <button type="button" id="logoutBtn" class="secondary">Log Out</button>
